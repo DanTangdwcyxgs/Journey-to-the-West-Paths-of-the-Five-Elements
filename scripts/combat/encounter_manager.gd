@@ -34,7 +34,11 @@ func _load_ai_profiles() -> void:
 	var profiles = parsed.get("profiles", {})
 	if profiles is Dictionary:
 		for enemy_id in profiles.keys():
-			ai_profiles[str(enemy_id).to_lower()] = str(profiles[enemy_id])
+			var value = profiles[enemy_id]
+			if value is Dictionary:
+				ai_profiles[str(enemy_id).to_lower()] = value.duplicate(true)
+			else:
+				ai_profiles[str(enemy_id).to_lower()] = {"target_profile": str(value), "skill_effects": {}}
 
 func get_definition(encounter_id: String) -> Dictionary:
 	return definitions.get(encounter_id, {}).duplicate(true)
@@ -62,8 +66,11 @@ func build_enemies(encounter_id: String) -> Array[Combatant]:
 		)
 		unit.combat_modifiers = enemy.get("combat_modifiers", {}).duplicate(true)
 		var profile_key := unit.id.to_lower()
-		if not unit.combat_modifiers.has("target_profile") and ai_profiles.has(profile_key):
-			unit.combat_modifiers["target_profile"] = ai_profiles[profile_key]
+		var profile: Dictionary = ai_profiles.get(profile_key, {})
+		if not unit.combat_modifiers.has("target_profile") and profile.has("target_profile"):
+			unit.combat_modifiers["target_profile"] = str(profile.get("target_profile", "lowest_hp"))
+		if profile.has("skill_effects"):
+			unit.combat_modifiers["skill_effects"] = profile.get("skill_effects", {}).duplicate(true)
 		result.append(unit)
 	return result
 
@@ -77,8 +84,8 @@ func choose_ai_action(enemy: Combatant, allies: Array[Combatant], turn_number: i
 	if preferred != "":
 		var chosen := _find_skill(skills, preferred)
 		if chosen != null:
-			return _action_from_definition(chosen)
-	return _action_from_definition(skills[0])
+			return _action_from_definition(enemy, chosen)
+	return _action_from_definition(enemy, skills[0])
 
 func choose_ai_target(enemy: Combatant, allies: Array[Combatant], action: CombatAction) -> Combatant:
 	var living: Array[Combatant] = []
@@ -141,13 +148,17 @@ func _find_skill(skills: Array, skill_id: String):
 			return skill
 	return null
 
-func _action_from_definition(skill: Dictionary) -> CombatAction:
+func _action_from_definition(enemy: Combatant, skill: Dictionary) -> CombatAction:
 	var effects: Dictionary = {}
+	var skill_id := str(skill.get("id", ""))
+	var skill_effects: Dictionary = enemy.combat_modifiers.get("skill_effects", {})
+	if skill_effects.has(skill_id) and skill_effects[skill_id] is Dictionary:
+		effects = skill_effects[skill_id].duplicate(true)
 	for key in ["effect", "effect_duration", "effect_value", "shield_bonus", "shield_damage_bonus"]:
 		if skill.has(key):
 			effects[key] = skill[key]
 	return CombatAction.new(
-		str(skill.get("id", "NORMAL_ATTACK")),
+		skill_id if skill_id != "" else "NORMAL_ATTACK",
 		str(skill.get("name", "妖兵攻击")),
 		str(skill.get("element", "strike")),
 		int(skill.get("power", 18)),
