@@ -27,8 +27,20 @@ static func run() -> void:
 	assert(longma.defense == 10)
 	assert(longma.speed == 12)
 
+	# A temporary speed debuff must survive a form transition instead of being erased.
 	longma.mechanic_resource = 1
 	var second := manager.shift(longma)
 	assert(second.get("id", "") == "eagle")
+	longma.apply_speed_delta(-4, 3)
+	assert(longma.speed == 16)
+	longma.clear_longma_form()
+	assert(longma.longma_form == "horse")
+	assert(longma.speed == 8)
+	assert(longma.speed_effect_turns == 3)
+	assert(longma.speed_delta == -4)
+	longma.begin_turn()
+	assert(longma.speed == 8)
+	assert(longma.speed_effect_turns == 2)
+
 	longma.mechanic_resource = 0
 	assert(manager.shift(longma).is_empty())
