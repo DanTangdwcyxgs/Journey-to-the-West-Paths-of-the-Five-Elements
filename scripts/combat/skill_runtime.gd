@@ -96,7 +96,8 @@ static func _build_modified_action(skill: Dictionary, actor: Combatant) -> Comba
 		power = maxi(int(round(power * form_damage_multiplier)), 1)
 	if actor.combat_modifiers.has("shield_damage_bonus"):
 		shield_hit += int(actor.combat_modifiers["shield_damage_bonus"])
-	return CombatAction.new(base.id, base.display_name, base.element, power, shield_hit, base.bp_cost)
+	var effects: Dictionary = skill.get("effects", {}).duplicate(true) if skill.get("effects", {}) is Dictionary else {}
+	return CombatAction.new(base.id, base.display_name, base.element, power, shield_hit, base.bp_cost, effects)
 
 static func _get_active_longma_form(actor: Combatant) -> Dictionary:
 	var manager := LongmaFormManager.new()
