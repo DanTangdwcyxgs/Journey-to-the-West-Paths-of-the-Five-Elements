@@ -1,14 +1,14 @@
 class_name BountyEncounterState
 extends RefCounted
 
-## Lightweight handoff between exploration and battle scenes.
+## Lightweight handoff between exploration/narrative scenes and battle scenes.
 ## The canonical narrative save remains NarrativeState.
 const PATH := "user://active_bounty.json"
 
 static func start(bounty_id: String, source_stage_id: String = "") -> bool:
 	return start_encounter("bounty", bounty_id, source_stage_id)
 
-static func start_encounter(encounter_type: String, encounter_id: String, source_stage_id: String = "") -> bool:
+static func start_encounter(encounter_type: String, encounter_id: String, source_stage_id: String = "", source_chapter_id: String = "", source_route_id: String = "") -> bool:
 	if encounter_id == "":
 		return false
 	var file := FileAccess.open(PATH, FileAccess.WRITE)
@@ -19,8 +19,13 @@ static func start_encounter(encounter_type: String, encounter_id: String, source
 		"encounter_id": encounter_id,
 		"bounty_id": encounter_id if encounter_type == "bounty" else "",
 		"source_stage_id": source_stage_id,
+		"source_chapter_id": source_chapter_id,
+		"source_route_id": source_route_id,
 	}))
 	return true
+
+static func start_narrative_encounter(encounter_id: String, chapter_id: String, route_id: String) -> bool:
+	return start_encounter("origin", encounter_id, "", chapter_id, route_id)
 
 static func get_active() -> String:
 	return str(get_active_record().get("encounter_id", get_active_record().get("bounty_id", "")))
