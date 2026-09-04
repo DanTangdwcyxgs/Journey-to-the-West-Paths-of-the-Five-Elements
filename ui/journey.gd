@@ -57,6 +57,7 @@ func _ready() -> void:
 	if not narrative.load():
 		get_tree().change_scene_to_file("res://ui/main_menu.tscn")
 		return
+	_route_index_from_save()
 	_build_ui()
 	_refresh()
 
@@ -154,28 +155,48 @@ func _build_ui() -> void:
 func _current_route() -> Array:
 	return ORIGIN_CHAPTERS.get(narrative.state.starting_character, [])
 
-func _advance_primary() -> void:
-	if narrative.state.current_origin_route == "":
-		narrative.state.set_origin_progress("%s_ORIGIN" % narrative.state.starting_character, _current_route()[0][0])
+func _route_index_from_save() -> void:
+	var chapters:Array = _current_route()
+	if chapters.is_empty():
+		route_index = 0
+		return
+	if narrative.state.current_origin_chapter != "":
+		for i in range(chapters.size()):
+			if str(chapters[i][0]) == narrative.state.current_origin_chapter:
+				route_index = i
+				return
+	route_index = 0
+	for i in range(chapters.size()):
+		if str(chapters[i][0]) in narrative.state.completed_chapters:
+			route_index = i + 1
+	if route_index > chapters.size():
+		route_index = chapters.size()
 
+func _advance_primary() -> void:
 	var chapters:Array = _current_route()
 	if chapters.is_empty():
 		return
+	if narrative.state.current_origin_route == "":
+		narrative.state.set_origin_progress("%s_ORIGIN" % narrative.state.starting_character, str(chapters[route_index][0]))
 	if route_index >= chapters.size():
 		_finish_origin()
 		return
-
 	var entry:Array = chapters[route_index]
 	var chapter_id := str(entry[0])
-	narrative.complete_chapter(chapter_id, false)
+	if chapter_id not in narrative.state.completed_chapters:
+		narrative.complete_chapter(chapter_id, false)
 	route_index += 1
 	if route_index < chapters.size():
 		narrative.state.set_origin_progress("%s_ORIGIN" % narrative.state.starting_character, str(chapters[route_index][0]))
+	else:
+		narrative.state.set_origin_progress("%s_ORIGIN" % narrative.state.starting_character, "")
+	narrative.save()
 	_refresh()
-	return
 
 func _finish_origin() -> void:
 	var start := narrative.state.starting_character
+	if not CONVERGENCE.has(start):
+		return
 	var handoff:Dictionary = CONVERGENCE[start]
 	narrative.state.mark_route_complete(start)
 	narrative.advance_world_milestone(str(handoff["milestone"]), int(handoff["timeline"]))
@@ -184,8 +205,6 @@ func _finish_origin() -> void:
 		var memories:Array[String] = []
 		if str(character_id) != start:
 			memories = _memory_preview(str(character_id))
-		if str(character_id) == "TANG" and start == "WUKONG":
-			memories = []
 		narrative.encounter_character(str(character_id), memories)
 	narrative.save()
 	_refresh()
@@ -202,9 +221,9 @@ func _play_selected_memory() -> void:
 	if selected.is_empty():
 		return
 	var row := list.get_item_text(selected[0])
-	if not row.begins_with("回忆:"):
+	if not row.begins_with("回忆:") or not row.ends_with("[可回忆]"):
 		return
-	var memory_id := row.replace("回忆: ", "").replace(" [可回忆]", "")
+	var memory_id := row.trim_prefix("回忆: ").trim_suffix(" [可回忆]")
 	if narrative.can_enter_memory(memory_id):
 		narrative.begin_memory(memory_id)
 		narrative.finish_memory(memory_id)
@@ -214,6 +233,10 @@ func _play_selected_memory() -> void:
 func _save() -> void:
 	narrative.save()
 	phase_label.text = "已保存。世界时间不会因回忆播放而改变。"
+
+func _back_to_menu() -> void:
+	narrative.save()
+	get_tree().change_scene_to_file("res://ui/main_menu.tscn")
 
 func _refresh() -> void:
 	if title_label == null:
@@ -225,31 +248,31 @@ func _refresh() -> void:
 	else:
 		phase_label.text = "共享旅程 · T%04d · %s" % [narrative.state.current_global_timeline, narrative.state.current_shared_chapter]
 
+	var chapters:Array = _current_route()
 	if narrative.state.route_progress.get(start, NarrativeState.ROUTE_LOCKED) == NarrativeState.ROUTE_COMPLETE:
 		chapter_label.text = "已完成个人起始路线"
 		description_label.text = "你已经把起始角色的历史走完。现在世界继续沿固定西游时间线推进；这不是把世界倒回去，而是把这段历史正式接回主线。"
-		primary_button.text = "继续共享旅程"
+		primary_button.text = "进入共享旅程"
 		primary_button.disabled = true
+	elif route_index >= chapters.size():
+		chapter_label.text = "路线汇合"
+		description_label.text = "个人历史结束。点击一次完成汇合，系统会按该起始角色的固定汇合点恢复西游主时间线。"
+		primary_button.text = "完成路线并回到主线"
+		primary_button.disabled = false
 	else:
-		var chapters:Array = _current_route()
-		if route_index >= chapters.size():
-			chapter_label.text = "路线汇合"
-			description_label.text = "个人历史结束。点击一次完成汇合，系统会按该起始角色的固定汇合点恢复西游主时间线。"
-			primary_button.text = "完成路线并回到主线"
-			primary_button.disabled = false
-		else:
-			chapter_label.text = "%s · %s" % [chapters[route_index][0], chapters[route_index][1]]
-			description_label.text = "这是起始角色的历史章节。它可以展开角色背景、关键战斗和人物关系，但不会改变当前共享西游世界的时间。"
-			primary_button.text = "完成本章"
-			primary_button.disabled = false
+		chapter_label.text = "%s · %s" % [chapters[route_index][0], chapters[route_index][1]]
+		description_label.text = "这是起始角色的历史章节。它可以展开角色背景、关键战斗和人物关系，但不会改变共享西游世界的当前时间。"
+		primary_button.text = "完成本章"
+		primary_button.disabled = false
 
+	memory_button.disabled = narrative.state.available_memory_chapters.is_empty()
 	list.clear()
-	for chapter in _current_route():
+	for chapter in chapters:
 		var id := str(chapter[0])
-		var title := str(chapter[1])
+		var chapter_title := str(chapter[1])
 		var marker := "✓" if id in narrative.state.completed_chapters else "·"
-		list.add_item("路线 %s  %s %s" % [marker, id, title])
+		list.add_item("路线 %s  %s %s" % [marker, id, chapter_title])
 	for memory_id in narrative.state.available_memory_chapters:
 		list.add_item("回忆: %s [可回忆]" % memory_id)
 	for memory_id in narrative.state.played_memory_chapters:
-		list.add_item("回忆: %s [已看]")
+		list.add_item("回忆: %s [已看]" % memory_id)
