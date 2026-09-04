@@ -6,6 +6,7 @@ const MECHANIC_NAMES := {"tangseng":"慈悲", "wukong":"战意", "bajie":"怒气
 
 var engine := CombatEngine.new()
 var party := PartyManager.new()
+var boss_runtime := YellowWindBoss.new()
 var allies: Array[Combatant] = []
 var enemies: Array[Combatant] = []
 var current_actor: Combatant
@@ -21,7 +22,8 @@ var log_box: RichTextLabel
 func _ready() -> void:
 	party.initialize_from_recruited(["TANG", "WUKONG", "BAJIE", "WUJING", "LONGMA"])
 	allies = CombatPartyBuilder.build_active_party(party)
-	var boss := Combatant.new("yellow_wind", "黄风妖王", 720, 34, 22, 24, 6, {"fire": true, "wind": true}, "front")
+	var boss := boss_runtime.create_boss()
+	boss_runtime.begin_encounter(boss)
 	enemies = [boss]
 	engine.combat_log.connect(_on_combat_log)
 	engine.combat_finished.connect(_on_combat_finished)
@@ -114,7 +116,8 @@ func _build_ui() -> void:
 func _refresh() -> void:
 	if current_actor == null:
 		return
-	turn_label.text = "行动：%s · Turn %d" % [_name(current_actor), engine.turn_number]
+	var boss := _boss()
+	turn_label.text = "行动：%s · Turn %d · 黄风阶段 %d" % [_name(current_actor), engine.turn_number, boss_runtime.phase]
 	status_label.text = "HP %d/%d · BP %d · %s %d/%d · 护盾 %d/%d · Break=%s · %s排" % [current_actor.hp, current_actor.max_hp, current_actor.bp, MECHANIC_NAMES.get(current_actor.id, "专属资源"), current_actor.mechanic_resource, current_actor.mechanic_max, current_actor.shield, current_actor.max_shield, str(current_actor.is_broken()), "前" if current_actor.row == "front" else "后"]
 	party_list.clear()
 	for ally in allies:
@@ -152,6 +155,7 @@ func _use_skill(skill: Dictionary, boosted: bool) -> void:
 	if not result.get("ok", false):
 		status_label.text = "技能失败：%s" % result.get("reason", "unknown")
 		return
+	boss_runtime.after_action(_boss())
 	_end_turn()
 
 func _boost_selected() -> void:
@@ -183,17 +187,19 @@ func _end_turn() -> void:
 	_refresh()
 
 func _enemy_turn(enemy: Combatant) -> void:
+	boss_runtime.on_turn_start(enemy)
 	var living := allies.filter(func(unit): return unit.is_alive())
 	if living.is_empty():
 		return
 	var target: Combatant = living[0]
-	if "BAJIE" in party.front_row:
-		for ally in living:
-			if ally.id == "bajie":
-				target = ally
-				break
-	var attack := CombatAction.new("boss_strike", "黄风爪", "wind", 30, 1, 0)
-	engine.perform_action(enemy, target, attack)
+	var taunted := allies.filter(func(unit): return unit.is_alive() and unit.aggro_turns > 0)
+	if not taunted.is_empty():
+		target = taunted[0]
+	var attack := boss_runtime.choose_action(enemy, allies)
+	var result := engine.perform_action(enemy, target, attack)
+	boss_runtime.apply_action_effects(attack.id, enemy)
+	if result.get("ok", false):
+		_on_combat_log("黄风妖王阶段%d：%s" % [boss_runtime.phase, attack.display_name])
 
 func _on_combat_log(message: String) -> void:
 	if log_box != null:
@@ -202,6 +208,9 @@ func _on_combat_log(message: String) -> void:
 func _on_combat_finished(winner: String) -> void:
 	if status_label != null:
 		status_label.text = "战斗结束：%s" % ("胜利" if winner == "allies" else "失败")
+
+func _boss() -> Combatant:
+	return enemies[0] if not enemies.is_empty() else null
 
 func _name(unit: Combatant) -> String:
 	return NAMES.get(unit.id, unit.display_name)
