@@ -36,7 +36,7 @@ func _ready() -> void:
 	if not narrative.load():
 		get_tree().change_scene_to_file("res://ui/main_menu.tscn")
 		return
-	party.initialize_from_recruited(narrative.state.recruited_characters)
+	party.initialize_from_saved_state(narrative.state.recruited_characters, narrative.state.get_party_formation())
 	route_index = _recover_route_index()
 	_build_ui()
 	_refresh()
@@ -97,13 +97,21 @@ func _finish_origin() -> void:
 	narrative.save(); _refresh()
 
 func _advance_shared() -> void:
-	var chapter := SharedJourneyManager.get_chapter(narrative.state.current_shared_chapter)
+	var chapter_id := narrative.state.current_shared_chapter
+	var chapter := SharedJourneyManager.get_chapter(chapter_id)
 	if chapter.is_empty(): return
-	if not SharedJourneyManager.complete(narrative.state.current_shared_chapter, narrative):
+	var recruit_before := narrative.state.recruited_characters.duplicate()
+	if not SharedJourneyManager.complete(chapter_id, narrative):
 		phase_label.text = "当前共享章节暂不可推进，需要先完成前置招募。"
 		return
-	party.initialize_from_recruited(narrative.state.recruited_characters)
+	party.initialize_from_saved_state(narrative.state.recruited_characters, narrative.state.get_party_formation())
+	var recruited_names: Array[String] = []
+	for id in narrative.state.recruited_characters:
+		if id not in recruit_before:
+			recruited_names.append(CHARACTER_NAMES.get(id, id))
 	_refresh()
+	if not recruited_names.is_empty():
+		phase_label.text = "完成 %s · 新加入：%s · 对应个人回忆已开放。" % [str(chapter.get("title", chapter_id)), "、".join(recruited_names)]
 
 func _memory_preview(character_id:String) -> Array[String]:
 	var chapters:Array = ORIGIN_CHAPTERS.get(character_id, [])
@@ -124,7 +132,11 @@ func _open_party() -> void:
 	get_tree().change_scene_to_file("res://ui/party_screen.tscn")
 
 func _save() -> void:
-	narrative.save(); phase_label.text = "已保存。世界时间不会因回忆播放而改变。"
+	narrative.state.set_party_formation(party.to_dict())
+	if narrative.save():
+		phase_label.text = "已保存。世界时间不会因回忆播放而改变。"
+	else:
+		phase_label.text = "保存失败。"
 
 func _back_to_menu() -> void:
 	get_tree().change_scene_to_file("res://ui/main_menu.tscn")
@@ -148,8 +160,8 @@ func _refresh() -> void:
 			description_label.text = "当前共享章节链已经走完。"
 			primary_button.disabled = true
 		else:
-			chapter_label.text = "%s · %s" % [chapter.id, chapter.title]
-			description_label.text = "固定西游时间线 T%04d。完成该章会推进到下一段共享旅程，不会触碰角色历史章节。" % int(chapter.timeline)
+			chapter_label.text = "%s · %s" % [chapter.get("id", ""), chapter.get("title", "")]
+			description_label.text = "固定西游时间线 T%04d。完成该章会推进到下一段共享旅程；若命中招募节点，会同时开放对应角色历史。" % int(chapter.get("timeline", 0))
 			primary_button.text = "完成共享章节"
 			primary_button.disabled = false
 	else:
