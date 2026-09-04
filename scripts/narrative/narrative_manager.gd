@@ -10,6 +10,8 @@ signal milestone_reached(milestone_id: String, chronological_index: int)
 signal chapter_completed(chapter_id: String)
 signal memory_completed(chapter_id: String)
 signal party_became_full()
+signal world_effect_activated(effect_id: String)
+signal battle_recorded(target_id: String, result: String)
 
 var state := NarrativeState.new()
 
@@ -65,6 +67,24 @@ func finish_memory(chapter_id: String) -> bool:
 
 func party_full() -> bool:
 	return state.recruited_characters.size() >= NarrativeState.CHARACTER_IDS.size()
+
+func record_battle_result(target_id: String, target_name: String, result: String, rewards: Array = [], world_effects: Array = []) -> Dictionary:
+	if target_id == "" or result == "":
+		return {}
+	var journal := JourneyLog.new()
+	journal.restore(state.journey_log)
+	var entry := journal.record_battle(target_id, target_name, result, rewards, world_effects)
+	state.set_journey_log(journal.to_dict())
+	for effect in world_effects:
+		world_effect_activated.emit(str(effect))
+	battle_recorded.emit(target_id, result)
+	return entry
+
+func record_bounty_defeat(target_id: String, target_name: String, rewards: Array = [], world_effects: Array = []) -> Dictionary:
+	var entry := record_battle_result(target_id, target_name, "VICTORY", rewards, world_effects)
+	if not entry.is_empty():
+		advance_world_milestone("BOUNTY_%s_DEFEATED" % target_id, state.current_global_timeline)
+	return entry
 
 func serialize() -> Dictionary:
 	return state.to_dict()
