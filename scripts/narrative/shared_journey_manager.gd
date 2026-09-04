@@ -5,6 +5,7 @@ extends RefCounted
 ## Chapter content is data-driven; this class owns validation, recruitment and state mutation.
 
 const DATA_PATH := "res://data/narrative/shared_chapters.json"
+const SHARED_BATTLE_MILESTONE_PREFIX := "SHARED_BATTLE_"
 
 static var _chapters: Array = []
 static var _loaded := false
@@ -57,6 +58,12 @@ static func complete(chapter_id: String, manager: NarrativeManager) -> bool:
 	var chapter := get_chapter(chapter_id)
 	if chapter.is_empty() or not can_enter(chapter_id, manager.state):
 		return false
+
+	var encounter_id := str(chapter.get("encounter_id", ""))
+	if encounter_id != "":
+		var battle_milestone := "%s%s" % [SHARED_BATTLE_MILESTONE_PREFIX, encounter_id]
+		if battle_milestone not in manager.state.completed_milestones:
+			return false
 
 	manager.complete_chapter(chapter_id, true)
 	manager.advance_world_milestone(str(chapter.get("id", "")), int(chapter.get("timeline", 0)))
