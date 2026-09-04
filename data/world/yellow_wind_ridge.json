@@ -1,0 +1,46 @@
+{
+  "id": "YELLOW_WIND_RIDGE",
+  "name": "黄风岭",
+  "timeline": 120,
+  "description": "黑风山北道之外的风沙险地。玩家通过探索、村路情报与风沙事件逐步逼近黄风妖王，不强制覆盖西游主线。",
+  "stages": [
+    {
+      "id": "RIDGE_ENTRY",
+      "name": "踏入黄风岭",
+      "description": "风里夹着细沙，远处偶尔传来兽吼。先确认山路与退路。",
+      "type": "CHOICE",
+      "choices": [
+        {"id":"FOLLOW_CARAVAN","label":"跟随商旅脚印","result":"获得补给情报，并发现旧驿站。"},
+        {"id":"TAKE_RAVINE","label":"沿峡谷绕行","result":"避开主路，但更快接近妖气最重的区域。"}
+      ],
+      "milestone": "YELLOW_RIDGE_ENTRY"
+    },
+    {
+      "id": "ABANDONED_INN",
+      "name": "废弃驿站",
+      "description": "旧驿站已经被沙尘掩埋。墙上留着关于黄风妖王的残缺记号。",
+      "type": "EVENT",
+      "milestone": "YELLOW_RIDGE_INTEL",
+      "reward_intel": "黄风妖王畏火，风沙最强时会主动改变战法。"
+    },
+    {
+      "id": "SANDSTORM_PASS",
+      "name": "风沙关",
+      "description": "第一轮沙暴压境。队伍必须决定是硬闯还是暂避。",
+      "type": "CHOICE",
+      "choices": [
+        {"id":"PUSH_THROUGH","label":"顶着沙暴前进","result":"磨损体力，但提前抵达黄风洞外。"},
+        {"id":"WAIT_STORM","label":"原地等风势减弱","result":"安全通过，但让妖王有时间调整布阵。"}
+      ],
+      "milestone": "YELLOW_RIDGE_STORM"
+    },
+    {
+      "id": "YELLOW_WIND_GATE",
+      "name": "黄风洞外",
+      "description": "洞口的风声像低沉兽吼。现在可以选择出战，或退回世界地图继续准备。",
+      "type": "BOSS_GATE",
+      "bounty_id": "BOUNTY_YELLOW_FANG",
+      "milestone": "YELLOW_WIND_GATE_OPEN"
+    }
+  ]
+}
