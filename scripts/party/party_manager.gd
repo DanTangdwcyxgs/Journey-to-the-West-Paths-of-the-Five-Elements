@@ -22,9 +22,8 @@ func initialize_from_recruited(recruited: Array[String]) -> void:
 
 func initialize_from_saved_state(recruited: Array[String], formation: Dictionary) -> void:
 	initialize_from_recruited(recruited)
-	if formation.is_empty():
-		return
-	restore(formation)
+	if not formation.is_empty():
+		restore_formation(formation)
 
 func recruit(character_id: String) -> bool:
 	if character_id not in CHARACTER_IDS or character_id in roster or roster.size() >= PARTY_SIZE:
@@ -48,29 +47,23 @@ func swap_positions(character_a: String, character_b: String) -> bool:
 			back_row[a.index] = character_b
 			back_row[b.index] = character_a
 		return true
-	var a_id := character_a
-	var b_id := character_b
 	if a.row == "front":
-		front_row[a.index] = b_id
-		back_row[b.index] = a_id
+		front_row[a.index] = character_b
+		back_row[b.index] = character_a
 	else:
-		back_row[a.index] = b_id
-		front_row[b.index] = a_id
+		back_row[a.index] = character_b
+		front_row[b.index] = character_a
 	return true
 
 func move_to_front(character_id: String) -> bool:
-	if character_id not in back_row:
-		return false
-	if front_row.size() >= FRONT_SIZE:
+	if character_id not in back_row or front_row.size() >= FRONT_SIZE:
 		return false
 	back_row.erase(character_id)
 	front_row.append(character_id)
 	return true
 
 func move_to_back(character_id: String) -> bool:
-	if character_id not in front_row:
-		return false
-	if back_row.size() >= BACK_SIZE:
+	if character_id not in front_row or back_row.size() >= BACK_SIZE:
 		return false
 	front_row.erase(character_id)
 	back_row.append(character_id)
@@ -100,31 +93,31 @@ func to_dict() -> Dictionary:
 
 func restore(data: Dictionary) -> void:
 	var saved_roster := _string_array(data.get("roster", []))
-	var saved_front := _string_array(data.get("front_row", []))
-	var saved_back := _string_array(data.get("back_row", []))
 	if saved_roster.is_empty():
 		return
-
 	roster.clear()
 	for id in saved_roster:
 		if id in CHARACTER_IDS and id not in roster and roster.size() < PARTY_SIZE:
 			roster.append(id)
+	restore_formation(data)
 
+func restore_formation(data: Dictionary) -> void:
 	front_row.clear()
 	back_row.clear()
+	var saved_front := _string_array(data.get("front_row", []))
+	var saved_back := _string_array(data.get("back_row", []))
 	for id in saved_front:
 		if id in roster and id not in front_row and id not in back_row and front_row.size() < FRONT_SIZE:
 			front_row.append(id)
 	for id in saved_back:
 		if id in roster and id not in front_row and id not in back_row and back_row.size() < BACK_SIZE:
 			back_row.append(id)
-
 	for id in roster:
 		if id not in front_row and id not in back_row:
-		if front_row.size() < FRONT_SIZE:
-			front_row.append(id)
-		elif back_row.size() < BACK_SIZE:
-			back_row.append(id)
+			if front_row.size() < FRONT_SIZE:
+				front_row.append(id)
+			elif back_row.size() < BACK_SIZE:
+				back_row.append(id)
 
 func _rebuild_formation() -> void:
 	front_row.clear()
