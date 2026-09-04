@@ -24,6 +24,7 @@ var unlocked_chapters: Array[String] = []
 var available_memory_chapters: Array[String] = []
 var played_memory_chapters: Array[String] = []
 var relationship_values: Dictionary = {}
+var origin_choices: Dictionary = {}
 var party_formation: Dictionary = {"roster": [], "front_row": [], "back_row": []}
 var journey_log: Dictionary = {"entries": [], "defeated_targets": [], "active_world_effects": []}
 var inventory: Dictionary = {"currencies": {"COIN": 0}, "items": {}}
@@ -53,6 +54,7 @@ func initialize_for_start(character_id: String, initial_timeline: int = 0) -> vo
 	available_memory_chapters.clear()
 	played_memory_chapters.clear()
 	relationship_values.clear()
+	origin_choices.clear()
 	party_formation = {"roster": [], "front_row": [], "back_row": []}
 	journey_log = {"entries": [], "defeated_targets": [], "active_world_effects": []}
 	inventory = {"currencies": {"COIN": 0}, "items": {}}
@@ -114,6 +116,17 @@ func record_milestone(milestone_id: String, chronological_index: int) -> void:
 	if milestone_id != "" and milestone_id not in completed_milestones:
 		completed_milestones.append(milestone_id)
 	current_global_timeline = max(current_global_timeline, chronological_index)
+
+func record_origin_choice(chapter_id: String, choice_id: String) -> void:
+	if chapter_id == "" or choice_id == "":
+		return
+	origin_choices[chapter_id] = choice_id
+	var milestone := "ORIGIN_CHOICE_%s_%s" % [chapter_id, choice_id]
+	if milestone not in completed_milestones:
+		completed_milestones.append(milestone)
+
+func get_origin_choice(chapter_id: String) -> String:
+	return str(origin_choices.get(chapter_id, ""))
 
 func set_current_shared_chapter(chapter_id: String) -> void:
 	current_shared_chapter = chapter_id
@@ -217,6 +230,7 @@ func to_dict() -> Dictionary:
 		"available_memory_chapters": available_memory_chapters.duplicate(),
 		"played_memory_chapters": played_memory_chapters.duplicate(),
 		"relationship_values": relationship_values.duplicate(true),
+		"origin_choices": origin_choices.duplicate(true),
 		"party_formation": party_formation.duplicate(true),
 		"journey_log": journey_log.duplicate(true),
 		"inventory": inventory.duplicate(true),
@@ -240,6 +254,7 @@ static func from_dict(data: Dictionary) -> NarrativeState:
 	restored.played_memory_chapters = _string_array(data.get("played_memory_chapters", []))
 	restored.route_progress = data.get("route_progress", {}).duplicate(true)
 	restored.relationship_values = data.get("relationship_values", {}).duplicate(true)
+	restored.origin_choices = data.get("origin_choices", {}).duplicate(true)
 	var raw_party: Dictionary = data.get("party_formation", {})
 	restored.party_formation = {
 		"roster": _string_array(raw_party.get("roster", [])),
