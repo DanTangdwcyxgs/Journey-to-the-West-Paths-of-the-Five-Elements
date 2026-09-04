@@ -1,5 +1,5 @@
 {
-  "schema_version": 3,
+  "schema_version": 4,
   "characters": {
     "WUKONG": {
       "skills": [
@@ -19,14 +19,14 @@
       "skills": [
         {"id":"BAJIE_RAKE","name":"九齿钉耙","element":"strike","power":30,"shield_hit":1,"bp_cost":0,"kind":"damage"},
         {"id":"BAJIE_TAUNT","name":"倒打一耙","element":"strike","power":20,"shield_hit":1,"bp_cost":1,"kind":"taunt","aggro_turns":2,"mechanic_gain":1},
-        {"id":"BAJIE_EAT","name":"大口吞食","element":"earth","power":0,"shield_hit":0,"bp_cost":2,"kind":"self_buff","defense_bonus":8,"attack_bonus":6,"mechanic_cost":2}
+        {"id":"BAJIE_EAT","name":"大口吞食","element":"earth","power":0,"shield_hit":0,"bp_cost":2,"kind":"self_buff","defense_bonus":8,"attack_bonus":6,"mechanic_cost":2,"scale_with_mechanic":true,"attack_bonus_per_mechanic":2,"defense_bonus_per_mechanic":1}
       ]
     },
     "WUJING": {
       "skills": [
         {"id":"WUJING_STAFF","name":"降妖杖","element":"strike","power":24,"shield_hit":1,"bp_cost":0,"kind":"damage"},
         {"id":"WUJING_ICE","name":"寒水诀","element":"ice","power":34,"shield_hit":1,"bp_cost":1,"kind":"damage"},
-        {"id":"WUJING_SLOW","name":"流沙缚","element":"water","power":12,"shield_hit":1,"bp_cost":2,"kind":"slow","speed_delta":-8,"duration":2,"mechanic_gain":1}
+        {"id":"WUJING_SLOW","name":"流沙缚","element":"water","power":12,"shield_hit":1,"bp_cost":2,"kind":"slow","speed_delta":-8,"duration":2,"mechanic_gain":1,"consume_mechanic_if_available":true,"mechanic_consume_amount":1,"duration_bonus_per_mechanic":1}
       ]
     },
     "LONGMA": {
