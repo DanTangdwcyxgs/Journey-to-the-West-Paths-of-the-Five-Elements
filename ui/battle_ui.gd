@@ -209,18 +209,21 @@ func _end_turn() -> void:
 func _enemy_turn(enemy: Combatant) -> void:
 	var living := allies.filter(func(unit): return unit.is_alive())
 	if living.is_empty(): return
-	var target:Combatant = living[0]
-	var taunted := allies.filter(func(unit): return unit.is_alive() and unit.aggro_turns > 0)
-	if not taunted.is_empty(): target = taunted[0]
 	var attack: CombatAction
 	if encounter_type == "bounty":
 		boss_runtime.on_turn_start(enemy)
 		attack = boss_runtime.choose_action(enemy,allies)
-	else:
-		attack = encounter_manager.choose_ai_action(enemy,allies,engine.turn_number)
+		var taunted := living.filter(func(unit): return unit.aggro_turns > 0)
+		var target: Combatant = taunted[0] if not taunted.is_empty() else living[0]
+		var result := engine.perform_action(enemy,target,attack)
+		boss_runtime.apply_action_effects(attack.id,enemy)
+		if result.get("ok",false): _on_combat_log("%s：%s → %s" % [_name(enemy),attack.display_name,_name(target)])
+		return
+	attack = encounter_manager.choose_ai_action(enemy,allies,engine.turn_number)
+	var target := encounter_manager.choose_ai_target(enemy,allies,attack)
+	if target == null: return
 	var result := engine.perform_action(enemy,target,attack)
-	if encounter_type == "bounty": boss_runtime.apply_action_effects(attack.id,enemy)
-	if result.get("ok",false): _on_combat_log("%s：%s" % [_name(enemy),attack.display_name])
+	if result.get("ok",false): _on_combat_log("%s：%s → %s" % [_name(enemy),attack.display_name,_name(target)])
 
 func _on_combat_log(message:String) -> void:
 	if log_box != null: log_box.append_text(message + "\n")
