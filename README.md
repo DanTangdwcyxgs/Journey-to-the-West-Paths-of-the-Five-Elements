@@ -43,6 +43,8 @@ The world map is data-driven through `data/world/world_map.json` and `data/world
 
 A discovered Yellow Fang bounty now continues into a real battle-scene handoff: **hear rumor → discover bounty → travel to target area → accept → battle → resolve rewards + journal + world effects**. The encounter handoff itself is transient so abandoned battles do not corrupt the canonical narrative save.
 
+The preparation loop now adds **camp recovery, shop supply, persistent equipment profiles, and battle consumables**. Equipment choices are written into `NarrativeState`; combat reads the saved profiles before creating the encounter.
+
 ## Gameplay Pillars
 
 - **5-character party:** Tang Sanzang, Sun Wukong, Zhu Bajie, Sha Wujing, Bai Longma
@@ -56,6 +58,7 @@ A discovered Yellow Fang bounty now continues into a real battle-scene handoff: 
 - **Bai Longma transformation:** delayed full combat identity and multiple forms
 - **81 Trials:** major stories, personal quests, elite encounters and optional events
 - **World exploration:** connected map nodes, rumors, bounty discovery and persistent journey information
+- **Preparation / supplies:** shops, camp recovery, equipment profiles and combat consumables
 
 ## Current Combat Foundation
 
@@ -73,8 +76,10 @@ Implemented and connected:
 - back-row damage protection
 - data-driven skill catalog
 - damage / heal / barrier / slow / taunt / self-buff skill effects
-- regression tests for combat and skill runtime
 - persistent battle results, inventory rewards and journey log
+- persistent equipment/loadout configuration
+- battle consumable usage and inventory deduction
+- readable temporary combat status presentation for Break, barrier, taunt and speed changes
 - Yellow Fang bounty battle handoff and automatic victory reward resolution
 
 ## Current World Foundation
@@ -89,7 +94,8 @@ Implemented and connected:
 - world-map UI linked from the journey screen
 - discovered bounty challenge button for the first integrated bounty encounter
 - transient world-map → battle encounter handoff
-- regression checks for travel, rumor discovery and bounty handoff
+- camp / supply / preparation entry points
+- regression checks for travel, rumor discovery, bounty handoff and combat status display
 
 ## Roadmap
 
@@ -112,10 +118,13 @@ Implemented and connected:
 - [x] Data-driven skill definitions
 - [x] Skill runtime effects
 - [x] Persistent inventory / rewards / journey log
+- [x] Persistent equipment/loadout configuration
+- [x] Battle consumables
 - [x] World map / travel / rumor discovery layer
 - [x] First bounty encounter handoff
+- [x] Combat status presentation
 - [ ] Narrative data model implementation
-- [ ] Minimal battle UI
+- [ ] Minimal battle UI polish
 
 ### Phase 2 — Playable Vertical Slice
 
@@ -127,6 +136,6 @@ Implemented and connected:
 - [x] Canonical recruitment event flow
 - [x] Progressive personal-story unlock flow
 - [x] World exploration prototype
-- [ ] Status-effect presentation
-- [ ] First complete battle: Yellow Wind Demon
+- [x] Battle consumable loop
+- [ ] First complete battle: Yellow Wind Demon polish
 - [ ] First dungeon greybox
