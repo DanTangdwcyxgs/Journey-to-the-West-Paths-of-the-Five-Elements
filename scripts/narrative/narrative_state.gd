@@ -26,6 +26,7 @@ var played_memory_chapters: Array[String] = []
 var relationship_values: Dictionary = {}
 var party_formation: Dictionary = {"roster": [], "front_row": [], "back_row": []}
 var journey_log: Dictionary = {"entries": [], "defeated_targets": [], "active_world_effects": []}
+var inventory: Dictionary = {"currencies": {"COIN": 0}, "items": {}}
 
 func initialize_for_start(character_id: String, initial_timeline: int = 0) -> void:
 	if character_id not in CHARACTER_IDS:
@@ -46,6 +47,7 @@ func initialize_for_start(character_id: String, initial_timeline: int = 0) -> vo
 	relationship_values.clear()
 	party_formation = {"roster": [], "front_row": [], "back_row": []}
 	journey_log = {"entries": [], "defeated_targets": [], "active_world_effects": []}
+	inventory = {"currencies": {"COIN": 0}, "items": {}}
 	route_progress.clear()
 	for id in CHARACTER_IDS:
 		route_progress[id] = ROUTE_LOCKED
@@ -120,6 +122,15 @@ func set_journey_log(data: Dictionary) -> void:
 func get_journey_log() -> Dictionary:
 	return journey_log.duplicate(true)
 
+func set_inventory(data: Dictionary) -> void:
+	inventory = {
+		"currencies": data.get("currencies", {"COIN": 0}).duplicate(true),
+		"items": data.get("items", {}).duplicate(true),
+	}
+
+func get_inventory() -> Dictionary:
+	return inventory.duplicate(true)
+
 func add_memory_chapters(chapter_ids: Array[String]) -> void:
 	for chapter_id in chapter_ids:
 		if chapter_id not in available_memory_chapters and chapter_id not in played_memory_chapters:
@@ -159,6 +170,7 @@ func to_dict() -> Dictionary:
 		"relationship_values": relationship_values.duplicate(true),
 		"party_formation": party_formation.duplicate(true),
 		"journey_log": journey_log.duplicate(true),
+		"inventory": inventory.duplicate(true),
 	}
 
 static func from_dict(data: Dictionary) -> NarrativeState:
@@ -188,6 +200,11 @@ static func from_dict(data: Dictionary) -> NarrativeState:
 		"entries": raw_log.get("entries", []).duplicate(true),
 		"defeated_targets": _string_array(raw_log.get("defeated_targets", [])),
 		"active_world_effects": _string_array(raw_log.get("active_world_effects", [])),
+	}
+	var raw_inventory: Dictionary = data.get("inventory", {})
+	restored.inventory = {
+		"currencies": raw_inventory.get("currencies", {"COIN": 0}).duplicate(true),
+		"items": raw_inventory.get("items", {}).duplicate(true),
 	}
 	for id in CHARACTER_IDS:
 		if not restored.route_progress.has(id):
