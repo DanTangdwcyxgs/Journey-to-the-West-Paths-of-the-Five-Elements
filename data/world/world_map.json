@@ -6,7 +6,7 @@
       "timeline": 100,
       "type": "STORY",
       "description": "取经队伍真正踏上西游路的起点。山下与山中仍残留着大圣旧日的余波。",
-      "connections": ["EAGLE_SORROW", "BLACK_WIND_MOUNTAINS"],
+      "connections": ["EAGLE_SORROW", "BLACK_WIND_NORTH_PATH"],
       "required_milestones": ["WUKONG_RECRUITED"],
       "bounties": []
     },
@@ -16,12 +16,12 @@
       "timeline": 110,
       "type": "STORY",
       "description": "白龙马身份与取经职责交汇之地，也是第一处允许玩家偏离主线短暂探索的区域。",
-      "connections": ["FIVE_ELEMENTS_MOUNTAIN", "BLACK_WIND_MOUNTAINS"],
+      "connections": ["FIVE_ELEMENTS_MOUNTAIN", "BLACK_WIND_NORTH_PATH"],
       "required_milestones": ["WUKONG_RECRUITED"],
       "bounties": ["BOUNTY_YELLOW_FANG"]
     },
     {
-      "id": "BLACK_WIND_MOUNTAINS",
+      "id": "BLACK_WIND_NORTH_PATH",
       "name": "黑风山北道",
       "timeline": 120,
       "type": "EXPEDITION",
@@ -36,7 +36,7 @@
       "timeline": 130,
       "type": "STORY",
       "description": "猪八戒登场的关键节点。玩家可以在推进主线前先处理附近传闻与讨伐委托。",
-      "connections": ["BLACK_WIND_MOUNTAINS", "FLOWING_SANDS"],
+      "connections": ["BLACK_WIND_NORTH_PATH", "FLOWING_SANDS"],
       "required_milestones": ["BAI_LONGMA_RECRUITED"],
       "bounties": ["BOUNTY_IRON_HORN"]
     },
