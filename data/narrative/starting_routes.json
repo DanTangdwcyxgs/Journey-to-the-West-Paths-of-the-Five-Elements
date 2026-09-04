@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "world_timeline": "GLOBAL_MAIN",
+  "starting_characters": [
+    {
+      "id": "WUKONG",
+      "name": "孙悟空",
+      "origin_route": "WUKONG_ORIGIN",
+      "origin_end_chapter": "WUK-15",
+      "handoff_milestone": "WUKONG_RECRUITED",
+      "handoff_shared_chapter": "SHARED-01-FIVE-ELEMENTS",
+      "recruited_on_handoff": ["TANG", "WUKONG"],
+      "first_available_memory_owner": "WUKONG"
+    },
+    {
+      "id": "TANG",
+      "name": "唐僧",
+      "origin_route": "TANG_ORIGIN",
+      "origin_end_chapter": "TANG-08",
+      "handoff_milestone": "WUKONG_RECRUITED",
+      "handoff_shared_chapter": "SHARED-01-FIVE-ELEMENTS",
+      "recruited_on_handoff": ["TANG", "WUKONG"],
+      "first_available_memory_owner": "WUKONG"
+    },
+    {
+      "id": "LONGMA",
+      "name": "白龙马",
+      "origin_route": "LONGMA_ORIGIN",
+      "origin_end_chapter": "LONGMA-06",
+      "handoff_milestone": "BAI_LONGMA_RECRUITED",
+      "handoff_shared_chapter": "SHARED-03-EAGLE-SORROW",
+      "recruited_on_handoff": ["LONGMA"],
+      "first_available_memory_owner": "LONGMA"
+    },
+    {
+      "id": "BAJIE",
+      "name": "猪八戒",
+      "origin_route": "BAJIE_ORIGIN",
+      "origin_end_chapter": "BAJIE-09",
+      "handoff_milestone": "ZHU_BAJIE_RECRUITED",
+      "handoff_shared_chapter": "SHARED-05-GAOJIAZHUANG",
+      "recruited_on_handoff": ["BAJIE"],
+      "first_available_memory_owner": "BAJIE"
+    },
+    {
+      "id": "WUJING",
+      "name": "沙悟净",
+      "origin_route": "WUJING_ORIGIN",
+      "origin_end_chapter": "WUJING-08",
+      "handoff_milestone": "SHA_WUJING_RECRUITED",
+      "handoff_shared_chapter": "SHARED-07-FLOWING-SANDS",
+      "recruited_on_handoff": ["WUJING"],
+      "first_available_memory_owner": "WUJING"
+    }
+  ],
+  "unlock_rules": {
+    "personal_route_unlock": "ON_RECRUITMENT",
+    "party_full_required_for_personal_routes": false,
+    "memory_playback_changes_global_timeline": false,
+    "starting_route_changes_world_chronology": false,
+    "starting_route_changes_entry_lens": true
+  }
+}
