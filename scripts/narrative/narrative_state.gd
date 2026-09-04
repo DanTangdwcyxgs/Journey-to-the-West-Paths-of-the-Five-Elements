@@ -1,7 +1,7 @@
 class_name NarrativeState
 extends RefCounted
 
-## Runtime narrative state shared by route, memory, and chapter systems.
+## Runtime narrative state shared by route, memory, chapter, and party systems.
 ## World chronology is monotonic; character-history playback never rewinds it.
 
 const ROUTE_LOCKED := "LOCKED"
@@ -24,6 +24,7 @@ var unlocked_chapters: Array[String] = []
 var available_memory_chapters: Array[String] = []
 var played_memory_chapters: Array[String] = []
 var relationship_values: Dictionary = {}
+var party_formation: Dictionary = {"roster": [], "front_row": [], "back_row": []}
 
 func initialize_for_start(character_id: String, initial_timeline: int = 0) -> void:
 	if character_id not in CHARACTER_IDS:
@@ -42,6 +43,7 @@ func initialize_for_start(character_id: String, initial_timeline: int = 0) -> vo
 	available_memory_chapters.clear()
 	played_memory_chapters.clear()
 	relationship_values.clear()
+	party_formation = {"roster": [], "front_row": [], "back_row": []}
 	route_progress.clear()
 	for id in CHARACTER_IDS:
 		route_progress[id] = ROUTE_LOCKED
@@ -96,6 +98,16 @@ func record_milestone(milestone_id: String, chronological_index: int) -> void:
 func set_current_shared_chapter(chapter_id: String) -> void:
 	current_shared_chapter = chapter_id
 
+func set_party_formation(formation: Dictionary) -> void:
+	party_formation = {
+		"roster": _string_array(formation.get("roster", [])),
+		"front_row": _string_array(formation.get("front_row", [])),
+		"back_row": _string_array(formation.get("back_row", [])),
+	}
+
+func get_party_formation() -> Dictionary:
+	return party_formation.duplicate(true)
+
 func add_memory_chapters(chapter_ids: Array[String]) -> void:
 	for chapter_id in chapter_ids:
 		if chapter_id not in available_memory_chapters and chapter_id not in played_memory_chapters:
@@ -133,6 +145,7 @@ func to_dict() -> Dictionary:
 		"available_memory_chapters": available_memory_chapters.duplicate(),
 		"played_memory_chapters": played_memory_chapters.duplicate(),
 		"relationship_values": relationship_values.duplicate(true),
+		"party_formation": party_formation.duplicate(true),
 	}
 
 static func from_dict(data: Dictionary) -> NarrativeState:
@@ -151,6 +164,11 @@ static func from_dict(data: Dictionary) -> NarrativeState:
 	restored.played_memory_chapters = _string_array(data.get("played_memory_chapters", []))
 	restored.route_progress = data.get("route_progress", {}).duplicate(true)
 	restored.relationship_values = data.get("relationship_values", {}).duplicate(true)
+	restored.party_formation = {
+		"roster": _string_array(data.get("party_formation", {}).get("roster", [])),
+		"front_row": _string_array(data.get("party_formation", {}).get("front_row", [])),
+		"back_row": _string_array(data.get("party_formation", {}).get("back_row", [])),
+	}
 	for id in CHARACTER_IDS:
 		if not restored.route_progress.has(id):
 			restored.route_progress[id] = ROUTE_LOCKED
