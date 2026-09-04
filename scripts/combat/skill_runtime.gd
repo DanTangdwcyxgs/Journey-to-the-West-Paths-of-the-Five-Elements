@@ -42,10 +42,17 @@ static func perform(engine: CombatEngine, actor: Combatant, target: Combatant, s
 				return {"ok": false, "reason": "not_enough_bp"}
 			actor.bp -= action.bp_cost
 			var before := target.hp
+			var mercy_cost := 0
+			if bool(skill.get("consume_mechanic_if_available", false)) and actor.mechanic_resource > 0:
+				mercy_cost = mini(actor.mechanic_resource, int(skill.get("mechanic_consume_amount", 1)))
+				actor.spend_mechanic_resource(mercy_cost)
 			var heal_power := _scaled_amount(int(skill.get("heal_power", 0)), actor, "healing_multiplier")
+			heal_power += mercy_cost * int(skill.get("heal_bonus_per_mechanic", 0))
 			target.heal(heal_power)
 			_consume_and_gain(actor, target, kind, mechanic_cost, skill)
-			return {"ok": true, "damage": 0, "healed": target.hp - before, "target_hp": target.hp, "mechanic_resource": actor.mechanic_resource}
+			var result := {"ok": true, "damage": 0, "healed": target.hp - before, "target_hp": target.hp, "mechanic_resource": actor.mechanic_resource}
+			result["mechanic_spent_extra"] = mercy_cost
+			return result
 		"shield":
 			if actor.bp < action.bp_cost:
 				return {"ok": false, "reason": "not_enough_bp"}
@@ -83,9 +90,16 @@ static func _build_modified_action(skill: Dictionary, actor: Combatant) -> Comba
 	var elemental_key := "%s_damage_multiplier" % base.element.to_lower()
 	if actor.combat_modifiers.has(elemental_key):
 		power = maxi(int(round(power * float(actor.combat_modifiers[elemental_key]))), 1)
+	if actor.id == "longma" and actor.longma_form != "horse":
+		var form_damage_multiplier := float(_get_active_longma_form(actor).get("damage_multiplier", 1.0))
+		power = maxi(int(round(power * form_damage_multiplier)), 1)
 	if actor.combat_modifiers.has("shield_damage_bonus"):
 		shield_hit += int(actor.combat_modifiers["shield_damage_bonus"])
 	return CombatAction.new(base.id, base.display_name, base.element, power, shield_hit, base.bp_cost)
+
+static func _get_active_longma_form(actor: Combatant) -> Dictionary:
+	var manager := LongmaFormManager.new()
+	return manager.get_form(actor.longma_form)
 
 static func _scaled_amount(amount: int, actor: Combatant, modifier_id: String) -> int:
 	return maxi(int(round(amount * float(actor.combat_modifiers.get(modifier_id, 1.0)))), 0)
@@ -98,8 +112,6 @@ static func _consume_and_gain(actor: Combatant, target: Combatant, kind: String,
 		actor.spend_mechanic_resource(mechanic_cost)
 	var explicit_gain := int(skill.get("mechanic_gain", 0))
 	if explicit_gain > 0:
-		# A resource-consuming control skill spends an existing charge instead of
-		# immediately refilling it. With no charge, the same action builds one.
 		if bool(skill.get("consume_mechanic_if_available", false)) and actor.mechanic_resource > 0:
 			return
 		actor.add_mechanic_resource(explicit_gain)
