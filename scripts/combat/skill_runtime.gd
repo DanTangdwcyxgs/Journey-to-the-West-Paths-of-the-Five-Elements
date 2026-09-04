@@ -20,9 +20,15 @@ static func perform(engine: CombatEngine, actor: Combatant, target: Combatant, s
 			_consume_and_gain(actor, target, kind, mechanic_cost, skill)
 			if kind == "slow":
 				var duration := _scaled_duration(int(skill.get("duration", 1)), actor, "control_multiplier")
+				var tide_cost := 0
+				if bool(skill.get("consume_mechanic_if_available", false)) and actor.mechanic_resource > 0:
+					tide_cost = mini(actor.mechanic_resource, int(skill.get("mechanic_consume_amount", 1)))
+					actor.spend_mechanic_resource(tide_cost)
+					duration += tide_cost * int(skill.get("duration_bonus_per_mechanic", 1))
 				target.apply_speed_delta(int(skill.get("speed_delta", 0)), duration)
 				result["effect"] = "slow"
 				result["effect_duration"] = duration
+				result["mechanic_spent_extra"] = tide_cost
 			if kind == "taunt":
 				var taunt_duration := _scaled_duration(int(skill.get("aggro_turns", 1)), actor, "control_multiplier")
 				target.aggro_turns = maxi(target.aggro_turns, taunt_duration)
@@ -55,10 +61,11 @@ static func perform(engine: CombatEngine, actor: Combatant, target: Combatant, s
 			if actor.bp < action.bp_cost:
 				return {"ok": false, "reason": "not_enough_bp"}
 			actor.bp -= action.bp_cost
-			actor.attack += int(skill.get("attack_bonus", 0))
-			actor.defense += int(skill.get("defense_bonus", 0))
+			var rage_points := actor.mechanic_resource if bool(skill.get("scale_with_mechanic", false)) else 0
+			actor.attack += int(skill.get("attack_bonus", 0)) + rage_points * int(skill.get("attack_bonus_per_mechanic", 0))
+			actor.defense += int(skill.get("defense_bonus", 0)) + rage_points * int(skill.get("defense_bonus_per_mechanic", 0))
 			_consume_and_gain(actor, target, kind, mechanic_cost, skill)
-			return {"ok": true, "damage": 0, "attack": actor.attack, "defense": actor.defense, "mechanic_resource": actor.mechanic_resource}
+			return {"ok": true, "damage": 0, "attack": actor.attack, "defense": actor.defense, "mechanic_resource": actor.mechanic_resource, "mechanic_spent": mechanic_cost}
 		"form_shift":
 			if actor.id != "longma":
 				return {"ok": false, "reason": "form_shift_only_for_longma"}
