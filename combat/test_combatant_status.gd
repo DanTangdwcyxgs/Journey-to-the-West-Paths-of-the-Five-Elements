@@ -13,3 +13,9 @@ static func run() -> void:
 	assert("嘲讽 1T" in unit.get_status_summary())
 	unit.broken_turns = 2
 	assert("Break 2T" in unit.get_status_summary())
+	unit.barrier = 0
+	unit.aggro_turns = 0
+	unit.speed_delta = 0
+	unit.speed_effect_turns = 0
+	unit.broken_turns = 0
+	assert(unit.get_status_summary() == "无状态")
