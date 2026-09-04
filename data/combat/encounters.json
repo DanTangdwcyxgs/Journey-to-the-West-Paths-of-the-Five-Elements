@@ -93,6 +93,19 @@
       "world_effects": []
     },
     {
+      "id": "TANG_ORIGIN_FIVE_ELEMENTS",
+      "name": "五行山前夜",
+      "description": "玄奘抵达五行山前的荒径，在决定解救悟空之前先面对一群徘徊山中的妖物。",
+      "source": "TANG_ORIGIN",
+      "recommended_level": 5,
+      "enemies": [
+        {"id":"MOUNTAIN_SPIRIT","display_name":"山魈灵","max_hp":92,"attack":20,"defense":6,"speed":10,"shield":3,"weaknesses":{"HOLY":true,"FIRE":true}},
+        {"id":"STONE_FOX","display_name":"石狐妖","max_hp":78,"attack":25,"defense":4,"speed":15,"shield":2,"weaknesses":{"STRIKE":true}}
+      ],
+      "rewards": ["COIN_LOW", "HERB"],
+      "world_effects": ["TANG_APPROACHES_FIVE_ELEMENTS"]
+    },
+    {
       "id": "LONGMA_ORIGIN_SEA_CLIFF",
       "name": "西海龙宫试炼",
       "description": "龙子获罪前后的一次家族试炼，水势逼迫他正视自己的冲动。",
@@ -104,6 +117,19 @@
       ],
       "rewards": ["COIN_LOW", "HERB"],
       "world_effects": []
+    },
+    {
+      "id": "LONGMA_ORIGIN_YINGCHOU",
+      "name": "鹰愁涧水妖",
+      "description": "取经人的气息尚未真正进入河谷，先有水妖试探白龙的守护决心。",
+      "source": "LONGMA_ORIGIN",
+      "recommended_level": 6,
+      "enemies": [
+        {"id":"YING_WATER_DEMON","display_name":"鹰愁水妖","max_hp":125,"attack":25,"defense":7,"speed":14,"shield":3,"weaknesses":{"FIRE":true}},
+        {"id":"RIVER_EEL","display_name":"河鳗妖","max_hp":85,"attack":27,"defense":5,"speed":17,"shield":2,"weaknesses":{"ICE":true}}
+      ],
+      "rewards": ["COIN_LOW", "HERB"],
+      "world_effects": ["LONGMA_GUARDS_PILGRIM"]
     },
     {
       "id": "BAJIE_ORIGIN_GAO_WILD",
@@ -119,6 +145,19 @@
       "world_effects": []
     },
     {
+      "id": "BAJIE_ORIGIN_WUKONG_DUEL",
+      "name": "高老庄斗法",
+      "description": "悟空来到高老庄，八戒没有再用逃避回应，而是正面接下这场关于旧人生的交锋。",
+      "source": "BAJIE_ORIGIN",
+      "recommended_level": 7,
+      "enemies": [
+        {"id":"WUKONG_MIRROR","display_name":"悟空化影","max_hp":145,"attack":29,"defense":8,"speed":16,"shield":3,"weaknesses":{"ICE":true,"WATER":true}},
+        {"id":"MOUNTAIN_MONKEY","display_name":"山猴妖兵","max_hp":90,"attack":22,"defense":5,"speed":13,"shield":2,"weaknesses":{"FIRE":true}}
+      ],
+      "rewards": ["COIN_MEDIUM", "HERB"],
+      "world_effects": ["BAJIE_ACCEPTS_PILGRIMAGE"]
+    },
+    {
       "id": "WUJING_ORIGIN_FLOWING_SANDS",
       "name": "流沙河恶潮",
       "description": "被贬后的沙僧在流沙河中迎来一场持续的妖潮，旧日军将的战斗本能重新苏醒。",
@@ -130,6 +169,19 @@
       ],
       "rewards": ["COIN_LOW", "HERB"],
       "world_effects": []
+    },
+    {
+      "id": "WUJING_ORIGIN_BODHISATTVA",
+      "name": "渡厄试炼",
+      "description": "真正获得渡厄机会前，沙僧必须保护陌生的渡河者，证明自己愿意为他人承担风险。",
+      "source": "WUJING_ORIGIN",
+      "recommended_level": 7,
+      "enemies": [
+        {"id":"RIVER_DEMON","display_name":"流河妖将","max_hp":135,"attack":28,"defense":8,"speed":11,"shield":3,"weaknesses":{"FIRE":true}},
+        {"id":"SAND_GUARDIAN","display_name":"流沙守灵","max_hp":110,"attack":23,"defense":9,"speed":8,"shield":4,"weaknesses":{"ICE":true}}
+      ],
+      "rewards": ["COIN_MEDIUM", "HERB"],
+      "world_effects": ["WUJING_READY_FOR_REDEMPTION"]
     }
   ]
 }
