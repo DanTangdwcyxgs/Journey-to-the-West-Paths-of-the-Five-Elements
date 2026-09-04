@@ -41,6 +41,8 @@ The current exploration spine is:
 
 The world map is data-driven through `data/world/world_map.json` and `data/world/rumors.json`; runtime state is persisted in the narrative save.
 
+A discovered Yellow Fang bounty now continues into a real battle-scene handoff: **hear rumor → discover bounty → travel to target area → accept → battle → resolve rewards + journal + world effects**. The encounter handoff itself is transient so abandoned battles do not corrupt the canonical narrative save.
+
 ## Gameplay Pillars
 
 - **5-character party:** Tang Sanzang, Sun Wukong, Zhu Bajie, Sha Wujing, Bai Longma
@@ -73,6 +75,7 @@ Implemented and connected:
 - damage / heal / barrier / slow / taunt / self-buff skill effects
 - regression tests for combat and skill runtime
 - persistent battle results, inventory rewards and journey log
+- Yellow Fang bounty battle handoff and automatic victory reward resolution
 
 ## Current World Foundation
 
@@ -84,7 +87,9 @@ Implemented and connected:
 - local rumor discovery
 - persistent bounty intelligence from rumors
 - world-map UI linked from the journey screen
-- regression checks for travel and rumor discovery
+- discovered bounty challenge button for the first integrated bounty encounter
+- transient world-map → battle encounter handoff
+- regression checks for travel, rumor discovery and bounty handoff
 
 ## Roadmap
 
@@ -108,6 +113,7 @@ Implemented and connected:
 - [x] Skill runtime effects
 - [x] Persistent inventory / rewards / journey log
 - [x] World map / travel / rumor discovery layer
+- [x] First bounty encounter handoff
 - [ ] Narrative data model implementation
 - [ ] Minimal battle UI
 
