@@ -52,18 +52,14 @@ func choose_ai_action(enemy: Combatant, allies: Array[Combatant], turn_number: i
 	if enemy == null:
 		return CombatAction.new("NORMAL_ATTACK", "妖兵攻击", "strike", 18, 1, 0)
 	var skills: Array = enemy.combat_modifiers.get("skills", [])
-	var preferred := ""
-	if enemy.hp * 100 <= enemy.max_hp * 35:
-		preferred = str(enemy.combat_modifiers.get("low_hp_skill", ""))
-	if turn_number % 3 == 0:
-		preferred = str(enemy.combat_modifiers.get("cycle_skill", preferred))
+	if skills.is_empty():
+		return CombatAction.new("NORMAL_ATTACK", "妖兵攻击", "strike", 18, 1, 0)
+	var preferred := _preferred_skill_id(enemy, turn_number)
 	if preferred != "":
-		for skill in skills:
-			if str(skill.get("id", "")) == preferred:
-				return _action_from_definition(skill)
-	if not skills.is_empty():
-		return _action_from_definition(skills[0])
-	return CombatAction.new("NORMAL_ATTACK", "妖兵攻击", "strike", 18, 1, 0)
+		var chosen := _find_skill(skills, preferred)
+		if chosen != null:
+			return _action_from_definition(chosen)
+	return _action_from_definition(skills[0])
 
 func choose_ai_target(enemy: Combatant, allies: Array[Combatant], action: CombatAction) -> Combatant:
 	var living: Array[Combatant] = []
@@ -72,16 +68,58 @@ func choose_ai_target(enemy: Combatant, allies: Array[Combatant], action: Combat
 			living.append(ally)
 	if living.is_empty():
 		return null
-	if action == null:
-		return _lowest_hp_target(living)
 	var taunted := _first_status_target(living, "aggro_turns")
 	if taunted != null:
 		return taunted
-	var element := str(action.element).to_lower()
-	for ally in living:
-		if bool(ally.weaknesses.get(element, false)):
-			return ally
+	if action != null:
+		var element := str(action.element).to_lower()
+		var weak_target := _first_weak_target(living, element)
+		if weak_target != null:
+			return weak_target
+	var tactical := _target_by_profile(enemy, living)
+	if tactical != null:
+		return tactical
 	return _lowest_hp_target(living)
+
+func _preferred_skill_id(enemy: Combatant, turn_number: int) -> String:
+	var config: Dictionary = enemy.combat_modifiers
+	if enemy.hp * 100 <= enemy.max_hp * 35:
+		var low_hp := str(config.get("low_hp_skill", ""))
+		if low_hp != "":
+			return low_hp
+	if turn_number % 3 == 0:
+		var cycle := str(config.get("cycle_skill", ""))
+		if cycle != "":
+			return cycle
+	return ""
+
+func _find_skill(skills: Array, skill_id: String):
+	for skill in skills:
+		if skill is Dictionary and str(skill.get("id", "")) == skill_id:
+			return skill
+	return null
+
+func _first_weak_target(targets: Array[Combatant], element: String) -> Combatant:
+	if element == "":
+		return null
+	for target in targets:
+		if bool(target.weaknesses.get(element, false)):
+			return target
+	return null
+
+func _target_by_profile(enemy: Combatant, targets: Array[Combatant]) -> Combatant:
+	var profile := str(enemy.combat_modifiers.get("target_profile", "lowest_hp"))
+	match profile:
+		"highest_attack":
+			return _highest_value_target(targets, "attack")
+		"lowest_defense":
+			return _lowest_value_target(targets, "defense")
+		"highest_speed":
+			return _highest_value_target(targets, "speed")
+		"lowest_hp":
+			return _lowest_hp_target(targets)
+		_:
+			return null
 
 func _first_status_target(targets: Array[Combatant], property_name: String) -> Combatant:
 	for target in targets:
@@ -93,6 +131,20 @@ func _lowest_hp_target(targets: Array[Combatant]) -> Combatant:
 	var result: Combatant = targets[0]
 	for target in targets:
 		if target.hp < result.hp:
+			result = target
+	return result
+
+func _highest_value_target(targets: Array[Combatant], property_name: String) -> Combatant:
+	var result: Combatant = targets[0]
+	for target in targets:
+		if int(target.get(property_name)) > int(result.get(property_name)):
+			result = target
+	return result
+
+func _lowest_value_target(targets: Array[Combatant], property_name: String) -> Combatant:
+	var result: Combatant = targets[0]
+	for target in targets:
+		if int(target.get(property_name)) < int(result.get(property_name)):
 			result = target
 	return result
 
