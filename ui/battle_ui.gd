@@ -49,7 +49,7 @@ func _ready() -> void:
 	party.initialize_from_recruited(["TANG", "WUKONG", "BAJIE", "WUJING", "LONGMA"])
 	allies = CombatPartyBuilder.build_active_party(party)
 	_apply_loadout_modifiers()
-	if encounter_type == "normal" or encounter_type == "origin":
+	if encounter_type == "normal" or encounter_type == "origin" or encounter_type == "shared":
 		enemies = encounter_manager.build_enemies(encounter_id)
 	else:
 		var boss := boss_runtime.create_boss()
@@ -120,6 +120,7 @@ func _refresh() -> void:
 	if current_actor == null: return
 	var encounter_title := "普通遭遇：%s" % encounter_id
 	if encounter_type == "origin": encounter_title = "个人战斗：%s" % encounter_id
+	elif encounter_type == "shared": encounter_title = "共享主线：%s" % encounter_id
 	elif encounter_type == "bounty":
 		var definition := bounty_manager.get_definition(encounter_id)
 		if not definition.is_empty(): encounter_title = "悬赏：%s · 推荐Lv.%d" % [str(definition.get("name", encounter_id)), int(definition.get("recommended_level", 0))]
@@ -238,8 +239,11 @@ func _on_combat_finished(winner:String) -> void:
 	if not narrative.load():
 		status_label.text = "战斗胜利，但存档读取失败。"
 		return
-	if encounter_type == "normal" or encounter_type == "origin":
+	if encounter_type == "normal" or encounter_type == "origin" or encounter_type == "shared":
 		var definition := encounter_manager.get_definition(encounter_id)
+		if definition.is_empty():
+			status_label.text = "战斗胜利，但找不到遭遇定义。"
+			return
 		var applied := BattleRewardService.apply_victory(narrative, encounter_id, str(definition.get("name", encounter_id)), definition.get("rewards", []), definition.get("world_effects", []))
 		if applied.is_empty():
 			status_label.text = "战斗胜利，但奖励写入失败。"
@@ -256,13 +260,23 @@ func _on_combat_finished(winner:String) -> void:
 				status_label.text = "个人战斗胜利，但当前章节已发生变化。"
 				return
 			origin.complete_current(narrative, str(narrative.state.starting_character))
+		elif encounter_type == "shared":
+			if source_chapter_id.is_empty() or source_route_id != "SHARED_JOURNEY":
+				status_label.text = "共享战斗胜利，但章节来源信息缺失。"
+				return
+			var shared_chapter := SharedJourneyManager.get_chapter(source_chapter_id)
+			if shared_chapter.is_empty() or not SharedJourneyManager.can_enter(source_chapter_id, narrative.state):
+				status_label.text = "共享战斗胜利，但当前章节状态已经变化。"
+				return
+			if not SharedJourneyManager.complete(source_chapter_id, narrative):
+				status_label.text = "共享战斗胜利，但主线推进失败。"
+				return
 		narrative.save()
 		BountyEncounterState.clear()
 		encounter_resolved = true
-		if encounter_type == "origin":
-			status_label.text = "个人章节完成：%s · 获得 %s" % [str(definition.get("name", encounter_id)),_format_rewards(applied.get("granted", []))]
-		else:
-			status_label.text = "遭遇胜利：%s · 获得 %s" % [str(definition.get("name", encounter_id)),_format_rewards(applied.get("granted", []))]
+		if encounter_type == "origin": status_label.text = "个人章节完成：%s · 获得 %s" % [str(definition.get("name", encounter_id)),_format_rewards(applied.get("granted", []))]
+		elif encounter_type == "shared": status_label.text = "共享章节完成：%s · 获得 %s" % [str(definition.get("name", encounter_id)),_format_rewards(applied.get("granted", []))]
+		else: status_label.text = "遭遇胜利：%s · 获得 %s" % [str(definition.get("name", encounter_id)),_format_rewards(applied.get("granted", []))]
 	else:
 		narrative.state.set_inventory(battle_inventory.to_dict())
 		var applied := BountyRewardService.resolve_defeat(narrative,bounty_manager,encounter_id)
@@ -285,7 +299,7 @@ func _format_rewards(rewards:Array) -> String:
 
 func _return_from_battle() -> void:
 	if not encounter_resolved: BountyEncounterState.clear()
-	if encounter_type == "origin": get_tree().change_scene_to_file("res://ui/journey.tscn")
+	if encounter_type == "origin" or encounter_type == "shared": get_tree().change_scene_to_file("res://ui/journey.tscn")
 	elif encounter_type == "normal" and not source_stage_id.is_empty(): get_tree().change_scene_to_file("res://ui/yellow_wind_cave.tscn")
 	elif encounter_type == "bounty" and not source_stage_id.is_empty() and encounter_resolved: get_tree().change_scene_to_file("res://ui/yellow_wind_cave.tscn")
 	else: get_tree().change_scene_to_file("res://ui/world_map.tscn")
