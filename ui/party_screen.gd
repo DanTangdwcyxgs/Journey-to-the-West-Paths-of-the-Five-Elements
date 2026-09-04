@@ -11,8 +11,12 @@ var roster_list: ItemList
 var status_label: Label
 
 func _ready() -> void:
-	if narrative.load():
-		party.initialize_from_recruited(narrative.state.recruited_characters)
+	if not narrative.load():
+		_build_ui()
+		_refresh()
+		status_label.text = "没有有效存档。"
+		return
+	party.initialize_from_saved_state(narrative.state.recruited_characters, narrative.state.get_party_formation())
 	_build_ui()
 	_refresh()
 
@@ -89,7 +93,7 @@ func _build_ui() -> void:
 	roster_list.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	right.add_child(roster_list)
 	var hint := Label.new()
-	hint.text = "选择两个角色后，可直接互换位置；前排不足 3 人时按当前招募顺序补位。"
+	hint.text = "选择两个角色后，可直接互换位置；编成会写入叙事存档。"
 	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	right.add_child(hint)
 
@@ -119,39 +123,49 @@ func _selected_ids_from(list: ItemList) -> Array[String]:
 func _selected_to_front() -> void:
 	var ids := _selected_ids_from(back_list)
 	if ids.size() == 1:
-		party.move_to_front(ids[0])
-		_refresh()
+		if party.move_to_front(ids[0]):
+			_dirty_and_refresh()
+		else:
+			status_label.text = "前排已满，无法移动。"
 
 func _selected_to_back() -> void:
 	var ids := _selected_ids_from(front_list)
 	if ids.size() == 1:
-		party.move_to_back(ids[0])
-		_refresh()
+		if party.move_to_back(ids[0]):
+			_dirty_and_refresh()
+		else:
+			status_label.text = "后排已满，无法移动。"
 
 func _swap_selected() -> void:
 	var ids := _selected_ids_from(roster_list)
 	if ids.size() == 2:
-		party.swap_positions(ids[0], ids[1])
-		_refresh()
+		if party.swap_positions(ids[0], ids[1]):
+			_dirty_and_refresh()
+
+func _dirty_and_refresh() -> void:
+	_refresh()
+	status_label.text = "编成已修改，点击“保存编成”写入存档。"
 
 func _save() -> void:
 	if narrative.state.starting_character == "":
 		status_label.text = "没有有效存档。"
 		return
-	# Party formation currently lives beside NarrativeState; save it with the same slot payload in the next persistence layer.
-	narrative.save()
-	status_label.text = "当前队形已保存到运行状态。"
+	narrative.state.set_party_formation(party.to_dict())
+	if narrative.save():
+		status_label.text = "队形已保存。"
+	else:
+		status_label.text = "队形保存失败。"
 
 func _refresh() -> void:
 	front_list.clear()
 	back_list.clear()
 	roster_list.clear()
 	for id in party.front_row:
-		front_list.add_item(id)
+		front_list.add_item(NAMES.get(id, id))
 	for id in party.back_row:
-		back_list.add_item(id)
+		back_list.add_item(NAMES.get(id, id))
 	for id in party.roster:
-		roster_list.add_item(id)
+		roster_list.add_item(NAMES.get(id, id))
 	status_label.text = "前排：%s    后排：%s" % [_join_names(party.front_row), _join_names(party.back_row)]
 
 func _join_names(ids: Array[String]) -> String:
