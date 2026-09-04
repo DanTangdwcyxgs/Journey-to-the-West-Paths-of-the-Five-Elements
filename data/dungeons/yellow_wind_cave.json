@@ -1,0 +1,37 @@
+{
+  "id": "YELLOW_WIND_CAVE",
+  "name": "黄风洞",
+  "description": "风沙从洞穴深处不断涌出。这里是黄风岭支线的第一座可走通的灰盒地城。",
+  "rooms": [
+    {
+      "id": "CAVE_MOUTH",
+      "name": "洞口风廊",
+      "description": "岩壁狭窄，风声裹着沙粒。能看到妖怪拖行兵器留下的痕迹。",
+      "type": "EXPLORE",
+      "reward_intel": "洞内妖气来自深处。"
+    },
+    {
+      "id": "SAND_ALTAR",
+      "name": "镇风沙坛",
+      "description": "废弃祭坛压着一枚旧符。触碰后，风势短暂减弱。",
+      "type": "CHOICE",
+      "choices": [
+        {"id":"BURN_TALISMAN","label":"以火试符","result":"确认火焰能压制风沙。"},
+        {"id":"PRESERVE_TALISMAN","label":"留下旧符","result":"保留退路，洞内视线更差。"}
+      ]
+    },
+    {
+      "id": "SANDSTORM_HALL",
+      "name": "风沙回廊",
+      "description": "回廊尽头传来低沉吼声。墙面上的爪痕显示这里曾有人被强行拖入深处。",
+      "type": "ENCOUNTER",
+      "reward_intel": "黄风妖王就在前方。"
+    },
+    {
+      "id": "YELLOW_WIND_THRONE",
+      "name": "黄风妖王殿",
+      "description": "巨大的石窟中央堆满被夺走的行旅物资。最后一道风墙后，就是妖王。",
+      "type": "BOSS"
+    }
+  ]
+}
