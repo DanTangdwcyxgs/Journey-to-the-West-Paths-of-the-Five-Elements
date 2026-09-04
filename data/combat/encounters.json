@@ -1,5 +1,5 @@
 {
-  "schema_version": 4,
+  "schema_version": 3,
   "encounters": [
     {
       "id": "YELLOW_WIND_CAVE_SAND_GUARDS",
@@ -8,24 +8,180 @@
       "source": "YELLOW_WIND_CAVE",
       "recommended_level": 10,
       "enemies": [
-        {"id":"SAND_GUARD","display_name":"沙甲妖兵","max_hp":110,"attack":24,"defense":8,"speed":9,"shield":3,"weaknesses":{"FIRE":true,"STRIKE":true},"combat_modifiers":{"target_profile":"lowest_defense","skills":[{"id":"SAND_GUARD_STRIKE","name":"沙甲猛击","element":"strike","power":18,"shield_hit":1},{"id":"SAND_GUARD_WIND","name":"卷沙","element":"wind","power":24,"shield_hit":1}],"cycle_skill":"SAND_GUARD_WIND","low_hp_skill":"SAND_GUARD_STRIKE"}},
-        {"id":"WIND_SPIRIT","display_name":"风砂精","max_hp":85,"attack":28,"defense":5,"speed":14,"shield":2,"weaknesses":{"WATER":true,"ICE":true},"combat_modifiers":{"target_profile":"lowest_hp","skills":[{"id":"WIND_SPIRIT_BREEZE","name":"风砂刃","element":"wind","power":20,"shield_hit":1},{"id":"WIND_SPIRIT_WATER","name":"砂潮","element":"water","power":30,"shield_hit":1}],"cycle_skill":"WIND_SPIRIT_WATER"}}
+        {"id":"SAND_GUARD","display_name":"沙甲妖兵","max_hp":110,"attack":24,"defense":8,"speed":9,"shield":3,"weaknesses":{"FIRE":true,"STRIKE":true},"combat_modifiers":{"skills":[{"id":"SAND_GUARD_STRIKE","name":"沙甲猛击","element":"strike","power":18,"shield_hit":1},{"id":"SAND_GUARD_WIND","name":"卷沙","element":"wind","power":24,"shield_hit":1}],"cycle_skill":"SAND_GUARD_WIND","low_hp_skill":"SAND_GUARD_STRIKE"}},
+        {"id":"WIND_SPIRIT","display_name":"风砂精","max_hp":85,"attack":28,"defense":5,"speed":14,"shield":2,"weaknesses":{"WATER":true,"ICE":true},"combat_modifiers":{"skills":[{"id":"WIND_SPIRIT_BREEZE","name":"风砂刃","element":"wind","power":20,"shield_hit":1},{"id":"WIND_SPIRIT_WATER","name":"砂潮","element":"water","power":30,"shield_hit":1}],"cycle_skill":"WIND_SPIRIT_WATER"}}
+      ],
+      "rewards": ["COIN_LOW", "HERB"],
+      "world_effects": []
+    },
+    {
+      "id": "WUKONG_ORIGIN_WATER_CAVE",
+      "name": "水帘洞妖影",
+      "description": "石猴初掌水帘洞，洞中不速之客试图夺走猴群的栖身之地。",
+      "source": "WUKONG_ORIGIN",
+      "recommended_level": 3,
+      "enemies": [
+        {"id":"CAVE_GHOUL","display_name":"洞窟恶鬼","max_hp":75,"attack":16,"defense":4,"speed":8,"shield":2,"weaknesses":{"FIRE":true},"combat_modifiers":{"skills":[{"id":"GHOUL_CLAW","name":"鬼爪","element":"strike","power":15,"shield_hit":1},{"id":"GHOUL_FLAME","name":"幽火","element":"fire","power":24,"shield_hit":1}],"cycle_skill":"GHOUL_FLAME"}},
+        {"id":"STONE_IMP","display_name":"顽石小妖","max_hp":90,"attack":14,"defense":6,"speed":6,"shield":3,"weaknesses":{"STRIKE":true},"combat_modifiers":{"skills":[{"id":"IMP_SMASH","name":"碎石砸击","element":"strike","power":18,"shield_hit":2},{"id":"IMP_GUARD","name":"抱石","element":"earth","power":10,"shield_hit":3}],"low_hp_skill":"IMP_SMASH"}}
+      ],
+      "rewards": ["COIN_LOW", "HERB"],
+      "world_effects": []
+    },
+    {
+      "id": "WUKONG_ORIGIN_DRAGON_PALACE",
+      "name": "龙宫守卫",
+      "description": "悟空来到东海龙宫，先以武力回应阻拦去路的虾兵蟹将。",
+      "source": "WUKONG_ORIGIN",
+      "recommended_level": 5,
+      "enemies": [
+        {"id":"CRAB_GUARD","display_name":"蟹将","max_hp":105,"attack":20,"defense":8,"speed":9,"shield":3,"weaknesses":{"FIRE":true},"combat_modifiers":{"skills":[{"id":"CRAB_PINCH","name":"巨钳","element":"strike","power":20,"shield_hit":2},{"id":"CRAB_WATER","name":"潮击","element":"water","power":22,"shield_hit":1}],"cycle_skill":"CRAB_PINCH"}},
+        {"id":"SHRIMP_SPEAR","display_name":"虾兵","max_hp":70,"attack":23,"defense":4,"speed":13,"shield":2,"weaknesses":{"ICE":true},"combat_modifiers":{"skills":[{"id":"SHRIMP_THRUST","name":"长枪突刺","element":"strike","power":21,"shield_hit":1},{"id":"SHRIMP_WATER","name":"水矢","element":"water","power":28,"shield_hit":1}],"cycle_skill":"SHRIMP_WATER"}}
+      ],
+      "rewards": ["COIN_LOW", "HERB"],
+      "world_effects": []
+    },
+    {
+      "id": "WUKONG_ORIGIN_HEAVENLY_TROOPS",
+      "name": "天兵天将",
+      "description": "天庭军势压境，悟空以一己之力迎战第一轮围剿。",
+      "source": "WUKONG_ORIGIN",
+      "recommended_level": 8,
+      "enemies": [
+        {"id":"HEAVENLY_SOLDIER","display_name":"天兵","max_hp":125,"attack":25,"defense":9,"speed":10,"shield":3,"weaknesses":{"FIRE":true,"STRIKE":true},"combat_modifiers":{"skills":[{"id":"SOLDIER_STRIKE","name":"天兵横击","element":"strike","power":24,"shield_hit":1},{"id":"SOLDIER_FIRE","name":"天火符","element":"fire","power":31,"shield_hit":1}],"cycle_skill":"SOLDIER_FIRE"}},
+        {"id":"HEAVENLY_ARCHER","display_name":"天将弓手","max_hp":90,"attack":31,"defense":5,"speed":15,"shield":2,"weaknesses":{"ICE":true,"WATER":true},"combat_modifiers":{"skills":[{"id":"ARCHER_SHOT","name":"穿云箭","element":"strike","power":27,"shield_hit":1},{"id":"ARCHER_ICE","name":"寒星箭","element":"ice","power":24,"shield_hit":2}],"cycle_skill":"ARCHER_ICE"}}
+      ],
+      "rewards": ["COIN_MEDIUM", "HERB"],
+      "world_effects": []
+    },
+    {
+      "id": "WUKONG_ORIGIN_ERLANG_SHEN",
+      "name": "二郎神斗法",
+      "description": "二郎神奉命下界，悟空第一次遇到能与自己变化之术正面周旋的强敌。",
+      "source": "WUKONG_ORIGIN",
+      "recommended_level": 10,
+      "enemies": [
+        {"id":"ERLANG_SHEN","display_name":"二郎神","max_hp":185,"attack":34,"defense":11,"speed":16,"shield":4,"weaknesses":{"FIRE":true,"ICE":true},"combat_modifiers":{"skills":[{"id":"ERLANG_SWORD","name":"三尖两刃","element":"strike","power":30,"shield_hit":2},{"id":"ERLANG_ICE","name":"寒锋变","element":"ice","power":38,"shield_hit":1}],"cycle_skill":"ERLANG_ICE","low_hp_skill":"ERLANG_SWORD"}},
+        {"id":"CELESTIAL_HOUND","display_name":"细犬","max_hp":80,"attack":28,"defense":6,"speed":18,"shield":2,"weaknesses":{"STRIKE":true},"combat_modifiers":{"skills":[{"id":"HOUND_BITE","name":"哮天追咬","element":"strike","power":25,"shield_hit":1}],"cycle_skill":"HOUND_BITE"}}
+      ],
+      "rewards": ["COIN_MEDIUM", "HERB"],
+      "world_effects": ["WUKONG_MET_ERLANG_SHEN"]
+    },
+    {
+      "id": "WUKONG_ORIGIN_HEAVEN_PALACE",
+      "name": "大闹天宫",
+      "description": "反抗冲到最高处，悟空直闯天宫深处，面对最后一轮天界精锐。",
+      "source": "WUKONG_ORIGIN",
+      "recommended_level": 12,
+      "enemies": [
+        {"id":"CELESTIAL_GENERAL","display_name":"天庭神将","max_hp":190,"attack":36,"defense":12,"speed":14,"shield":4,"weaknesses":{"FIRE":true,"STRIKE":true},"combat_modifiers":{"skills":[{"id":"GENERAL_HALBERD","name":"神将重击","element":"strike","power":31,"shield_hit":2},{"id":"GENERAL_FIRE","name":"天火斩","element":"fire","power":42,"shield_hit":1}],"cycle_skill":"GENERAL_FIRE"}},
+        {"id":"HEAVEN_GUARD_CAPTAIN","display_name":"天宫禁卫","max_hp":150,"attack":30,"defense":10,"speed":12,"shield":3,"weaknesses":{"ICE":true,"WATER":true},"combat_modifiers":{"skills":[{"id":"GUARD_STRIKE","name":"禁卫斩","element":"strike","power":25,"shield_hit":1},{"id":"GUARD_ICE","name":"寒甲令","element":"ice","power":29,"shield_hit":2}],"cycle_skill":"GUARD_ICE"}}
+      ],
+      "rewards": ["COIN_MEDIUM", "HERB"],
+      "world_effects": ["WUKONG_HEAVEN_REBELLION"]
+    },
+    {
+      "id": "TANG_ORIGIN_DOUBLE_RIDGE",
+      "name": "双叉岭妖患",
+      "description": "玄奘独行遇妖，第一次必须在脆弱的身体与坚定的誓愿之间作出选择。",
+      "source": "TANG_ORIGIN",
+      "recommended_level": 3,
+      "enemies": [
+        {"id":"MOUNTAIN_GHOUL","display_name":"山魈","max_hp":72,"attack":17,"defense":4,"speed":9,"shield":2,"weaknesses":{"HOLY":true},"combat_modifiers":{"skills":[{"id":"GHOUL_CLAW","name":"鬼爪","element":"strike","power":15,"shield_hit":1},{"id":"GHOUL_HOLY","name":"邪触","element":"dark","power":20,"shield_hit":1}],"cycle_skill":"GHOUL_CLAW"}},
+        {"id":"RIDGE_WOLF","display_name":"岭狼","max_hp":68,"attack":19,"defense":3,"speed":12,"shield":2,"weaknesses":{"STRIKE":true},"combat_modifiers":{"skills":[{"id":"WOLF_BITE","name":"狼噬","element":"strike","power":20,"shield_hit":1},{"id":"WOLF_HOWL","name":"恶啸","element":"dark","power":14,"shield_hit":2}],"cycle_skill":"WOLF_BITE"}}
       ],
       "rewards": ["COIN_LOW", "HERB"],
       "world_effects": []
     },
     {
       "id": "TANG_ORIGIN_FIVE_ELEMENTS",
-      "name": "五行山试炼",
-      "description": "唐三藏面对山中精怪，必须在惶惑中守住取经初心。",
+      "name": "五行山前夜",
+      "description": "玄奘抵达五行山前的荒径，在决定解救悟空之前先面对一群徘徊山中的妖物。",
       "source": "TANG_ORIGIN",
+      "recommended_level": 5,
+      "enemies": [
+        {"id":"MOUNTAIN_SPIRIT","display_name":"山魈灵","max_hp":92,"attack":20,"defense":6,"speed":10,"shield":3,"weaknesses":{"HOLY":true,"FIRE":true},"combat_modifiers":{"skills":[{"id":"SPIRIT_HOLY","name":"山灵咒","element":"dark","power":20,"shield_hit":1},{"id":"SPIRIT_ROCK","name":"山石坠","element":"earth","power":26,"shield_hit":2}],"cycle_skill":"SPIRIT_ROCK"}},
+        {"id":"STONE_FOX","display_name":"石狐妖","max_hp":78,"attack":25,"defense":4,"speed":15,"shield":2,"weaknesses":{"STRIKE":true},"combat_modifiers":{"skills":[{"id":"FOX_BITE","name":"石狐扑咬","element":"strike","power":23,"shield_hit":1},{"id":"FOX_DUST","name":"迷尘","element":"earth","power":18,"shield_hit":1}],"cycle_skill":"FOX_DUST"}}
+      ],
+      "rewards": ["COIN_LOW", "HERB"],
+      "world_effects": ["TANG_APPROACHES_FIVE_ELEMENTS"]
+    },
+    {
+      "id": "LONGMA_ORIGIN_SEA_CLIFF",
+      "name": "西海龙宫试炼",
+      "description": "龙子获罪前后的一次家族试炼，水势逼迫他正视自己的冲动。",
+      "source": "LONGMA_ORIGIN",
       "recommended_level": 4,
       "enemies": [
-        {"id":"MOUNTAIN_SPIRIT","display_name":"山灵","max_hp":82,"attack":20,"defense":5,"speed":10,"shield":2,"weaknesses":{"FIRE":true},"combat_modifiers":{"target_profile":"highest_attack","skills":[{"id":"SPIRIT_HOLY","name":"山灵击","element":"strike","power":17,"shield_hit":1},{"id":"SPIRIT_ROCK","name":"落岩","element":"earth","power":25,"shield_hit":2}],"cycle_skill":"SPIRIT_ROCK","low_hp_skill":"SPIRIT_HOLY"}},
-        {"id":"STONE_FOX","display_name":"石狐","max_hp":64,"attack":26,"defense":4,"speed":15,"shield":2,"weaknesses":{"WATER":true},"combat_modifiers":{"target_profile":"highest_speed","skills":[{"id":"FOX_BITE","name":"狐咬","element":"strike","power":19,"shield_hit":1}]}}
+        {"id":"SEA_SERPENT","display_name":"海蛇","max_hp":95,"attack":21,"defense":5,"speed":12,"shield":2,"weaknesses":{"ICE":true},"combat_modifiers":{"skills":[{"id":"SERPENT_BITE","name":"水蛇咬","element":"water","power":20,"shield_hit":1},{"id":"SERPENT_ICE","name":"寒潮吐息","element":"ice","power":28,"shield_hit":1}],"cycle_skill":"SERPENT_ICE"}},
+        {"id":"TIDAL_SPIRIT","display_name":"潮灵","max_hp":80,"attack":18,"defense":6,"speed":9,"shield":3,"weaknesses":{"FIRE":true},"combat_modifiers":{"skills":[{"id":"TIDE_WAVE","name":"潮击","element":"water","power":18,"shield_hit":1},{"id":"TIDE_FIRE","name":"反潮","element":"fire","power":26,"shield_hit":1}],"cycle_skill":"TIDE_FIRE"}}
       ],
-      "rewards": ["COIN_LOW"],
+      "rewards": ["COIN_LOW", "HERB"],
       "world_effects": []
+    },
+    {
+      "id": "LONGMA_ORIGIN_YINGCHOU",
+      "name": "鹰愁涧水妖",
+      "description": "取经人的气息尚未真正进入河谷，先有水妖试探白龙的守护决心。",
+      "source": "LONGMA_ORIGIN",
+      "recommended_level": 6,
+      "enemies": [
+        {"id":"YING_WATER_DEMON","display_name":"鹰愁水妖","max_hp":125,"attack":25,"defense":7,"speed":14,"shield":3,"weaknesses":{"FIRE":true},"combat_modifiers":{"skills":[{"id":"YING_SPLASH","name":"涧水冲","element":"water","power":24,"shield_hit":1},{"id":"YING_FIRE","name":"灼潮","element":"fire","power":31,"shield_hit":1}],"cycle_skill":"YING_FIRE"}},
+        {"id":"RIVER_EEL","display_name":"河鳗妖","max_hp":85,"attack":27,"defense":5,"speed":17,"shield":2,"weaknesses":{"ICE":true},"combat_modifiers":{"skills":[{"id":"EEL_DASH","name":"电窜","element":"wind","power":23,"shield_hit":1},{"id":"EEL_ICE","name":"寒身","element":"ice","power":30,"shield_hit":1}],"cycle_skill":"EEL_ICE"}}
+      ],
+      "rewards": ["COIN_LOW", "HERB"],
+      "world_effects": ["LONGMA_GUARDS_PILGRIM"]
+    },
+    {
+      "id": "BAJIE_ORIGIN_GAO_WILD",
+      "name": "高老庄妖影",
+      "description": "八戒的妖身暴露后，与来犯之妖争夺村庄边界。",
+      "source": "BAJIE_ORIGIN",
+      "recommended_level": 5,
+      "enemies": [
+        {"id":"VILLAGE_GHOUL","display_name":"庄外妖鬼","max_hp":100,"attack":21,"defense":6,"speed":9,"shield":3,"weaknesses":{"FIRE":true},"combat_modifiers":{"skills":[{"id":"VILLAGE_CLAW","name":"庄外鬼爪","element":"strike","power":20,"shield_hit":1},{"id":"VILLAGE_FIRE","name":"阴火","element":"fire","power":28,"shield_hit":1}],"cycle_skill":"VILLAGE_FIRE"}},
+        {"id":"WILD_BOAR","display_name":"獠牙野妖","max_hp":115,"attack":24,"defense":7,"speed":7,"shield":3,"weaknesses":{"ICE":true},"combat_modifiers":{"skills":[{"id":"BOAR_CHARGE","name":"獠牙冲锋","element":"strike","power":28,"shield_hit":2},{"id":"BOAR_EARTH","name":"踏地","element":"earth","power":22,"shield_hit":1}],"cycle_skill":"BOAR_CHARGE"}}
+      ],
+      "rewards": ["COIN_LOW", "HERB"],
+      "world_effects": []
+    },
+    {
+      "id": "BAJIE_ORIGIN_WUKONG_DUEL",
+      "name": "高老庄斗法",
+      "description": "悟空来到高老庄，八戒没有再用逃避回应，而是正面接下这场关于旧人生的交锋。",
+      "source": "BAJIE_ORIGIN",
+      "recommended_level": 7,
+      "enemies": [
+        {"id":"WUKONG_MIRROR","display_name":"悟空化影","max_hp":145,"attack":29,"defense":8,"speed":16,"shield":3,"weaknesses":{"ICE":true,"WATER":true},"combat_modifiers":{"skills":[{"id":"MIRROR_STAFF","name":"棒影","element":"strike","power":28,"shield_hit":1},{"id":"MIRROR_FIRE","name":"镜火","element":"fire","power":35,"shield_hit":1}],"cycle_skill":"MIRROR_FIRE"}},
+        {"id":"MOUNTAIN_MONKEY","display_name":"山猴妖兵","max_hp":90,"attack":22,"defense":5,"speed":13,"shield":2,"weaknesses":{"FIRE":true},"combat_modifiers":{"skills":[{"id":"MONKEY_STAFF","name":"猴棍","element":"strike","power":21,"shield_hit":1}],"cycle_skill":"MONKEY_STAFF"}}
+      ],
+      "rewards": ["COIN_MEDIUM", "HERB"],
+      "world_effects": ["BAJIE_ACCEPTS_PILGRIMAGE"]
+    },
+    {
+      "id": "WUJING_ORIGIN_FLOWING_SANDS",
+      "name": "流沙河恶潮",
+      "description": "被贬后的沙僧在流沙河中迎来一场持续的妖潮，旧日军将的战斗本能重新苏醒。",
+      "source": "WUJING_ORIGIN",
+      "recommended_level": 5,
+      "enemies": [
+        {"id":"SAND_SHARK","display_name":"沙河恶鲛","max_hp":105,"attack":22,"defense":7,"speed":10,"shield":3,"weaknesses":{"ICE":true},"combat_modifiers":{"skills":[{"id":"SHARK_BITE","name":"恶鲛啮","element":"strike","power":23,"shield_hit":1},{"id":"SHARK_ICE","name":"寒水","element":"ice","power":27,"shield_hit":1}],"cycle_skill":"SHARK_ICE"}},
+        {"id":"RIVER_WRAITH","display_name":"河魇","max_hp":90,"attack":26,"defense":5,"speed":14,"shield":2,"weaknesses":{"FIRE":true},"combat_modifiers":{"skills":[{"id":"WRAITH_GRIP","name":"河魇缠身","element":"water","power":22,"shield_hit":1},{"id":"WRAITH_FIRE","name":"阴河焰","element":"fire","power":30,"shield_hit":1}],"cycle_skill":"WRAITH_FIRE"}}
+      ],
+      "rewards": ["COIN_LOW", "HERB"],
+      "world_effects": []
+    },
+    {
+      "id": "WUJING_ORIGIN_BODHISATTVA",
+      "name": "渡厄试炼",
+      "description": "真正获得渡厄机会前，沙僧必须保护陌生的渡河者，证明自己愿意为他人承担风险。",
+      "source": "WUJING_ORIGIN",
+      "recommended_level": 7,
+      "enemies": [
+        {"id":"RIVER_DEMON","display_name":"流河妖将","max_hp":135,"attack":28,"defense":8,"speed":11,"shield":3,"weaknesses":{"FIRE":true},"combat_modifiers":{"skills":[{"id":"DEMON_WATER","name":"恶潮击","element":"water","power":28,"shield_hit":1},{"id":"DEMON_FIRE","name":"焚河","element":"fire","power":35,"shield_hit":1}],"cycle_skill":"DEMON_FIRE"}},
+        {"id":"SAND_GUARDIAN","display_name":"流沙守灵","max_hp":110,"attack":23,"defense":9,"speed":8,"shield":4,"weaknesses":{"ICE":true},"combat_modifiers":{"skills":[{"id":"GUARD_SMASH","name":"守灵重击","element":"strike","power":26,"shield_hit":2},{"id":"GUARD_ICE","name":"砂寒","element":"ice","power":30,"shield_hit":1}],"cycle_skill":"GUARD_ICE"}}
+      ],
+      "rewards": ["COIN_MEDIUM", "HERB"],
+      "world_effects": ["WUJING_READY_FOR_REDEMPTION"]
     }
   ]
 }
