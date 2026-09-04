@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "description": "西游 JRPG 出发前配置模板。不是固定最优装备，而是为不同敌人与路线提供取舍。",
+  "slot_rules": {
+    "RELIC": 3,
+    "TECHNIQUE": 2,
+    "GUARD": 2
+  },
+  "profiles": [
+    {
+      "id": "WUKONG_BREAK_HUNTER",
+      "character_id": "WUKONG",
+      "name": "破盾猎手",
+      "purpose": "针对高护盾妖王",
+      "tradeoffs": ["降低持续爆发", "提高 Break 效率"],
+      "effects": {"shield_damage_bonus": 1, "damage_multiplier": 0.9, "speed_modifier": 1.0}
+    },
+    {
+      "id": "WUKONG_FIRE_BURST",
+      "character_id": "WUKONG",
+      "name": "火法爆发",
+      "purpose": "针对火弱点目标",
+      "tradeoffs": ["降低防御", "提高元素爆发"],
+      "effects": {"fire_damage_multiplier": 1.35, "defense_multiplier": 0.85, "shield_damage_bonus": 0}
+    },
+    {
+      "id": "TANG_SAFE_PILGRIM",
+      "character_id": "TANG",
+      "name": "稳行护法",
+      "purpose": "长途探索与高风险事件",
+      "tradeoffs": ["降低个人输出", "提高队伍容错"],
+      "effects": {"healing_multiplier": 1.25, "shield_strength_multiplier": 1.2, "damage_multiplier": 0.85}
+    },
+    {
+      "id": "BAJIE_FRONT_GUARD",
+      "character_id": "BAJIE",
+      "name": "镇阵铁壁",
+      "purpose": "吸收单体高额伤害",
+      "tradeoffs": ["降低速度", "提高生存与仇恨"],
+      "effects": {"defense_multiplier": 1.25, "speed_modifier": 0.85, "aggro_multiplier": 1.35}
+    },
+    {
+      "id": "WUJING_CONTROL",
+      "character_id": "WUJING",
+      "name": "寒水封脉",
+      "purpose": "控制与弱点压制",
+      "tradeoffs": ["降低直接物理输出", "提高控制成功率"],
+      "effects": {"ice_damage_multiplier": 1.2, "control_multiplier": 1.3, "damage_multiplier": 0.9}
+    },
+    {
+      "id": "LONGMA_MOBILITY",
+      "character_id": "LONGMA",
+      "name": "龙行疾袭",
+      "purpose": "高速探索与先手战斗",
+      "tradeoffs": ["降低护甲", "提高速度与先手"],
+      "effects": {"speed_modifier": 1.3, "defense_multiplier": 0.8, "evasion_multiplier": 1.15}
+    }
+  ]
+}
