@@ -2,11 +2,14 @@ class_name EncounterManager
 extends RefCounted
 
 const DATA_PATH := "res://data/combat/encounters.json"
+const AI_PROFILE_PATH := "res://data/combat/enemy_ai_profiles.json"
 
 var definitions: Dictionary = {}
+var ai_profiles: Dictionary = {}
 
 func _init() -> void:
 	_load_definitions()
+	_load_ai_profiles()
 
 func _load_definitions() -> void:
 	definitions.clear()
@@ -19,6 +22,19 @@ func _load_definitions() -> void:
 	for encounter in parsed.get("encounters", []):
 		if encounter is Dictionary and encounter.has("id"):
 			definitions[str(encounter.get("id"))] = encounter.duplicate(true)
+
+func _load_ai_profiles() -> void:
+	ai_profiles.clear()
+	var file := FileAccess.open(AI_PROFILE_PATH, FileAccess.READ)
+	if file == null:
+		return
+	var parsed = JSON.parse_string(file.get_as_text())
+	if not parsed is Dictionary:
+		return
+	var profiles = parsed.get("profiles", {})
+	if profiles is Dictionary:
+		for enemy_id in profiles.keys():
+			ai_profiles[str(enemy_id).to_lower()] = str(profiles[enemy_id])
 
 func get_definition(encounter_id: String) -> Dictionary:
 	return definitions.get(encounter_id, {}).duplicate(true)
@@ -45,6 +61,9 @@ func build_enemies(encounter_id: String) -> Array[Combatant]:
 			"front"
 		)
 		unit.combat_modifiers = enemy.get("combat_modifiers", {}).duplicate(true)
+		var profile_key := unit.id.to_lower()
+		if not unit.combat_modifiers.has("target_profile") and ai_profiles.has(profile_key):
+			unit.combat_modifiers["target_profile"] = ai_profiles[profile_key]
 		result.append(unit)
 	return result
 
