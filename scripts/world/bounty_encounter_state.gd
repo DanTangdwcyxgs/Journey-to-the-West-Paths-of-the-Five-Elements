@@ -25,6 +25,9 @@ static func start_encounter(encounter_type: String, encounter_id: String, source
 	return true
 
 static func start_narrative_encounter(encounter_id: String, chapter_id: String, route_id: String) -> bool:
+	if route_id == "SHARED_JOURNEY":
+		var shared_chapter_id := chapter_id.trim_prefix("shared:")
+		return start_shared_encounter(encounter_id, shared_chapter_id)
 	return start_encounter("origin", encounter_id, "", chapter_id, route_id)
 
 static func start_shared_encounter(encounter_id: String, chapter_id: String) -> bool:
