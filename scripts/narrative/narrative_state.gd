@@ -27,6 +27,13 @@ var relationship_values: Dictionary = {}
 var party_formation: Dictionary = {"roster": [], "front_row": [], "back_row": []}
 var journey_log: Dictionary = {"entries": [], "defeated_targets": [], "active_world_effects": []}
 var inventory: Dictionary = {"currencies": {"COIN": 0}, "items": {}}
+var world_state: Dictionary = {
+	"current_location": "",
+	"visited_nodes": [],
+	"discovered_nodes": [],
+	"heard_rumors": [],
+	"discovered_bounties": []
+}
 
 func initialize_for_start(character_id: String, initial_timeline: int = 0) -> void:
 	if character_id not in CHARACTER_IDS:
@@ -48,6 +55,13 @@ func initialize_for_start(character_id: String, initial_timeline: int = 0) -> vo
 	party_formation = {"roster": [], "front_row": [], "back_row": []}
 	journey_log = {"entries": [], "defeated_targets": [], "active_world_effects": []}
 	inventory = {"currencies": {"COIN": 0}, "items": {}}
+	world_state = {
+		"current_location": "",
+		"visited_nodes": [],
+		"discovered_nodes": [],
+		"heard_rumors": [],
+		"discovered_bounties": []
+	}
 	route_progress.clear()
 	for id in CHARACTER_IDS:
 		route_progress[id] = ROUTE_LOCKED
@@ -131,6 +145,33 @@ func set_inventory(data: Dictionary) -> void:
 func get_inventory() -> Dictionary:
 	return inventory.duplicate(true)
 
+func set_world_state(data: Dictionary) -> void:
+	world_state = {
+		"current_location": str(data.get("current_location", "")),
+		"visited_nodes": _string_array(data.get("visited_nodes", [])),
+		"discovered_nodes": _string_array(data.get("discovered_nodes", [])),
+		"heard_rumors": _string_array(data.get("heard_rumors", [])),
+		"discovered_bounties": _string_array(data.get("discovered_bounties", [])),
+	}
+
+func get_world_state() -> Dictionary:
+	return world_state.duplicate(true)
+
+func add_world_node_visit(node_id: String) -> void:
+	if node_id == "":
+		return
+	if node_id not in world_state["visited_nodes"]:
+		world_state["visited_nodes"].append(node_id)
+	if node_id not in world_state["discovered_nodes"]:
+		world_state["discovered_nodes"].append(node_id)
+	world_state["current_location"] = node_id
+
+func add_world_rumor(rumor_id: String, bounty_id: String = "") -> void:
+	if rumor_id != "" and rumor_id not in world_state["heard_rumors"]:
+		world_state["heard_rumors"].append(rumor_id)
+	if bounty_id != "" and bounty_id not in world_state["discovered_bounties"]:
+		world_state["discovered_bounties"].append(bounty_id)
+
 func add_memory_chapters(chapter_ids: Array[String]) -> void:
 	for chapter_id in chapter_ids:
 		if chapter_id not in available_memory_chapters and chapter_id not in played_memory_chapters:
@@ -171,6 +212,7 @@ func to_dict() -> Dictionary:
 		"party_formation": party_formation.duplicate(true),
 		"journey_log": journey_log.duplicate(true),
 		"inventory": inventory.duplicate(true),
+		"world_state": world_state.duplicate(true),
 	}
 
 static func from_dict(data: Dictionary) -> NarrativeState:
@@ -205,6 +247,14 @@ static func from_dict(data: Dictionary) -> NarrativeState:
 	restored.inventory = {
 		"currencies": raw_inventory.get("currencies", {"COIN": 0}).duplicate(true),
 		"items": raw_inventory.get("items", {}).duplicate(true),
+	}
+	var raw_world: Dictionary = data.get("world_state", {})
+	restored.world_state = {
+		"current_location": str(raw_world.get("current_location", "")),
+		"visited_nodes": _string_array(raw_world.get("visited_nodes", [])),
+		"discovered_nodes": _string_array(raw_world.get("discovered_nodes", [])),
+		"heard_rumors": _string_array(raw_world.get("heard_rumors", [])),
+		"discovered_bounties": _string_array(raw_world.get("discovered_bounties", [])),
 	}
 	for id in CHARACTER_IDS:
 		if not restored.route_progress.has(id):
