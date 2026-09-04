@@ -4,6 +4,8 @@ extends RefCounted
 signal combat_log(message: String)
 signal combat_finished(winner: String)
 
+const BACK_ROW_DAMAGE_MULTIPLIER := 0.85
+
 var allies: Array[Combatant] = []
 var enemies: Array[Combatant] = []
 var turn_number: int = 0
@@ -56,6 +58,8 @@ func perform_action(actor: Combatant, target: Combatant, action: CombatAction, b
 	var defense_value := maxi(target.defense, 0)
 	var raw_damage := maxi(actor.attack + action.power - defense_value, 1)
 	var damage_multiplier := 2.0 if target.is_broken() else 1.0
+	if target.row == "back" and not target.is_broken():
+		damage_multiplier *= BACK_ROW_DAMAGE_MULTIPLIER
 	var damage := maxi(int(round(raw_damage * multiplier * damage_multiplier)), 1)
 	var dealt := target.take_damage(damage)
 
