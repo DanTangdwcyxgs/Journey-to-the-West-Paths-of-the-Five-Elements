@@ -1,7 +1,7 @@
 class_name NarrativeState
 extends RefCounted
 
-## Runtime narrative state shared by route, memory, chapter, and party systems.
+## Runtime narrative state shared by route, memory, chapter, party, and world systems.
 ## World chronology is monotonic; character-history playback never rewinds it.
 
 const ROUTE_LOCKED := "LOCKED"
@@ -25,6 +25,7 @@ var available_memory_chapters: Array[String] = []
 var played_memory_chapters: Array[String] = []
 var relationship_values: Dictionary = {}
 var party_formation: Dictionary = {"roster": [], "front_row": [], "back_row": []}
+var journey_log: Dictionary = {"entries": [], "defeated_targets": [], "active_world_effects": []}
 
 func initialize_for_start(character_id: String, initial_timeline: int = 0) -> void:
 	if character_id not in CHARACTER_IDS:
@@ -44,6 +45,7 @@ func initialize_for_start(character_id: String, initial_timeline: int = 0) -> vo
 	played_memory_chapters.clear()
 	relationship_values.clear()
 	party_formation = {"roster": [], "front_row": [], "back_row": []}
+	journey_log = {"entries": [], "defeated_targets": [], "active_world_effects": []}
 	route_progress.clear()
 	for id in CHARACTER_IDS:
 		route_progress[id] = ROUTE_LOCKED
@@ -108,6 +110,16 @@ func set_party_formation(formation: Dictionary) -> void:
 func get_party_formation() -> Dictionary:
 	return party_formation.duplicate(true)
 
+func set_journey_log(data: Dictionary) -> void:
+	journey_log = {
+		"entries": data.get("entries", []).duplicate(true),
+		"defeated_targets": _string_array(data.get("defeated_targets", [])),
+		"active_world_effects": _string_array(data.get("active_world_effects", [])),
+	}
+
+func get_journey_log() -> Dictionary:
+	return journey_log.duplicate(true)
+
 func add_memory_chapters(chapter_ids: Array[String]) -> void:
 	for chapter_id in chapter_ids:
 		if chapter_id not in available_memory_chapters and chapter_id not in played_memory_chapters:
@@ -146,6 +158,7 @@ func to_dict() -> Dictionary:
 		"played_memory_chapters": played_memory_chapters.duplicate(),
 		"relationship_values": relationship_values.duplicate(true),
 		"party_formation": party_formation.duplicate(true),
+		"journey_log": journey_log.duplicate(true),
 	}
 
 static func from_dict(data: Dictionary) -> NarrativeState:
@@ -164,10 +177,17 @@ static func from_dict(data: Dictionary) -> NarrativeState:
 	restored.played_memory_chapters = _string_array(data.get("played_memory_chapters", []))
 	restored.route_progress = data.get("route_progress", {}).duplicate(true)
 	restored.relationship_values = data.get("relationship_values", {}).duplicate(true)
+	var raw_party: Dictionary = data.get("party_formation", {})
 	restored.party_formation = {
-		"roster": _string_array(data.get("party_formation", {}).get("roster", [])),
-		"front_row": _string_array(data.get("party_formation", {}).get("front_row", [])),
-		"back_row": _string_array(data.get("party_formation", {}).get("back_row", [])),
+		"roster": _string_array(raw_party.get("roster", [])),
+		"front_row": _string_array(raw_party.get("front_row", [])),
+		"back_row": _string_array(raw_party.get("back_row", [])),
+	}
+	var raw_log: Dictionary = data.get("journey_log", {})
+	restored.journey_log = {
+		"entries": raw_log.get("entries", []).duplicate(true),
+		"defeated_targets": _string_array(raw_log.get("defeated_targets", [])),
+		"active_world_effects": _string_array(raw_log.get("active_world_effects", [])),
 	}
 	for id in CHARACTER_IDS:
 		if not restored.route_progress.has(id):
