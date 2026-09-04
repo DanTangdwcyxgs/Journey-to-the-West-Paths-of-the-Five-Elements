@@ -79,7 +79,7 @@ func _build_ui() -> void:
 	bounty_label = Label.new()
 	bounty_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	center.add_child(bounty_label)
-	rib_button = Button.new()
+	ridge_button = Button.new()
 	ridge_button.text = "进入黄风岭"
 	ridge_button.custom_minimum_size = Vector2(0, 48)
 	ridge_button.pressed.connect(_enter_yellow_wind_ridge)
