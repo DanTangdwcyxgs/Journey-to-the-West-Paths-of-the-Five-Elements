@@ -49,6 +49,7 @@ func _ready() -> void:
 	party.initialize_from_recruited(["TANG", "WUKONG", "BAJIE", "WUJING", "LONGMA"])
 	allies = CombatPartyBuilder.build_active_party(party)
 	_apply_loadout_modifiers()
+	_apply_origin_choice_modifiers(narrative)
 	if encounter_type == "normal" or encounter_type == "origin":
 		enemies = encounter_manager.build_enemies(encounter_id)
 	else:
@@ -89,6 +90,28 @@ func _apply_loadout_modifiers() -> void:
 		if effects.has("speed_modifier"):
 			ally.speed = maxi(int(round(ally.speed * float(effects["speed_modifier"]))), 1)
 			ally.base_speed = ally.speed
+
+func _apply_origin_choice_modifiers(narrative: NarrativeManager) -> void:
+	if narrative == null or source_route_id != "WUKONG_ORIGIN":
+		return
+	var choice_bonuses := {
+		"WUK-03": {"SEEK_POWER": {"attack_bonus": 2}, "SEEK_FREEDOM": {"speed_bonus": 1}},
+		"WUK-08": {"ACCEPT_TITLE": {"defense_bonus": 1}, "REJECT_BINDING": {"speed_bonus": 1}},
+		"WUK-13": {"ENDURE": {"defense_bonus": 2}, "BREAK_OUT": {"attack_bonus": 2}},
+	}
+	for chapter_id in choice_bonuses.keys():
+		var choice_id := narrative.state.get_origin_choice(str(chapter_id))
+		if choice_id == "":
+			continue
+		var bonus: Dictionary = choice_bonuses[chapter_id].get(choice_id, {})
+		for ally in allies:
+			if ally.id != "wukong":
+				continue
+			ally.attack += int(bonus.get("attack_bonus", 0))
+			ally.defense += int(bonus.get("defense_bonus", 0))
+			ally.speed += int(bonus.get("speed_bonus", 0))
+			ally.base_speed = ally.speed
+			ally.combat_modifiers["origin_choice_%s" % chapter_id] = choice_id
 
 func _build_ui() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
