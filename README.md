@@ -109,7 +109,9 @@ Implemented and connected:
 - camp / supply / preparation entry points
 - unified origin-route lifecycle API with deterministic chapter unlock/progress reporting
 - data-driven shared-journey chapter spine with recruitment, rewards and world-effect metadata
-- regression checks for travel, rumor discovery, bounty handoff, combat status, Longma transformation, normal encounter construction, recruited roster handling, origin route lifecycle, and shared journey chronology
+- data-driven shared-journey narrative events with persisted choices
+- journey-screen integration for shared event choices before chapter completion
+- regression checks for travel, rumor discovery, bounty handoff, combat status, Longma transformation, normal encounter construction, recruited roster handling, origin route lifecycle, shared journey chronology, and shared event choices
 
 ## Roadmap
 
@@ -138,6 +140,8 @@ Implemented and connected:
 - [x] First bounty encounter handoff
 - [x] Combat status presentation
 - [x] Narrative data model implementation
+- [x] Shared journey chapter data model
+- [x] Shared journey narrative event layer
 - [ ] Minimal battle UI polish
 
 ### Phase 2 — Playable Vertical Slice
@@ -149,6 +153,7 @@ Implemented and connected:
 - [x] Basic skills/resources foundation
 - [x] Canonical recruitment event flow
 - [x] Progressive personal-story unlock flow
+- [x] Shared journey narrative event flow
 - [x] World exploration prototype
 - [x] Battle consumable loop
 - [x] First complete battle: Yellow Wind Demon path
