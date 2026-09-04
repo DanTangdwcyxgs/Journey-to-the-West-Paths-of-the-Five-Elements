@@ -102,13 +102,13 @@ func _refresh() -> void:
 	if bounty_id != "":
 		var definition := bounty_manager.get_definition(bounty_id); encounter_title = "悬赏：%s · 推荐Lv.%d" % [str(definition.get("name", bounty_id)), int(definition.get("recommended_level", 0))]
 	turn_label.text = "行动：%s · Turn %d · %s" % [_name(current_actor), engine.turn_number, encounter_title]
-	status_label.text = "HP %d/%d · BP %d · %s %d/%d · 护盾 %d/%d · Break=%s · %s排 · 道具 %d" % [current_actor.hp,current_actor.max_hp,current_actor.bp,MECHANIC_NAMES.get(current_actor.id,"专属资源"),current_actor.mechanic_resource,current_actor.mechanic_max,current_actor.shield,current_actor.max_shield,str(current_actor.is_broken()),"前" if current_actor.row == "front" else "后",battle_inventory.items.size()]
+	status_label.text = "HP %d/%d · BP %d · %s %d/%d · 护盾 %d/%d · %s · %s排 · 道具 %d" % [current_actor.hp,current_actor.max_hp,current_actor.bp,MECHANIC_NAMES.get(current_actor.id,"专属资源"),current_actor.mechanic_resource,current_actor.mechanic_max,current_actor.shield,current_actor.max_shield,current_actor.get_status_summary(),"前" if current_actor.row == "front" else "后",battle_inventory.items.size()]
 	party_list.clear()
-	for ally in allies: party_list.add_item("%s  HP %d/%d  ATK %d DEF %d SPD %d  BP %d · %s %d/%d · %s排" % [_name(ally),ally.hp,ally.max_hp,ally.attack,ally.defense,ally.speed,ally.bp,MECHANIC_NAMES.get(ally.id,"资源"),ally.mechanic_resource,ally.mechanic_max,"前" if ally.row == "front" else "后"])
+	for ally in allies: party_list.add_item("%s  HP %d/%d  ATK %d DEF %d SPD %d  BP %d · %s %d/%d · %s排\n%s" % [_name(ally),ally.hp,ally.max_hp,ally.attack,ally.defense,ally.speed,ally.bp,MECHANIC_NAMES.get(ally.id,"资源"),ally.mechanic_resource,ally.mechanic_max,"前" if ally.row == "front" else "后",ally.get_status_summary()])
 	target_list.clear()
 	for enemy in enemies:
 		if enemy.is_alive():
-			target_list.add_item("%s  HP %d/%d  Shield %d/%d  Break=%s" % [_name(enemy),enemy.hp,enemy.max_hp,enemy.shield,enemy.max_shield,str(enemy.is_broken())]); if selected_target == null or not selected_target.is_alive(): selected_target = enemy
+			target_list.add_item("%s  HP %d/%d  Shield %d/%d\n%s" % [_name(enemy),enemy.hp,enemy.max_hp,enemy.shield,enemy.max_shield,enemy.get_status_summary()]); if selected_target == null or not selected_target.is_alive(): selected_target = enemy
 	_clear_skills(); _clear_items()
 	if current_actor.id in ["tangseng","wukong","bajie","wujing","longma"]:
 		for skill in SkillCatalog.get_character_skills(current_actor.id.to_upper()): _add_skill_button(skill)
