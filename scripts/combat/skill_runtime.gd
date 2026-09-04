@@ -25,18 +25,18 @@ static func perform(engine: CombatEngine, actor: Combatant, target: Combatant, s
 			if actor.bp < action.bp_cost:
 				return {"ok": false, "reason": "not_enough_bp"}
 			actor.bp -= action.bp_cost
-			var before := actor.hp
-			actor.heal(int(skill.get("heal_power", 0)))
-			return {"ok": true, "damage": 0, "healed": actor.hp - before, "target_hp": actor.hp}
+			var before := target.hp
+			target.heal(int(skill.get("heal_power", 0)))
+			return {"ok": true, "damage": 0, "healed": target.hp - before, "target_hp": target.hp}
 		"shield":
 			if actor.bp < action.bp_cost:
 				return {"ok": false, "reason": "not_enough_bp"}
 			actor.bp -= action.bp_cost
-			actor.gain_barrier(int(skill.get("shield_power", 0)))
-			return {"ok": true, "damage": 0, "barrier": actor.barrier}
+			target.gain_barrier(int(skill.get("shield_power", 0)))
+			return {"ok": true, "damage": 0, "barrier": target.barrier}
 		"self_buff":
 			if actor.bp < action.bp_cost:
-			return {"ok": false, "reason": "not_enough_bp"}
+				return {"ok": false, "reason": "not_enough_bp"}
 			actor.bp -= action.bp_cost
 			actor.attack += int(skill.get("attack_bonus", 0))
 			actor.defense += int(skill.get("defense_bonus", 0))
