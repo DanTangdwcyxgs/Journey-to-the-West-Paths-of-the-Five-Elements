@@ -1,0 +1,7 @@
+.godot/
+.export/
+.import/
+*.tmp
+*.log
+.DS_Store
+.vscode/
