@@ -3,6 +3,7 @@ extends Control
 
 const DATA_PATH := "res://data/dungeons/yellow_wind_cave.json"
 const PROGRESS_PREFIX := "YELLOW_WIND_CAVE_ROOM_"
+const NORMAL_ENCOUNTER_ID := "YELLOW_WIND_CAVE_SAND_GUARDS"
 
 var narrative := NarrativeManager.new()
 var rooms: Array = []
@@ -45,6 +46,11 @@ func _recover_room_index() -> int:
 
 func _is_boss_defeated() -> bool:
 	return "BOUNTY_YELLOW_FANG" in narrative.state.get_journey_log().get("defeated_targets", [])
+
+func _is_room_complete(room_index: int) -> bool:
+	if room_index < 0 or room_index >= rooms.size():
+		return false
+	return (PROGRESS_PREFIX + str(rooms[room_index].get("id", ""))) in narrative.state.get_world_state().get("heard_rumors", [])
 
 func _build_ui() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -111,7 +117,6 @@ func _build_ui() -> void:
 
 func _refresh() -> void:
 	var room: Dictionary = rooms[current_room_index]
-	var room_finished := current_room_index < rooms.size() - 1 and (PROGRESS_PREFIX + str(room.get("id", ""))) in narrative.state.get_world_state().get("heard_rumors", [])
 	if current_room_index == rooms.size() - 1 and _is_boss_defeated():
 		status_label.text = "黄风洞进度 · 妖王已败 · 地城出口已安全"
 	else:
@@ -119,7 +124,7 @@ func _refresh() -> void:
 	room_list.clear()
 	for i in range(rooms.size()):
 		var row: Dictionary = rooms[i]
-		var done := (i < current_room_index) or (i == current_room_index and room_finished) or (i == rooms.size() - 1 and _is_boss_defeated())
+		var done := (i < current_room_index) or (i == current_room_index and _is_room_complete(i)) or (i == rooms.size() - 1 and _is_boss_defeated())
 		var mark := "▶" if i == current_room_index and not (i == rooms.size() - 1 and _is_boss_defeated()) else ("✓" if done else "○")
 		room_list.add_item("%s %s" % [mark, str(row.get("name", "房间"))])
 	_render_room()
@@ -146,6 +151,12 @@ func _render_room() -> void:
 		boss.custom_minimum_size = Vector2(0, 54)
 		boss.pressed.connect(_enter_boss)
 		action_box.add_child(boss)
+	elif room_type == "ENCOUNTER":
+		var encounter := Button.new()
+		encounter.text = "迎击风沙妖兵"
+		encounter.custom_minimum_size = Vector2(0, 54)
+		encounter.pressed.connect(_enter_normal_encounter)
+		action_box.add_child(encounter)
 	else:
 		var investigate := Button.new()
 		investigate.text = "搜索并继续前进"
@@ -175,8 +186,12 @@ func _resolve_choice(choice: Dictionary) -> void:
 	narrative.save()
 	_refresh()
 
+func _enter_normal_encounter() -> void:
+	if BountyEncounterState.start_encounter("normal", NORMAL_ENCOUNTER_ID, str(rooms[current_room_index].get("id", "SANDSTORM_HALL"))):
+		get_tree().change_scene_to_file("res://ui/battle_ui.tscn")
+
 func _enter_boss() -> void:
-	if BountyEncounterState.start("BOUNTY_YELLOW_FANG", "YELLOW_WIND_GATE"):
+	if BountyEncounterState.start("BOUNTY_YELLOW_FANG", "YELLOW_WIND_THRONE"):
 		get_tree().change_scene_to_file("res://ui/battle_ui.tscn")
 
 func _on_room_selected(index: int) -> void:
