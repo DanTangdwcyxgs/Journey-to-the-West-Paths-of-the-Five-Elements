@@ -21,6 +21,7 @@ var speed_delta: int = 0
 var speed_effect_turns: int = 0
 var mechanic_resource: int = 0
 var mechanic_max: int = 3
+var combat_modifiers: Dictionary = {}
 
 func _init(
 	p_id: String,
