@@ -3,7 +3,7 @@
   "profiles": {
     "SAND_GUARD": {"target_profile":"lowest_defense","skill_effects":{"SAND_GUARD_WIND":{"effect":"slow","effect_value":-3,"effect_duration":2}}},
     "WIND_SPIRIT": {"target_profile":"lowest_hp","skill_effects":{"WIND_SPIRIT_WATER":{"effect":"slow","effect_value":-2,"effect_duration":2}}},
-    "CAVE_GHOUL": {"target_profile":"lowest_hp","skill_effects":{"GHOUL_FLAME":{"effect":"burn","effect_value":3,"effect_duration":2}}},
+    "CAVE_GHOUL": {"target_profile":"lowest_hp","skill_effects":{}},
     "STONE_IMP": {"target_profile":"lowest_defense","skill_effects":{"IMP_GUARD":{"effect":"shield","effect_value":10,"effect_duration":0}}},
     "CRAB_GUARD": {"target_profile":"lowest_defense","skill_effects":{}},
     "SHRIMP_SPEAR": {"target_profile":"highest_speed","skill_effects":{}},
