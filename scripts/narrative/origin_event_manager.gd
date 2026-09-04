@@ -23,6 +23,18 @@ func get_event(chapter_id: String) -> Dictionary:
 func has_event(chapter_id: String) -> bool:
 	return not get_event(chapter_id).is_empty()
 
+func get_choice(chapter_id: String, choice_id: String) -> Dictionary:
+	var event := get_event(chapter_id)
+	if event.is_empty():
+		return {}
+	for choice in event.get("choices", []):
+		if str(choice.get("id", "")) == choice_id:
+			return choice.duplicate(true)
+	return {}
+
+func get_choice_effects(chapter_id: String, choice_id: String) -> Dictionary:
+	return get_choice(chapter_id, choice_id).get("effects", {}).duplicate(true)
+
 func apply_choice(narrative: NarrativeManager, chapter_id: String, choice_id: String) -> bool:
 	if narrative == null or chapter_id == "" or choice_id == "":
 		return false
