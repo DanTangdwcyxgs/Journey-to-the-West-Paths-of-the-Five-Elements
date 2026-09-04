@@ -49,7 +49,6 @@ func _ready() -> void:
 	party.initialize_from_recruited(["TANG", "WUKONG", "BAJIE", "WUJING", "LONGMA"])
 	allies = CombatPartyBuilder.build_active_party(party)
 	_apply_loadout_modifiers()
-	_apply_origin_choice_modifiers(narrative)
 	if encounter_type == "normal" or encounter_type == "origin":
 		enemies = encounter_manager.build_enemies(encounter_id)
 	else:
@@ -90,28 +89,6 @@ func _apply_loadout_modifiers() -> void:
 		if effects.has("speed_modifier"):
 			ally.speed = maxi(int(round(ally.speed * float(effects["speed_modifier"]))), 1)
 			ally.base_speed = ally.speed
-
-func _apply_origin_choice_modifiers(narrative: NarrativeManager) -> void:
-	if narrative == null or source_route_id != "WUKONG_ORIGIN":
-		return
-	var choice_bonuses := {
-		"WUK-03": {"SEEK_POWER": {"attack_bonus": 2}, "SEEK_FREEDOM": {"speed_bonus": 1}},
-		"WUK-08": {"ACCEPT_TITLE": {"defense_bonus": 1}, "REJECT_BINDING": {"speed_bonus": 1}},
-		"WUK-13": {"ENDURE": {"defense_bonus": 2}, "BREAK_OUT": {"attack_bonus": 2}},
-	}
-	for chapter_id in choice_bonuses.keys():
-		var choice_id := narrative.state.get_origin_choice(str(chapter_id))
-		if choice_id == "":
-			continue
-		var bonus: Dictionary = choice_bonuses[chapter_id].get(choice_id, {})
-		for ally in allies:
-			if ally.id != "wukong":
-				continue
-			ally.attack += int(bonus.get("attack_bonus", 0))
-			ally.defense += int(bonus.get("defense_bonus", 0))
-			ally.speed += int(bonus.get("speed_bonus", 0))
-			ally.base_speed = ally.speed
-			ally.combat_modifiers["origin_choice_%s" % chapter_id] = choice_id
 
 func _build_ui() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -161,7 +138,16 @@ func _refresh() -> void:
 	_add_item_buttons()
 
 func _add_skill_button(skill: Dictionary) -> void:
-	var button := Button.new(); var cost := int(skill.get("bp_cost",0)); var mechanic_cost := int(skill.get("mechanic_cost",0)); button.text = "%s  BP %d · %s%s" % [str(skill.get("name","Skill")),cost,str(skill.get("kind","damage"))," · 专属资源 %d" % mechanic_cost if mechanic_cost > 0 else ""]; button.disabled = current_actor.bp < cost or current_actor.mechanic_resource < mechanic_cost; button.pressed.connect(func(): _use_skill(skill,false)); skill_box.add_child(button)
+	var button := Button.new()
+	var cost := int(skill.get("bp_cost",0)); var mechanic_cost := int(skill.get("mechanic_cost",0))
+	var text := "%s  BP %d · %s" % [str(skill.get("name","Skill")),cost,str(skill.get("kind","damage"))]
+	if mechanic_cost > 0: text += " · 专属资源 %d" % mechanic_cost
+	if bool(skill.get("scale_with_mechanic", false)): text += " · 当前资源强化"
+	if bool(skill.get("consume_mechanic_if_available", false)): text += " · 可消耗资源强化"
+	button.text = text
+	button.disabled = current_actor.bp < cost or current_actor.mechanic_resource < mechanic_cost
+	button.pressed.connect(func(): _use_skill(skill,false))
+	skill_box.add_child(button)
 
 func _add_item_buttons() -> void:
 	for item_id in battle_inventory.items.keys():
@@ -176,9 +162,11 @@ func _clear_items() -> void:
 
 func _use_skill(skill: Dictionary, boosted: bool) -> void:
 	if current_actor == null or not current_actor.is_alive() or selected_target == null or not selected_target.is_alive(): return
+	selected_skill = skill.duplicate(true)
 	var result := SkillRuntime.perform(engine,current_actor,selected_target,skill,boosted)
 	if not result.get("ok",false): status_label.text = "技能失败：%s" % result.get("reason","unknown"); return
 	if result.has("form_name"): _on_combat_log("白龙马变身：%s · 持续 %d 回合" % [str(result.get("form_name","")),int(result.get("form_duration",0))])
+	if result.get("mechanic_spent_extra",0) > 0: _on_combat_log("%s 消耗 %d 点%s强化效果。" % [_name(current_actor),int(result.get("mechanic_spent_extra",0)),MECHANIC_NAMES.get(current_actor.id,"专属资源")])
 	if encounter_type == "bounty": boss_runtime.after_action(_boss())
 	_end_turn()
 
@@ -198,9 +186,11 @@ func _save_battle_inventory() -> void:
 	var narrative := NarrativeManager.new(); if narrative.load(): narrative.state.set_inventory(battle_inventory.to_dict()); narrative.save()
 
 func _boost_selected() -> void:
+	if current_actor == null or selected_target == null or not selected_target.is_alive(): return
 	if selected_skill.is_empty():
-		var skills := SkillCatalog.get_character_skills(current_actor.id.to_upper()); if not skills.is_empty(): selected_skill = skills[0]
-	if not selected_skill.is_empty(): _use_skill(selected_skill,true)
+		status_label.text = "先选择一个技能再使用 Boost。"
+		return
+	_use_skill(selected_skill,true)
 
 func _on_ally_selected(index: int) -> void:
 	var living:Array[Combatant] = []
@@ -229,7 +219,7 @@ func _enemy_turn(enemy: Combatant) -> void:
 	var target:Combatant = living[0]
 	var taunted := allies.filter(func(unit): return unit.is_alive() and unit.aggro_turns > 0)
 	if not taunted.is_empty(): target = taunted[0]
-	var attack:CombatAction
+	var attack: CombatAction
 	if encounter_type == "bounty":
 		boss_runtime.on_turn_start(enemy)
 		attack = boss_runtime.choose_action(enemy,allies)
