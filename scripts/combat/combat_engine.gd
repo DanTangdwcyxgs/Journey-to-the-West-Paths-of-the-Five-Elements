@@ -56,15 +56,19 @@ func perform_action(actor: Combatant, target: Combatant, action: CombatAction, b
 	if target.id == "bajie" and dealt > 0: target.add_mechanic_resource(1)
 
 	var weakness_hit := false
-	if target.weaknesses.get(action.element, false):
+	var shield_hit := maxi(action.shield_hit, 0)
+	var shield_damage_bonus := int(action.effects.get("shield_damage_bonus", 0)) if action != null and not action.effects.is_empty() else 0
+	shield_hit += maxi(shield_damage_bonus, 0)
+	var element := str(action.element).to_lower()
+	if target.weaknesses.get(element, false):
 		weakness_hit = true
-		target.shield = maxi(target.shield - action.shield_hit - 1, 0)
+		target.shield = maxi(target.shield - shield_hit - 1, 0)
 		combat_log.emit("Weakness hit! %s shield -> %d/%d" % [target.display_name, target.shield, target.max_shield])
 		if target.shield == 0 and not target.is_broken():
 			target.broken_turns = 2
 			combat_log.emit("BREAK! %s is Broken." % target.display_name)
 	else:
-		target.shield = maxi(target.shield - action.shield_hit, 0)
+		target.shield = maxi(target.shield - shield_hit, 0)
 
 	var effect_result := _apply_action_effects(actor, target, action, dealt > 0)
 	combat_log.emit("%s uses %s on %s for %d damage." % [actor.display_name, action.display_name, target.display_name, dealt])
@@ -80,6 +84,8 @@ func perform_action(actor: Combatant, target: Combatant, action: CombatAction, b
 		"target_barrier": target.barrier,
 		"target_aggro_turns": target.aggro_turns,
 		"target_speed": target.speed,
+		"shield_damage": shield_hit + (1 if weakness_hit else 0),
+		"shield_damage_bonus": maxi(shield_damage_bonus, 0),
 		"effect": effect_result.get("effect", ""),
 		"effect_duration": effect_result.get("duration", 0),
 		"effect_applied": effect_result.get("applied", false),
@@ -88,32 +94,53 @@ func perform_action(actor: Combatant, target: Combatant, action: CombatAction, b
 func _apply_action_effects(actor: Combatant, target: Combatant, action: CombatAction, landed: bool) -> Dictionary:
 	if action == null or action.effects.is_empty(): return {}
 	var condition := str(action.effects.get("condition", "always")).to_lower()
-	if condition == "on_hit" and not landed: return {"applied": false, "reason": "condition_failed"}
-	if condition == "when_target_broken" and not target.is_broken(): return {"applied": false, "reason": "condition_failed"}
-	if condition == "when_target_alive" and not target.is_alive(): return {"applied": false, "reason": "condition_failed"}
+	match condition:
+		"on_hit":
+			if not landed: return {"applied": false, "reason": "condition_failed"}
+		"when_target_broken":
+			if not target.is_broken(): return {"applied": false, "reason": "condition_failed"}
+		"when_target_alive":
+			if not target.is_alive(): return {"applied": false, "reason": "condition_failed"}
+		"hp_below_percent":
+			var threshold := clampi(int(action.effects.get("condition_value", action.effects.get("condition_percent", 100))), 0, 100)
+			if target.hp * 100 >= target.max_hp * threshold: return {"applied": false, "reason": "condition_failed"}
+		"turn_gte":
+			var required_turn := maxi(int(action.effects.get("condition_value", 1)), 1)
+			if turn_number < required_turn: return {"applied": false, "reason": "condition_failed"}
+		"always", "":
+			pass
+		_:
+			return {"applied": false, "reason": "unsupported_condition"}
 	var effect := str(action.effects.get("effect", "")).to_lower()
 	var value := int(action.effects.get("effect_value", 0))
 	var duration := maxi(int(action.effects.get("effect_duration", 0)), 0)
 	var effect_target := str(action.effects.get("effect_target", action.effects.get("target", "target"))).to_lower()
 	var receiver := actor if effect_target == "self" else target
+	var shield_bonus := maxi(int(action.effects.get("shield_bonus", 0)), 0)
+	if shield_bonus > 0:
+		receiver.gain_barrier(shield_bonus)
+		combat_log.emit("%s 获得 %d 点屏障。" % [receiver.display_name, shield_bonus])
 	match effect:
 		"slow":
-			if value == 0 or duration <= 0: return {"applied": false, "reason": "invalid_effect_parameters"}
+			if value == 0 or duration <= 0: return {"applied": shield_bonus > 0, "effect": "barrier" if shield_bonus > 0 else "", "duration": duration}
 			receiver.apply_speed_delta(value, duration)
 			combat_log.emit("%s 速度 %+d，持续 %d 回合。" % [receiver.display_name, value, duration])
 			return {"applied": true, "effect": effect, "duration": duration}
 		"taunt":
-			if duration <= 0: return {"applied": false, "reason": "invalid_effect_parameters"}
+			if duration <= 0: return {"applied": shield_bonus > 0, "effect": "barrier" if shield_bonus > 0 else "", "duration": duration}
 			receiver.apply_taunt(duration)
 			combat_log.emit("%s 被嘲讽，持续 %d 回合。" % [receiver.display_name, duration])
 			return {"applied": true, "effect": effect, "duration": duration}
 		"shield", "barrier":
-			if value <= 0: return {"applied": false, "reason": "invalid_effect_parameters"}
+			if value <= 0: return {"applied": shield_bonus > 0, "effect": "barrier" if shield_bonus > 0 else "", "duration": duration}
 			receiver.gain_barrier(value)
 			combat_log.emit("%s 获得 %d 点屏障。" % [receiver.display_name, value])
 			return {"applied": true, "effect": effect, "duration": duration}
+		"":
+			if shield_bonus > 0: return {"applied": true, "effect": "barrier", "duration": 0}
+			return {"applied": false, "reason": "missing_effect"}
 		_:
-			return {"applied": false, "reason": "unsupported_effect"}
+			return {"applied": shield_bonus > 0, "effect": "barrier" if shield_bonus > 0 else "", "duration": duration}
 
 func advance_turn() -> Combatant:
 	var actor := next_actor()
