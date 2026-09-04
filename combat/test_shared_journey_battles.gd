@@ -1,6 +1,6 @@
 extends SceneTree
 
-## Regression coverage for the first three recruit-node shared battles.
+## Regression coverage for shared recruit-node battles and the five-person convergence.
 func _initialize() -> void:
 	var encounter_manager := EncounterManager.new()
 	for encounter_id in ["SHARED_EAGLE_SORROW", "SHARED_GAOJIAZHUANG", "SHARED_FLOWING_SANDS"]:
@@ -25,12 +25,38 @@ func _initialize() -> void:
 	_assert(str(record.get("source_chapter_id", "")) == "SHARED-03-EAGLE-SORROW", "shared handoff should retain canonical chapter id")
 	BountyEncounterState.clear()
 
-	var completion := SharedJourneyManager.complete("SHARED-03-EAGLE-SORROW", narrative)
-	_assert(completion, "shared chapter should complete after a resolved battle")
+	_assert(not SharedJourneyManager.complete("SHARED-03-EAGLE-SORROW", narrative), "recruit chapter must not complete without a resolved battle")
+	narrative.state.record_milestone("SHARED_BATTLE_SHARED_EAGLE_SORROW", narrative.state.current_global_timeline)
+	_assert(SharedJourneyManager.complete("SHARED-03-EAGLE-SORROW", narrative), "Eagle Sorrow should complete after battle resolution")
 	_assert("LONGMA" in narrative.state.recruited_characters, "Longma should be recruited at Eagle Sorrow")
-	_assert(narrative.state.current_global_timeline == 110, "shared battle completion should preserve canonical timeline")
-	_assert(narrative.state.current_shared_chapter == "SHARED-04-EARLY-DEMON-TALES", "shared battle should advance to the next chapter")
+	_assert(narrative.state.current_global_timeline == 110, "Eagle Sorrow should preserve canonical timeline")
+	_assert(narrative.state.current_shared_chapter == "SHARED-04-EARLY-DEMON-TALES", "Eagle Sorrow should advance to the next chapter")
 	_assert("LONGMA-01" in narrative.state.available_memory_chapters, "Longma memories should unlock immediately on recruitment")
+
+	_assert(SharedJourneyManager.complete("SHARED-04-EARLY-DEMON-TALES", narrative), "early demon chapter should advance")
+	_assert(narrative.state.current_shared_chapter == "SHARED-05-GAOJIAZHUANG", "Gaojiazhuang should follow the early demon chapter")
+	_assert(shared_events.apply_choice(narrative, "BAJIE_ENCOUNTER", "OFFER_REDEMPTION"), "Bajie event choice should resolve")
+	narrative.state.record_milestone("SHARED_BATTLE_SHARED_GAOJIAZHUANG", narrative.state.current_global_timeline)
+	_assert(SharedJourneyManager.complete("SHARED-05-GAOJIAZHUANG", narrative), "Gaojiazhuang should complete after battle resolution")
+	_assert("BAJIE" in narrative.state.recruited_characters, "Bajie should be recruited at Gaojiazhuang")
+	_assert("BAJIE-01" in narrative.state.available_memory_chapters, "Bajie memories should unlock immediately on recruitment")
+	_assert(narrative.state.current_shared_chapter == "SHARED-06-FOUR-PERSON-JOURNEY", "Gaojiazhuang should advance to four-person journey")
+
+	_assert(SharedJourneyManager.complete("SHARED-06-FOUR-PERSON-JOURNEY", narrative), "four-person journey should advance")
+	_assert(shared_events.apply_choice(narrative, "WUJING_ENCOUNTER", "ACCEPT_WUJING"), "Wujing event choice should resolve")
+	narrative.state.record_milestone("SHARED_BATTLE_SHARED_FLOWING_SANDS", narrative.state.current_global_timeline)
+	_assert(SharedJourneyManager.complete("SHARED-07-FLOWING-SANDS", narrative), "Flowing Sands should complete after battle resolution")
+	_assert("WUJING" in narrative.state.recruited_characters, "Wujing should be recruited at Flowing Sands")
+	_assert("WUJING-01" in narrative.state.available_memory_chapters, "Wujing memories should unlock immediately on recruitment")
+	_assert(narrative.state.current_shared_chapter == "SHARED-08-PARTY-FULL", "Flowing Sands should advance to party convergence")
+
+	_assert(SharedJourneyManager.complete("SHARED-08-PARTY-FULL", narrative), "party convergence chapter should complete")
+	_assert(narrative.state.recruited_characters.size() == NarrativeState.CHARACTER_IDS.size(), "party convergence should contain all five canonical characters")
+	_assert("PARTY_FULL" in narrative.state.journey_log.get("active_world_effects", []), "party convergence should activate PARTY_FULL")
+	_assert(narrative.state.current_shared_chapter == "SHARED-09-FULL-PILGRIMAGE", "party convergence should advance to full pilgrimage")
+	_assert(SharedJourneyManager.complete("SHARED-09-FULL-PILGRIMAGE", narrative), "full pilgrimage opening should complete")
+	_assert("FULL_PILGRIMAGE_BEGINS" in narrative.state.journey_log.get("active_world_effects", []), "full pilgrimage milestone should be active")
+	_assert(narrative.state.current_shared_chapter == "SHARED-09-FULL-PILGRIMAGE", "final shared chapter should remain stable")
 
 	print("ALL SHARED JOURNEY BATTLE TESTS PASSED")
 	quit(0)
