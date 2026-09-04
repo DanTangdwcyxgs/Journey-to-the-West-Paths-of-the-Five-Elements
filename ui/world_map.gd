@@ -11,8 +11,10 @@ var detail_label: Label
 var status_label: Label
 var travel_button: Button
 var rumor_button: Button
+var bounty_button: Button
 var bounty_label: Label
 var selected_node_id := ""
+var selected_bounty_id := ""
 
 func _ready() -> void:
 	if not narrative.load():
@@ -78,13 +80,18 @@ func _build_ui() -> void:
 	center.add_theme_constant_override("separation", 8)
 	body.add_child(center)
 	detail_label = Label.new()
-	detail_label.custom_minimum_size = Vector2(0, 220)
+	detail_label.custom_minimum_size = Vector2(0, 200)
 	detail_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	detail_label.add_theme_font_size_override("font_size", 17)
 	center.add_child(detail_label)
 	bounty_label = Label.new()
 	bounty_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	center.add_child(bounty_label)
+	bounty_button = Button.new()
+	bounty_button.text = "接受悬赏并出战"
+	bounty_button.custom_minimum_size = Vector2(0, 46)
+	bounty_button.pressed.connect(_challenge_bounty)
+	center.add_child(bounty_button)
 	var rumor_title := Label.new()
 	rumor_title.text = "当前位置的新传闻"
 	rumor_title.add_theme_font_size_override("font_size", 18)
@@ -145,9 +152,11 @@ func _refresh() -> void:
 	travel_button.disabled = selected_node_id.is_empty() or selected_node_id == current
 
 func _render_node(node: Dictionary) -> void:
+	selected_bounty_id = ""
 	if node.is_empty():
 		detail_label.text = "请选择一个地点。"
 		bounty_label.text = ""
+		bounty_button.disabled = true
 		return
 	var current := world.get_current_location(narrative)
 	var state := narrative.state.get_world_state()
@@ -160,14 +169,23 @@ func _render_node(node: Dictionary) -> void:
 		"、".join(node.get("connections", [])),
 	]
 	var bounty_lines:Array[String] = []
+	var challengeable := false
 	for bounty_id in bounties:
-		var discovered := str(bounty_id) in state.get("discovered_bounties", [])
-		var defeated := str(bounty_id) in narrative.state.journey_log.get("defeated_targets", [])
+		var bid := str(bounty_id)
+		var discovered := bid in state.get("discovered_bounties", [])
+		var defeated := bid in narrative.state.journey_log.get("defeated_targets", [])
 		var mark := "✓" if defeated else ("!" if discovered else "?")
-		bounty_lines.append("%s %s" % [mark, str(bounty_id)])
+		bounty_lines.append("%s %s" % [mark, bid])
+		if discovered and not defeated and node_id == current:
+			if bid == "BOUNTY_YELLOW_FANG":
+				selected_bounty_id = bid
+				challengeable = true
 	bounty_label.text = "悬赏：%s\n" % ("、".join(bounty_lines) if not bounty_lines.is_empty() else "暂无")
 	if node_id == current:
 		bounty_label.text += "你正在这里，可以先和当地人打听传闻。"
+	if not challengeable and not bounties.is_empty():
+		bounty_label.text += "\n当前没有可直接接战的已发现悬赏。"
+	bounty_button.disabled = not challengeable
 
 func _refresh_rumors() -> void:
 	rumor_list.clear()
@@ -207,3 +225,11 @@ func _hear_rumor() -> void:
 	narrative.save()
 	_refresh()
 	status_label.text += " · 已获得情报：%s" % str(rumor.get("reward_intel", ""))
+
+func _challenge_bounty() -> void:
+	if selected_bounty_id.is_empty():
+		return
+	if not BountyEncounterState.start(selected_bounty_id):
+		status_label.text = "无法建立悬赏战斗。"
+		return
+	get_tree().change_scene_to_file("res://ui/battle_ui.tscn")
