@@ -26,6 +26,9 @@ func load_definitions(payload: Dictionary) -> void:
 func has_bounty(bounty_id: String) -> bool:
 	return definitions.has(bounty_id)
 
+func get_definition(bounty_id: String) -> Dictionary:
+	return definitions.get(bounty_id, {}).duplicate(true)
+
 func discover(bounty_id: String, evidence_tag: String = "") -> bool:
 	if not definitions.has(bounty_id):
 		return false
@@ -73,9 +76,11 @@ func to_dict() -> Dictionary:
 	}
 
 func restore(data: Dictionary) -> void:
+	var saved_statuses = data.get("statuses", {})
+	var saved_intelligence = data.get("intelligence", {})
 	for id in definitions.keys():
-		statuses[id] = str(data.get("statuses", {}).get(id, STATUS_UNKNOWN))
-		var raw_intel = data.get("intelligence", {}).get(id, [])
+		statuses[id] = str(saved_statuses.get(id, STATUS_UNKNOWN))
+		var raw_intel = saved_intelligence.get(id, [])
 		intelligence[id] = []
 		if raw_intel is Array:
 			for entry in raw_intel:
