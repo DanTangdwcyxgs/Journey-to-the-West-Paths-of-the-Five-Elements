@@ -1,5 +1,5 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "characters": {
     "WUKONG": {
       "skills": [
@@ -33,7 +33,7 @@
       "skills": [
         {"id":"LONGMA_BITE","name":"龙牙","element":"strike","power":26,"shield_hit":1,"bp_cost":0,"kind":"damage"},
         {"id":"LONGMA_WIND","name":"驭风","element":"wind","power":36,"shield_hit":1,"bp_cost":1,"kind":"damage"},
-        {"id":"LONGMA_DRAGON","name":"化龙","element":"water","power":44,"shield_hit":2,"bp_cost":2,"kind":"damage","mechanic_cost":1}
+        {"id":"LONGMA_SHIFT","name":"龙形变","element":"water","power":0,"shield_hit":0,"bp_cost":0,"kind":"form_shift","mechanic_cost":1}
       ]
     }
   }
