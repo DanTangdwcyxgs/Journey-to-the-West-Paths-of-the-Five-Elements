@@ -1,37 +1,58 @@
 # Black Myth: Wukong — JRPG Edition
 
-> 东方神话 × HD-2D × 回合制策略 JRPG × 五人独立主线汇流
+> 东方神话 × 像素 HD-2D × 回合制 JRPG × 五人独立主线汇流
 
-A turn-based JRPG prototype inspired by **Journey to the West**, classic party-based JRPGs, and HD-2D presentation.
+A pixel-art HD-2D turn-based JRPG that follows the recognizable narrative rhythm of **Journey to the West**, especially the classic television-style progression, while using modern JRPG systems and presentation.
 
-## Core Narrative Concept
+## Core Vision
 
-The game is structured around **five independent protagonist origins that eventually converge into one pilgrimage**.
+The project is **a playable Journey to the West story first, and an original fantasy JRPG second**.
 
-At New Game, the player can choose **Sun Wukong, Tang Sanzang, Zhu Bajie, Sha Wujing, or Bai Longma** as the starting protagonist.
+The main narrative should remain highly recognizable as Journey to the West. Iconic characters, recruitment points, major locations, relationships and major pilgrimage episodes form the canonical story spine.
 
-Each protagonist has a substantial personal campaign. The player follows that character until reaching the canonical point where their story intersects the Journey to the West, then that character becomes part of the growing party.
+The game language is modern HD-2D JRPG:
 
-The key design rule is:
+- pixel-art characters;
+- dimensional environments;
+- cinematic lighting and weather;
+- turn-based party combat;
+- Weakness / Break;
+- BP / Boost;
+- character-specific combat mechanics;
+- strong JRPG menus and battle feedback.
+
+See [Game Vision & Canon](docs/game_vision.md), [Global Timeline](docs/global_timeline.md), [Story Structure & Chapter Pacing](docs/story_structure.md), and [Production Rules](docs/production_rules.md).
+
+## Five Protagonist Structure
+
+At New Game, the player can choose **Sun Wukong, Tang Sanzang, Zhu Bajie, Sha Wujing, or Bai Longma** as the first protagonist.
+
+The choice selects the player's first narrative lens. It does not rewrite world chronology.
 
 > **Player order is free. World chronology is fixed.**
 
-The broad recruitment backbone remains:
+Each protagonist has a substantial origin route. Their story eventually reaches the recognizable point where they become connected to the pilgrimage.
+
+The intended experience is:
+
+`Choose a hero → experience their origin → reach the canonical encounter → join the growing pilgrimage → unlock personal perspective chapters → assemble the five-person core → enter the shared Journey.`
+
+## Canonical Party Backbone
+
+The broad recruitment sequence remains:
 
 `Wukong imprisoned → Tang pilgrimage → Wukong recruited → Bai Longma joins → Zhu Bajie recruited → Sha Wujing recruited → full shared journey`
 
-After all five characters are assembled, the game transitions from separate origins into a single ensemble campaign. Character perspective chapters continue to deepen their individual stories without creating five parallel main timelines.
-
-See [Story Structure & Chapter Pacing](docs/story_structure.md) and [Game Architecture](docs/architecture.md).
+The project may expand the connective material around these events, but the major recruitment anchors should remain stable unless the narrative canon is deliberately revised.
 
 ## Five Character Themes
 
 | Character | Core Theme | Origin Focus |
 |---|---|---|
-| Sun Wukong | Freedom vs Restraint | Flower Fruit Mountain, Heaven, Five Elements Mountain |
-| Tang Sanzang | Faith vs Reality | Monastic life, imperial mission, pilgrimage |
-| Zhu Bajie | Desire vs Responsibility | Marshal Tianpeng, fall, Gaojiazhuang |
-| Sha Wujing | Guilt vs Redemption | Heavenly exile, Flowing Sands River |
+| Sun Wukong | Freedom vs Restraint | Flower Fruit Mountain, immortality, Heaven, Five Elements Mountain |
+| Tang Sanzang | Faith vs Reality | Monastic life, mission, departure, pilgrimage |
+| Zhu Bajie | Desire vs Responsibility | Tianpeng, fall, rebirth, Gaojiazhuang |
+| Sha Wujing | Guilt vs Redemption | Heavenly punishment, Flowing Sands River |
 | Bai Longma | Identity vs Duty | Dragon Court, punishment, Eagle Sorrow Stream |
 
 ## Gameplay Pillars
@@ -41,15 +62,23 @@ See [Story Structure & Chapter Pacing](docs/story_structure.md) and [Game Archit
 - **Break / Weakness:** exploit enemy weaknesses to break their shield
 - **BP Boost:** accumulate BP and spend it to strengthen actions
 - **Speed-based turns:** dynamic initiative affected by speed changes
-- **Character-specific mechanics:** each protagonist should play differently even before recruitment
+- **Character-specific mechanics:** every protagonist changes how encounters are approached
 - **Bai Longma transformation:** delayed full combat identity and multiple forms
-- **81 Trials:** 12–15 major trials, 20–25 minor trials, plus elite encounters and events
+- **81 Trials:** major stories, personal quests, elite encounters and optional events
+
+## Visual Direction
+
+Target visual language:
+
+**pixel protagonists + dimensional environments + dramatic lighting + atmospheric depth + Chinese mythological scenery.**
+
+The project is not intended to reproduce another game's proprietary assets or exact art. The goal is the broader modern HD-2D JRPG visual language combined with Journey to the West imagery.
 
 ## Combat Prototype
 
 The current codebase focuses on a deterministic, testable combat simulation.
 
-Core rules currently implemented:
+Implemented foundation:
 
 - HP / ATK / DEF / SPD / BP
 - weakness tags
@@ -62,7 +91,7 @@ Core rules currently implemented:
 
 ## Narrative Architecture
 
-Narrative progression is data-driven and independent from combat implementation.
+Narrative progression is separate from combat implementation.
 
 ### Chapter Types
 
@@ -70,45 +99,18 @@ Narrative progression is data-driven and independent from combat implementation.
 - **Recruitment Chapter** — canonical encounter where a character joins
 - **Shared Journey Chapter** — common pilgrimage timeline
 - **Character Perspective Chapter** — personal story after recruitment
-- **Major Trial Chapter** — major mythological event / boss arc
-- **Interlude** — camp, relationship, memory and worldbuilding scenes
+- **Major Trial Chapter** — major Journey to the West story / boss arc
+- **Interlude** — camp, relationship, memory and worldbuilding
 
 ### Global Timeline
 
-The save system tracks a chronological `current_global_timeline` separately from the player's `starting_character` and completed character chapters.
+The save system tracks chronological `current_global_timeline` separately from:
 
-Important milestones include:
-
-`WUKONG_ORIGIN_COMPLETE`
-
-`WUKONG_IMPRISONED`
-
-`TANG_PILGRIMAGE_BEGUN`
-
-`FIVE_ELEMENTS_MOUNTAIN_REACHED`
-
-`WUKONG_RECRUITED`
-
-`BAI_LONGMA_RECRUITED`
-
-`GAOJIAZHUANG_REACHED`
-
-`ZHU_BAJIE_RECRUITED`
-
-`FLOWING_SANDS_RIVER_REACHED`
-
-`SHA_WUJING_RECRUITED`
-
-`PARTY_FULL`
-
-`SHARED_JOURNEY_BEGUN`
-
-## Tech Stack
-
-- **Engine:** Godot 4.x
-- **Language:** GDScript
-- **Target:** Windows PC / Steam
-- **Architecture:** deterministic combat domain + data-driven content + narrative timeline + presentation layer
+- `starting_character`
+- each character's route progress
+- recruited characters
+- shared chapter progress
+- flashback/history unlocks
 
 ## Repository Layout
 
@@ -121,8 +123,11 @@ combat/
   test_combat.gd     # headless combat regression tests
 
 docs/
-  architecture.md        # system + narrative architecture
-  story_structure.md     # five routes, recruitment and chapter pacing
+  architecture.md        # system architecture and extension points
+  game_vision.md         # top-level creative and adaptation canon
+  global_timeline.md     # canonical world chronology
+  story_structure.md     # character routes and chapter pacing
+  production_rules.md    # rules for future narrative/gameplay content
 
 project.godot
 .gitignore
@@ -151,7 +156,8 @@ godot --headless --path . --script res://combat/test_combat.gd
 - [x] Speed-based turn ordering
 - [x] Regression tests
 - [x] Narrative architecture
-- [x] Five-character chapter structure
+- [x] Five-character route structure
+- [x] Global timeline and production canon
 - [ ] Narrative data model implementation
 - [ ] Minimal battle UI
 
@@ -162,18 +168,19 @@ godot --headless --path . --script res://combat/test_combat.gd
 - [ ] Front/back formation swap
 - [ ] Bai Longma transformation states
 - [ ] Skills, resources and status effects
-- [ ] Recruitment event flow
+- [ ] Canonical recruitment event flow
 - [ ] First complete battle: Yellow Wind Demon
 - [ ] First dungeon greybox
 
-### Phase 3 — Content Expansion
+### Phase 3 — Shared Journey
 
+- [ ] Full party convergence chapter
+- [ ] Major Journey to the West story arcs
+- [ ] Character perspective / memory chapters
+- [ ] Relationship and camp dialogue system
+- [ ] Journal / 81 Trials system
 - [ ] 12–15 major trials
 - [ ] 20–25 minor trials
-- [ ] Mini trials / elite encounters
-- [ ] Personal character quests
-- [ ] Relationship and camp dialogue system
-- [ ] Journal / 81 Trials completion system
 
 ### Phase 4 — Polish
 
@@ -184,14 +191,16 @@ godot --headless --path . --script res://combat/test_combat.gd
 - [ ] Controller support
 - [ ] Steam integration
 
-## Design Principles
+## Development Principles
 
-1. **Build rules before assets.** Combat and narrative progression must be deterministic and testable.
-2. **Canonical anchors, original connective tissue.** Recognizable Journey to the West events anchor the timeline; original content fills the spaces between them.
-3. **Recruitment is a payoff.** A new party member must resolve part of their personal story and change the party mechanically and emotionally.
-4. **No forced first protagonist.** Any hero can be the player's first perspective.
-5. **Never duplicate the same major event five times.** One canonical event, multiple character perspectives.
+1. **Journey to the West is the narrative spine.**
+2. **JRPG systems are the interactive language.**
+3. **HD-2D pixel art is the presentation language.**
+4. **Canonical events anchor the world timeline.**
+5. **Character-specific stories make recruitment meaningful.**
+6. **Original content expands the journey instead of replacing it without reason.**
+7. **Narrative rules and combat rules remain independently testable.**
 
 ## Note on IP
 
-This repository is a fan-project prototype inspired by *Journey to the West* and contemporary mythological games. Final commercial naming, art, assets, characters, and other protected elements should be reviewed for appropriate rights before distribution.
+This repository is a fan-project prototype. Any commercial release, final naming, art, assets, character presentation, dialogue adaptation and distribution strategy should receive appropriate rights review before release.
