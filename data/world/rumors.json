@@ -1,0 +1,31 @@
+{
+  "rumors": [
+    {
+      "id": "RUMOR_YELLOW_FANG",
+      "node_id": "EAGLE_SORROW",
+      "speaker": "渡口樵夫",
+      "text": "北边山道有个黄牙老妖，专挑落单的脚夫下手。",
+      "bounty_id": "BOUNTY_YELLOW_FANG",
+      "required_timeline": 110,
+      "reward_intel": "已确认黄牙妖踪。可前往黑风山北道调查。"
+    },
+    {
+      "id": "RUMOR_IRON_HORN",
+      "node_id": "GAOJIAZHUANG",
+      "speaker": "高老庄商旅",
+      "text": "铁角妖占着西边荒洞，最近连夜路上的车马都不敢走。",
+      "bounty_id": "BOUNTY_IRON_HORN",
+      "required_timeline": 130,
+      "reward_intel": "已标出铁角妖藏身处。"
+    },
+    {
+      "id": "RUMOR_DRAGON_BONE",
+      "node_id": "FLOWING_SANDS",
+      "speaker": "老渡船夫",
+      "text": "沙河尽头的古骨塔有人影出没，只有真正成队的取经人敢去。",
+      "bounty_id": "BOUNTY_DRAGON_BONE_RECLUSE",
+      "required_timeline": 150,
+      "reward_intel": "获得龙骨秘境的入口线索；需要沙悟净已归队。"
+    }
+  ]
+}
