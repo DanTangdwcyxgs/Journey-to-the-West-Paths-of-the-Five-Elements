@@ -71,7 +71,7 @@ func begin_turn() -> void:
 	if speed_effect_turns > 0:
 		speed_effect_turns -= 1
 		if speed_effect_turns == 0:
-			speed = base_speed
+			speed = base_speed + form_speed_bonus
 	if longma_form_turns > 0:
 		longma_form_turns -= 1
 		if longma_form_turns == 0:
@@ -92,7 +92,7 @@ func gain_barrier(amount: int) -> int:
 
 func apply_speed_delta(delta: int, duration: int) -> void:
 	speed_delta = delta
-	speed = maxi(base_speed + delta, 1)
+	speed = maxi(base_speed + form_speed_bonus + delta, 1)
 	speed_effect_turns = maxi(duration, 0)
 
 func add_mechanic_resource(amount: int) -> int:
@@ -114,13 +114,12 @@ func set_longma_form(form: String, duration: int, attack_bonus: int, defense_bon
 	form_speed_bonus = speed_bonus
 	attack += attack_bonus
 	defense = maxi(defense + defense_bonus, 1)
-	speed = maxi(speed + speed_bonus, 1)
-	base_speed = speed
+	speed = maxi(base_speed + speed_bonus, 1)
 
 func clear_longma_form() -> void:
 	attack -= form_attack_bonus
 	defense = maxi(defense - form_defense_bonus, 1)
-	speed = maxi(speed - form_speed_bonus, 1)
+	speed = maxi(base_speed, 1)
 	form_attack_bonus = 0
 	form_defense_bonus = 0
 	form_speed_bonus = 0
