@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "events": {
+    "WUK-03": {
+      "title": "渡海求道",
+      "text": "花果山的安逸无法回答寿数将尽的问题。悟空站在海边，第一次需要决定自己要追逐什么。",
+      "choices": [
+        {"id":"SEEK_FREEDOM","label":"我要的是自由，不是长生。","effects":{"relationship_values":{"WUKONG_FREEDOM":2}}},
+        {"id":"SEEK_POWER","label":"先学会本领，再谈自由。","effects":{"relationship_values":{"WUKONG_POWER":2}}}
+      ]
+    },
+    "WUK-08": {
+      "title": "弼马温",
+      "text": "天界给了他一个职位，也给了他新的笼子。",
+      "choices": [
+        {"id":"ACCEPT_TITLE","label":"先留下来看看天庭到底想做什么。","effects":{"relationship_values":{"WUKONG_PRUDENCE":1}}},
+        {"id":"REJECT_BINDING","label":"职位若要换自由，那就不要。","effects":{"relationship_values":{"WUKONG_FREEDOM":2}}}
+      ]
+    },
+    "WUK-13": {
+      "title": "八卦炉",
+      "text": "炉火把一切外在的傲气烧到极限，只留下仍不肯低头的意志。",
+      "choices": [
+        {"id":"ENDURE","label":"忍住，看看这火究竟能把我炼成什么。","effects":{"relationship_values":{"WUKONG_WILL":2}}},
+        {"id":"BREAK_OUT","label":"我不接受任何人替我定义结局。","effects":{"relationship_values":{"WUKONG_FREEDOM":2}}}
+      ]
+    }
+  }
+}
