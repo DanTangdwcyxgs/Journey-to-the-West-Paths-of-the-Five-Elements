@@ -1,7 +1,7 @@
 class_name NarrativeState
 extends RefCounted
 
-## Runtime narrative state shared by route, memory, chapter, party, and world systems.
+## Runtime narrative state shared by route, memory, chapter, party, world, and combat preparation systems.
 ## World chronology is monotonic; character-history playback never rewinds it.
 
 const ROUTE_LOCKED := "LOCKED"
@@ -27,6 +27,7 @@ var relationship_values: Dictionary = {}
 var party_formation: Dictionary = {"roster": [], "front_row": [], "back_row": []}
 var journey_log: Dictionary = {"entries": [], "defeated_targets": [], "active_world_effects": []}
 var inventory: Dictionary = {"currencies": {"COIN": 0}, "items": {}}
+var equipped_loadouts: Dictionary = {}
 var world_state: Dictionary = {
 	"current_location": "",
 	"visited_nodes": [],
@@ -55,6 +56,7 @@ func initialize_for_start(character_id: String, initial_timeline: int = 0) -> vo
 	party_formation = {"roster": [], "front_row": [], "back_row": []}
 	journey_log = {"entries": [], "defeated_targets": [], "active_world_effects": []}
 	inventory = {"currencies": {"COIN": 0}, "items": {}}
+	equipped_loadouts.clear()
 	world_state = {
 		"current_location": "",
 		"visited_nodes": [],
@@ -145,6 +147,12 @@ func set_inventory(data: Dictionary) -> void:
 func get_inventory() -> Dictionary:
 	return inventory.duplicate(true)
 
+func set_equipped_loadouts(data: Dictionary) -> void:
+	equipped_loadouts = data.duplicate(true)
+
+func get_equipped_loadouts() -> Dictionary:
+	return equipped_loadouts.duplicate(true)
+
 func set_world_state(data: Dictionary) -> void:
 	world_state = {
 		"current_location": str(data.get("current_location", "")),
@@ -212,6 +220,7 @@ func to_dict() -> Dictionary:
 		"party_formation": party_formation.duplicate(true),
 		"journey_log": journey_log.duplicate(true),
 		"inventory": inventory.duplicate(true),
+		"equipped_loadouts": equipped_loadouts.duplicate(true),
 		"world_state": world_state.duplicate(true),
 	}
 
@@ -248,6 +257,7 @@ static func from_dict(data: Dictionary) -> NarrativeState:
 		"currencies": raw_inventory.get("currencies", {"COIN": 0}).duplicate(true),
 		"items": raw_inventory.get("items", {}).duplicate(true),
 	}
+	restored.equipped_loadouts = data.get("equipped_loadouts", {}).duplicate(true)
 	var raw_world: Dictionary = data.get("world_state", {})
 	restored.world_state = {
 		"current_location": str(raw_world.get("current_location", "")),
