@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "encounters": [
     {
       "id": "YELLOW_WIND_CAVE_SAND_GUARDS",
@@ -78,6 +78,58 @@
       ],
       "rewards": ["COIN_MEDIUM", "HERB"],
       "world_effects": ["WUKONG_HEAVEN_REBELLION"]
+    },
+    {
+      "id": "TANG_ORIGIN_DOUBLE_RIDGE",
+      "name": "双叉岭妖患",
+      "description": "玄奘独行遇妖，第一次必须在脆弱的身体与坚定的誓愿之间作出选择。",
+      "source": "TANG_ORIGIN",
+      "recommended_level": 3,
+      "enemies": [
+        {"id":"MOUNTAIN_GHOUL","display_name":"山魈","max_hp":72,"attack":17,"defense":4,"speed":9,"shield":2,"weaknesses":{"HOLY":true}},
+        {"id":"RIDGE_WOLF","display_name":"岭狼","max_hp":68,"attack":19,"defense":3,"speed":12,"shield":2,"weaknesses":{"STRIKE":true}}
+      ],
+      "rewards": ["COIN_LOW", "HERB"],
+      "world_effects": []
+    },
+    {
+      "id": "LONGMA_ORIGIN_SEA_CLIFF",
+      "name": "西海龙宫试炼",
+      "description": "龙子获罪前后的一次家族试炼，水势逼迫他正视自己的冲动。",
+      "source": "LONGMA_ORIGIN",
+      "recommended_level": 4,
+      "enemies": [
+        {"id":"SEA_SERPENT","display_name":"海蛇","max_hp":95,"attack":21,"defense":5,"speed":12,"shield":2,"weaknesses":{"ICE":true}},
+        {"id":"TIDAL_SPIRIT","display_name":"潮灵","max_hp":80,"attack":18,"defense":6,"speed":9,"shield":3,"weaknesses":{"FIRE":true}}
+      ],
+      "rewards": ["COIN_LOW", "HERB"],
+      "world_effects": []
+    },
+    {
+      "id": "BAJIE_ORIGIN_GAO_WILD",
+      "name": "高老庄妖影",
+      "description": "八戒的妖身暴露后，与来犯之妖争夺村庄边界。",
+      "source": "BAJIE_ORIGIN",
+      "recommended_level": 5,
+      "enemies": [
+        {"id":"VILLAGE_GHOUL","display_name":"庄外妖鬼","max_hp":100,"attack":21,"defense":6,"speed":9,"shield":3,"weaknesses":{"FIRE":true}},
+        {"id":"WILD_BOAR","display_name":"獠牙野妖","max_hp":115,"attack":24,"defense":7,"speed":7,"shield":3,"weaknesses":{"ICE":true}}
+      ],
+      "rewards": ["COIN_LOW", "HERB"],
+      "world_effects": []
+    },
+    {
+      "id": "WUJING_ORIGIN_FLOWING_SANDS",
+      "name": "流沙河恶潮",
+      "description": "被贬后的沙僧在流沙河中迎来一场持续的妖潮，旧日军将的战斗本能重新苏醒。",
+      "source": "WUJING_ORIGIN",
+      "recommended_level": 5,
+      "enemies": [
+        {"id":"SAND_SHARK","display_name":"沙河恶鲛","max_hp":105,"attack":22,"defense":7,"speed":10,"shield":3,"weaknesses":{"ICE":true}},
+        {"id":"RIVER_WRAITH","display_name":"河魇","max_hp":90,"attack":26,"defense":5,"speed":14,"shield":2,"weaknesses":{"FIRE":true}}
+      ],
+      "rewards": ["COIN_LOW", "HERB"],
+      "world_effects": []
     }
   ]
 }
