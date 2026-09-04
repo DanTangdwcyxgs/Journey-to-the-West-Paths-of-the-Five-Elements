@@ -19,6 +19,8 @@ var barrier: int = 0
 var aggro_turns: int = 0
 var speed_delta: int = 0
 var speed_effect_turns: int = 0
+var mechanic_resource: int = 0
+var mechanic_max: int = 3
 
 func _init(
 	p_id: String,
@@ -54,6 +56,8 @@ func begin_turn() -> void:
 	if not is_alive():
 		return
 	bp = mini(bp + 1, 5)
+	if mechanic_resource < mechanic_max:
+		mechanic_resource += 1
 	if broken_turns > 0:
 		broken_turns -= 1
 	if aggro_turns > 0:
@@ -80,6 +84,16 @@ func apply_speed_delta(delta: int, duration: int) -> void:
 	speed_delta = delta
 	speed = maxi(base_speed + delta, 1)
 	speed_effect_turns = maxi(duration, 0)
+
+func add_mechanic_resource(amount: int) -> int:
+	mechanic_resource = clampi(mechanic_resource + amount, 0, mechanic_max)
+	return mechanic_resource
+
+func spend_mechanic_resource(amount: int) -> bool:
+	if amount < 0 or mechanic_resource < amount:
+		return false
+	mechanic_resource -= amount
+	return true
 
 func take_damage(amount: int) -> int:
 	var incoming := maxi(amount, 0)
