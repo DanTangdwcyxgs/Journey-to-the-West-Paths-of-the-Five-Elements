@@ -44,7 +44,8 @@ static func perform(engine: CombatEngine, actor: Combatant, target: Combatant, s
 			if actor.bp < action.bp_cost:
 				return {"ok": false, "reason": "not_enough_bp"}
 			actor.bp -= action.bp_cost
-			var shield_amount := _scaled_amount(int(skill.get("shield_power", 0)), actor, "shield_multiplier")
+			var shield_modifier := float(actor.combat_modifiers.get("shield_multiplier", actor.combat_modifiers.get("shield_strength_multiplier", 1.0)))
+			var shield_amount := maxi(int(round(int(skill.get("shield_power", 0)) * shield_modifier)), 0)
 			if actor.id == "tangseng" and mechanic_cost == 1:
 				shield_amount += 8
 			target.gain_barrier(shield_amount)
