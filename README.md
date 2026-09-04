@@ -21,7 +21,19 @@ The game language is modern HD-2D JRPG:
 - character-specific combat mechanics;
 - strong JRPG menus and battle feedback.
 
-See [Game Vision & Canon](docs/game_vision.md), [Global Timeline](docs/global_timeline.md), [Story Structure & Chapter Pacing](docs/story_structure.md), and [Production Rules](docs/production_rules.md).
+See [Game Vision & Canon](docs/game_vision.md), [Global Timeline](docs/global_timeline.md), [Story Structure & Chapter Pacing](docs/story_structure.md), [Memory Campaign Rules](docs/memory_campaign.md), and [Production Rules](docs/production_rules.md).
+
+## Core Narrative Loop
+
+The defining narrative loop is:
+
+`Choose a hero → experience that hero's origin → reach a canonical encounter → recruit/meet another character → immediately unlock that character's personal story → return to the current shared journey → meet the next character → repeat → full party → ensemble journey.`
+
+**Personal-story unlock is tied to recruitment/encounter progression. It does not wait for the five-person party to be complete.**
+
+Example:
+
+`Tang → meet Wukong → Wukong story unlocks → continue Tang/Wukong journey → meet Longma → Longma story unlocks → continue → meet Bajie → Bajie story unlocks.`
 
 ## Five Protagonist Structure
 
@@ -32,10 +44,6 @@ The choice selects the player's first narrative lens. It does not rewrite world 
 > **Player order is free. World chronology is fixed.**
 
 Each protagonist has a substantial origin route. Their story eventually reaches the recognizable point where they become connected to the pilgrimage.
-
-The intended experience is:
-
-`Choose a hero → experience their origin → reach the canonical encounter → join the growing pilgrimage → unlock personal perspective chapters → assemble the five-person core → enter the shared Journey.`
 
 ## Canonical Party Backbone
 
@@ -98,11 +106,17 @@ Narrative progression is separate from combat implementation.
 - **Origin Chapter** — pre-recruitment personal story
 - **Recruitment Chapter** — canonical encounter where a character joins
 - **Shared Journey Chapter** — common pilgrimage timeline
-- **Character Perspective Chapter** — personal story after recruitment
+- **Character Perspective / Memory Chapter** — personal story unlocked when that character becomes relevant
 - **Major Trial Chapter** — major Journey to the West story / boss arc
 - **Interlude** — camp, relationship, memory and worldbuilding
 
-### Global Timeline
+### Memory Rule
+
+A recruited/encountered character immediately gains an eligible personal-story pool. Individual memories may still be spoiler-gated by the global timeline, but the basic route unlock is **not** gated by `PARTY_FULL`.
+
+`PARTY_FULL` only unlocks the ensemble layer: full formation, five-way party interactions, group scenes and full shared-party content.
+
+## Global Timeline
 
 The save system tracks chronological `current_global_timeline` separately from:
 
@@ -110,7 +124,7 @@ The save system tracks chronological `current_global_timeline` separately from:
 - each character's route progress
 - recruited characters
 - shared chapter progress
-- flashback/history unlocks
+- historical/flashback unlocks
 
 ## Repository Layout
 
@@ -123,11 +137,25 @@ combat/
   test_combat.gd     # headless combat regression tests
 
 docs/
-  architecture.md        # system architecture and extension points
-  game_vision.md         # top-level creative and adaptation canon
-  global_timeline.md     # canonical world chronology
-  story_structure.md     # character routes and chapter pacing
-  production_rules.md    # rules for future narrative/gameplay content
+  architecture.md
+  game_vision.md
+  global_timeline.md
+  global_chapter_map.md
+  story_structure.md
+  character_routes_overview.md
+  character_bible.md
+  chapter_plan.md
+  production_rules.md
+  production_plan.md
+  narrative_state.md
+  narrative_content_schema.md
+  memory_campaign.md
+  sun_wukong_route.md
+  tang_sanzang_route.md
+  bai_longma_route.md
+  zhu_bajie_route.md
+  sha_wujing_route.md
+  tv_episode_alignment.md
 
 project.godot
 .gitignore
@@ -158,6 +186,7 @@ godot --headless --path . --script res://combat/test_combat.gd
 - [x] Narrative architecture
 - [x] Five-character route structure
 - [x] Global timeline and production canon
+- [x] Progressive character-story unlock rules
 - [ ] Narrative data model implementation
 - [ ] Minimal battle UI
 
@@ -169,6 +198,7 @@ godot --headless --path . --script res://combat/test_combat.gd
 - [ ] Bai Longma transformation states
 - [ ] Skills, resources and status effects
 - [ ] Canonical recruitment event flow
+- [ ] Progressive personal-story unlock flow
 - [ ] First complete battle: Yellow Wind Demon
 - [ ] First dungeon greybox
 
@@ -176,7 +206,7 @@ godot --headless --path . --script res://combat/test_combat.gd
 
 - [ ] Full party convergence chapter
 - [ ] Major Journey to the West story arcs
-- [ ] Character perspective / memory chapters
+- [ ] Progressive character perspective / memory chapters
 - [ ] Relationship and camp dialogue system
 - [ ] Journal / 81 Trials system
 - [ ] 12–15 major trials
@@ -197,9 +227,10 @@ godot --headless --path . --script res://combat/test_combat.gd
 2. **JRPG systems are the interactive language.**
 3. **HD-2D pixel art is the presentation language.**
 4. **Canonical events anchor the world timeline.**
-5. **Character-specific stories make recruitment meaningful.**
-6. **Original content expands the journey instead of replacing it without reason.**
-7. **Narrative rules and combat rules remain independently testable.**
+5. **Meet/recruit a character, then unlock that character's story.**
+6. **Personal stories can be explored before the party is complete.**
+7. **Original content expands the journey instead of replacing it without reason.**
+8. **Narrative rules and combat rules remain independently testable.**
 
 ## Note on IP
 
