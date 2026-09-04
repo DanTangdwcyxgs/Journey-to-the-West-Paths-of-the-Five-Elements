@@ -37,13 +37,16 @@ For each route, finish these artifacts before starting the next:
 - chapter rewards;
 - milestone transitions;
 - dialogue intent;
-- recruitment handoff.
+- recruitment handoff;
+- route-story unlock schedule after the character is encountered.
 
 Exit criteria:
 - every chapter can be summarized in one sentence;
 - every chapter has a beginning, gameplay body, climax and transition;
 - every chapter has a known timeline index;
-- every canonical event is tagged.
+- every canonical event is tagged;
+- every recruited character has a defined set of immediately safe story chapters;
+- no character story is gated on `PARTY_FULL` unless it is explicitly an ensemble chapter.
 
 ## Phase 2 — Recruitment & Party Formation
 
@@ -54,26 +57,55 @@ Implement and document in chronological order:
 - Flowing Sands River / Wujing recruitment;
 - full-party convergence.
 
+Recruitment must immediately emit a character-route unlock event. The player can leave the recruitment scene and enter that character's newly available historical/personal chapters before continuing the shared road.
+
 Exit criteria:
 - starting as any hero eventually reaches the same canonical shared timeline;
 - recruitment is driven by narrative milestones;
-- party state is deterministic and save-safe.
+- party state is deterministic and save-safe;
+- each recruited character exposes the appropriate portion of their personal story immediately.
 
-## Phase 3 — Memory / Perspective Campaign
+## Phase 3 — Progressive Character Memory / Perspective Layer
 
-After `PARTY_FULL`, implement the user's intended "everyone remembers their own story" layer.
+This phase is **not** a single post-`PARTY_FULL` campaign.
+
+The memory/perspective layer begins during Phase 2 and continues through the shared pilgrimage.
+
+Core rule:
+
+> **Meet/recruit a character → unlock that character's story → return to the current journey.**
+
+Example:
+
+```text
+Tang starts
+→ Five Elements Mountain
+→ Wukong recruited
+→ Wukong story becomes available
+→ player may enter Wukong memories
+→ return to Tang + Wukong current journey
+→ Longma joins
+→ Longma story becomes available
+→ return to current journey
+→ Bajie joins
+→ Bajie story becomes available
+```
 
 Rules:
-- each protagonist receives a curated sequence of playable memories;
-- memories are not generic flashbacks but real short chapters;
-- each memory explains a current relationship, fear, habit, ability or unresolved conflict;
-- memory chapters are unlocked in a controlled order so they do not spoil future shared content;
-- completing the required memory set advances the campaign to the next shared chapter block.
+- each character receives a curated sequence of playable personal chapters;
+- the route unlocks progressively from the moment that character becomes relevant;
+- historical chapters are gated individually for spoiler safety;
+- memories never rewind the global world timeline;
+- exiting a memory returns the player to the exact previous shared-world state;
+- the starting character's route can remain more extensive because it is the player's first narrative lens;
+- later recruits do not require the party to be complete before their stories can be explored;
+- `PARTY_FULL` may unlock ensemble memories, group scenes and multi-character relationship content, but is not the basic gate for individual memories.
 
 Exit criteria:
-- all five characters have meaningful memory arcs;
-- memory completion is save-tracked;
-- the player feels that all five lives have now been understood before the story accelerates into the long shared pilgrimage.
+- every protagonist has an independently unlockable story route;
+- unlock timing is tied to recruitment/encounter milestones;
+- memory completion is save-tracked separately from world progress;
+- the system supports returning to the shared chapter without chronology corruption.
 
 ## Phase 4 — Shared Pilgrimage
 
@@ -89,7 +121,10 @@ Each major arc gets:
 - boss/set piece;
 - consequence;
 - camp/relationship scene;
+- optional newly unlocked character memories where appropriate;
 - next destination.
+
+The shared campaign should alternate naturally between main-road advancement and character-story deepening rather than treating memories as a separate endgame mode.
 
 ## Phase 5 — Systems Expansion
 
