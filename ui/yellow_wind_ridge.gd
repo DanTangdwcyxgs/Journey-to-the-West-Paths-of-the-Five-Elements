@@ -142,11 +142,13 @@ func _resolve_choice(stage: Dictionary, choice: Dictionary) -> void:
 
 func _resolve_event(stage: Dictionary) -> void:
 	ridge.complete_stage(narrative, str(stage.get("id", "")))
-	narrative.state.add_world_rumor(str(stage.get("id", "")), str(stage.get("reward_intel", "")))
+	narrative.state.add_world_rumor(str(stage.get("id", "")))
 	narrative.save()
 	_refresh()
 
 func _enter_boss(stage: Dictionary) -> void:
+	ridge.complete_stage(narrative, str(stage.get("id", "")))
+	narrative.save()
 	var bounty_id := str(stage.get("bounty_id", "BOUNTY_YELLOW_FANG"))
 	if BountyEncounterState.start(bounty_id):
 		get_tree().change_scene_to_file("res://ui/battle_ui.tscn")
