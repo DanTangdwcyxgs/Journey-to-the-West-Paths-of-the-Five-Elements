@@ -1,0 +1,64 @@
+{
+  "nodes": [
+    {
+      "id": "FIVE_ELEMENTS_MOUNTAIN",
+      "name": "五行山",
+      "timeline": 100,
+      "type": "STORY",
+      "description": "取经队伍真正踏上西游路的起点。山下与山中仍残留着大圣旧日的余波。",
+      "connections": ["EAGLE_SORROW", "BLACK_WIND_MOUNTAINS"],
+      "required_milestones": ["WUKONG_RECRUITED"],
+      "bounties": []
+    },
+    {
+      "id": "EAGLE_SORROW",
+      "name": "鹰愁涧",
+      "timeline": 110,
+      "type": "STORY",
+      "description": "白龙马身份与取经职责交汇之地，也是第一处允许玩家偏离主线短暂探索的区域。",
+      "connections": ["FIVE_ELEMENTS_MOUNTAIN", "BLACK_WIND_MOUNTAINS"],
+      "required_milestones": ["WUKONG_RECRUITED"],
+      "bounties": ["BOUNTY_YELLOW_FANG"]
+    },
+    {
+      "id": "BLACK_WIND_MOUNTAINS",
+      "name": "黑风山北道",
+      "timeline": 120,
+      "type": "EXPEDITION",
+      "description": "主线附近的可选讨伐路线。传闻会把玩家引向妖怪踪迹，而不是强制改变西游主线。",
+      "connections": ["FIVE_ELEMENTS_MOUNTAIN", "EAGLE_SORROW", "GAOJIAZHUANG"],
+      "required_milestones": ["WUKONG_RECRUITED"],
+      "bounties": ["BOUNTY_YELLOW_FANG"]
+    },
+    {
+      "id": "GAOJIAZHUANG",
+      "name": "高老庄",
+      "timeline": 130,
+      "type": "STORY",
+      "description": "猪八戒登场的关键节点。玩家可以在推进主线前先处理附近传闻与讨伐委托。",
+      "connections": ["BLACK_WIND_MOUNTAINS", "FLOWING_SANDS"],
+      "required_milestones": ["BAI_LONGMA_RECRUITED"],
+      "bounties": ["BOUNTY_IRON_HORN"]
+    },
+    {
+      "id": "FLOWING_SANDS",
+      "name": "流沙河",
+      "timeline": 150,
+      "type": "STORY",
+      "description": "沙悟净加入前后的险地。河道、古渡与水下遗迹提供后续探索内容的落点。",
+      "connections": ["GAOJIAZHUANG", "DRAGON_BONE_SANCTUM"],
+      "required_milestones": ["ZHU_BAJIE_RECRUITED"],
+      "bounties": []
+    },
+    {
+      "id": "DRAGON_BONE_SANCTUM",
+      "name": "龙骨秘境",
+      "timeline": 170,
+      "type": "EXPEDITION",
+      "description": "五人集结后开放的高威胁挑战区。它属于西游主线之外的扩展内容，不会覆盖共享章节。",
+      "connections": ["FLOWING_SANDS"],
+      "required_milestones": ["SHA_WUJING_RECRUITED"],
+      "bounties": ["BOUNTY_DRAGON_BONE_RECLUSE"]
+    }
+  ]
+}
