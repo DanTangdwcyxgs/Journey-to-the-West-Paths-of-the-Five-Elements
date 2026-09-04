@@ -1,5 +1,5 @@
 {
-  "schema_version": 4,
+  "schema_version": 5,
   "characters": {
     "WUKONG": {
       "skills": [
@@ -11,7 +11,7 @@
     "TANG": {
       "skills": [
         {"id":"TANG_STAFF","name":"锡杖","element":"strike","power":16,"shield_hit":1,"bp_cost":0,"kind":"damage"},
-        {"id":"TANG_HEAL","name":"慈悲咒","element":"holy","power":0,"shield_hit":0,"bp_cost":1,"kind":"heal","heal_power":48,"mechanic_gain":1},
+        {"id":"TANG_HEAL","name":"慈悲咒","element":"holy","power":0,"shield_hit":0,"bp_cost":1,"kind":"heal","heal_power":48,"mechanic_gain":1,"consume_mechanic_if_available":true,"mechanic_consume_amount":1,"heal_bonus_per_mechanic":12},
         {"id":"TANG_SHIELD","name":"护心法","element":"holy","power":0,"shield_hit":0,"bp_cost":2,"kind":"shield","shield_power":32,"mechanic_cost":1}
       ]
     },
