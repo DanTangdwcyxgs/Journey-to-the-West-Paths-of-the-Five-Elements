@@ -29,7 +29,8 @@ static func _build_combatant(character_id: String, profile: Dictionary, row: Str
 		defense_value,
 		speed_value,
 		int(profile.get("shield", 1)),
-		profile.get("weaknesses", {}).duplicate(true)
+		profile.get("weaknesses", {}).duplicate(true),
+		row
 	)
 
 static func _load_profiles() -> Dictionary:
