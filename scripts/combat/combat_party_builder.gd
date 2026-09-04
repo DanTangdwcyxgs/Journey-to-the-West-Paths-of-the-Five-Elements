@@ -57,8 +57,6 @@ static func _get_origin_battle_character() -> String:
 static func _apply_origin_choices(unit: Combatant, origin_character: String, choices: Dictionary) -> void:
 	if unit == null or unit.id != origin_character.to_lower():
 		return
-	# All non-legacy route traits are defined in origin_events.json. This keeps
-	# route-specific combat tuning out of the builder and makes new choices data-driven.
 	var event_manager := OriginEventManager.new()
 	for chapter_id in choices.keys():
 		var choice_id := str(choices[chapter_id])
@@ -66,19 +64,15 @@ static func _apply_origin_choices(unit: Combatant, origin_character: String, cho
 		if effects.is_empty():
 			continue
 		var traits: Dictionary = effects.get("combat_modifiers", {})
-		_apply_choice_traits(unit, traits)
-
-static func _apply_choice_traits(unit: Combatant, traits: Dictionary) -> void:
-	var attack_bonus := int(traits.get("attack_bonus", 0))
-	var defense_bonus := int(traits.get("defense_bonus", 0))
-	var speed_bonus := int(traits.get("speed_bonus", 0))
-	unit.attack += attack_bonus
-	unit.defense += defense_bonus
-	unit.speed += speed_bonus
-	unit.base_speed += speed_bonus
-	for key in ["healing_multiplier", "shield_multiplier", "control_multiplier", "damage_multiplier"]:
-		if traits.has(key):
-			unit.combat_modifiers[key] = float(traits[key])
+		unit.attack += int(traits.get("attack_bonus", 0))
+		unit.defense += int(traits.get("defense_bonus", 0))
+		var speed_bonus := int(traits.get("speed_bonus", 0))
+		unit.speed += speed_bonus
+		unit.base_speed += speed_bonus
+		for key in ["healing_multiplier", "shield_multiplier", "control_multiplier", "shield_damage_bonus", "aggro_multiplier"]:
+			if traits.has(key):
+				unit.combat_modifiers[key] = float(traits[key])
+		unit.combat_modifiers["origin_choice_%s" % chapter_id] = choice_id
 
 static func _build_combatant(character_id: String, profile: Dictionary, mechanic: Dictionary, row: String) -> Combatant:
 	var modifier: Dictionary = profile.get("%s_modifier" % row, {})
