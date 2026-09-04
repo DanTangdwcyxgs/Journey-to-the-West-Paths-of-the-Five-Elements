@@ -70,9 +70,11 @@ func _apply_loadout_modifiers() -> void:
 	for ally in allies:
 		var effects := loadout.get_effects(ally.id.to_upper())
 		ally.combat_modifiers = effects.duplicate(true)
-		if effects.has("defense_multiplier"): ally.defense = maxi(int(round(ally.defense * float(effects["defense_multiplier"]))), 1)
-		if effects.has("damage_multiplier"): ally.attack = maxi(int(round(ally.attack * float(effects["damage_multiplier"]))), 1)
-		if effects.has("speed_modifier"): ally.speed = maxi(int(round(ally.speed * float(effects["speed_modifier"]))), 1); ally.base_speed = ally.speed
+		if effects.has("defense_multiplier"): ally.defense = maxi(int(round(ally.defense * float(effects["defense_multiplier"])), 1)
+		if effects.has("damage_multiplier"): ally.attack = maxi(int(round(ally.attack * float(effects["damage_multiplier"])), 1)
+		if effects.has("speed_modifier"):
+			ally.speed = maxi(int(round(ally.speed * float(effects["speed_modifier"])), 1)
+			ally.base_speed = ally.speed
 
 func _build_ui() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -197,7 +199,10 @@ func _format_rewards(rewards:Array) -> String:
 
 func _return_from_battle() -> void:
 	if not bounty_id.is_empty() and not bounty_resolved: BountyEncounterState.clear()
-	get_tree().change_scene_to_file("res://ui/world_map.tscn")
+	if not source_stage_id.is_empty() and bounty_resolved:
+		get_tree().change_scene_to_file("res://ui/yellow_wind_ridge.tscn")
+	else:
+		get_tree().change_scene_to_file("res://ui/world_map.tscn")
 
 func _boss() -> Combatant: return enemies[0] if not enemies.is_empty() else null
 func _name(unit:Combatant) -> String: return NAMES.get(unit.id,unit.display_name)
