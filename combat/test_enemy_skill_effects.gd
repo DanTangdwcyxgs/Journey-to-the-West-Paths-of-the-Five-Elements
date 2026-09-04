@@ -25,10 +25,27 @@ static func run() -> void:
 	assert(ally.speed == before_speed - 4)
 	assert(ally.speed_effect_turns == 2)
 
+	# A weaker refresh must not overwrite a stronger slow, but it can extend duration.
+	var weaker_slow := CombatAction.new("TEST_SLOW_WEAK", "微寒", "ice", 1, 0, 0, {"effect":"slow","effect_value":-2,"effect_duration":4})
+	result = engine.perform_action(actor, ally, weaker_slow)
+	assert(result.get("ok", false))
+	assert(ally.speed == before_speed - 4)
+	assert(ally.speed_effect_turns == 4)
+
 	ally.aggro_turns = 0
 	var taunt_action := CombatAction.new("TEST_TAUNT", "挑衅", "strike", 1, 0, 0, {"effect":"taunt","effect_value":1,"effect_duration":2})
 	result = engine.perform_action(actor, ally, taunt_action)
 	assert(result.get("ok", false))
 	assert(ally.aggro_turns == 2)
+
+	var shield_actor := Combatant.new("stone_imp", "顽石小妖", 100, 14, 6, 6, 3, {})
+	var shield_target := Combatant.new("ally", "玩家", 100, 20, 5, 10, 2, {})
+	shield_actor.combat_modifiers["target_profile"] = "lowest_hp"
+	var shield_action := CombatAction.new("TEST_GUARD", "抱石", "earth", 1, 0, 0, {"effect":"shield","effect_value":10,"effect_target":"self"})
+	engine.setup([shield_target], [shield_actor])
+	result = engine.perform_action(shield_actor, shield_target, shield_action)
+	assert(result.get("ok", false))
+	assert(shield_actor.barrier == 10)
+	assert(shield_target.barrier == 0)
 
 	print("ALL ENEMY SKILL EFFECT TESTS PASSED")
