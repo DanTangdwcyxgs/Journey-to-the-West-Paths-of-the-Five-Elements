@@ -27,6 +27,9 @@ static func start_encounter(encounter_type: String, encounter_id: String, source
 static func start_narrative_encounter(encounter_id: String, chapter_id: String, route_id: String) -> bool:
 	return start_encounter("origin", encounter_id, "", chapter_id, route_id)
 
+static func start_shared_encounter(encounter_id: String, chapter_id: String) -> bool:
+	return start_encounter("shared", encounter_id, "", chapter_id, "SHARED_JOURNEY")
+
 static func get_active() -> String:
 	return str(get_active_record().get("encounter_id", get_active_record().get("bounty_id", "")))
 
