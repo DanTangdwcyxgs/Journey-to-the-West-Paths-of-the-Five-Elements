@@ -20,6 +20,15 @@ func _initialize() -> void:
 	_assert(heal_result.get("ok", false), "targeted healing should work")
 	_assert_equal(tang.hp, 168, "heal should restore the configured amount")
 	_assert_equal(tang.bp, 1, "heal should spend one BP")
+	_assert_equal(tang.mechanic_resource, 1, "heal should build one Mercy when no Mercy is stored")
+
+	var mercy_heal_target := Combatant.new("mercy_target", "受伤队友", 200, 10, 5, 8, 2, {})
+	mercy_heal_target.hp = 100
+	tang.bp = 2
+	var mercy_heal := SkillRuntime.perform(engine, tang, mercy_heal_target, heal)
+	_assert(mercy_heal.get("ok", false), "stored Mercy healing should work")
+	_assert_equal(mercy_heal.get("healed", 0), 60, "stored Mercy should add twelve healing")
+	_assert_equal(tang.mechanic_resource, 1, "healing with stored Mercy spends then rebuilds Mercy")
 
 	tang.bp = 2
 	var shield_result := SkillRuntime.perform(engine, tang, wukong, shield)
@@ -63,6 +72,28 @@ func _initialize() -> void:
 	_assert(second_slow.get("ok", false), "second Tide slow should execute")
 	_assert_equal(wujing.mechanic_resource, 0, "stored Tide should be consumed")
 	_assert_equal(second_slow.get("effect_duration", 0), 3, "stored Tide should extend control duration")
+
+	var longma := Combatant.new("longma", "白龙马", 120, 20, 10, 12, 2, {})
+	var longma_target := Combatant.new("longma_target", "后排妖怪", 200, 10, 5, 8, 2, {}, "back")
+	var longma_engine := CombatEngine.new()
+	longma_engine.setup([longma], [longma_target])
+	var longma_wind := SkillCatalog.get_skill("LONGMA", "LONGMA_WIND")
+	longma.mechanic_resource = 1
+	var longma_shift := SkillCatalog.get_skill("LONGMA", "LONGMA_SHIFT")
+	var shift_result := SkillRuntime.perform(longma_engine, longma, longma, longma_shift)
+	_assert(shift_result.get("ok", false), "Longma form shift should work")
+	_assert_equal(longma.longma_form, "eagle", "first Longma shift should enter eagle form")
+	var hp_before_form := longma_target.hp
+	longma.bp = 1
+	var wind_result := SkillRuntime.perform(longma_engine, longma, longma_target, longma_wind)
+	_assert(wind_result.get("ok", false), "Longma damage should work while transformed")
+	var transformed_damage := wind_result.get("damage", 0)
+	longma.clear_longma_form()
+	longma.bp = 1
+	var plain_result := SkillRuntime.perform(longma_engine, longma, longma_target, longma_wind)
+	_assert(plain_result.get("ok", false), "Longma damage should work in horse form")
+	_assert(transformed_damage > plain_result.get("damage", 0), "Longma transformed skill should deal increased damage")
+	_assert(hp_before_form > longma_target.hp, "Longma skill should damage the target")
 
 	print("ALL SKILL TESTS PASSED")
 	quit(0)
