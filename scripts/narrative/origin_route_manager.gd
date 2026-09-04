@@ -46,16 +46,6 @@ func is_complete(manager: NarrativeManager, character_id: String) -> bool:
 	return get_current_index(manager, character_id) >= get_chapters(character_id).size()
 
 func complete_current(manager: NarrativeManager, character_id: String) -> Dictionary:
-	var chapter := get_current_chapter(manager, character_id)
-	if manager == null or chapter.is_empty():
+	if manager == null:
 		return {}
-	var chapter_id := str(chapter.get("id", ""))
-	if chapter_id == "":
-		return {}
-	manager.complete_chapter(chapter_id, false)
-	manager.state.set_origin_progress(str(get_route(character_id).get("route_id", "%s_ORIGIN" % character_id)), _next_chapter_id(manager, character_id))
-	return chapter
-
-func _next_chapter_id(manager: NarrativeManager, character_id: String) -> String:
-	var next := get_current_chapter(manager, character_id)
-	return str(next.get("id", "")) if not next.is_empty() else ""
+	return manager.complete_origin_chapter(character_id)
