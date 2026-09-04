@@ -82,6 +82,24 @@ func complete_origin_chapter(character_id: String) -> Dictionary:
 		state.unlocked_chapters.append(next_id)
 	return chapter
 
+func handoff_origin_to_shared(character_id: String) -> bool:
+	if not StartRouteCatalog.is_valid_start(character_id):
+		return false
+	var status := get_origin_status(character_id)
+	if not status.get("complete", false):
+		return false
+	var route := StartRouteCatalog.get_route(character_id)
+	var handoff_chapter := str(route.get("handoff_shared_chapter", ""))
+	if handoff_chapter == "":
+		return false
+	state.mark_route_complete(character_id)
+	var milestone := str(route.get("handoff_milestone", ""))
+	if milestone != "":
+		advance_world_milestone(milestone, _handoff_timeline(character_id))
+	set_shared_chapter(handoff_chapter)
+	_reconcile_recruitment_for_handoff(character_id)
+	return true
+
 func get_origin_status(character_id: String) -> Dictionary:
 	var route := origin_routes.get_route(character_id)
 	var current := origin_routes.get_current_chapter(self, character_id)
@@ -152,3 +170,27 @@ func load(path: String = NarrativeSave.SAVE_PATH) -> bool:
 		return false
 	state = restored
 	return true
+
+func _handoff_timeline(character_id: String) -> int:
+	match character_id:
+		"WUKONG", "TANG": return 100
+		"LONGMA": return 110
+		"BAJIE": return 130
+		"WUJING": return 150
+	return state.current_global_timeline
+
+func _reconcile_recruitment_for_handoff(character_id: String) -> void:
+	var roster: Array = []
+	match character_id:
+		"WUKONG", "TANG": roster = ["TANG", "WUKONG"]
+		"LONGMA": roster = ["TANG", "WUKONG", "LONGMA"]
+		"BAJIE": roster = ["TANG", "WUKONG", "LONGMA", "BAJIE"]
+		"WUJING": roster = ["TANG", "WUKONG", "LONGMA", "BAJIE", "WUJING"]
+	for recruited_id in roster:
+		var cid := str(recruited_id)
+		var memories: Array[String] = []
+		if cid != character_id:
+			var chapters := origin_routes.get_chapters(cid)
+			for i in range(min(2, chapters.size())):
+				memories.append(str(chapters[i].get("id", "")))
+		encounter_character(cid, memories)
