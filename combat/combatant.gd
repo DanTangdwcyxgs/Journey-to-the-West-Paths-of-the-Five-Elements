@@ -102,3 +102,15 @@ func take_damage(amount: int) -> int:
 	var actual := incoming - absorbed
 	hp = maxi(hp - actual, 0)
 	return actual
+
+func get_status_summary() -> String:
+	var statuses: Array[String] = []
+	if is_broken():
+		statuses.append("Break %dT" % broken_turns)
+	if barrier > 0:
+		statuses.append("护盾 +%d" % barrier)
+	if aggro_turns > 0:
+		statuses.append("嘲讽 %dT" % aggro_turns)
+	if speed_effect_turns > 0 and speed_delta != 0:
+		statuses.append("速度 %+d %dT" % [speed_delta, speed_effect_turns])
+	return "、".join(statuses) if not statuses.is_empty() else "无状态"
