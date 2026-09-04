@@ -25,6 +25,19 @@ static func run() -> void:
 	var neutral_action := CombatAction.new("TEST_EARTH", "土击", "earth", 20, 1, 0)
 	assert(manager.choose_ai_target(spirit, [water_weak, fire_weak], neutral_action) == water_weak)
 
+	var taunt_target := Combatant.new("taunt", "嘲讽前排", 100, 10, 5, 8, 2, {})
+	taunt_target.aggro_turns = 2
+	var attacker := Combatant.new("attacker", "战术妖", 100, 20, 5, 8, 2, {})
+	attacker.combat_modifiers["target_profile"] = "highest_attack"
+	assert(manager.choose_ai_target(attacker, [water_weak, taunt_target], neutral_action) == taunt_target)
+	taunt_target.aggro_turns = 0
+	assert(manager.choose_ai_target(attacker, [water_weak, fire_weak], neutral_action) == fire_weak)
+
+	var low_defender := Combatant.new("low_def", "薄甲目标", 100, 12, 2, 8, 2, {})
+	var high_defender := Combatant.new("high_def", "厚甲目标", 100, 12, 12, 8, 2, {})
+	attacker.combat_modifiers["target_profile"] = "lowest_defense"
+	assert(manager.choose_ai_target(attacker, [high_defender, low_defender], neutral_action) == low_defender)
+
 	var fallback := Combatant.new("fallback", "无技能妖", 100, 12, 4, 8, 2, {})
 	var fallback_action := manager.choose_ai_action(fallback, [], 4)
 	assert(fallback_action.id == "NORMAL_ATTACK")
