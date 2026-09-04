@@ -31,6 +31,16 @@ The defining narrative loop is:
 
 **Personal-story unlock is tied to recruitment/encounter progression. It does not wait for the five-person party to be complete.**
 
+## Exploration Loop
+
+After the shared journey reaches a valid world node, the player can enter the world map, travel between connected locations, hear local rumors and convert those rumors into persistent bounty intelligence. Exploration records visited nodes, heard rumors and discovered bounties without rewinding or rewriting the main chronology.
+
+The current exploration spine is:
+
+`五行山 → 鹰愁涧 → 黑风山北道 → 高老庄 → 流沙河 → 龙骨秘境`
+
+The world map is data-driven through `data/world/world_map.json` and `data/world/rumors.json`; runtime state is persisted in the narrative save.
+
 ## Gameplay Pillars
 
 - **5-character party:** Tang Sanzang, Sun Wukong, Zhu Bajie, Sha Wujing, Bai Longma
@@ -43,6 +53,7 @@ The defining narrative loop is:
 - **Character-specific mechanics:** every protagonist changes how encounters are approached
 - **Bai Longma transformation:** delayed full combat identity and multiple forms
 - **81 Trials:** major stories, personal quests, elite encounters and optional events
+- **World exploration:** connected map nodes, rumors, bounty discovery and persistent journey information
 
 ## Current Combat Foundation
 
@@ -61,6 +72,19 @@ Implemented and connected:
 - data-driven skill catalog
 - damage / heal / barrier / slow / taunt / self-buff skill effects
 - regression tests for combat and skill runtime
+- persistent battle results, inventory rewards and journey log
+
+## Current World Foundation
+
+Implemented and connected:
+
+- data-driven world map nodes and connections
+- timeline / milestone travel gates
+- persistent current location and visited nodes
+- local rumor discovery
+- persistent bounty intelligence from rumors
+- world-map UI linked from the journey screen
+- regression checks for travel and rumor discovery
 
 ## Roadmap
 
@@ -82,6 +106,8 @@ Implemented and connected:
 - [x] Basic front/back combat effect
 - [x] Data-driven skill definitions
 - [x] Skill runtime effects
+- [x] Persistent inventory / rewards / journey log
+- [x] World map / travel / rumor discovery layer
 - [ ] Narrative data model implementation
 - [ ] Minimal battle UI
 
@@ -94,6 +120,7 @@ Implemented and connected:
 - [x] Basic skills/resources foundation
 - [x] Canonical recruitment event flow
 - [x] Progressive personal-story unlock flow
+- [x] World exploration prototype
 - [ ] Status-effect presentation
 - [ ] First complete battle: Yellow Wind Demon
 - [ ] First dungeon greybox
