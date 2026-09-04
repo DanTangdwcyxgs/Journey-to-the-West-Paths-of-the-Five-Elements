@@ -19,12 +19,11 @@ const CHARACTER_DESCRIPTIONS := {
 
 var narrative := NarrativeManager.new()
 var selected_character := "WUKONG"
+var selected_label: Label
 var status_label: Label
 var current_label: Label
-var route_label: Label
 var memory_list: ItemList
 var continue_button: Button
-var new_game_panel: Control
 
 func _ready() -> void:
 	_build_ui()
@@ -32,7 +31,7 @@ func _ready() -> void:
 
 func _build_ui() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	
+
 	var background := ColorRect.new()
 	background.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	background.color = Color("111018")
@@ -91,12 +90,11 @@ func _build_ui() -> void:
 		button.pressed.connect(_select_character.bind(character_id))
 		grid.add_child(button)
 
-	var selected := Label.new()
-	selected.name = "SelectedCharacter"
-	selected.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	selected.custom_minimum_size = Vector2(0, 80)
-	selected.add_theme_font_size_override("font_size", 16)
-	left.add_child(selected)
+	selected_label = Label.new()
+	selected_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	selected_label.custom_minimum_size = Vector2(0, 80)
+	selected_label.add_theme_font_size_override("font_size", 16)
+	left.add_child(selected_label)
 
 	var actions := HBoxContainer.new()
 	actions.add_theme_constant_override("separation", 8)
@@ -181,13 +179,10 @@ func _open_battle_demo() -> void:
 func _refresh_ui() -> void:
 	if status_label == null:
 		return
-	
-	var selected_node := get_node_or_null("/root/MainMenu/SelectedCharacter") as Label
-	if selected_node != null:
-		selected_node.text = "%s\n%s" % [CHARACTER_NAMES[selected_character], CHARACTER_DESCRIPTIONS[selected_character]]
-	
+
+	selected_label.text = "%s\n%s" % [CHARACTER_NAMES[selected_character], CHARACTER_DESCRIPTIONS[selected_character]]
 	continue_button.disabled = not NarrativeSave.has_save()
-	
+
 	if narrative.state.starting_character == "":
 		current_label.text = "尚未开始旅程。\n选择任意一人开始；世界时间线仍然遵循固定西游顺序。"
 	else:
@@ -197,7 +192,7 @@ func _refresh_ui() -> void:
 			narrative.state.current_shared_chapter if narrative.state.current_shared_chapter != "" else "尚未进入共享章节",
 			_join_character_names(narrative.state.recruited_characters),
 		]
-	
+
 	memory_list.clear()
 	if narrative.state.available_memory_chapters.is_empty() and narrative.state.played_memory_chapters.is_empty():
 		memory_list.add_item("暂无回忆。遇见新伙伴后会立即出现。")
