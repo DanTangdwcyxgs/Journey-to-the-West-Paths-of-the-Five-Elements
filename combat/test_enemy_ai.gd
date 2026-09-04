@@ -17,6 +17,14 @@ static func run() -> void:
 	var low_hp_action := manager.choose_ai_action(spirit, [], 1)
 	assert(low_hp_action.id == "SPIRIT_ROCK")
 
+	var fire_weak := Combatant.new("fire_weak", "怕火妖怪", 100, 10, 5, 8, 2, {"fire": true})
+	var water_weak := Combatant.new("water_weak", "怕水妖怪", 100, 10, 5, 8, 2, {"water": true})
+	var fire_action := CombatAction.new("TEST_FIRE", "火术", "fire", 20, 1, 0)
+	assert(manager.choose_ai_target(spirit, [water_weak, fire_weak], fire_action) == fire_weak)
+
+	var neutral_action := CombatAction.new("TEST_EARTH", "土击", "earth", 20, 1, 0)
+	assert(manager.choose_ai_target(spirit, [water_weak, fire_weak], neutral_action) == water_weak)
+
 	var fallback := Combatant.new("fallback", "无技能妖", 100, 12, 4, 8, 2, {})
 	var fallback_action := manager.choose_ai_action(fallback, [], 4)
 	assert(fallback_action.id == "NORMAL_ATTACK")
