@@ -107,7 +107,8 @@ Implemented and connected:
 - cave → bounty battle source-stage handoff
 - post-victory return into the Yellow Wind Ridge flow
 - camp / supply / preparation entry points
-- regression checks for travel, rumor discovery, bounty handoff, combat status, Longma transformation, normal encounter construction and recruited roster handling
+- unified origin-route lifecycle API with deterministic chapter unlock/progress reporting
+- regression checks for travel, rumor discovery, bounty handoff, combat status, Longma transformation, normal encounter construction, recruited roster handling, and origin route lifecycle
 
 ## Roadmap
 
@@ -135,7 +136,7 @@ Implemented and connected:
 - [x] World map / travel / rumor discovery layer
 - [x] First bounty encounter handoff
 - [x] Combat status presentation
-- [ ] Narrative data model implementation
+- [x] Narrative data model implementation
 - [ ] Minimal battle UI polish
 
 ### Phase 2 — Playable Vertical Slice
