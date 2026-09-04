@@ -4,6 +4,7 @@ extends Control
 const NAMES := {"tangseng":"唐三藏", "wukong":"孙悟空", "bajie":"猪八戒", "wujing":"沙悟净", "longma":"白龙马", "yellow_wind":"黄风妖王", "sand_guard":"沙甲妖兵", "wind_spirit":"风砂精", "cave_ghoul":"洞窟恶鬼", "stone_imp":"顽石小妖", "crab_guard":"蟹将", "shrimp_spear":"虾兵", "heavenly_soldier":"天兵", "heavenly_archer":"天将弓手"}
 const MECHANIC_NAMES := {"tangseng":"慈悲", "wukong":"战意", "bajie":"怒气", "wujing":"潮势", "longma":"龙息"}
 const CAVE_PROGRESS_PREFIX := "YELLOW_WIND_CAVE_ROOM_"
+const SHARED_BATTLE_MILESTONE_PREFIX := "SHARED_BATTLE_"
 
 var engine := CombatEngine.new()
 var party := PartyManager.new()
@@ -168,7 +169,7 @@ func _use_skill(skill: Dictionary, boosted: bool) -> void:
 
 func _use_item(item_id: String) -> void:
 	if current_actor == null or not current_actor.is_alive() or not battle_inventory.has_item(item_id): return
-	var item:Dictionary = item_catalog.get(item_id, {}); var item_type := str(item.get("type","")); var amount := int(item.get("amount",0)); var target:Combatant = selected_ally if selected_ally != null and selected_ally.is_alive() else current_actor
+	var item:Dictionary = item_catalog.get(item_id, {}); var item_type := str(item.get("type","")); var amount := int(item.get("amount",0)); var target: Combatant = selected_ally if selected_ally != null and selected_ally.is_alive() else current_actor
 	if item_type == "HEAL":
 		var living := allies.filter(func(unit): return unit.is_alive()); if living.is_empty(): return
 		if not target in living: target = living[0]
@@ -268,6 +269,7 @@ func _on_combat_finished(winner:String) -> void:
 			if shared_chapter.is_empty() or not SharedJourneyManager.can_enter(source_chapter_id, narrative.state):
 				status_label.text = "共享战斗胜利，但当前章节状态已经变化。"
 				return
+			narrative.state.record_milestone("%s%s" % [SHARED_BATTLE_MILESTONE_PREFIX, encounter_id], narrative.state.current_global_timeline)
 			if not SharedJourneyManager.complete(source_chapter_id, narrative):
 				status_label.text = "共享战斗胜利，但主线推进失败。"
 				return
