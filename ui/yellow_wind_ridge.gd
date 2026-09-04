@@ -105,8 +105,7 @@ func _render_stage(stage_id: String) -> void:
 	var completed := narrative.state.completed_milestones.has(str(stage.get("milestone", "")))
 	detail_label.text = "%s\n\n%s" % [str(stage.get("name", stage_id)), str(stage.get("description", ""))]
 	if completed:
-		detail_label.text += "\n\n已完成：这段记忆不会重写共享西游时间线。"
-		if stage.get("bounty_id", "") != "": _add_boss_button(stage)
+		detail_label.text += "\n\n已完成：风沙已经散去，这一段支线不会重复开启妖王战。"
 		return
 	var type := str(stage.get("type", "EVENT"))
 	if type == "CHOICE":
@@ -118,7 +117,7 @@ func _render_stage(stage_id: String) -> void:
 			button.pressed.connect(_resolve_choice.bind(stage, choice))
 			action_box.add_child(button)
 	elif type == "BOSS_GATE":
-		_add_boss_button(stage)
+		_add_dungeon_button()
 	else:
 		var button := Button.new()
 		button.text = "调查并记录情报"
@@ -126,7 +125,7 @@ func _render_stage(stage_id: String) -> void:
 		button.pressed.connect(_resolve_event.bind(stage))
 		action_box.add_child(button)
 
-func _add_boss_button(stage: Dictionary) -> void:
+func _add_dungeon_button() -> void:
 	var button := Button.new()
 	button.text = "进入黄风洞 · 灰盒地城"
 	button.custom_minimum_size = Vector2(0, 54)
