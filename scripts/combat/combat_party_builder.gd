@@ -57,18 +57,8 @@ static func _get_origin_battle_character() -> String:
 static func _apply_origin_choices(unit: Combatant, origin_character: String, choices: Dictionary) -> void:
 	if unit == null or unit.id != origin_character.to_lower():
 		return
-	# Wukong retains the original hand-authored mapping for compatibility with the
-	# earlier route build. Other routes use the generic combat_modifiers data stored
-	# on each choice in origin_events.json.
-	if origin_character == "WUKONG":
-		if str(choices.get("WUK-03", "")) == "SEEK_POWER":
-			unit.attack += 2
-		if str(choices.get("WUK-08", "")) == "REJECT_BINDING":
-			unit.speed += 1
-			unit.base_speed += 1
-		if str(choices.get("WUK-13", "")) == "ENDURE":
-			unit.defense += 2
-		return
+	# All non-legacy route traits are defined in origin_events.json. This keeps
+	# route-specific combat tuning out of the builder and makes new choices data-driven.
 	var event_manager := OriginEventManager.new()
 	for chapter_id in choices.keys():
 		var choice_id := str(choices[chapter_id])
@@ -76,14 +66,19 @@ static func _apply_origin_choices(unit: Combatant, origin_character: String, cho
 		if effects.is_empty():
 			continue
 		var traits: Dictionary = effects.get("combat_modifiers", {})
-		unit.attack += int(traits.get("attack_bonus", 0))
-		unit.defense += int(traits.get("defense_bonus", 0))
-		unit.speed += int(traits.get("speed_bonus", 0))
-		unit.base_speed += int(traits.get("speed_bonus", 0))
-		if traits.has("healing_multiplier") or traits.has("shield_multiplier"):
-			for key in ["healing_multiplier", "shield_multiplier", "control_multiplier"]:
-				if traits.has(key):
-					unit.combat_modifiers[key] = float(traits[key])
+		_apply_choice_traits(unit, traits)
+
+static func _apply_choice_traits(unit: Combatant, traits: Dictionary) -> void:
+	var attack_bonus := int(traits.get("attack_bonus", 0))
+	var defense_bonus := int(traits.get("defense_bonus", 0))
+	var speed_bonus := int(traits.get("speed_bonus", 0))
+	unit.attack += attack_bonus
+	unit.defense += defense_bonus
+	unit.speed += speed_bonus
+	unit.base_speed += speed_bonus
+	for key in ["healing_multiplier", "shield_multiplier", "control_multiplier", "damage_multiplier"]:
+		if traits.has(key):
+			unit.combat_modifiers[key] = float(traits[key])
 
 static func _build_combatant(character_id: String, profile: Dictionary, mechanic: Dictionary, row: String) -> Combatant:
 	var modifier: Dictionary = profile.get("%s_modifier" % row, {})
@@ -93,6 +88,7 @@ static func _build_combatant(character_id: String, profile: Dictionary, mechanic
 		character_id.to_lower(),
 		str(profile.get("display_name", character_id)),
 		int(profile.get("max_hp", 1)),
+		int(profile.get("attack", 1)),
 		defense_value,
 		speed_value,
 		int(profile.get("shield", 1)),
