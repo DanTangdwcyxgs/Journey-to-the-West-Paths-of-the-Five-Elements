@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "events": {
     "WUK-03": {
       "title": "渡海求道",
@@ -23,6 +23,70 @@
       "choices": [
         {"id":"ENDURE","label":"忍住，看看这火究竟能把我炼成什么。","effects":{"relationship_values":{"WUKONG_WILL":2}}},
         {"id":"BREAK_OUT","label":"我不接受任何人替我定义结局。","effects":{"relationship_values":{"WUKONG_FREEDOM":2}}}
+      ]
+    },
+    "TANG-04": {
+      "title": "长安受命",
+      "text": "诏命让西行不再只是个人修行。玄奘必须决定，是先守住教义，还是先把众生的现实困苦放在前面。",
+      "choices": [
+        {"id":"FOLLOW_VOW","label":"既然立誓，便不因现实轻易动摇。","effects":{"relationship_values":{"TANG_FAITH":2},"combat_modifiers":{"defense_bonus":1}}},
+        {"id":"SERVE_PEOPLE","label":"先救眼前之人，真经不能成为借口。","effects":{"relationship_values":{"TANG_COMPASSION":2},"combat_modifiers":{"healing_multiplier":1.15}}}
+      ]
+    },
+    "TANG-07": {
+      "title": "鹰愁涧前夜",
+      "text": "夜色与河声让孤身西行第一次显得真实。",
+      "choices": [
+        {"id":"KEEP_WALKING","label":"怕也要走。","effects":{"relationship_values":{"TANG_WILL":1},"combat_modifiers":{"speed_bonus":1}}},
+        {"id":"SEEK_GUIDANCE","label":"先停下来，把路想清楚。","effects":{"relationship_values":{"TANG_PRUDENCE":1},"combat_modifiers":{"defense_bonus":1}}}
+      ]
+    },
+    "LONGMA-02": {
+      "title": "龙子获罪",
+      "text": "罪责降临后，血脉不再是荣耀，反而成为必须承担的重量。",
+      "choices": [
+        {"id":"ACCEPT_PUNISHMENT","label":"犯下的错由我自己背。","effects":{"relationship_values":{"LONGMA_DUTY":2},"combat_modifiers":{"defense_bonus":2}}},
+        {"id":"RESIST_FATE","label":"命运不能只由别人替我决定。","effects":{"relationship_values":{"LONGMA_FREEDOM":2},"combat_modifiers":{"speed_bonus":2}}}
+      ]
+    },
+    "LONGMA-04": {
+      "title": "白马之誓",
+      "text": "护送不是简单服刑。他需要决定自己要成为被驱使的坐骑，还是主动守护取经人。",
+      "choices": [
+        {"id":"SERVE_WILLINGLY","label":"我选择护送，而不是接受惩罚。","effects":{"relationship_values":{"LONGMA_LOYALTY":2},"combat_modifiers":{"defense_bonus":1}}},
+        {"id":"PROVE_SELF","label":"我要证明我值得被信任。","effects":{"relationship_values":{"LONGMA_PRIDE":2},"combat_modifiers":{"attack_bonus":2}}}
+      ]
+    },
+    "BAJIE-02": {
+      "title": "蟠桃宴",
+      "text": "盛宴让天蓬短暂忘记了职责，也让放纵第一次显露代价。",
+      "choices": [
+        {"id":"INDULGE","label":"既然今日有酒有宴，为何要停？","effects":{"relationship_values":{"BAJIE_DESIRE":2},"combat_modifiers":{"attack_bonus":2}}},
+        {"id":"HOLD_BACK","label":"先守住分寸，别把一切都赌进去。","effects":{"relationship_values":{"BAJIE_RESTRAINT":2},"combat_modifiers":{"defense_bonus":1}}}
+      ]
+    },
+    "BAJIE-06": {
+      "title": "招亲",
+      "text": "高老庄给了八戒一个看似安稳的人生，他却知道妖身与欲望都不会轻易消失。",
+      "choices": [
+        {"id":"CHOOSE_HOME","label":"我愿意为这个家承担责任。","effects":{"relationship_values":{"BAJIE_RESPONSIBILITY":2},"combat_modifiers":{"defense_bonus":1}}},
+        {"id":"CHOOSE_DESIRE","label":"我不想放弃自己想要的生活。","effects":{"relationship_values":{"BAJIE_DESIRE":2},"combat_modifiers":{"attack_bonus":1,"speed_bonus":1}}}
+      ]
+    },
+    "WUJING-02": {
+      "title": "失手",
+      "text": "琉璃盏碎裂之后，昔日的秩序突然变得陌生。",
+      "choices": [
+        {"id":"ACCEPT_FAULT","label":"错就是错，我承担后果。","effects":{"relationship_values":{"WUJING_GUILT":2},"combat_modifiers":{"defense_bonus":2}}},
+        {"id":"QUESTION_SENTENCE","label":"若惩罚只为维护权威，那它本身也该被质问。","effects":{"relationship_values":{"WUJING_REBELLION":2},"combat_modifiers":{"attack_bonus":1,"speed_bonus":1}}}
+      ]
+    },
+    "WUJING-06": {
+      "title": "观音渡厄",
+      "text": "救赎不是忘掉过去，而是决定以后如何活。",
+      "choices": [
+        {"id":"ATONE","label":"把过去背在身上，慢慢偿还。","effects":{"relationship_values":{"WUJING_REDEMPTION":2},"combat_modifiers":{"defense_bonus":1}}},
+        {"id":"START_AGAIN","label":"过去不能替我决定未来。","effects":{"relationship_values":{"WUJING_REBIRTH":2},"combat_modifiers":{"speed_bonus":1}}}
       ]
     }
   }
