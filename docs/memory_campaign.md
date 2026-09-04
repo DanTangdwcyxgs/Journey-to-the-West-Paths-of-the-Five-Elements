@@ -1,221 +1,564 @@
-# Memory Campaign: Five Lives Remembered
+# Memory Campaign: Character Routes Unlock at Recruitment
 
-## Purpose
+## Core Rule
 
-After the five core characters are assembled, the game enters a dedicated **Memory Campaign** before the long shared pilgrimage accelerates.
+**A character's personal route becomes available for replay/remembrance as soon as that character is encountered and recruited or otherwise becomes part of the player's current party journey. It does not wait for all five characters to be assembled.**
 
-The purpose is exactly this emotional progression:
+This is a foundational structural rule of the project and is directly inspired by the character-story structure of classic chapter-based JRPGs.
 
-> First I knew one hero. Then I watched the others join. Now I understand all five people. Only then does their shared Journey truly begin.
+The player is always moving through the shared Journey to the West timeline while individual character histories become available at the moment that character enters the player's story.
 
-The Memory Campaign is not a second universe and not a rewind of the main timeline. It is a set of playable historical chapters that lets the player experience the unfinished personal stories of the other protagonists and deepen the starting hero.
-
-## State Transition
+The intended experience is:
 
 ```text
-Five characters recruited
+Choose a starting hero
         ↓
-PARTY_FULL
+Play that hero's origin
         ↓
-Camp / major interlude
+Reach a canonical encounter
         ↓
-MEMORY_CAMPAIGN_UNLOCKED
+A new character joins / becomes relevant
         ↓
-Five character memory arcs
+That character's personal story becomes available
         ↓
-MEMORY_CAMPAIGN_COMPLETE
+Player may enter that character's story
         ↓
-SHARED_JOURNEY_ACT_I
+Return to the current shared timeline
+        ↓
+Continue pilgrimage
+        ↓
+Meet the next character
+        ↓
+Unlock the next character's story
 ```
 
-## What the Player Does
+There is **no single five-person Memory Campaign gate**.
 
-The player receives a Memory Board with five routes:
+---
 
-- Wukong
-- Tang Sanzang
-- Zhu Bajie
-- Sha Wujing
-- Bai Longma
+# 1. The Octopath-Like Story Loop
 
-The starting character's route is marked **known**, while the other routes are initially **unknown** or **partially known**.
+The game should recreate the feeling of progressively discovering the biographies of party members.
 
-Each route contains several playable memories. Completing a route reveals the character's past, not just a cinematic biography.
+### Example: Starting as Tang Sanzang
 
-## Memory Chapter Rules
+```text
+Tang origin
+    ↓
+Five Elements Mountain
+    ↓
+Sun Wukong joins
+    ↓
+[Wukong personal route unlocked]
+    ↓
+Player may play Wukong's origin/history
+    ↓
+Return to Tang + Wukong shared journey
+    ↓
+Eagle Sorrow Stream / Bai Longma
+    ↓
+[Longma personal route unlocked]
+    ↓
+Return to current journey
+    ↓
+Gaojiazhuang / Zhu Bajie
+    ↓
+[Bajie personal route unlocked]
+    ↓
+Return to current journey
+    ↓
+Flowing Sands River / Sha Wujing
+    ↓
+[Wujing personal route unlocked]
+    ↓
+Continue shared pilgrimage
+```
 
-Every memory must have:
+The key feeling is:
+
+> **I meet a person, I gain that person, and now I have the opportunity to understand who that person was.**
+
+---
+
+# 2. What “Unlocking a Character Story” Means
+
+Unlocking a character story does not necessarily mean the entire character origin must become available in one uninterrupted block.
+
+Instead, recruitment creates an **availability window** for that character's historical route.
+
+The route can contain:
+
+- full origin chapters;
+- short memory chapters;
+- perspective chapters;
+- flashbacks;
+- optional character quests;
+- relationship scenes;
+- historical battles.
+
+The player may return to the shared journey at any time unless a specific chapter is marked as mandatory.
+
+---
+
+# 3. Three Narrative Time Layers
+
+The save system must distinguish three timelines.
+
+## A. Historical Timeline
+
+When the remembered event actually happened in the character's life.
+
+## B. Current World Timeline
+
+Where the shared pilgrimage currently is.
+
+## C. Player Progress
+
+Which historical chapters the player has personally completed.
+
+Example:
+
+```text
+Current World:
+  AFTER_BAJIE_RECRUITED
+
+Wukong historical chapters:
+  COMPLETE
+
+Tang historical chapters:
+  PARTIAL
+
+Bajie historical chapters:
+  AVAILABLE
+
+Wujing historical chapters:
+  LOCKED
+
+Longma historical chapters:
+  AVAILABLE
+```
+
+This is the correct model for allowing character stories to unlock progressively.
+
+---
+
+# 4. Unlock Rules by Recruitment Stage
+
+## Before Meeting a Character
+
+The player may know rumors, legends or indirect references to that character, but the character's full personal route remains locked.
+
+Example:
+
+Before meeting Bajie, the player may hear stories about a pig demon at Gaojiazhuang, but cannot freely enter Bajie's personal campaign.
+
+## At First Canonical Encounter
+
+The character route becomes available according to the encounter's unlock flag.
+
+For major recruits this normally happens at the recruitment event.
+
+Example:
+
+```text
+ZHU_BAJIE_RECRUITED
+        ↓
+unlock route BAJIE
+```
+
+## After Unlock
+
+The player's chapter menu can show:
+
+```text
+Bajie — Story Available
+
+[Continue Shared Journey]
+[Remember Bajie's Past]
+```
+
+The game may also surface the route through camp dialogue or chapter selection rather than a literal menu button.
+
+---
+
+# 5. Route Availability Is Not the Same as Route Completion
+
+This distinction is important.
+
+A character may have ten historical chapters while only the first three are safe to reveal when they are recruited.
+
+Therefore every historical chapter has its own:
 
 - `historical_timeline_index`
-- `memory_owner`
 - `unlock_milestone`
 - `spoiler_safe_until`
-- `gameplay_identity`
-- `present_day_payoff`
+- `route_sequence`
+- `required_previous_chapters`
 
-A memory is only available when revealing it cannot spoil a future shared event beyond its declared guard.
+Example:
 
-## Memory Arc Structure
+```text
+Bajie recruited
+    ↓
+BAJIE_MEMORY_01 available
+BAJIE_MEMORY_02 available
+BAJIE_MEMORY_03 available
 
-Each character receives three layers.
+Later global milestone:
+WHITE_BONE_DEMON_COMPLETE
+    ↓
+BAJIE_MEMORY_04 unlocked
+```
 
-### Layer 1 — Origin Memory
+This preserves story discovery and prevents the player from seeing information that the shared journey has not earned yet.
 
-The player sees the character before the pilgrimage.
+---
 
-### Layer 2 — Missing Context
+# 6. Starting Character Rule
 
-The player experiences an event that the shared campaign only referenced previously.
+The character chosen at New Game remains the player's primary initial lens.
 
-### Layer 3 — Present-Day Payoff
+However, once another character joins, that new character's historical route becomes part of the same save file.
 
-Returning from the memory unlocks a present-day scene, relationship change, ability, item, or battle technique that makes the past matter mechanically.
+### Example: Start as Wukong
 
-## Wukong Memory Arc
+```text
+Wukong origin
+→ Five Elements Mountain
+→ Tang / Wukong shared story
+→ Longma encounter
+→ Longma route unlocked
+→ Gaojiazhuang
+→ Bajie route unlocked
+→ Flowing Sands River
+→ Wujing route unlocked
+```
 
-### WM-W01 — Flower Fruit Mountain
-Revisit the carefree period before immortality became an obsession.
+The player does not need to wait for the full five-person party before remembering Longma, Bajie or Wujing.
 
-Present payoff: unlock a party camp scene where Wukong talks about the old troop.
+### Example: Start as Tang
 
-### WM-W02 — Puti Zushi
-Experience the discipline and warning behind Wukong's transformations.
+```text
+Tang origin
+→ Wukong recruited
+→ Wukong route unlocked
+→ shared duo journey
+→ Longma joins
+→ Longma route unlocked
+→ shared journey
+→ Bajie joins
+→ Bajie route unlocked
+```
 
-Present payoff: advanced transformation skill becomes available.
+The first-person perspective changes the opening, but the recruitment rhythm remains fixed.
 
-### WM-W03 — Dragon Palace
-Revisit how Wukong obtained the Ruyi Jingu Bang.
+---
 
-Present payoff: Wukong gains a weapon-specific Boost option.
+# 7. Returning From a Personal Route
 
-### WM-W04 — Heaven's Bureaucracy
-Experience Bimawen from Wukong's perspective.
+A historical route is a temporary narrative excursion.
 
-Present payoff: new dialogue options when the party encounters celestial officials.
+When the player completes or exits it:
 
-### WM-W05 — Erlang Shen
-Revisit the rivalry and tactical defeat.
+1. the world returns to the exact previous shared timeline;
+2. no historical event is re-applied to the world;
+3. current party composition is preserved;
+4. current quest state is preserved;
+5. any permanent rewards from the memory are committed normally;
+6. the player resumes the shared Journey.
 
-Present payoff: a reaction mechanic against shape-shifting enemies.
+The memory route never advances the world into its historical date.
 
-### WM-W06 — Five Elements Mountain
-Only a short, emotionally focused memory. Do not replay the complete sealing sequence.
+---
 
-Present payoff: unlocks Wukong/Tang relationship scene about restraint.
+# 8. Mandatory vs Optional Personal Chapters
 
-## Tang Memory Arc
+Each recruited character route can contain two kinds of content.
 
-### WM-T01 — Childhood and Monastery
-Establish Tang as a person before he becomes a symbol.
+## Required Character Chapter
 
-### WM-T02 — The Pilgrimage Decision
-Play the moment he chooses the dangerous road despite safer alternatives.
+Used when understanding the character is necessary to comprehend a major upcoming shared event.
 
-### WM-T03 — Guanyin's Instruction
-Reveal the burden placed on him by the pilgrimage mission.
+Example:
 
-### WM-T04 — First Days with Wukong
-Show the fear, disagreement and early trust-building hidden between major shared events.
+A short Wukong chapter about Heaven may become required before a major celestial encounter.
 
-### WM-T05 — The Meaning of Protection
-Explore why Tang sometimes restrains Wukong even when doing so appears irrational.
+## Optional Character Chapter
 
-## Bajie Memory Arc
+Adds depth, rewards, relationship development or gameplay mastery but does not block the main story.
 
-### WM-B01 — Marshal Tianpeng
-A celestial military chapter emphasizing discipline, status and appetite.
+This allows the main campaign to preserve a strong television-like pace without forcing every player through every biography scene.
 
-### WM-B02 — The Fall
-A serious chapter showing the consequence that transforms his identity.
+---
 
-### WM-B03 — Mortal Life
-Explore hunger, loneliness, shame and his need for companionship.
+# 9. The Party Is Always the Current Point of the Story
 
-### WM-B04 — Gaojiazhuang Before the Party
-Return to the period just before Tang and Wukong arrive.
+The player should never feel that remembering someone means leaving the current game behind for a completely separate campaign.
 
-### WM-B05 — Why Bajie Stayed
-Reframe his choice to continue the pilgrimage as an active decision rather than simple surrender.
+The structure is:
 
-## Wujing Memory Arc
+```text
+CURRENT JOURNEY
+      ↓
+CHARACTER BECOMES RELEVANT
+      ↓
+CHARACTER STORY UNLOCKS
+      ↓
+OPTIONAL / REQUIRED HISTORICAL CHAPTER
+      ↓
+RETURN TO CURRENT JOURNEY
+```
 
-### WM-S01 — General of Heaven
-Show his disciplined identity before exile.
+The emotional purpose is to deepen the party at the exact moment that the player becomes interested in that person.
 
-### WM-S02 — The Accident
-Play the event that leads to punishment.
+---
 
-### WM-S03 — Flowing Sands
-A survival chapter built around repetition and isolation.
+# 10. Relationship With Shared Journey
 
-### WM-S04 — The Waiting
-Focus on travelers, rumors and the gradual collapse of hope.
+Character memories should frequently be triggered by present-day context.
 
-### WM-S05 — The Offer
-Replay the moment redemption becomes possible.
+Examples:
 
-## Longma Memory Arc
+### Wukong
 
-### WM-L01 — Dragon Prince
-Show the Dragon Court and family hierarchy.
+Party meets a celestial official.
 
-### WM-L02 — The Crime and Punishment
-Experience the chain of events that places Longma in the mortal world.
+→ Wukong memory about Bimawen / Heaven becomes available.
 
-### WM-L03 — Eagle Sorrow Stream
-Show Longma's fear, anger and loss of identity.
+### Bajie
 
-### WM-L04 — Becoming the White Horse
-Focus on accepting a role chosen by circumstance.
+Party reaches a place associated with the Heavenly Court.
 
-### WM-L05 — The Dragon Beneath the Horse
-First full playable hint of the later combat identity.
+→ Tianpeng memory becomes available.
 
-## Completion Rules
+### Wujing
 
-The player does not need to complete the five memory arcs in a single prescribed order unless a particular spoiler guard requires it.
+Party crosses a major river.
 
-Recommended default order:
+→ Flowing Sands memory becomes available.
 
-1. Starting character's deeper memory
-2. Tang / Wukong relationship memory
-3. Bajie
-4. Wujing
-5. Longma
+### Longma
 
-However, the Memory Board can permit controlled free selection where no chronology conflict exists.
+Party meets a Dragon Court emissary.
 
-## What Completion Changes
+→ Longma's Dragon Prince memory becomes available.
 
-When all required memory arcs are complete:
+### Tang
 
-- `MEMORY_CAMPAIGN_COMPLETE = true`
-- every protagonist's core origin is considered understood by the player;
-- relationship baselines are upgraded;
-- selected character-linked combo skills unlock;
-- additional camp conversations become available;
-- the next major shared pilgrimage chapter unlocks.
+Party encounters a Buddhist scholar or temple.
 
-The global world timeline does **not** move backward during memories.
+→ Tang's monastery / pilgrimage memory becomes available.
 
-## Anti-Repetition Rule
+This is preferable to dumping all historical chapters into a menu at once.
 
-Memories should reveal context, not reproduce entire chapters that the player already completed.
+---
 
-A memory should usually be shorter than a full major chapter and should answer one question such as:
+# 11. No Five-Person Gate
 
-- Why does Wukong distrust Heaven?
-- Why does Tang tolerate danger rather than retreat?
-- Why does Bajie joke when embarrassed?
-- Why does Wujing rarely complain?
-- Why does Longma react strongly to hierarchy?
+The following previous structure is explicitly rejected:
 
-## Design Goal
+```text
+Recruit all five
+    ↓
+Unlock everyone's memories
+```
 
-The Memory Campaign is the game's emotional bridge between:
+That is **not** the intended game structure.
 
-`I recruited these characters`
+The correct structure is:
 
-and
+```text
+Meet Wukong
+    ↓
+Unlock Wukong memories
 
-`I understand why these five people are capable of completing this journey together.`
+Meet Longma
+    ↓
+Unlock Longma memories
+
+Meet Bajie
+    ↓
+Unlock Bajie memories
+
+Meet Wujing
+    ↓
+Unlock Wujing memories
+```
+
+The only thing that happens at `PARTY_FULL` is that the five-person shared-party gameplay and ensemble relationship layer becomes complete.
+
+It does not unlock the basic existence of character memories.
+
+---
+
+# 12. Why This Structure Matters
+
+This structure creates a constantly renewing narrative reward loop:
+
+```text
+Travel
+→ meet someone
+→ recruit them
+→ understand them
+→ use their new gameplay identity
+→ encounter their past in the present world
+→ deepen relationship
+→ travel onward
+```
+
+Every recruitment therefore delivers three rewards at once:
+
+1. a new playable combat identity;
+2. a new personal story route;
+3. a new relationship perspective.
+
+This is one of the central reasons the five-character structure should feel like a JRPG rather than a linear visual retelling.
+
+---
+
+# 13. Full Convergence Still Has a Purpose
+
+`PARTY_FULL` remains important, but it is **not** the memory unlock gate.
+
+Once all five are together, the game should introduce an ensemble layer:
+
+- large camp conversations;
+- group relationship scenes;
+- five-way arguments and humor;
+- combination skills;
+- shared quests;
+- group memories;
+- the first major problem requiring all five identities.
+
+The player's earlier personal-story experiences now pay off because the player already knows why each character reacts the way they do.
+
+So the progression becomes:
+
+```text
+Individual story
+→ encounter
+→ recruit
+→ unlock that person's past
+→ growing party
+→ new recruit
+→ unlock their past
+→ growing party
+→ full party
+→ ensemble story
+→ shared pilgrimage
+```
+
+---
+
+# 14. Data Model Requirements
+
+`CharacterRouteState`
+
+```text
+character_id
+is_unlocked
+origin_available_until
+completed_chapters
+available_chapters
+completed_memory_chapters
+```
+
+`MemoryChapterDefinition`
+
+```text
+id
+character_id
+historical_timeline_index
+unlock_milestone
+spoiler_safe_until
+required_previous_memory_ids
+chapter_type
+map_id
+encounter_ids
+completion_rewards
+present_day_trigger_ids
+```
+
+`RecruitmentEvent`
+
+```text
+character_id
+trigger_milestone
+route_unlock_ids
+party_change
+shared_timeline_result
+```
+
+The important property is that `route_unlock_ids` are emitted by the recruitment event itself.
+
+---
+
+# 15. Canonical Examples
+
+## Tang Route
+
+```text
+Start as Tang
+↓
+Tang origin
+↓
+Meet Wukong
+↓
+WUKONG route unlocked
+↓
+Play Wukong memories
+↓
+Return to Tang/Wukong journey
+```
+
+## Wukong Route
+
+```text
+Start as Wukong
+↓
+Wukong origin
+↓
+Five Elements Mountain
+↓
+Tang route context becomes relevant
+↓
+Shared journey begins
+```
+
+## Bajie Route
+
+```text
+Start or encounter Bajie
+↓
+Gaojiazhuang recruitment
+↓
+BAJIE route unlocked immediately
+↓
+Play Tianpeng / fall / mortal-life memories
+↓
+Return to current party
+```
+
+## Full Party
+
+```text
+Wukong + Tang + Longma + Bajie + Wujing
+↓
+PARTY_FULL
+↓
+Ensemble Chapter
+↓
+Shared pilgrimage
+```
+
+No additional memory unlock gate exists here.
+
+---
+
+# 16. Golden Rule
+
+> **When the player meets a person, that person's story becomes available.**
+>
+> **When the player returns to the road, the world continues exactly where it left off.**
+>
+> **When the five finally gather, the story becomes an ensemble—not a biography menu.**
