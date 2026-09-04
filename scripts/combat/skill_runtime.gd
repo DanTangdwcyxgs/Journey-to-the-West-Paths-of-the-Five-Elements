@@ -57,6 +57,14 @@ static func perform(engine: CombatEngine, actor: Combatant, target: Combatant, s
 			actor.defense += int(skill.get("defense_bonus", 0))
 			_consume_and_gain(actor, target, kind, mechanic_cost, skill)
 			return {"ok": true, "damage": 0, "attack": actor.attack, "defense": actor.defense, "mechanic_resource": actor.mechanic_resource}
+		"form_shift":
+			if actor.id != "longma":
+				return {"ok": false, "reason": "form_shift_only_for_longma"}
+			var form_manager := LongmaFormManager.new()
+			var form := form_manager.shift(actor)
+			if form.is_empty():
+				return {"ok": false, "reason": "form_shift_failed"}
+			return {"ok": true, "damage": 0, "form": str(form.get("id", "horse")), "form_name": str(form.get("name", "")), "form_duration": form_manager.duration, "mechanic_resource": actor.mechanic_resource}
 	return {"ok": false, "reason": "unsupported_skill_kind"}
 
 static func _build_modified_action(skill: Dictionary, actor: Combatant) -> CombatAction:
