@@ -2,6 +2,7 @@ class_name BattleUI
 extends Control
 
 const NAMES := {"tangseng":"唐三藏", "wukong":"孙悟空", "bajie":"猪八戒", "wujing":"沙悟净", "longma":"白龙马", "yellow_wind":"黄风妖王"}
+const MECHANIC_NAMES := {"tangseng":"慈悲", "wukong":"战意", "bajie":"怒气", "wujing":"潮势", "longma":"龙息"}
 
 var engine := CombatEngine.new()
 var party := PartyManager.new()
@@ -55,7 +56,7 @@ func _build_ui() -> void:
 	body.add_theme_constant_override("separation", 14)
 	root.add_child(body)
 	var left := VBoxContainer.new()
-	left.custom_minimum_size = Vector2(300, 0)
+	left.custom_minimum_size = Vector2(340, 0)
 	body.add_child(left)
 	var allies_title := Label.new()
 	allies_title.text = "队伍"
@@ -114,10 +115,10 @@ func _refresh() -> void:
 	if current_actor == null:
 		return
 	turn_label.text = "行动：%s · Turn %d" % [_name(current_actor), engine.turn_number]
-	status_label.text = "HP %d/%d · BP %d · 护盾 %d/%d · Break=%s · %s排" % [current_actor.hp, current_actor.max_hp, current_actor.bp, current_actor.shield, current_actor.max_shield, str(current_actor.is_broken()), "前" if current_actor.row == "front" else "后"]
+	status_label.text = "HP %d/%d · BP %d · %s %d/%d · 护盾 %d/%d · Break=%s · %s排" % [current_actor.hp, current_actor.max_hp, current_actor.bp, MECHANIC_NAMES.get(current_actor.id, "专属资源"), current_actor.mechanic_resource, current_actor.mechanic_max, current_actor.shield, current_actor.max_shield, str(current_actor.is_broken()), "前" if current_actor.row == "front" else "后"]
 	party_list.clear()
 	for ally in allies:
-		party_list.add_item("%s  HP %d/%d  BP %d" % [_name(ally), ally.hp, ally.max_hp, ally.bp])
+		party_list.add_item("%s  HP %d/%d  BP %d  %s %d/%d · %s排" % [_name(ally), ally.hp, ally.max_hp, ally.bp, MECHANIC_NAMES.get(ally.id, "资源"), ally.mechanic_resource, ally.mechanic_max, "前" if ally.row == "front" else "后"])
 	target_list.clear()
 	for enemy in enemies:
 		if enemy.is_alive():
@@ -132,8 +133,9 @@ func _refresh() -> void:
 func _add_skill_button(skill: Dictionary) -> void:
 	var button := Button.new()
 	var cost := int(skill.get("bp_cost", 0))
-	button.text = "%s  BP %d · %s" % [str(skill.get("name", "Skill")), cost, str(skill.get("kind", "damage"))]
-	button.disabled = current_actor.bp < cost
+	var mechanic_cost := int(skill.get("mechanic_cost", 0))
+	button.text = "%s  BP %d · %s%s" % [str(skill.get("name", "Skill")), cost, str(skill.get("kind", "damage")), " · 专属资源 %d" % mechanic_cost if mechanic_cost > 0 else ""]
+	button.disabled = current_actor.bp < cost or current_actor.mechanic_resource < mechanic_cost
 	button.pressed.connect(func(): _use_skill(skill, false))
 	skill_box.add_child(button)
 
