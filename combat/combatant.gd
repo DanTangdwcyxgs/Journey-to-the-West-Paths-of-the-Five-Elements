@@ -58,6 +58,9 @@ func is_alive() -> bool:
 func is_broken() -> bool:
 	return broken_turns > 0
 
+func _recalculate_speed() -> void:
+	speed = maxi(base_speed + form_speed_bonus + speed_delta, 1)
+
 func begin_turn() -> void:
 	if not is_alive():
 		return
@@ -69,8 +72,8 @@ func begin_turn() -> void:
 	if speed_effect_turns > 0:
 		speed_effect_turns -= 1
 		if speed_effect_turns == 0:
-			speed = base_speed + form_speed_bonus
 			speed_delta = 0
+			_recalculate_speed()
 	if longma_form_turns > 0:
 		longma_form_turns -= 1
 		if longma_form_turns == 0:
@@ -97,7 +100,7 @@ func apply_speed_delta(delta: int, duration: int) -> void:
 	var should_replace := speed_effect_turns <= 0 or abs(next_delta) > abs(speed_delta)
 	if should_replace:
 		speed_delta = next_delta
-		speed = maxi(base_speed + form_speed_bonus + speed_delta, 1)
+		_recalculate_speed()
 	speed_effect_turns = maxi(speed_effect_turns, safe_duration)
 
 func apply_taunt(duration: int) -> void:
@@ -122,17 +125,17 @@ func set_longma_form(form: String, duration: int, attack_bonus: int, defense_bon
 	form_speed_bonus = speed_bonus
 	attack += attack_bonus
 	defense = maxi(defense + defense_bonus, 1)
-	speed = maxi(base_speed + speed_bonus, 1)
+	_recalculate_speed()
 
 func clear_longma_form() -> void:
 	attack -= form_attack_bonus
 	defense = maxi(defense - form_defense_bonus, 1)
-	speed = maxi(base_speed, 1)
 	form_attack_bonus = 0
 	form_defense_bonus = 0
 	form_speed_bonus = 0
 	longma_form = "horse"
 	longma_form_turns = 0
+	_recalculate_speed()
 
 func take_damage(amount: int) -> int:
 	var incoming := maxi(amount, 0)
