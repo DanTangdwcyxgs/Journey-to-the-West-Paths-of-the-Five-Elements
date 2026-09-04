@@ -2,9 +2,9 @@ extends SceneTree
 
 func _initialize() -> void:
 	var engine := CombatEngine.new()
-	var wukong := Combatant.new("wukong", "Sun Wukong", 220, 42, 16, 28, 2, {"fire": true, "strike": true})
-	var tang := Combatant.new("tangseng", "Tang Sanzang", 180, 18, 12, 20, 3, {"holy": true})
-	var demon := Combatant.new("demon", "Test Demon", 200, 30, 20, 10, 2, {"fire": true})
+	var wukong := Combatant.new("wukong", "Sun Wukong", 220, 42, 16, 28, 2, {"fire": true, "strike": true}, "front")
+	var tang := Combatant.new("tangseng", "Tang Sanzang", 180, 18, 12, 20, 3, {"holy": true}, "back")
+	var demon := Combatant.new("demon", "Test Demon", 200, 30, 20, 10, 2, {"fire": true}, "front")
 	engine.setup([wukong, tang], [demon])
 
 	_assert_equal(engine.advance_turn(), wukong, "speed should determine first actor")
@@ -26,6 +26,15 @@ func _initialize() -> void:
 
 	_assert_equal(engine.advance_turn(), tang, "next living actor should be Tang Sanzang")
 	_assert_equal(tang.bp, 1, "Tang Sanzang gains BP at turn start")
+	_assert_equal(tang.row, "back", "formation builder-compatible combatant keeps back row")
+
+	var front_target := Combatant.new("front_target", "Front Target", 300, 1, 10, 1, 0, {}, "front")
+	var back_target := Combatant.new("back_target", "Back Target", 300, 1, 10, 1, 0, {}, "back")
+	var attacker := Combatant.new("attacker", "Attacker", 220, 50, 10, 30, 1, {}, "front")
+	var plain := CombatAction.new("plain", "Plain Strike", "strike", 20, 0, 0)
+	var front_result := engine.perform_action(attacker, front_target, plain)
+	var back_result := engine.perform_action(attacker, back_target, plain)
+	_assert(back_result.get("damage", 0) < front_result.get("damage", 0), "back row should reduce incoming damage")
 
 	print("ALL COMBAT TESTS PASSED")
 	quit(0)
