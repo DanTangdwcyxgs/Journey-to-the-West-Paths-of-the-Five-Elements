@@ -20,6 +20,7 @@ var item_box: VBoxContainer
 var party_list: ItemList
 var log_box: RichTextLabel
 var bounty_id := ""
+var source_stage_id := ""
 var bounty_manager := BountyManager.new()
 var bounty_resolved := false
 var item_catalog: Dictionary = {}
@@ -27,7 +28,9 @@ var battle_inventory := InventoryManager.new()
 var loadout := LoadoutManager.new()
 
 func _ready() -> void:
-	bounty_id = BountyEncounterState.get_active()
+	var handoff := BountyEncounterState.get_active_record()
+	bounty_id = str(handoff.get("bounty_id", ""))
+	source_stage_id = str(handoff.get("source_stage_id", ""))
 	_load_bounty_definitions()
 	_load_item_catalog()
 	var narrative := NarrativeManager.new()
@@ -180,6 +183,10 @@ func _on_combat_finished(winner:String) -> void:
 		if narrative.load():
 			narrative.state.set_inventory(battle_inventory.to_dict()); var applied := BountyRewardService.resolve_defeat(narrative,bounty_manager,bounty_id); bounty_resolved = not applied.is_empty(); BountyEncounterState.clear()
 			if bounty_resolved:
+				if not source_stage_id.is_empty():
+					var ridge := YellowWindRidgeManager.new()
+					ridge.complete_stage(narrative, source_stage_id)
+					narrative.save()
 				status_label.text = "悬赏完成：%s · 奖励 %s" % [str(applied.get("target_name",bounty_id)),_format_rewards(applied.get("applied",{}).get("granted",[]))]
 			else: status_label.text = "战斗胜利，但悬赏状态写入失败。"
 	else: status_label.text = "战斗结束：%s" % ("胜利" if winner == "allies" else "失败")
