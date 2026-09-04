@@ -4,8 +4,9 @@ func _initialize() -> void:
 	var engine := CombatEngine.new()
 	var wukong := Combatant.new("wukong", "Sun Wukong", 220, 42, 16, 28, 2, {"fire": true, "strike": true}, "front")
 	var tang := Combatant.new("tangseng", "Tang Sanzang", 180, 18, 12, 20, 3, {"holy": true}, "back")
+	var bajie := Combatant.new("bajie", "Zhu Bajie", 180, 24, 12, 15, 3, {}, "front")
 	var demon := Combatant.new("demon", "Test Demon", 200, 30, 20, 10, 2, {"fire": true}, "front")
-	engine.setup([wukong, tang], [demon])
+	engine.setup([wukong, tang, bajie], [demon])
 
 	_assert_equal(engine.advance_turn(), wukong, "speed should determine first actor")
 	_assert_equal(wukong.bp, 1, "living actor gains one BP")
@@ -23,6 +24,14 @@ func _initialize() -> void:
 
 	var blocked := engine.perform_action(tang, demon, fire)
 	_assert(blocked.get("ok", false), "a living ally can attack a Broken target")
+
+	_assert_equal(engine.advance_turn(), bajie, "next living actor should be Bajie")
+	_assert_equal(bajie.bp, 1, "Bajie gains BP at turn start")
+
+	var bajie_hit := engine.perform_action(wukong, bajie, fire)
+	_assert(bajie_hit.get("ok", false), "Bajie should be a valid combat target")
+	_assert(bajie_hit.get("damage", 0) > 0, "direct damage should be dealt to Bajie")
+	_assert_equal(bajie.mechanic_resource, 1, "direct combat damage should grant Bajie one Rage")
 
 	_assert_equal(engine.advance_turn(), tang, "next living actor should be Tang Sanzang")
 	_assert_equal(tang.bp, 1, "Tang Sanzang gains BP at turn start")
