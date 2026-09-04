@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "events": {
+    "SHARED-01-FIVE-ELEMENTS": {"id":"SHARED-01-FIVE-ELEMENTS","title":"五行山","text":"师徒在五行山脚相遇。玄奘决定救出被镇压的孙悟空，悟空也第一次面对愿意相信自己的人。","choices":[{"id":"TRUST_WUKONG","label":"相信悟空，继续西行"},{"id":"CAUTIOUS_VOW","label":"谨慎行事，但不放弃取经誓愿"}]},
+    "SHARED-02-EARLY-PILGRIMAGE": {"id":"SHARED-02-EARLY-PILGRIMAGE","title":"师徒初行","text":"两人离开五行山后逐渐建立最初的师徒默契。山路上的妖影提醒他们，真正的西行才刚刚开始。","choices":[{"id":"KEEP_MOVING","label":"继续赶路"},{"id":"HELP_TRAVELERS","label":"先帮助沿途行人"}]},
+    "LONGMA_ENCOUNTER": {"id":"LONGMA_ENCOUNTER","title":"鹰愁涧","text":"鹰愁涧白龙显形，玄奘的行脚与龙子的宿命在此交汇。","choices":[{"id":"SAVE_THE_DRAGON","label":"救下白龙"},{"id":"CONFRONT_FIRST","label":"先与白龙交锋"}]},
+    "BAJIE_ENCOUNTER": {"id":"BAJIE_ENCOUNTER","title":"高老庄","text":"高老庄的妖患指向一个不肯面对旧日欲望的天蓬。悟空与八戒的第一次正面碰撞由此展开。","choices":[{"id":"OFFER_REDEMPTION","label":"给八戒一个赎罪的机会"},{"id":"TEST_HIM","label":"先试他的本事"}]},
+    "WUJING_ENCOUNTER": {"id":"WUJING_ENCOUNTER","title":"流沙河","text":"流沙河中，悟净守着自己的罪责与誓言。师徒必须决定，是把他当作妖怪，还是把他当作一个等待重新开始的人。","choices":[{"id":"ACCEPT_WUJING","label":"接纳悟净同行"},{"id":"DEMAND_PROOF","label":"先让悟净证明自己"}]},
+    "PARTY_FULL": {"id":"PARTY_FULL","title":"五人归队","text":"五人终于聚齐。过去的五段人生不再只是个人往事，而开始成为共同西行的力量。","choices":[{"id":"SWEAR_TOGETHER","label":"立下共同西行之誓"},{"id":"MOVE_NOW","label":"立即继续上路"}]}
+  }
+}
