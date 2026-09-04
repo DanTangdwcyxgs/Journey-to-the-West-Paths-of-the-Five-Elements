@@ -11,6 +11,7 @@ var allies: Array[Combatant] = []
 var enemies: Array[Combatant] = []
 var current_actor: Combatant
 var selected_target: Combatant
+var selected_ally: Combatant
 var selected_skill: Dictionary = {}
 var status_label: Label
 var turn_label: Label
@@ -47,6 +48,7 @@ func _ready() -> void:
 	engine.combat_finished.connect(_on_combat_finished)
 	engine.setup(allies, enemies)
 	current_actor = engine.advance_turn()
+	selected_ally = current_actor
 	_build_ui()
 	_refresh()
 
@@ -85,14 +87,14 @@ func _build_ui() -> void:
 	status_label = Label.new(); root.add_child(status_label)
 	var body := HBoxContainer.new(); body.size_flags_vertical = Control.SIZE_EXPAND_FILL; body.add_theme_constant_override("separation",14); root.add_child(body)
 	var left := VBoxContainer.new(); left.custom_minimum_size = Vector2(340,0); body.add_child(left)
-	var allies_title := Label.new(); allies_title.text = "队伍"; allies_title.add_theme_font_size_override("font_size",18); left.add_child(allies_title)
-	party_list = ItemList.new(); party_list.size_flags_vertical = Control.SIZE_EXPAND_FILL; left.add_child(party_list)
+	var allies_title := Label.new(); allies_title.text = "队伍（点击队友作为道具目标）"; allies_title.add_theme_font_size_override("font_size",18); left.add_child(allies_title)
+	party_list = ItemList.new(); party_list.size_flags_vertical = Control.SIZE_EXPAND_FILL; party_list.item_selected.connect(_on_ally_selected); left.add_child(party_list)
 	var middle := VBoxContainer.new(); middle.size_flags_horizontal = Control.SIZE_EXPAND_FILL; body.add_child(middle)
 	var target_title := Label.new(); target_title.text = "目标"; target_title.add_theme_font_size_override("font_size",18); middle.add_child(target_title)
 	target_list = ItemList.new(); target_list.custom_minimum_size = Vector2(0,110); target_list.item_selected.connect(_on_target_selected); middle.add_child(target_list)
 	var action_title := Label.new(); action_title.text = "技能"; action_title.add_theme_font_size_override("font_size",18); middle.add_child(action_title)
 	skill_box = VBoxContainer.new(); skill_box.custom_minimum_size = Vector2(0,170); middle.add_child(skill_box)
-	var item_title := Label.new(); item_title.text = "战斗道具"; item_title.add_theme_font_size_override("font_size",18); middle.add_child(item_title)
+	var item_title := Label.new(); item_title.text = "战斗道具"; middle.add_child(item_title)
 	item_box = VBoxContainer.new(); middle.add_child(item_box)
 	var right := VBoxContainer.new(); right.custom_minimum_size = Vector2(360,0); body.add_child(right)
 	var log_title := Label.new(); log_title.text = "战斗记录"; log_title.add_theme_font_size_override("font_size",18); right.add_child(log_title)
@@ -108,9 +110,11 @@ func _refresh() -> void:
 	if bounty_id != "":
 		var definition := bounty_manager.get_definition(bounty_id); encounter_title = "悬赏：%s · 推荐Lv.%d" % [str(definition.get("name", bounty_id)), int(definition.get("recommended_level", 0))]
 	turn_label.text = "行动：%s · Turn %d · %s" % [_name(current_actor), engine.turn_number, encounter_title]
-	status_label.text = "HP %d/%d · BP %d · %s %d/%d · 护盾 %d/%d · %s · %s排 · 道具 %d" % [current_actor.hp,current_actor.max_hp,current_actor.bp,MECHANIC_NAMES.get(current_actor.id,"专属资源"),current_actor.mechanic_resource,current_actor.mechanic_max,current_actor.shield,current_actor.max_shield,current_actor.get_status_summary(),"前" if current_actor.row == "front" else "后",battle_inventory.items.size()]
+	status_label.text = "HP %d/%d · BP %d · %s %d/%d · 护盾 %d/%d · %s · %s排 · 道具 %d · 道具目标：%s" % [current_actor.hp,current_actor.max_hp,current_actor.bp,MECHANIC_NAMES.get(current_actor.id,"专属资源"),current_actor.mechanic_resource,current_actor.mechanic_max,current_actor.shield,current_actor.max_shield,current_actor.get_status_summary(),"前" if current_actor.row == "front" else "后",battle_inventory.items.size(),_name(selected_ally) if selected_ally != null else _name(current_actor)]
 	party_list.clear()
-	for ally in allies: party_list.add_item("%s  HP %d/%d  ATK %d DEF %d SPD %d  BP %d · %s %d/%d · %s排\n%s" % [_name(ally),ally.hp,ally.max_hp,ally.attack,ally.defense,ally.speed,ally.bp,MECHANIC_NAMES.get(ally.id,"资源"),ally.mechanic_resource,ally.mechanic_max,"前" if ally.row == "front" else "后",ally.get_status_summary()])
+	for ally in allies:
+		var selected_mark := "◆ " if ally == selected_ally else ""
+		party_list.add_item("%s%s  HP %d/%d  ATK %d DEF %d SPD %d  BP %d · %s %d/%d · %s排\n%s" % [selected_mark,_name(ally),ally.hp,ally.max_hp,ally.attack,ally.defense,ally.speed,ally.bp,MECHANIC_NAMES.get(ally.id,"资源"),ally.mechanic_resource,ally.mechanic_max,"前" if ally.row == "front" else "后",ally.get_status_summary()])
 	target_list.clear()
 	for enemy in enemies:
 		if enemy.is_alive():
@@ -138,14 +142,16 @@ func _use_skill(skill: Dictionary, boosted: bool) -> void:
 	if current_actor == null or not current_actor.is_alive() or selected_target == null or not selected_target.is_alive(): return
 	var result := SkillRuntime.perform(engine,current_actor,selected_target,skill,boosted)
 	if not result.get("ok",false): status_label.text = "技能失败：%s" % result.get("reason","unknown"); return
+	if result.has("form_name"): _on_combat_log("白龙马变身：%s · 持续 %d 回合" % [str(result.get("form_name","")),int(result.get("form_duration",0))])
 	boss_runtime.after_action(_boss()); _end_turn()
 
 func _use_item(item_id: String) -> void:
 	if current_actor == null or not current_actor.is_alive() or not battle_inventory.has_item(item_id): return
-	var item:Dictionary = item_catalog.get(item_id, {}); var item_type := str(item.get("type","")); var amount := int(item.get("amount",0)); var target := current_actor
+	var item:Dictionary = item_catalog.get(item_id, {}); var item_type := str(item.get("type","")); var amount := int(item.get("amount",0)); var target:Combatant = selected_ally if selected_ally != null and selected_ally.is_alive() else current_actor
 	if item_type == "HEAL":
 		var living := allies.filter(func(unit): return unit.is_alive()); if living.is_empty(): return
-		target = living[0]; var healed := target.heal(amount); if healed <= 0: status_label.text = "%s 已满血。" % _name(target); return
+		if not target in living: target = living[0]
+		var healed := target.heal(amount); if healed <= 0: status_label.text = "%s 已满血。" % _name(target); return
 	elif item_type == "BP": target.bp = mini(target.bp + amount,5)
 	elif item_type == "BARRIER": target.gain_barrier(amount)
 	else: status_label.text = "这个物品目前只能用于出战前准备。"; return
@@ -159,6 +165,12 @@ func _boost_selected() -> void:
 		var skills := SkillCatalog.get_character_skills(current_actor.id.to_upper()); if not skills.is_empty(): selected_skill = skills[0]
 	if not selected_skill.is_empty(): _use_skill(selected_skill,true)
 
+func _on_ally_selected(index: int) -> void:
+	var living:Array[Combatant] = []
+	for ally in allies:
+		if ally.is_alive(): living.append(ally)
+	if index >= 0 and index < living.size(): selected_ally = living[index]; _refresh()
+
 func _on_target_selected(index: int) -> void:
 	var alive:Array[Combatant] = []; for enemy in enemies: if enemy.is_alive(): alive.append(enemy)
 	if index >= 0 and index < alive.size(): selected_target = alive[index]
@@ -166,9 +178,11 @@ func _on_target_selected(index: int) -> void:
 func _end_turn() -> void:
 	if enemies.all(func(unit): return not unit.is_alive()): _refresh(); return
 	current_actor = engine.advance_turn()
+	if current_actor != null and current_actor.is_alive(): selected_ally = current_actor
 	while current_actor != null and current_actor in enemies:
 		_enemy_turn(current_actor); if enemies.all(func(unit): return not unit.is_alive()): break
 		current_actor = engine.advance_turn()
+	if current_actor != null and current_actor.is_alive() and current_actor in allies: selected_ally = current_actor
 	_refresh()
 
 func _enemy_turn(enemy: Combatant) -> void:
