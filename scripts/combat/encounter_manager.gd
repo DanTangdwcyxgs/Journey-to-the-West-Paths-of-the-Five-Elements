@@ -65,6 +65,21 @@ func choose_ai_action(enemy: Combatant, allies: Array[Combatant], turn_number: i
 		return _action_from_definition(skills[0])
 	return CombatAction.new("NORMAL_ATTACK", "妖兵攻击", "strike", 18, 1, 0)
 
+func choose_ai_target(enemy: Combatant, allies: Array[Combatant], action: CombatAction) -> Combatant:
+	var living: Array[Combatant] = []
+	for ally in allies:
+		if ally != null and ally.is_alive():
+			living.append(ally)
+	if living.is_empty():
+		return null
+	if action == null:
+		return living[0]
+	var element := str(action.element).to_lower()
+	for ally in living:
+		if bool(ally.weaknesses.get(element, false)):
+			return ally
+	return living[0]
+
 func _action_from_definition(skill: Dictionary) -> CombatAction:
 	return CombatAction.new(
 		str(skill.get("id", "NORMAL_ATTACK")),
