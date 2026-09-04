@@ -42,6 +42,26 @@ func _initialize() -> void:
 	_assert(fire_result.get("weakness_hit", false), "fire should exploit the demon weakness")
 	_assert_equal(wukong.bp, 0, "damage skill should spend one BP")
 
+	var generic_target := Combatant.new("generic_target", "通用效果目标", 180, 20, 5, 12, 2, {}, "front")
+	var generic_actor := Combatant.new("generic_actor", "通用效果角色", 150, 30, 8, 16, 2, {}, "front")
+	var generic_engine := CombatEngine.new()
+	generic_engine.setup([generic_actor], [generic_target])
+	generic_actor.bp = 1
+	var generic_effect_skill := {
+		"id": "TEST_GENERIC_TAUNT",
+		"name": "试探重击",
+		"element": "strike",
+		"power": 5,
+		"shield_hit": 0,
+		"bp_cost": 1,
+		"kind": "damage",
+		"effects": {"effect": "taunt", "effect_duration": 2, "condition": "on_hit"}
+	}
+	var generic_result := SkillRuntime.perform(generic_engine, generic_actor, generic_target, generic_effect_skill)
+	_assert(generic_result.get("ok", false), "generic player skill should execute")
+	_assert(generic_result.get("effect_applied", false), "player effects should use the shared action pipeline")
+	_assert_equal(generic_target.aggro_turns, 2, "generic player effect should apply to target")
+
 	var bajie := Combatant.new("bajie", "猪八戒", 180, 24, 12, 15, 3, {}, "front")
 	var bajie_enemy := Combatant.new("bajie_enemy", "妖怪", 220, 20, 5, 8, 2, {}, "front")
 	var bajie_engine := CombatEngine.new()
