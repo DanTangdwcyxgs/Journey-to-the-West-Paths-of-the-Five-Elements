@@ -22,6 +22,11 @@ var speed_effect_turns: int = 0
 var mechanic_resource: int = 0
 var mechanic_max: int = 3
 var combat_modifiers: Dictionary = {}
+var longma_form: String = "horse"
+var longma_form_turns: int = 0
+var form_attack_bonus: int = 0
+var form_defense_bonus: int = 0
+var form_speed_bonus: int = 0
 
 func _init(
 	p_id: String,
@@ -67,6 +72,10 @@ func begin_turn() -> void:
 		speed_effect_turns -= 1
 		if speed_effect_turns == 0:
 			speed = base_speed
+	if longma_form_turns > 0:
+		longma_form_turns -= 1
+		if longma_form_turns == 0:
+			clear_longma_form()
 
 func restore_shield() -> void:
 	shield = max_shield
@@ -96,6 +105,28 @@ func spend_mechanic_resource(amount: int) -> bool:
 	mechanic_resource -= amount
 	return true
 
+func set_longma_form(form: String, duration: int, attack_bonus: int, defense_bonus: int, speed_bonus: int) -> void:
+	clear_longma_form()
+	longma_form = form
+	longma_form_turns = maxi(duration, 0)
+	form_attack_bonus = attack_bonus
+	form_defense_bonus = defense_bonus
+	form_speed_bonus = speed_bonus
+	attack += attack_bonus
+	defense = maxi(defense + defense_bonus, 1)
+	speed = maxi(speed + speed_bonus, 1)
+	base_speed = speed
+
+func clear_longma_form() -> void:
+	attack -= form_attack_bonus
+	defense = maxi(defense - form_defense_bonus, 1)
+	speed = maxi(speed - form_speed_bonus, 1)
+	form_attack_bonus = 0
+	form_defense_bonus = 0
+	form_speed_bonus = 0
+	longma_form = "horse"
+	longma_form_turns = 0
+
 func take_damage(amount: int) -> int:
 	var incoming := maxi(amount, 0)
 	var absorbed := mini(barrier, incoming)
@@ -114,4 +145,6 @@ func get_status_summary() -> String:
 		statuses.append("嘲讽 %dT" % aggro_turns)
 	if speed_effect_turns > 0 and speed_delta != 0:
 		statuses.append("速度 %+d %dT" % [speed_delta, speed_effect_turns])
+	if id == "longma" and longma_form != "horse":
+		statuses.append("形态·%s %dT" % [longma_form, longma_form_turns])
 	return "、".join(statuses) if not statuses.is_empty() else "无状态"
