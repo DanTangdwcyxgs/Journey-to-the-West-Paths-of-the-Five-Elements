@@ -1,7 +1,7 @@
 class_name BattleUI
 extends Control
 
-const NAMES := {"tangseng":"唐三藏", "wukong":"孙悟空", "bajie":"猪八戒", "wujing":"沙悟净", "longma":"白龙马", "yellow_wind":"黄风妖王", "sand_guard":"沙甲妖兵", "wind_spirit":"风砂精"}
+const NAMES := {"tangseng":"唐三藏", "wukong":"孙悟空", "bajie":"猪八戒", "wujing":"沙悟净", "longma":"白龙马", "yellow_wind":"黄风妖王", "sand_guard":"沙甲妖兵", "wind_spirit":"风砂精", "cave_ghoul":"洞窟恶鬼", "stone_imp":"顽石小妖", "crab_guard":"蟹将", "shrimp_spear":"虾兵", "heavenly_soldier":"天兵", "heavenly_archer":"天将弓手"}
 const MECHANIC_NAMES := {"tangseng":"慈悲", "wukong":"战意", "bajie":"怒气", "wujing":"潮势", "longma":"龙息"}
 const CAVE_PROGRESS_PREFIX := "YELLOW_WIND_CAVE_ROOM_"
 
@@ -25,6 +25,8 @@ var log_box: RichTextLabel
 var encounter_type := "bounty"
 var encounter_id := ""
 var source_stage_id := ""
+var source_chapter_id := ""
+var source_route_id := ""
 var bounty_manager := BountyManager.new()
 var encounter_resolved := false
 var item_catalog: Dictionary = {}
@@ -36,6 +38,8 @@ func _ready() -> void:
 	encounter_type = str(handoff.get("encounter_type", "bounty"))
 	encounter_id = str(handoff.get("encounter_id", handoff.get("bounty_id", "")))
 	source_stage_id = str(handoff.get("source_stage_id", ""))
+	source_chapter_id = str(handoff.get("source_chapter_id", ""))
+	source_route_id = str(handoff.get("source_route_id", ""))
 	_load_bounty_definitions()
 	_load_item_catalog()
 	var narrative := NarrativeManager.new()
@@ -45,7 +49,7 @@ func _ready() -> void:
 	party.initialize_from_recruited(["TANG", "WUKONG", "BAJIE", "WUJING", "LONGMA"])
 	allies = CombatPartyBuilder.build_active_party(party)
 	_apply_loadout_modifiers()
-	if encounter_type == "normal":
+	if encounter_type == "normal" or encounter_type == "origin":
 		enemies = encounter_manager.build_enemies(encounter_id)
 	else:
 		var boss := boss_runtime.create_boss()
@@ -114,8 +118,9 @@ func _build_ui() -> void:
 
 func _refresh() -> void:
 	if current_actor == null: return
-	var encounter_title := "普通遭遇：%s" % encounter_id if encounter_type == "normal" else "黄风阶段 %d" % boss_runtime.phase
-	if encounter_type != "normal":
+	var encounter_title := "普通遭遇：%s" % encounter_id
+	if encounter_type == "origin": encounter_title = "个人战斗：%s" % encounter_id
+	elif encounter_type == "bounty":
 		var definition := bounty_manager.get_definition(encounter_id)
 		if not definition.is_empty(): encounter_title = "悬赏：%s · 推荐Lv.%d" % [str(definition.get("name", encounter_id)), int(definition.get("recommended_level", 0))]
 	turn_label.text = "行动：%s · Turn %d · %s" % [_name(current_actor), engine.turn_number, encounter_title]
@@ -151,7 +156,7 @@ func _use_skill(skill: Dictionary, boosted: bool) -> void:
 	var result := SkillRuntime.perform(engine,current_actor,selected_target,skill,boosted)
 	if not result.get("ok",false): status_label.text = "技能失败：%s" % result.get("reason","unknown"); return
 	if result.has("form_name"): _on_combat_log("白龙马变身：%s · 持续 %d 回合" % [str(result.get("form_name","")),int(result.get("form_duration",0))])
-	if encounter_type != "normal": boss_runtime.after_action(_boss())
+	if encounter_type == "bounty": boss_runtime.after_action(_boss())
 	_end_turn()
 
 func _use_item(item_id: String) -> void:
@@ -202,13 +207,13 @@ func _enemy_turn(enemy: Combatant) -> void:
 	var taunted := allies.filter(func(unit): return unit.is_alive() and unit.aggro_turns > 0)
 	if not taunted.is_empty(): target = taunted[0]
 	var attack:CombatAction
-	if encounter_type == "normal":
-		attack = CombatAction.new("NORMAL_ATTACK", "风砂猛击", "strike", 18, 1, 0)
-	else:
+	if encounter_type == "bounty":
 		boss_runtime.on_turn_start(enemy)
 		attack = boss_runtime.choose_action(enemy,allies)
+	else:
+		attack = CombatAction.new("NORMAL_ATTACK", "妖兵攻击", "STRIKE", 18, 1, 0)
 	var result := engine.perform_action(enemy,target,attack)
-	if encounter_type != "normal": boss_runtime.apply_action_effects(attack.id,enemy)
+	if encounter_type == "bounty": boss_runtime.apply_action_effects(attack.id,enemy)
 	if result.get("ok",false): _on_combat_log("%s：%s" % [_name(enemy),attack.display_name])
 
 func _on_combat_log(message:String) -> void:
@@ -218,23 +223,36 @@ func _on_combat_finished(winner:String) -> void:
 	if encounter_resolved: return
 	var narrative := NarrativeManager.new()
 	if winner != "allies":
-		status_label.text = "战斗失败。可以返回地城重新准备。"
+		status_label.text = "战斗失败。可以返回重新准备。"
 		return
 	if not narrative.load():
 		status_label.text = "战斗胜利，但存档读取失败。"
 		return
-	if encounter_type == "normal":
+	if encounter_type == "normal" or encounter_type == "origin":
 		var definition := encounter_manager.get_definition(encounter_id)
 		var applied := BattleRewardService.apply_victory(narrative, encounter_id, str(definition.get("name", encounter_id)), definition.get("rewards", []), definition.get("world_effects", []))
 		if applied.is_empty():
 			status_label.text = "战斗胜利，但奖励写入失败。"
 			return
 		battle_inventory.restore(applied.get("inventory", {}))
-		if not source_stage_id.is_empty(): narrative.state.add_world_rumor(CAVE_PROGRESS_PREFIX + source_stage_id)
+		if encounter_type == "normal" and not source_stage_id.is_empty(): narrative.state.add_world_rumor(CAVE_PROGRESS_PREFIX + source_stage_id)
+		if encounter_type == "origin":
+			if source_chapter_id.is_empty() or source_route_id.is_empty():
+				status_label.text = "个人战斗胜利，但章节来源信息缺失。"
+				return
+			var origin := OriginRouteManager.new()
+			var chapter := origin.get_current_chapter(narrative, str(narrative.state.starting_character))
+			if str(chapter.get("id", "")) != source_chapter_id:
+				status_label.text = "个人战斗胜利，但当前章节已发生变化。"
+				return
+			origin.complete_current(narrative, str(narrative.state.starting_character))
 		narrative.save()
 		BountyEncounterState.clear()
 		encounter_resolved = true
-		status_label.text = "遭遇胜利：%s · 获得 %s" % [str(definition.get("name", encounter_id)),_format_rewards(applied.get("granted", []))]
+		if encounter_type == "origin":
+			status_label.text = "个人章节完成：%s · 获得 %s" % [str(definition.get("name", encounter_id)),_format_rewards(applied.get("granted", []))]
+		else:
+			status_label.text = "遭遇胜利：%s · 获得 %s" % [str(definition.get("name", encounter_id)),_format_rewards(applied.get("granted", []))]
 	else:
 		narrative.state.set_inventory(battle_inventory.to_dict())
 		var applied := BountyRewardService.resolve_defeat(narrative,bounty_manager,encounter_id)
@@ -251,13 +269,17 @@ func _on_combat_finished(winner:String) -> void:
 
 func _format_rewards(rewards:Array) -> String:
 	if rewards.is_empty(): return "无"
-	var parts:Array[String] = []; for reward in rewards: parts.append("%s×%d" % [str(reward.get("id","")),int(reward.get("amount",0))]); return "、".join(parts)
+	var parts:Array[String] = []
+	for reward in rewards: parts.append("%s×%d" % [str(reward.get("id","")),int(reward.get("amount",0))])
+	return "、".join(parts)
 
 func _return_from_battle() -> void:
 	if not encounter_resolved: BountyEncounterState.clear()
-	if encounter_type == "normal" and not source_stage_id.is_empty():
+	if encounter_type == "origin":
+		get_tree().change_scene_to_file("res://ui/journey.tscn")
+	elif encounter_type == "normal" and not source_stage_id.is_empty():
 		get_tree().change_scene_to_file("res://ui/yellow_wind_cave.tscn")
-	elif encounter_type != "normal" and not source_stage_id.is_empty() and encounter_resolved:
+	elif encounter_type == "bounty" and not source_stage_id.is_empty() and encounter_resolved:
 		get_tree().change_scene_to_file("res://ui/yellow_wind_cave.tscn")
 	else:
 		get_tree().change_scene_to_file("res://ui/world_map.tscn")
