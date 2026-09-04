@@ -2,6 +2,7 @@ class_name EncounterManager
 extends RefCounted
 
 const DATA_PATH := "res://data/combat/encounters.json"
+const SHARED_DATA_PATH := "res://data/combat/shared_encounters.json"
 const AI_PROFILE_PATH := "res://data/combat/enemy_ai_profiles.json"
 
 var definitions: Dictionary = {}
@@ -9,11 +10,23 @@ var ai_profiles: Dictionary = {}
 
 func _init() -> void:
 	_load_definitions()
+	_load_shared_definitions()
 	_load_ai_profiles()
 
 func _load_definitions() -> void:
 	definitions.clear()
 	var file := FileAccess.open(DATA_PATH, FileAccess.READ)
+	if file == null:
+		return
+	var parsed = JSON.parse_string(file.get_as_text())
+	if not parsed is Dictionary:
+		return
+	for encounter in parsed.get("encounters", []):
+		if encounter is Dictionary and encounter.has("id"):
+			definitions[str(encounter.get("id"))] = encounter.duplicate(true)
+
+func _load_shared_definitions() -> void:
+	var file := FileAccess.open(SHARED_DATA_PATH, FileAccess.READ)
 	if file == null:
 		return
 	var parsed = JSON.parse_string(file.get_as_text())
