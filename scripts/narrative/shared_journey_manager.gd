@@ -64,6 +64,11 @@ static func complete(chapter_id: String, manager: NarrativeManager) -> bool:
 		var battle_milestone := "%s%s" % [SHARED_BATTLE_MILESTONE_PREFIX, encounter_id]
 		if battle_milestone not in manager.state.completed_milestones:
 			return false
+	else:
+		# Encounter rewards are granted by BattleRewardService when the battle is won.
+		# Non-combat chapters have no battle to do that work, so their data rewards
+		# must be applied here exactly once as part of canonical chapter completion.
+		_apply_chapter_rewards(chapter, manager)
 
 	manager.complete_chapter(chapter_id, true)
 	manager.advance_world_milestone(str(chapter.get("id", "")), int(chapter.get("timeline", 0)))
@@ -83,6 +88,30 @@ static func next_for_state(state: NarrativeState) -> Dictionary:
 	if next_id == "":
 		return current
 	return get_chapter(next_id)
+
+static func _apply_chapter_rewards(chapter: Dictionary, manager: NarrativeManager) -> void:
+	var rewards: Array = chapter.get("rewards", [])
+	if rewards.is_empty():
+		return
+	var inventory := InventoryManager.new()
+	inventory.restore(manager.state.get_inventory())
+	for reward in rewards:
+		_apply_reward(inventory, str(reward))
+	manager.state.set_inventory(inventory.to_dict())
+
+static func _apply_reward(inventory: InventoryManager, reward_id: String) -> void:
+	match reward_id:
+		"COIN_LOW":
+			inventory.add_currency("COIN", 100)
+		"COIN_MEDIUM":
+			inventory.add_currency("COIN", 300)
+		"COIN_HIGH":
+			inventory.add_currency("COIN", 800)
+		"COIN_LEGENDARY":
+			inventory.add_currency("COIN", 2000)
+		_:
+			if reward_id != "":
+				inventory.add_item(reward_id, 1)
 
 static func _apply_recruitment_events(chapter: Dictionary, manager: NarrativeManager) -> void:
 	for event in chapter.get("recruit", []):
