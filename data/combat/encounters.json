@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "encounters": [
+    {
+      "id": "YELLOW_WIND_CAVE_SAND_GUARDS",
+      "name": "风沙妖兵",
+      "description": "两只守在回廊中的妖兵，以风沙掩护彼此。",
+      "source": "YELLOW_WIND_CAVE",
+      "recommended_level": 10,
+      "enemies": [
+        {"id":"SAND_GUARD","display_name":"沙甲妖兵","max_hp":110,"attack":24,"defense":8,"speed":9,"shield":3,"weaknesses":{"FIRE":true,"STRIKE":true}},
+        {"id":"WIND_SPIRIT","display_name":"风砂精","max_hp":85,"attack":28,"defense":5,"speed":14,"shield":2,"weaknesses":{"WATER":true,"ICE":true}}
+      ],
+      "rewards": ["COIN_LOW","HERB"],
+      "world_effects": []
+    }
+  ]
+}
