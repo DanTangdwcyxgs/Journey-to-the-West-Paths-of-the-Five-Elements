@@ -34,7 +34,7 @@
         {"id":"TANG-05","title":"踏上取经路","summary":"离开长安后，取经成为每天都要重新确认的选择。"},
         {"id":"TANG-06","title":"双叉岭","summary":"遭遇妖患，第一次真正意识到凡人的脆弱。","encounter_id":"TANG_ORIGIN_DOUBLE_RIDGE","battle_after":"双叉岭妖患袭来，玄奘必须保护自己继续西行。"},
         {"id":"TANG-07","title":"鹰愁涧前夜","summary":"孤身面对未知，仍选择继续向西。"},
-        {"id":"TANG-08","title":"五行山","summary":"听见山下的大圣呼唤，两个截然不同的人生开始交汇。"}
+        {"id":"TANG-08","title":"五行山","summary":"听见山下的大圣呼唤，两个截然不同的人生开始交汇。","encounter_id":"TANG_ORIGIN_FIVE_ELEMENTS","battle_after":"五行山下妖气未散，玄奘必须在救人和避险之间作出最后选择。"}
       ]
     },
     "LONGMA": {
@@ -45,7 +45,7 @@
         {"id":"LONGMA-02","title":"龙子获罪","summary":"一次失控的选择让他背上必须偿还的罪责。","encounter_id":"LONGMA_ORIGIN_SEA_CLIFF","battle_after":"西海试炼逼近，龙子必须在冲动与担当之间撑过一场战斗。"},
         {"id":"LONGMA-03","title":"鹰愁涧","summary":"来到陌生河谷，第一次看见取经人的命运。"},
         {"id":"LONGMA-04","title":"白马之誓","summary":"决定把被惩罚的身份转化为护送使命。"},
-        {"id":"LONGMA-05","title":"唐僧来临","summary":"取经队伍出现，责任不再只是父辈给予的命令。"},
+        {"id":"LONGMA-05","title":"唐僧来临","summary":"取经队伍出现，责任不再只是父辈给予的命令。","encounter_id":"LONGMA_ORIGIN_YINGCHOU","battle_after":"鹰愁涧的水妖逼近，白龙必须先保护即将到来的取经人。"},
         {"id":"LONGMA-06","title":"化作白马","summary":"以坐骑之身同行，暂时放下龙族身份。"}
       ]
     },
@@ -60,7 +60,7 @@
         {"id":"BAJIE-05","title":"高老庄","summary":"遇到新的家庭与归宿，却无法真正摆脱妖身。"},
         {"id":"BAJIE-06","title":"招亲","summary":"情感与欲望纠缠，责任第一次要求他做出取舍。","encounter_id":"BAJIE_ORIGIN_GAO_WILD","battle_after":"高老庄外妖影来袭，八戒不得不为眼前的家出手。"},
         {"id":"BAJIE-07","title":"妖身","summary":"身份暴露后，他必须面对别人眼中的自己。"},
-        {"id":"BAJIE-08","title":"悟空斗法","summary":"与悟空交锋，第一次正视自己逃避已久的选择。"},
+        {"id":"BAJIE-08","title":"悟空斗法","summary":"与悟空交锋，第一次正视自己逃避已久的选择。","encounter_id":"BAJIE_ORIGIN_WUKONG_DUEL","battle_after":"悟空逼问八戒的选择，二人以一场真正的交锋确认彼此底线。"},
         {"id":"BAJIE-09","title":"放下","summary":"舍弃高老庄的旧人生，准备随取经人继续西行。"}
       ]
     },
@@ -74,7 +74,7 @@
         {"id":"WUJING-04","title":"无尽","summary":"漫长惩罚让他开始反思自己到底在赎什么罪。"},
         {"id":"WUJING-05","title":"河中来客","summary":"一次又一次阻拦取经人，直到发现自己并不想再继续。"},
         {"id":"WUJING-06","title":"观音渡厄","summary":"得到一条重新证明自己的道路。"},
-        {"id":"WUJING-07","title":"流沙河之战","summary":"最后一次以妖身作战，为新的身份争取机会。"},
+        {"id":"WUJING-07","title":"流沙河之战","summary":"最后一次以妖身作战，为新的身份争取机会。","encounter_id":"WUJING_ORIGIN_BODHISATTVA","battle_after":"观音渡河前的试探降临，沙僧必须证明自己还能为别人承担风险。"},
         {"id":"WUJING-08","title":"皈依","summary":"愿意背负过去，加入取经队伍。"}
       ]
     }
