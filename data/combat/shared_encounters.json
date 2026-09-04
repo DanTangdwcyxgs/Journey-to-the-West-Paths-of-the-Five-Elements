@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "encounters": [
+    {
+      "id": "SHARED_EAGLE_SORROW",
+      "name": "鹰愁涧·白龙阻路",
+      "description": "水妖与龙影搅乱山涧，玄奘与悟空必须在狭窄水道中逼退来敌。",
+      "source": "SHARED_JOURNEY",
+      "recommended_level": 7,
+      "enemies": [
+        {"id":"EAGLE_WATER_DEMON","display_name":"涧水妖","max_hp":130,"attack":27,"defense":7,"speed":13,"shield":3,"weaknesses":{"FIRE":true,"ICE":true},"combat_modifiers":{"skills":[{"id":"EAGLE_WATER_STRIKE","name":"涧流冲击","element":"water","power":24,"shield_hit":1},{"id":"EAGLE_WATER_GRIP","name":"锁涧水缚","element":"water","power":19,"shield_hit":2,"effect":"slow","effect_value":-2,"effect_duration":2,"condition":"on_hit"}],"cycle_skill":"EAGLE_WATER_GRIP"}},
+        {"id":"EAGLE_CLAW_DEMON","display_name":"鹰爪水魅","max_hp":105,"attack":30,"defense":5,"speed":16,"shield":2,"weaknesses":{"STRIKE":true},"combat_modifiers":{"skills":[{"id":"EAGLE_CLAW","name":"水魅爪击","element":"strike","power":27,"shield_hit":1},{"id":"EAGLE_DIVE","name":"俯冲","element":"wind","power":35,"shield_hit":1}],"cycle_skill":"EAGLE_DIVE"}}
+      ],
+      "rewards": ["COIN_LOW","HERB"],
+      "world_effects": []
+    },
+    {
+      "id": "SHARED_GAOJIAZHUANG",
+      "name": "高老庄·妖气冲门",
+      "description": "高老庄妖气未散，八戒旧日的身份被迫再次摆到众人面前。",
+      "source": "SHARED_JOURNEY",
+      "recommended_level": 9,
+      "enemies": [
+        {"id":"GAO_WILD_DEMON","display_name":"庄外野妖","max_hp":155,"attack":31,"defense":8,"speed":11,"shield":3,"weaknesses":{"FIRE":true,"STRIKE":true},"combat_modifiers":{"skills":[{"id":"GAO_CLAW","name":"野妖扑击","element":"strike","power":29,"shield_hit":1},{"id":"GAO_FRENZY","name":"狂啸","element":"dark","power":38,"shield_hit":1}],"cycle_skill":"GAO_FRENZY"}},
+        {"id":"GAO_SHAMAN","display_name":"庄外邪祟","max_hp":120,"attack":34,"defense":6,"speed":14,"shield":2,"weaknesses":{"WATER":true,"ICE":true},"combat_modifiers":{"skills":[{"id":"GAO_SHAMAN_BOLT","name":"邪咒","element":"dark","power":25,"shield_hit":1},{"id":"GAO_SHAMAN_BIND","name":"缚魂","element":"ice","power":22,"shield_hit":2,"effect":"taunt","effect_duration":1,"condition":"when_target_alive"}],"cycle_skill":"GAO_SHAMAN_BIND"}}
+      ],
+      "rewards": ["COIN_MEDIUM","HERB"],
+      "world_effects": []
+    },
+    {
+      "id": "SHARED_FLOWING_SANDS",
+      "name": "流沙河·悟净现身",
+      "description": "流沙翻涌，悟净从河底现身。水势与罪责一起逼近取经队伍。",
+      "source": "SHARED_JOURNEY",
+      "recommended_level": 11,
+      "enemies": [
+        {"id":"SANDS_WATER_WRAITH","display_name":"流沙水魅","max_hp":175,"attack":35,"defense":9,"speed":12,"shield":4,"weaknesses":{"FIRE":true,"STRIKE":true},"combat_modifiers":{"skills":[{"id":"SANDS_WAVE","name":"流沙巨浪","element":"water","power":31,"shield_hit":2},{"id":"SANDS_BIND","name":"沉沙缚","element":"ice","power":28,"shield_hit":1,"effect":"slow","effect_value":-3,"effect_duration":2,"condition":"on_hit"}],"cycle_skill":"SANDS_BIND"}},
+        {"id":"SANDS_RIPPER","display_name":"沙河凶灵","max_hp":145,"attack":38,"defense":7,"speed":15,"shield":3,"weaknesses":{"ICE":true},"combat_modifiers":{"skills":[{"id":"SANDS_CUT","name":"裂沙斩","element":"strike","power":34,"shield_hit":2},{"id":"SANDS_HOWL","name":"罪魂啸","element":"dark","power":24,"shield_hit":1,"effect":"taunt","effect_duration":2,"condition":"on_hit"}],"cycle_skill":"SANDS_HOWL"}}
+      ],
+      "rewards": ["COIN_MEDIUM","HERB"],
+      "world_effects": []
+    }
+  ]
+}
