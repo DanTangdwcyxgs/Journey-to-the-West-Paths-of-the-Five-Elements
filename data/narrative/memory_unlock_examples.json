@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "rules": {
+    "unlock_trigger": "RECRUITMENT_OR_CANONICAL_PARTY_ENTRY",
+    "party_full_gate": false,
+    "timeline_mutation_on_memory": false,
+    "return_to_exact_shared_state": true
+  },
+  "examples": [
+    {
+      "shared_checkpoint": "WUKONG_RECRUITED",
+      "new_character": "WUKONG",
+      "unlocked_route": "WUKONG_ORIGIN",
+      "first_safe_chapters": ["WUK-01", "WUK-02", "WUK-03", "WUK-04", "WUK-05", "WUK-06", "WUK-07", "WUK-08"]
+    },
+    {
+      "shared_checkpoint": "BAI_LONGMA_RECRUITED",
+      "new_character": "LONGMA",
+      "unlocked_route": "LONGMA_ORIGIN",
+      "first_safe_chapters": ["LONGMA-01", "LONGMA-02", "LONGMA-03", "LONGMA-04", "LONGMA-05", "LONGMA-06"]
+    },
+    {
+      "shared_checkpoint": "ZHU_BAJIE_RECRUITED",
+      "new_character": "BAJIE",
+      "unlocked_route": "BAJIE_ORIGIN",
+      "first_safe_chapters": ["BAJIE-01", "BAJIE-02", "BAJIE-03", "BAJIE-04", "BAJIE-05", "BAJIE-06", "BAJIE-07", "BAJIE-08", "BAJIE-09"]
+    },
+    {
+      "shared_checkpoint": "SHA_WUJING_RECRUITED",
+      "new_character": "WUJING",
+      "unlocked_route": "WUJING_ORIGIN",
+      "first_safe_chapters": ["WUJING-01", "WUJING-02", "WUJING-03", "WUJING-04", "WUJING-05", "WUJING-06", "WUJING-07", "WUJING-08"]
+    }
+  ],
+  "ui_contract": {
+    "route_menu_should_show": "ONLY_UNLOCKED_ROUTES",
+    "new_route_notification": "CHARACTER_MEMORY_AVAILABLE",
+    "memory_entry_label": "回忆：{character_name}",
+    "completion_returns_to": "EXACT_PREVIOUS_SHARED_STATE"
+  }
+}
