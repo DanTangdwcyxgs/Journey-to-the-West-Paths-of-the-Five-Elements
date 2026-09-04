@@ -1,0 +1,81 @@
+{
+  "schema_version": 1,
+  "description": "西游 JRPG 悬赏妖王定义。悬赏目标是可选世界内容，不等同于强制主线 Boss。",
+  "bounties": [
+    {
+      "id": "BOUNTY_YELLOW_FANG",
+      "name": "黄牙妖王",
+      "tier": "B",
+      "discovery": {
+        "type": "RUMOR",
+        "location": "BLACK_WIND_FOOTHILLS",
+        "required_evidence": 1
+      },
+      "location_id": "BLACK_WIND_NORTH_PATH",
+      "recommended_level": 12,
+      "can_appear_before_mainline": true,
+      "can_retreat": true,
+      "retreat_memory": "PLAYER_LEARNED_HIGH_THREAT",
+      "weaknesses": ["FIRE", "STAFF"],
+      "battle_profile": {
+        "shield": 4,
+        "break_reward_multiplier": 1.5,
+        "enrage_below_hp_percent": 30
+      },
+      "rewards": ["COIN_MEDIUM", "DEMON_FANG", "FANG_TALISMAN"],
+      "world_effects_on_defeat": ["LOCAL_VILLAGE_SAFE_ROUTE"],
+      "memory_hooks": ["WUKONG", "TANG"],
+      "status_flags": ["OPTIONAL", "REVISITABLE"]
+    },
+    {
+      "id": "BOUNTY_IRON_HORN",
+      "name": "铁角大王",
+      "tier": "A",
+      "discovery": {
+        "type": "NPC_CHAIN",
+        "location": "MOUNTAIN_MARKET",
+        "required_evidence": 3
+      },
+      "location_id": "IRON_HORN_CAVE",
+      "recommended_level": 20,
+      "can_appear_before_mainline": false,
+      "can_retreat": true,
+      "retreat_memory": "IRON_HORN_PROFILE_RECORDED",
+      "weaknesses": ["WATER", "WIND"],
+      "battle_profile": {
+        "shield": 6,
+        "break_reward_multiplier": 2.0,
+        "enrage_below_hp_percent": 25
+      },
+      "rewards": ["COIN_HIGH", "IRON_HORN_CORE", "HORNWARD_CHARM"],
+      "world_effects_on_defeat": ["MOUNTAIN_ROUTE_REOPENED", "BLACKSMITH_SPECIAL_STOCK"],
+      "memory_hooks": ["WUJING", "BAJIE"],
+      "status_flags": ["OPTIONAL", "REVISITABLE"]
+    },
+    {
+      "id": "BOUNTY_DRAGON_BONE_RECLUSE",
+      "name": "龙骨道人",
+      "tier": "S",
+      "discovery": {
+        "type": "HIDDEN_LOCATION",
+        "location": "RIVER_GORGE",
+        "required_evidence": 2
+      },
+      "location_id": "DRAGON_BONE_SANCTUM",
+      "recommended_level": 32,
+      "can_appear_before_mainline": true,
+      "can_retreat": true,
+      "retreat_memory": "S_TIER_WARNING_RECORDED",
+      "weaknesses": ["ICE", "WATER"],
+      "battle_profile": {
+        "shield": 8,
+        "break_reward_multiplier": 3.0,
+        "enrage_below_hp_percent": 20
+      },
+      "rewards": ["COIN_LEGENDARY", "DRAGON_BONE", "DRAGON_VEIL"],
+      "world_effects_on_defeat": ["RIVER_HIDDEN_ROUTE_UNLOCKED"],
+      "memory_hooks": ["LONGMA"],
+      "status_flags": ["OPTIONAL", "HIGH_THREAT", "REVISITABLE"]
+    }
+  ]
+}
