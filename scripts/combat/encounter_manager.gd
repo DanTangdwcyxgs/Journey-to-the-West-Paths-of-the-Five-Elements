@@ -142,11 +142,16 @@ func _find_skill(skills: Array, skill_id: String):
 	return null
 
 func _action_from_definition(skill: Dictionary) -> CombatAction:
+	var effects: Dictionary = {}
+	for key in ["effect", "effect_duration", "effect_value", "shield_bonus", "shield_damage_bonus"]:
+		if skill.has(key):
+			effects[key] = skill[key]
 	return CombatAction.new(
 		str(skill.get("id", "NORMAL_ATTACK")),
 		str(skill.get("name", "妖兵攻击")),
 		str(skill.get("element", "strike")),
 		int(skill.get("power", 18)),
 		int(skill.get("shield_hit", 1)),
-		int(skill.get("bp_cost", 0))
+		int(skill.get("bp_cost", 0)),
+		effects
 	)
