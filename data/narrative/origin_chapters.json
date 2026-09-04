@@ -1,22 +1,22 @@
 {
   "schema_version": 1,
-  "description": "五条可选起始路线的章节原型。章节只描述人物历史，不推进共享西游时间线。",
+  "description": "五条可选起始路线的章节原型。章节只描述人物历史，不推进共享西游时间线。带 encounter_id 的章节会进入独立个人战斗，胜利后才记为完成。",
   "routes": {
     "WUKONG": {
       "route_id": "WUKONG_ORIGIN",
       "theme": "自由与反抗",
       "chapters": [
         {"id":"WUK-01","title":"石猴出世","summary":"灵石孕猴，天性不受拘束。"},
-        {"id":"WUK-02","title":"水帘洞主","summary":"猴群拥立山王，第一次尝到自由的重量。"},
+        {"id":"WUK-02","title":"水帘洞主","summary":"猴群拥立山王，第一次尝到自由的重量。","encounter_id":"WUKONG_ORIGIN_WATER_CAVE","battle_after":"进入水帘洞后遭遇试图争夺栖身之地的妖影。"},
         {"id":"WUK-03","title":"寻仙问道","summary":"为逃生老病踏上海上求道之路。"},
         {"id":"WUK-04","title":"菩提门下","summary":"学得七十二变，却被告诫不可炫耀。"},
         {"id":"WUK-05","title":"大圣初醒","summary":"回花果山后悟出本领必须由自己承担。"},
-        {"id":"WUK-06","title":"龙宫取宝","summary":"金箍棒到手，兵器第一次成为命运象征。"},
+        {"id":"WUK-06","title":"龙宫取宝","summary":"金箍棒到手，兵器第一次成为命运象征。","encounter_id":"WUKONG_ORIGIN_DRAGON_PALACE","battle_after":"东海龙宫守卫拦路，悟空必须打通取宝之路。"},
         {"id":"WUK-07","title":"地府改命","summary":"生死簿前，他拒绝接受既定寿数。"},
         {"id":"WUK-08","title":"弼马温","summary":"天界授官后发现自由仍被职位束缚。"},
         {"id":"WUK-09","title":"齐天大圣","summary":"反抗天庭秩序，建立自己的名号。"},
         {"id":"WUK-10","title":"偷食蟠桃","summary":"欲望与不服管束让他越过天庭禁线。"},
-        {"id":"WUK-11","title":"天兵天将","summary":"第一次全面面对天庭军势。"},
+        {"id":"WUK-11","title":"天兵天将","summary":"第一次全面面对天庭军势。","encounter_id":"WUKONG_ORIGIN_HEAVENLY_TROOPS","battle_after":"天兵天将压境，悟空正面迎战围剿。"},
         {"id":"WUK-12","title":"二郎神","summary":"棋逢对手，力量之外开始理解规则的锋利。"},
         {"id":"WUK-13","title":"炼丹炉","summary":"八卦炉中炼出火眼金睛，也炼出更深的孤独。"},
         {"id":"WUK-14","title":"大闹天宫","summary":"反抗达到顶峰，最终败给更高层次的秩序。"},
