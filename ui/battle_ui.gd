@@ -46,7 +46,7 @@ func _ready() -> void:
 	if narrative.load():
 		battle_inventory.restore(narrative.state.get_inventory())
 		loadout.restore_from_narrative(narrative)
-	party.initialize_from_recruited(["TANG", "WUKONG", "BAJIE", "WUJING", "LONGMA"])
+	party.initialize_from_recruited(narrative.state.recruited_characters)
 	allies = CombatPartyBuilder.build_active_party(party)
 	_apply_loadout_modifiers()
 	if encounter_type == "normal" or encounter_type == "origin" or encounter_type == "shared":
