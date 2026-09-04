@@ -50,6 +50,7 @@ func encounter_character(character_id: String, memory_chapters: Array[String] = 
 	state.add_memory_chapters(memory_chapters)
 
 	if party_full():
+		_ensure_canonical_full_party_formation()
 		party_became_full.emit()
 	return true
 
@@ -194,3 +195,14 @@ func _reconcile_recruitment_for_handoff(character_id: String) -> void:
 			for i in range(min(2, chapters.size())):
 				memories.append(str(chapters[i].get("id", "")))
 		encounter_character(cid, memories)
+
+func _ensure_canonical_full_party_formation() -> void:
+	var formation := state.get_party_formation()
+	var roster: Array = formation.get("roster", [])
+	if not roster.is_empty():
+		return
+	state.set_party_formation({
+		"roster": NarrativeState.CHARACTER_IDS.duplicate(),
+		"front_row": ["TANG", "WUKONG", "LONGMA"],
+		"back_row": ["BAJIE", "WUJING"]
+	})
