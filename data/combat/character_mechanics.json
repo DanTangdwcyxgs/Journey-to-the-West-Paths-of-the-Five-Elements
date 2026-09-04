@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "mechanics": {
+    "TANG": {
+      "resource": "mercy",
+      "max": 3,
+      "notes": "Healing an ally grants 1 Mercy. Jingubang-style emergency support can spend Mercy for stronger cleanse/shield effects."
+    },
+    "WUKONG": {
+      "resource": "momentum",
+      "max": 3,
+      "notes": "Weakness hits and Breaks grant Momentum. Spend Momentum on clone/fire burst upgrades."
+    },
+    "BAJIE": {
+      "resource": "rage",
+      "max": 5,
+      "notes": "Taking direct damage grants Rage. Taunt gains stronger protection while Rage is high."
+    },
+    "WUJING": {
+      "resource": "tide",
+      "max": 3,
+      "notes": "Applying control grants Tide. Tide improves the next slow/control action."
+    },
+    "LONGMA": {
+      "resource": "dragon_shift",
+      "max": 3,
+      "notes": "Switching between horse/eagle/tiger/dragon forms changes tactical modifiers and unlocks form-specific actions."
+    }
+  }
+}
