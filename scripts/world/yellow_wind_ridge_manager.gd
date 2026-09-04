@@ -41,7 +41,7 @@ func complete_stage(manager: NarrativeManager, stage_id: String) -> Dictionary:
 			continue
 		var milestone := str(stage.get("milestone", ""))
 		if not milestone.is_empty() and not manager.state.completed_milestones.has(milestone):
-			manager.record_milestone(milestone, "黄风岭：%s" % str(stage.get("name", stage_id)))
+			manager.advance_world_milestone(milestone, int(stage.get("timeline", definition.get("timeline", 0))))
 		return stage.duplicate(true)
 	return {}
 
