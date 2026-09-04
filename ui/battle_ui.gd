@@ -16,15 +16,20 @@ var status_label: Label
 var turn_label: Label
 var target_list: ItemList
 var skill_box: VBoxContainer
+var item_box: VBoxContainer
 var party_list: ItemList
 var log_box: RichTextLabel
 var bounty_id := ""
 var bounty_manager := BountyManager.new()
 var bounty_resolved := false
+var item_catalog: Dictionary = {}
+var battle_inventory := InventoryManager.new()
 
 func _ready() -> void:
 	bounty_id = BountyEncounterState.get_active()
 	_load_bounty_definitions()
+	_load_item_catalog()
+	_load_inventory()
 	party.initialize_from_recruited(["TANG", "WUKONG", "BAJIE", "WUJING", "LONGMA"])
 	allies = CombatPartyBuilder.build_active_party(party)
 	var boss := boss_runtime.create_boss()
@@ -44,6 +49,24 @@ func _load_bounty_definitions() -> void:
 	var parsed = JSON.parse_string(file.get_as_text())
 	if parsed is Dictionary:
 		bounty_manager.load_definitions(parsed)
+
+func _load_item_catalog() -> void:
+	var file := FileAccess.open("res://data/items/shop_items.json", FileAccess.READ)
+	if file == null:
+		return
+	var parsed = JSON.parse_string(file.get_as_text())
+	if not parsed is Dictionary:
+		return
+	for item in parsed.get("items", []):
+		if item is Dictionary:
+			var id := str(item.get("id", ""))
+			if id != "":
+				item_catalog[id] = item.duplicate(true)
+
+func _load_inventory() -> void:
+	var narrative := NarrativeManager.new()
+	if narrative.load():
+		battle_inventory.restore(narrative.state.get_inventory())
 
 func _build_ui() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -96,8 +119,14 @@ func _build_ui() -> void:
 	action_title.add_theme_font_size_override("font_size", 18)
 	middle.add_child(action_title)
 	skill_box = VBoxContainer.new()
-	skill_box.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	skill_box.custom_minimum_size = Vector2(0, 170)
 	middle.add_child(skill_box)
+	var item_title := Label.new()
+	item_title.text = "战斗道具"
+	item_title.add_theme_font_size_override("font_size", 18)
+	middle.add_child(item_title)
+	item_box = VBoxContainer.new()
+	middle.add_child(item_box)
 	var right := VBoxContainer.new()
 	right.custom_minimum_size = Vector2(360, 0)
 	body.add_child(right)
@@ -135,7 +164,7 @@ func _refresh() -> void:
 		var definition := bounty_manager.get_definition(bounty_id)
 		encounter_title = "悬赏：%s · 推荐Lv.%d" % [str(definition.get("name", bounty_id)), int(definition.get("recommended_level", 0))]
 	turn_label.text = "行动：%s · Turn %d · %s" % [_name(current_actor), engine.turn_number, encounter_title]
-	status_label.text = "HP %d/%d · BP %d · %s %d/%d · 护盾 %d/%d · Break=%s · %s排" % [current_actor.hp, current_actor.max_hp, current_actor.bp, MECHANIC_NAMES.get(current_actor.id, "专属资源"), current_actor.mechanic_resource, current_actor.mechanic_max, current_actor.shield, current_actor.max_shield, str(current_actor.is_broken()), "前" if current_actor.row == "front" else "后"]
+	status_label.text = "HP %d/%d · BP %d · %s %d/%d · 护盾 %d/%d · Break=%s · %s排 · 道具 %d" % [current_actor.hp, current_actor.max_hp, current_actor.bp, MECHANIC_NAMES.get(current_actor.id, "专属资源"), current_actor.mechanic_resource, current_actor.mechanic_max, current_actor.shield, current_actor.max_shield, str(current_actor.is_broken()), "前" if current_actor.row == "front" else "后", battle_inventory.items.size()]
 	party_list.clear()
 	for ally in allies:
 		party_list.add_item("%s  HP %d/%d  BP %d  %s %d/%d · %s排" % [_name(ally), ally.hp, ally.max_hp, ally.bp, MECHANIC_NAMES.get(ally.id, "资源"), ally.mechanic_resource, ally.mechanic_max, "前" if ally.row == "front" else "后"])
@@ -146,9 +175,11 @@ func _refresh() -> void:
 			if selected_target == null or not selected_target.is_alive():
 				selected_target = enemy
 	_clear_skills()
+	_clear_items()
 	if current_actor.id in ["tangseng", "wukong", "bajie", "wujing", "longma"]:
 		for skill in SkillCatalog.get_character_skills(current_actor.id.to_upper()):
 			_add_skill_button(skill)
+	_add_item_buttons()
 
 func _add_skill_button(skill: Dictionary) -> void:
 	var button := Button.new()
@@ -159,8 +190,24 @@ func _add_skill_button(skill: Dictionary) -> void:
 	button.pressed.connect(func(): _use_skill(skill, false))
 	skill_box.add_child(button)
 
+func _add_item_buttons() -> void:
+	for item_id in battle_inventory.items.keys():
+		var item := item_catalog.get(str(item_id), {})
+		if item.is_empty():
+			continue
+		var count := int(battle_inventory.items.get(str(item_id), 0))
+		var button := Button.new()
+		button.text = "%s ×%d · %s" % [str(item.get("name", item_id)), count, str(item.get("description", ""))]
+		button.disabled = count <= 0
+		button.pressed.connect(_use_item.bind(str(item_id)))
+		item_box.add_child(button)
+
 func _clear_skills() -> void:
 	for child in skill_box.get_children():
+		child.queue_free()
+
+func _clear_items() -> void:
+	for child in item_box.get_children():
 		child.queue_free()
 
 func _use_skill(skill: Dictionary, boosted: bool) -> void:
@@ -174,6 +221,44 @@ func _use_skill(skill: Dictionary, boosted: bool) -> void:
 		return
 	boss_runtime.after_action(_boss())
 	_end_turn()
+
+func _use_item(item_id: String) -> void:
+	if current_actor == null or not current_actor.is_alive() or not battle_inventory.has_item(item_id):
+		return
+	var item: Dictionary = item_catalog.get(item_id, {})
+	var item_type := str(item.get("type", ""))
+	var amount := int(item.get("amount", 0))
+	var target := current_actor
+	if item_type == "HEAL":
+		var living := allies.filter(func(unit): return unit.is_alive())
+		if living.is_empty():
+			return
+		target = living[0]
+		var healed := target.heal(amount)
+		if healed <= 0:
+			status_label.text = "%s 已满血。" % _name(target)
+			return
+	elif item_type == "BP":
+		target.bp = mini(target.bp + amount, 5)
+	elif item_type == "BARRIER":
+		target.gain_barrier(amount)
+	else:
+		status_label.text = "这个物品目前只能用于出战前准备。"
+		return
+	battle_inventory.remove_item(item_id, 1)
+	_save_battle_inventory()
+	_on_combat_log("使用道具：%s → %s" % [str(item.get("name", item_id)), _name(target)])
+	_end_turn()
+
+func _save_battle_inventory() -> void:
+	var narrative := NarrativeManager.new()
+	if narrative.load():
+		narrative.state.set_inventory(battle_inventory.to_dict())
+		narrative.save()
+
+func _clear_skills_and_items() -> void:
+	_clear_skills()
+	_clear_items()
 
 func _boost_selected() -> void:
 	if selected_skill.is_empty():
@@ -224,14 +309,17 @@ func _on_combat_log(message: String) -> void:
 
 func _on_combat_finished(winner: String) -> void:
 	if winner == "allies" and not bounty_id.is_empty() and not bounty_resolved:
-		var applied := BountyRewardService.resolve_defeat(narrative, bounty_manager, bounty_id)
-		bounty_resolved = not applied.is_empty()
-		BountyEncounterState.clear()
-		if bounty_resolved:
-			var granted:Array = applied.get("applied", {}).get("granted", [])
-			status_label.text = "悬赏完成：%s · 奖励 %s" % [str(applied.get("target_name", bounty_id)), _format_rewards(granted)]
-		else:
-			status_label.text = "战斗胜利，但悬赏状态写入失败。"
+		var narrative := NarrativeManager.new()
+		if narrative.load():
+			narrative.state.set_inventory(battle_inventory.to_dict())
+			var applied := BountyRewardService.resolve_defeat(narrative, bounty_manager, bounty_id)
+			bounty_resolved = not applied.is_empty()
+			BountyEncounterState.clear()
+			if bounty_resolved:
+				var granted:Array = applied.get("applied", {}).get("granted", [])
+				status_label.text = "悬赏完成：%s · 奖励 %s" % [str(applied.get("target_name", bounty_id)), _format_rewards(granted)]
+			else:
+				status_label.text = "战斗胜利，但悬赏状态写入失败。"
 	else:
 		status_label.text = "战斗结束：%s" % ("胜利" if winner == "allies" else "失败")
 
