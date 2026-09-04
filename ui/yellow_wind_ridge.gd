@@ -142,7 +142,7 @@ func _resolve_choice(stage: Dictionary, choice: Dictionary) -> void:
 
 func _resolve_event(stage: Dictionary) -> void:
 	ridge.complete_stage(narrative, str(stage.get("id", "")))
-	narrative.state.add_world_rumor(str(stage.get("id", "")), [str(stage.get("reward_intel", ""))])
+	narrative.state.add_world_rumor(str(stage.get("id", "")), str(stage.get("reward_intel", "")))
 	narrative.save()
 	_refresh()
 
