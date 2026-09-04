@@ -2,6 +2,7 @@ class_name YellowWindCaveScreen
 extends Control
 
 const DATA_PATH := "res://data/dungeons/yellow_wind_cave.json"
+const PROGRESS_PREFIX := "YELLOW_WIND_CAVE_ROOM_"
 
 var narrative := NarrativeManager.new()
 var rooms: Array = []
@@ -19,6 +20,7 @@ func _ready() -> void:
 	if rooms.is_empty():
 		get_tree().change_scene_to_file("res://ui/yellow_wind_ridge.tscn")
 		return
+	current_room_index = _recover_room_index()
 	_build_ui()
 	_refresh()
 
@@ -29,6 +31,20 @@ func _load_data() -> void:
 	var parsed = JSON.parse_string(file.get_as_text())
 	if parsed is Dictionary:
 		rooms = parsed.get("rooms", [])
+
+func _recover_room_index() -> int:
+	var heard := narrative.state.get_world_state().get("heard_rumors", [])
+	var index := 0
+	for i in range(rooms.size() - 1):
+		var room_id := str(rooms[i].get("id", ""))
+		if (PROGRESS_PREFIX + room_id) in heard:
+			index = i + 1
+		else:
+			break
+	return clampi(index, 0, rooms.size() - 1)
+
+func _is_boss_defeated() -> bool:
+	return "BOUNTY_YELLOW_FANG" in narrative.state.get_journey_log().get("defeated_targets", [])
 
 func _build_ui() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -94,17 +110,26 @@ func _build_ui() -> void:
 	footer.add_child(shop)
 
 func _refresh() -> void:
-	status_label.text = "黄风洞进度 · 房间 %d/%d · 当前阶段：%s" % [current_room_index + 1, rooms.size(), str(rooms[current_room_index].get("name", "未知"))]
+	var room: Dictionary = rooms[current_room_index]
+	var room_finished := current_room_index < rooms.size() - 1 and (PROGRESS_PREFIX + str(room.get("id", ""))) in narrative.state.get_world_state().get("heard_rumors", [])
+	if current_room_index == rooms.size() - 1 and _is_boss_defeated():
+		status_label.text = "黄风洞进度 · 妖王已败 · 地城出口已安全"
+	else:
+		status_label.text = "黄风洞进度 · 房间 %d/%d · 当前阶段：%s" % [current_room_index + 1, rooms.size(), str(room.get("name", "未知"))]
 	room_list.clear()
 	for i in range(rooms.size()):
-		var room: Dictionary = rooms[i]
-		var mark := "▶" if i == current_room_index else ("✓" if i < current_room_index else "○")
-		room_list.add_item("%s %s" % [mark, str(room.get("name", "房间"))])
+		var row: Dictionary = rooms[i]
+		var done := (i < current_room_index) or (i == current_room_index and room_finished) or (i == rooms.size() - 1 and _is_boss_defeated())
+		var mark := "▶" if i == current_room_index and not (i == rooms.size() - 1 and _is_boss_defeated()) else ("✓" if done else "○")
+		room_list.add_item("%s %s" % [mark, str(row.get("name", "房间"))])
 	_render_room()
 
 func _render_room() -> void:
 	for child in action_box.get_children(): child.queue_free()
 	var room: Dictionary = rooms[current_room_index]
+	if current_room_index == rooms.size() - 1 and _is_boss_defeated():
+		detail_label.text = "%s\n\n%s\n\n黄风妖王已经败退，风沙中的道路暂时恢复安全。" % [str(room.get("name", "")), str(room.get("description", ""))]
+		return
 	detail_label.text = "%s\n\n%s" % [str(room.get("name", "")), str(room.get("description", ""))]
 	var room_type := str(room.get("type", "EXPLORE"))
 	if room_type == "CHOICE":
@@ -128,16 +153,23 @@ func _render_room() -> void:
 		investigate.pressed.connect(_advance_room)
 		action_box.add_child(investigate)
 
+func _mark_room_complete() -> void:
+	var room_id := str(rooms[current_room_index].get("id", ""))
+	if room_id.is_empty():
+		return
+	narrative.state.add_world_rumor(PROGRESS_PREFIX + room_id)
+
 func _advance_room() -> void:
 	if current_room_index >= rooms.size() - 1:
 		return
-	narrative.state.add_world_rumor("YELLOW_WIND_CAVE_%s" % str(rooms[current_room_index].get("id", "ROOM")))
+	_mark_room_complete()
 	current_room_index += 1
 	narrative.save()
 	_refresh()
 
 func _resolve_choice(choice: Dictionary) -> void:
-	narrative.state.add_world_rumor("YELLOW_WIND_CAVE_%s" % str(choice.get("id", "CHOICE")))
+	_mark_room_complete()
+	narrative.state.add_world_rumor("YELLOW_WIND_CAVE_CHOICE_%s" % str(choice.get("id", "CHOICE")))
 	if current_room_index < rooms.size() - 1:
 		current_room_index += 1
 	narrative.save()
