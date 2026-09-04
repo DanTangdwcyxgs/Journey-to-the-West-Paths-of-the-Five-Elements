@@ -1,5 +1,5 @@
 {
-  "schema_version": 3,
+  "schema_version": 4,
   "profiles": {
     "SAND_GUARD": {"target_profile":"lowest_defense","skill_effects":{"SAND_GUARD_WIND":{"effect":"slow","effect_value":-3,"effect_duration":2,"condition":"on_hit"}}},
     "WIND_SPIRIT": {"target_profile":"lowest_hp","skill_effects":{"WIND_SPIRIT_WATER":{"effect":"slow","effect_value":-2,"effect_duration":2,"condition":"on_hit"}}},
@@ -8,8 +8,8 @@
     "CRAB_GUARD": {"target_profile":"lowest_defense","skill_effects":{}},
     "SHRIMP_SPEAR": {"target_profile":"highest_speed","skill_effects":{}},
     "HEAVENLY_SOLDIER": {"target_profile":"highest_attack","skill_effects":{}},
-    "HEAVENLY_ARCHER": {"target_profile":"highest_speed","skill_effects":{"ARCHER_ICE":{"effect":"slow","effect_value":-2,"effect_duration":2,"condition":"on_hit"}}},
-    "ERLANG_SHEN": {"target_profile":"highest_attack","skill_effects":{"ERLANG_ICE":{"effect":"slow","effect_value":-3,"effect_duration":2,"condition":"on_hit"}}},
+    "HEAVENLY_ARCHER": {"target_profile":"highest_speed","skill_effects":{"ARCHER_ICE":{"effect":"slow","effect_value":-2,"effect_duration":2,"condition":"on_hit","shield_damage_bonus":1}}},
+    "ERLANG_SHEN": {"target_profile":"highest_attack","skill_effects":{"ERLANG_ICE":{"effect":"slow","effect_value":-3,"effect_duration":2,"condition":"on_hit","shield_damage_bonus":1}}},
     "CELESTIAL_HOUND": {"target_profile":"lowest_hp","skill_effects":{}},
     "CELESTIAL_GENERAL": {"target_profile":"highest_attack","skill_effects":{}},
     "HEAVEN_GUARD_CAPTAIN": {"target_profile":"lowest_defense","skill_effects":{}},
