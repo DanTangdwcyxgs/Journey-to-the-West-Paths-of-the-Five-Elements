@@ -161,17 +161,16 @@ func _start_new_game() -> void:
 	if not narrative.start_new_game(selected_character):
 		status_label.text = "无法开始：无效角色。"
 		return
-	narrative.save()
-	status_label.text = "已创建新旅程：%s。个人路线已立即开放。" % CHARACTER_NAMES[selected_character]
-	_refresh_ui()
+	if not narrative.save():
+		status_label.text = "新旅程已创建，但存档写入失败。"
+		return
+	get_tree().change_scene_to_file("res://ui/journey.tscn")
 
 func _load_game() -> void:
 	if not narrative.load():
 		status_label.text = "没有可读取的西游存档。"
 		return
-	selected_character = narrative.state.starting_character
-	status_label.text = "存档读取成功。"
-	_refresh_ui()
+	get_tree().change_scene_to_file("res://ui/journey.tscn")
 
 func _open_battle_demo() -> void:
 	get_tree().change_scene_to_file("res://combat/battle_demo.tscn")
@@ -186,10 +185,12 @@ func _refresh_ui() -> void:
 	if narrative.state.starting_character == "":
 		current_label.text = "尚未开始旅程。\n选择任意一人开始；世界时间线仍然遵循固定西游顺序。"
 	else:
-		current_label.text = "起始主角：%s\n世界时间：T%04d\n当前共享章节：%s\n已招募：%s" % [
+		current_label.text = "起始主角：%s\n世界时间：T%04d\n当前共享章节：%s\n当前个人路线：%s / %s\n已招募：%s" % [
 			CHARACTER_NAMES.get(narrative.state.starting_character, narrative.state.starting_character),
 			narrative.state.current_global_timeline,
 			narrative.state.current_shared_chapter if narrative.state.current_shared_chapter != "" else "尚未进入共享章节",
+			narrative.state.current_origin_route if narrative.state.current_origin_route != "" else "已汇合",
+			narrative.state.current_origin_chapter if narrative.state.current_origin_chapter != "" else "—",
 			_join_character_names(narrative.state.recruited_characters),
 		]
 
