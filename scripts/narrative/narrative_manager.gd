@@ -1,27 +1,44 @@
 class_name NarrativeManager
 extends RefCounted
 
-## Small deterministic coordinator for narrative state.
-## Content data remains external; this class owns state transitions only.
+## Deterministic coordinator for narrative state transitions.
+## Content data remains external; this class owns state mutation and persistence boundaries.
 
 signal route_unlocked(character_id: String)
 signal character_recruited(character_id: String)
 signal milestone_reached(milestone_id: String, chronological_index: int)
+signal chapter_completed(chapter_id: String)
 signal memory_completed(chapter_id: String)
+signal party_became_full()
 
 var state := NarrativeState.new()
 
-func start_new_game(character_id: String) -> void:
+func start_new_game(character_id: String) -> bool:
+	if character_id not in NarrativeState.CHARACTER_IDS:
+		return false
 	state.initialize_for_start(character_id)
+	return true
 
 func encounter_character(character_id: String, memory_chapters: Array[String] = []) -> bool:
 	var recruited_now := state.mark_recruited(character_id)
-	if recruited_now:
-		route_unlocked.emit(character_id)
-		character_recruited.emit(character_id)
-	if not memory_chapters.is_empty():
-		state.add_memory_chapters(memory_chapters)
-	return recruited_now
+	if not recruited_now:
+		return false
+
+	route_unlocked.emit(character_id)
+	character_recruited.emit(character_id)
+	# Personal history is unlocked immediately, never gated by PARTY_FULL.
+	state.add_memory_chapters(memory_chapters)
+
+	if party_full():
+		party_became_full.emit()
+	return true
+
+func complete_chapter(chapter_id: String, is_shared: bool = false) -> bool:
+	if chapter_id == "":
+		return false
+	state.record_chapter_complete(chapter_id, is_shared)
+	chapter_completed.emit(chapter_id)
+	return true
 
 func advance_world_milestone(milestone_id: String, chronological_index: int) -> void:
 	var previous := state.current_global_timeline
@@ -29,8 +46,16 @@ func advance_world_milestone(milestone_id: String, chronological_index: int) -> 
 	if state.current_global_timeline != previous:
 		milestone_reached.emit(milestone_id, state.current_global_timeline)
 
+func set_shared_chapter(chapter_id: String) -> void:
+	state.set_current_shared_chapter(chapter_id)
+
 func can_enter_memory(chapter_id: String) -> bool:
 	return chapter_id in state.available_memory_chapters
+
+func begin_memory(chapter_id: String) -> Dictionary:
+	if not can_enter_memory(chapter_id):
+		return {}
+	return state.snapshot_shared_context()
 
 func finish_memory(chapter_id: String) -> bool:
 	if not state.finish_memory_chapter(chapter_id):
@@ -39,7 +64,17 @@ func finish_memory(chapter_id: String) -> bool:
 	return true
 
 func party_full() -> bool:
-	return state.recruited_characters.size() >= 5
+	return state.recruited_characters.size() >= NarrativeState.CHARACTER_IDS.size()
 
 func serialize() -> Dictionary:
 	return state.to_dict()
+
+func save(path: String = NarrativeSave.SAVE_PATH) -> bool:
+	return NarrativeSave.save_state(state, path)
+
+func load(path: String = NarrativeSave.SAVE_PATH) -> bool:
+	var restored := NarrativeSave.load_state(path)
+	if restored == null:
+		return false
+	state = restored
+	return true
