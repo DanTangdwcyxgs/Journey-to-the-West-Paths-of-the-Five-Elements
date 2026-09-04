@@ -11,6 +11,8 @@ const ROUTE_COMPLETE := "COMPLETE"
 const CHARACTER_IDS := ["WUKONG", "TANG", "BAJIE", "WUJING", "LONGMA"]
 
 var starting_character: String = ""
+var current_origin_route: String = ""
+var current_origin_chapter: String = ""
 var current_global_timeline: int = 0
 var current_shared_chapter: String = ""
 var completed_chapters: Array[String] = []
@@ -28,6 +30,8 @@ func initialize_for_start(character_id: String, initial_timeline: int = 0) -> vo
 		push_error("Unknown starting character: %s" % character_id)
 		return
 	starting_character = character_id
+	current_origin_route = ""
+	current_origin_chapter = ""
 	current_global_timeline = initial_timeline
 	current_shared_chapter = ""
 	completed_chapters.clear()
@@ -42,6 +46,14 @@ func initialize_for_start(character_id: String, initial_timeline: int = 0) -> vo
 	for id in CHARACTER_IDS:
 		route_progress[id] = ROUTE_LOCKED
 	route_progress[character_id] = ROUTE_UNLOCKED
+
+func set_origin_progress(route_id: String, chapter_id: String) -> void:
+	current_origin_route = route_id
+	current_origin_chapter = chapter_id
+
+func clear_origin_progress() -> void:
+	current_origin_route = ""
+	current_origin_chapter = ""
 
 func unlock_route(character_id: String) -> bool:
 	if character_id not in CHARACTER_IDS:
@@ -58,6 +70,14 @@ func mark_recruited(character_id: String) -> bool:
 		return false
 	recruited_characters.append(character_id)
 	unlock_route(character_id)
+	return true
+
+func mark_route_complete(character_id: String) -> bool:
+	if character_id not in CHARACTER_IDS:
+		return false
+	route_progress[character_id] = ROUTE_COMPLETE
+	if character_id == starting_character:
+		clear_origin_progress()
 	return true
 
 func record_chapter_complete(chapter_id: String, is_shared: bool = false) -> void:
@@ -100,6 +120,8 @@ func snapshot_shared_context() -> Dictionary:
 func to_dict() -> Dictionary:
 	return {
 		"starting_character": starting_character,
+		"current_origin_route": current_origin_route,
+		"current_origin_chapter": current_origin_chapter,
 		"current_global_timeline": current_global_timeline,
 		"current_shared_chapter": current_shared_chapter,
 		"completed_chapters": completed_chapters.duplicate(),
@@ -116,6 +138,8 @@ func to_dict() -> Dictionary:
 static func from_dict(data: Dictionary) -> NarrativeState:
 	var restored := NarrativeState.new()
 	restored.starting_character = str(data.get("starting_character", ""))
+	restored.current_origin_route = str(data.get("current_origin_route", ""))
+	restored.current_origin_chapter = str(data.get("current_origin_chapter", ""))
 	restored.current_global_timeline = int(data.get("current_global_timeline", 0))
 	restored.current_shared_chapter = str(data.get("current_shared_chapter", ""))
 	restored.completed_chapters = _string_array(data.get("completed_chapters", []))
