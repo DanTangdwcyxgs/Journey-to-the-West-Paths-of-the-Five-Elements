@@ -41,9 +41,11 @@ The current exploration spine is:
 
 The world map is data-driven through `data/world/world_map.json` and `data/world/rumors.json`; runtime state is persisted in the narrative save.
 
-A discovered Yellow Fang bounty now continues into a real battle-scene handoff: **hear rumor → discover bounty → travel to target area → accept → battle → resolve rewards + journal + world effects**. The encounter handoff itself is transient so abandoned battles do not corrupt the canonical narrative save.
+A discovered Yellow Wind bounty now continues into a real battle-scene handoff: **hear rumor → discover bounty → travel to target area → accept → battle → resolve rewards + journal + world effects**. The encounter handoff itself is transient so abandoned battles do not corrupt the canonical narrative save.
 
-The preparation loop now adds **camp recovery, shop supply, persistent equipment profiles, and battle consumables**. Equipment choices are written into `NarrativeState`; combat reads the saved profiles before creating the encounter.
+The preparation loop now adds **camp records, shop supply, persistent equipment profiles, and battle consumables**. Equipment choices are written into `NarrativeState`; combat reads the saved profiles before creating the encounter.
+
+The first dedicated **Yellow Wind Ridge → Yellow Wind Cave → Yellow Wind Demon** path is now represented as a data-driven exploration slice with a four-stage ridge and a four-room cave greybox. fileciteturn366file0
 
 ## Gameplay Pillars
 
@@ -55,10 +57,10 @@ The preparation loop now adds **camp recovery, shop supply, persistent equipment
 - **Speed-based turns:** dynamic initiative affected by speed changes
 - **Data-driven skills:** character skill definitions live in `data/combat/skills.json` and are executed by `SkillRuntime`
 - **Character-specific mechanics:** every protagonist changes how encounters are approached
-- **Bai Longma transformation:** delayed full combat identity and multiple forms
+- **Bai Longma transformation:** four temporary combat forms driven by Dragon Shift resource
 - **81 Trials:** major stories, personal quests, elite encounters and optional events
 - **World exploration:** connected map nodes, rumors, bounty discovery and persistent journey information
-- **Preparation / supplies:** shops, camp recovery, equipment profiles and combat consumables
+- **Preparation / supplies:** shops, camp records, equipment profiles and combat consumables
 
 ## Current Combat Foundation
 
@@ -80,7 +82,9 @@ Implemented and connected:
 - persistent equipment/loadout configuration
 - battle consumable usage and inventory deduction
 - readable temporary combat status presentation for Break, barrier, taunt and speed changes
-- Yellow Fang bounty battle handoff and automatic victory reward resolution
+- saved loadout modifiers applied inside combat formulas
+- functional Bai Longma form shift with temporary stat changes and expiry
+- Yellow Wind bounty battle handoff and automatic victory reward resolution
 
 ## Current World Foundation
 
@@ -94,8 +98,12 @@ Implemented and connected:
 - world-map UI linked from the journey screen
 - discovered bounty challenge button for the first integrated bounty encounter
 - transient world-map → battle encounter handoff
+- Yellow Wind Ridge four-stage exploration slice
+- Yellow Wind Cave four-room greybox slice
+- cave → bounty battle source-stage handoff
+- post-victory return into the Yellow Wind Ridge flow
 - camp / supply / preparation entry points
-- regression checks for travel, rumor discovery, bounty handoff and combat status display
+- regression checks for travel, rumor discovery, bounty handoff, combat status and Longma transformation
 
 ## Roadmap
 
@@ -129,13 +137,15 @@ Implemented and connected:
 ### Phase 2 — Playable Vertical Slice
 
 - [ ] Five playable characters
-- [ ] Five origin chapter prototypes
+- [x] Five origin chapter prototypes
 - [x] Front/back formation swap
-- [ ] Bai Longma transformation states
+- [x] Bai Longma transformation states
 - [x] Basic skills/resources foundation
 - [x] Canonical recruitment event flow
 - [x] Progressive personal-story unlock flow
 - [x] World exploration prototype
 - [x] Battle consumable loop
-- [ ] First complete battle: Yellow Wind Demon polish
-- [ ] First dungeon greybox
+- [x] First complete battle: Yellow Wind Demon path
+- [x] First dungeon greybox
+- [ ] Visual combat polish
+- [ ] Persistent dungeon checkpoints
