@@ -28,6 +28,7 @@ static func perform(engine: CombatEngine, actor: Combatant, target: Combatant, s
 				target.aggro_turns = maxi(target.aggro_turns, taunt_duration)
 				result["effect"] = "taunt"
 				result["effect_duration"] = taunt_duration
+				result["aggro_multiplier"] = float(actor.combat_modifiers.get("aggro_multiplier", 1.0))
 			result["mechanic_resource"] = actor.mechanic_resource
 			return result
 		"heal":
