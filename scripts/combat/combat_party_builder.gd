@@ -8,10 +8,13 @@ const MECHANIC_PATH := "res://data/combat/character_mechanics.json"
 
 static func build_active_party(party: PartyManager) -> Array[Combatant]:
 	# Battle scenes may arrive with a transient encounter handoff after the UI has
-	# already created a convenience party object. In that case, restore the actual
-	# recruited roster + saved formation before constructing Combatants so a three-
-	# member journey cannot accidentally become a five-member battle.
+	# already created a convenience party object. Restore the actual roster + saved
+	# formation when available. Origin battles are special: the starting character
+	# is playable before formal recruitment at the route convergence.
 	_sync_active_encounter_party(party)
+	var origin_character := _get_origin_battle_character()
+	if origin_character != "":
+		party.initialize_from_recruited([origin_character])
 	var profiles := _load_profiles()
 	var mechanics := _load_mechanics()
 	var result: Array[Combatant] = []
@@ -33,6 +36,16 @@ static func _sync_active_encounter_party(party: PartyManager) -> void:
 	var narrative := NarrativeManager.new()
 	if narrative.load() and not narrative.state.recruited_characters.is_empty():
 		party.initialize_from_saved_state(narrative.state.recruited_characters, narrative.state.get_party_formation())
+
+static func _get_origin_battle_character() -> String:
+	var handoff := BountyEncounterState.get_active_record()
+	if str(handoff.get("encounter_type", "")) != "origin":
+		return ""
+	var narrative := NarrativeManager.new()
+	if not narrative.load():
+		return ""
+	var starting_character := str(narrative.state.starting_character)
+	return starting_character if starting_character in NarrativeState.CHARACTER_IDS else ""
 
 static func _build_combatant(character_id: String, profile: Dictionary, mechanic: Dictionary, row: String) -> Combatant:
 	var modifier: Dictionary = profile.get("%s_modifier" % row, {})
