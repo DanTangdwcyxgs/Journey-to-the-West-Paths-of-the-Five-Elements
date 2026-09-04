@@ -123,8 +123,17 @@ func _advance_primary() -> void:
 	if origin.is_complete(narrative, start):
 		_finish_origin()
 		return
-	var chapter := origin.complete_current(narrative, start)
+	var chapter := origin.get_current_chapter(narrative, start)
 	if chapter.is_empty():
+		return
+	var encounter_id := str(chapter.get("encounter_id", ""))
+	if not encounter_id.is_empty():
+		var route_id := str(route.get("route_id", "%s_ORIGIN" % start))
+		if BountyEncounterState.start_narrative_encounter(encounter_id, str(chapter.get("id", "")), route_id):
+			get_tree().change_scene_to_file("res://ui/battle_ui.tscn")
+		return
+	var completed := origin.complete_current(narrative, start)
+	if completed.is_empty():
 		return
 	narrative.save()
 	_refresh()
@@ -248,15 +257,20 @@ func _refresh() -> void:
 		else:
 			var chapter: Dictionary = chapters[index]
 			chapter_label.text = "%s · %s" % [chapter.get("id", ""), chapter.get("title", "")]
-			description_label.text = str(chapter.get("summary", "")) + "\n\n起始角色历史章节只推进个人路线，不改变共享西游时间线。"
-			primary_button.text = "完成本章"
+			var battle_hint := str(chapter.get("battle_after", ""))
+			description_label.text = str(chapter.get("summary", ""))
+			if not battle_hint.is_empty():
+				description_label.text += "\n\n战斗节点：" + battle_hint
+			description_label.text += "\n\n起始角色历史章节只推进个人路线，不改变共享西游时间线。"
+			primary_button.text = "进入个人战斗" if not str(chapter.get("encounter_id", "")).is_empty() else "完成本章"
 			primary_button.disabled = false
 	list.clear()
 	for chapter in _current_route():
 		var id := str(chapter.get("id", ""))
 		var chapter_title := str(chapter.get("title", ""))
+		var battle_mark := " ⚔" if not str(chapter.get("encounter_id", "")).is_empty() else ""
 		var marker := "✓" if id in narrative.state.completed_chapters else "·"
-		list.add_item("路线 %s  %s %s" % [marker, id, chapter_title])
+		list.add_item("路线 %s  %s %s%s" % [marker, id, chapter_title, battle_mark])
 	for memory_id in narrative.state.available_memory_chapters:
 		list.add_item("回忆: %s [可回忆]" % memory_id)
 	for memory_id in narrative.state.played_memory_chapters:
