@@ -52,6 +52,32 @@
       ],
       "rewards": ["COIN_MEDIUM", "HERB"],
       "world_effects": []
+    },
+    {
+      "id": "WUKONG_ORIGIN_ERLANG_SHEN",
+      "name": "二郎神斗法",
+      "description": "二郎神奉命下界，悟空第一次遇到能与自己变化之术正面周旋的强敌。",
+      "source": "WUKONG_ORIGIN",
+      "recommended_level": 10,
+      "enemies": [
+        {"id":"ERLANG_SHEN","display_name":"二郎神","max_hp":185,"attack":34,"defense":11,"speed":16,"shield":4,"weaknesses":{"FIRE":true,"ICE":true}},
+        {"id":"CELESTIAL_HOUND","display_name":"细犬","max_hp":80,"attack":28,"defense":6,"speed":18,"shield":2,"weaknesses":{"STRIKE":true}}
+      ],
+      "rewards": ["COIN_MEDIUM", "HERB"],
+      "world_effects": ["WUKONG_MET_ERLANG_SHEN"]
+    },
+    {
+      "id": "WUKONG_ORIGIN_HEAVEN_PALACE",
+      "name": "大闹天宫",
+      "description": "反抗冲到最高处，悟空直闯天宫深处，面对最后一轮天界精锐。",
+      "source": "WUKONG_ORIGIN",
+      "recommended_level": 12,
+      "enemies": [
+        {"id":"CELESTIAL_GENERAL","display_name":"天庭神将","max_hp":190,"attack":36,"defense":12,"speed":14,"shield":4,"weaknesses":{"FIRE":true,"STRIKE":true}},
+        {"id":"HEAVEN_GUARD_CAPTAIN","display_name":"天宫禁卫","max_hp":150,"attack":30,"defense":10,"speed":12,"shield":3,"weaknesses":{"ICE":true,"WATER":true}}
+      ],
+      "rewards": ["COIN_MEDIUM", "HERB"],
+      "world_effects": ["WUKONG_HEAVEN_REBELLION"]
     }
   ]
 }
