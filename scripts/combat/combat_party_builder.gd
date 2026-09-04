@@ -30,7 +30,7 @@ static func build_active_party(party: PartyManager) -> Array[Combatant]:
 		var row := "front" if character_id in party.front_row else "back"
 		var unit := _build_combatant(character_id, profile, mechanic, row)
 		if origin_character != "":
-			_apply_origin_choices(unit, origin_choices)
+			_apply_origin_choices(unit, origin_character, origin_choices)
 		result.append(unit)
 	return result
 
@@ -54,20 +54,36 @@ static func _get_origin_battle_character() -> String:
 	var starting_character := str(narrative.state.starting_character)
 	return starting_character if starting_character in NarrativeState.CHARACTER_IDS else ""
 
-static func _apply_origin_choices(unit: Combatant, choices: Dictionary) -> void:
-	if unit == null:
+static func _apply_origin_choices(unit: Combatant, origin_character: String, choices: Dictionary) -> void:
+	if unit == null or unit.id != origin_character.to_lower():
 		return
-	# Current authored choices grant small, deterministic combat traits. They are
-	# deliberately additive and do not alter the fixed chronology or encounter data.
-	if unit.id != "wukong":
+	# Wukong retains the original hand-authored mapping for compatibility with the
+	# earlier route build. Other routes use the generic combat_modifiers data stored
+	# on each choice in origin_events.json.
+	if origin_character == "WUKONG":
+		if str(choices.get("WUK-03", "")) == "SEEK_POWER":
+			unit.attack += 2
+		if str(choices.get("WUK-08", "")) == "REJECT_BINDING":
+			unit.speed += 1
+			unit.base_speed += 1
+		if str(choices.get("WUK-13", "")) == "ENDURE":
+			unit.defense += 2
 		return
-	if str(choices.get("WUK-03", "")) == "SEEK_POWER":
-		unit.attack += 2
-	if str(choices.get("WUK-08", "")) == "REJECT_BINDING":
-		unit.speed += 1
-		unit.base_speed += 1
-	if str(choices.get("WUK-13", "")) == "ENDURE":
-		unit.defense += 2
+	var event_manager := OriginEventManager.new()
+	for chapter_id in choices.keys():
+		var choice_id := str(choices[chapter_id])
+		var effects := event_manager.get_choice_effects(str(chapter_id), choice_id)
+		if effects.is_empty():
+			continue
+		var traits: Dictionary = effects.get("combat_modifiers", {})
+		unit.attack += int(traits.get("attack_bonus", 0))
+		unit.defense += int(traits.get("defense_bonus", 0))
+		unit.speed += int(traits.get("speed_bonus", 0))
+		unit.base_speed += int(traits.get("speed_bonus", 0))
+		if traits.has("healing_multiplier") or traits.has("shield_multiplier"):
+			for key in ["healing_multiplier", "shield_multiplier", "control_multiplier"]:
+				if traits.has(key):
+					unit.combat_modifiers[key] = float(traits[key])
 
 static func _build_combatant(character_id: String, profile: Dictionary, mechanic: Dictionary, row: String) -> Combatant:
 	var modifier: Dictionary = profile.get("%s_modifier" % row, {})
@@ -77,7 +93,6 @@ static func _build_combatant(character_id: String, profile: Dictionary, mechanic
 		character_id.to_lower(),
 		str(profile.get("display_name", character_id)),
 		int(profile.get("max_hp", 1)),
-		int(profile.get("attack", 1)),
 		defense_value,
 		speed_value,
 		int(profile.get("shield", 1)),
