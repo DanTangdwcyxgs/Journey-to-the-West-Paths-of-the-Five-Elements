@@ -31,7 +31,7 @@ static func perform(engine: CombatEngine, actor: Combatant, target: Combatant, s
 				result["mechanic_spent_extra"] = tide_cost
 			if kind == "taunt":
 				var taunt_duration := _scaled_duration(int(skill.get("aggro_turns", 1)), actor, "control_multiplier")
-				target.aggro_turns = maxi(target.aggro_turns, taunt_duration)
+				target.apply_taunt(taunt_duration)
 				result["effect"] = "taunt"
 				result["effect_duration"] = taunt_duration
 				result["aggro_multiplier"] = float(actor.combat_modifiers.get("aggro_multiplier", 1.0))
@@ -61,9 +61,10 @@ static func perform(engine: CombatEngine, actor: Combatant, target: Combatant, s
 			var shield_amount := maxi(int(round(int(skill.get("shield_power", 0)) * shield_modifier)), 0)
 			if actor.id == "tangseng" and mechanic_cost == 1:
 				shield_amount += 8
-			target.gain_barrier(shield_amount)
+			var shield_target := actor if str(skill.get("target", "ally")) == "self" else target
+			shield_target.gain_barrier(shield_amount)
 			_consume_and_gain(actor, target, kind, mechanic_cost, skill)
-			return {"ok": true, "damage": 0, "barrier": target.barrier, "mechanic_resource": actor.mechanic_resource}
+			return {"ok": true, "damage": 0, "barrier": shield_target.barrier, "mechanic_resource": actor.mechanic_resource}
 		"self_buff":
 			if actor.bp < action.bp_cost:
 				return {"ok": false, "reason": "not_enough_bp"}
