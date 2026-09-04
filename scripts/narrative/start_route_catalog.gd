@@ -13,7 +13,7 @@ const ROUTES := [
 		"origin_route_id": "WUKONG_ORIGIN",
 		"origin_end": "WUK-15",
 		"handoff_milestone": "WUKONG_RECRUITED",
-		"handoff_shared_chapter": "SHARED-001",
+		"handoff_shared_chapter": "SHARED-01-FIVE-ELEMENTS",
 	},
 	{
 		"id": "TANG",
@@ -23,7 +23,7 @@ const ROUTES := [
 		"origin_route_id": "TANG_ORIGIN",
 		"origin_end": "TANG-08",
 		"handoff_milestone": "WUKONG_RECRUITED",
-		"handoff_shared_chapter": "SHARED-001",
+		"handoff_shared_chapter": "SHARED-01-FIVE-ELEMENTS",
 	},
 	{
 		"id": "BAJIE",
@@ -33,7 +33,7 @@ const ROUTES := [
 		"origin_route_id": "BAJIE_ORIGIN",
 		"origin_end": "BAJIE-09",
 		"handoff_milestone": "ZHU_BAJIE_RECRUITED",
-		"handoff_shared_chapter": "SHARED-004",
+		"handoff_shared_chapter": "SHARED-05-GAOJIAZHUANG",
 	},
 	{
 		"id": "WUJING",
@@ -43,7 +43,7 @@ const ROUTES := [
 		"origin_route_id": "WUJING_ORIGIN",
 		"origin_end": "WUJING-08",
 		"handoff_milestone": "SHA_WUJING_RECRUITED",
-		"handoff_shared_chapter": "SHARED-006",
+		"handoff_shared_chapter": "SHARED-07-FLOWING-SANDS",
 	},
 	{
 		"id": "LONGMA",
@@ -53,7 +53,7 @@ const ROUTES := [
 		"origin_route_id": "LONGMA_ORIGIN",
 		"origin_end": "LONGMA-06",
 		"handoff_milestone": "BAI_LONGMA_RECRUITED",
-		"handoff_shared_chapter": "SHARED-003",
+		"handoff_shared_chapter": "SHARED-03-EAGLE-SORROW",
 	},
 ]
 
