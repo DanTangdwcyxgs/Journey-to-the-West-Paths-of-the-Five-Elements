@@ -38,6 +38,17 @@ static func run() -> void:
 	attacker.combat_modifiers["target_profile"] = "lowest_defense"
 	assert(manager.choose_ai_target(attacker, [high_defender, low_defender], neutral_action) == low_defender)
 
+	var high_attack := Combatant.new("high_attack", "强攻目标", 100, 25, 6, 8, 2, {})
+	var low_attack := Combatant.new("low_attack", "弱攻目标", 100, 10, 6, 8, 2, {})
+	attacker.combat_modifiers["target_profile"] = "highest_attack"
+	assert(manager.choose_ai_target(attacker, [low_attack, high_attack], neutral_action) == high_attack)
+
+	var low_hp := Combatant.new("low_hp", "残血目标", 100, 12, 6, 8, 2, {})
+	var full_hp := Combatant.new("full_hp", "满血目标", 100, 12, 6, 8, 2, {})
+	low_hp.hp = 20
+	attacker.combat_modifiers["target_profile"] = "lowest_hp"
+	assert(manager.choose_ai_target(attacker, [full_hp, low_hp], neutral_action) == low_hp)
+
 	var fallback := Combatant.new("fallback", "无技能妖", 100, 12, 4, 8, 2, {})
 	var fallback_action := manager.choose_ai_action(fallback, [], 4)
 	assert(fallback_action.id == "NORMAL_ATTACK")
