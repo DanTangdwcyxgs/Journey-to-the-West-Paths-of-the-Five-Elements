@@ -18,8 +18,13 @@ var target_list: ItemList
 var skill_box: VBoxContainer
 var party_list: ItemList
 var log_box: RichTextLabel
+var bounty_id := ""
+var bounty_manager := BountyManager.new()
+var bounty_resolved := false
 
 func _ready() -> void:
+	bounty_id = BountyEncounterState.get_active()
+	_load_bounty_definitions()
 	party.initialize_from_recruited(["TANG", "WUKONG", "BAJIE", "WUJING", "LONGMA"])
 	allies = CombatPartyBuilder.build_active_party(party)
 	var boss := boss_runtime.create_boss()
@@ -31,6 +36,14 @@ func _ready() -> void:
 	current_actor = engine.advance_turn()
 	_build_ui()
 	_refresh()
+
+func _load_bounty_definitions() -> void:
+	var file := FileAccess.open("res://data/world/bounties.json", FileAccess.READ)
+	if file == null:
+		return
+	var parsed = JSON.parse_string(file.get_as_text())
+	if parsed is Dictionary:
+		bounty_manager.load_definitions(parsed)
 
 func _build_ui() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -110,14 +123,18 @@ func _build_ui() -> void:
 	bottom.add_child(end)
 	var exit := Button.new()
 	exit.text = "返回"
-	exit.pressed.connect(func(): get_tree().change_scene_to_file("res://ui/journey.tscn"))
+	exit.pressed.connect(_return_from_battle)
 	bottom.add_child(exit)
 
 func _refresh() -> void:
 	if current_actor == null:
 		return
 	var boss := _boss()
-	turn_label.text = "行动：%s · Turn %d · 黄风阶段 %d" % [_name(current_actor), engine.turn_number, boss_runtime.phase]
+	var encounter_title := "黄风阶段 %d" % boss_runtime.phase
+	if bounty_id != "":
+		var definition := bounty_manager.get_definition(bounty_id)
+		encounter_title = "悬赏：%s · 推荐Lv.%d" % [str(definition.get("name", bounty_id)), int(definition.get("recommended_level", 0))]
+	turn_label.text = "行动：%s · Turn %d · %s" % [_name(current_actor), engine.turn_number, encounter_title]
 	status_label.text = "HP %d/%d · BP %d · %s %d/%d · 护盾 %d/%d · Break=%s · %s排" % [current_actor.hp, current_actor.max_hp, current_actor.bp, MECHANIC_NAMES.get(current_actor.id, "专属资源"), current_actor.mechanic_resource, current_actor.mechanic_max, current_actor.shield, current_actor.max_shield, str(current_actor.is_broken()), "前" if current_actor.row == "front" else "后"]
 	party_list.clear()
 	for ally in allies:
@@ -206,8 +223,30 @@ func _on_combat_log(message: String) -> void:
 		log_box.append_text(message + "\n")
 
 func _on_combat_finished(winner: String) -> void:
-	if status_label != null:
+	if winner == "allies" and not bounty_id.is_empty() and not bounty_resolved:
+		var applied := BountyRewardService.resolve_defeat(narrative, bounty_manager, bounty_id)
+		bounty_resolved = not applied.is_empty()
+		BountyEncounterState.clear()
+		if bounty_resolved:
+			var granted:Array = applied.get("applied", {}).get("granted", [])
+			status_label.text = "悬赏完成：%s · 奖励 %s" % [str(applied.get("target_name", bounty_id)), _format_rewards(granted)]
+		else:
+			status_label.text = "战斗胜利，但悬赏状态写入失败。"
+	else:
 		status_label.text = "战斗结束：%s" % ("胜利" if winner == "allies" else "失败")
+
+func _format_rewards(rewards:Array) -> String:
+	if rewards.is_empty():
+		return "无"
+	var parts:Array[String] = []
+	for reward in rewards:
+		parts.append("%s×%d" % [str(reward.get("id", "")), int(reward.get("amount", 0))])
+	return "、".join(parts)
+
+func _return_from_battle() -> void:
+	if not bounty_id.is_empty() and not bounty_resolved:
+		BountyEncounterState.clear()
+	get_tree().change_scene_to_file("res://ui/world_map.tscn")
 
 func _boss() -> Combatant:
 	return enemies[0] if not enemies.is_empty() else null
