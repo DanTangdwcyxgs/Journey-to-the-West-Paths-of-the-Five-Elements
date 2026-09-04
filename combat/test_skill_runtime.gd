@@ -33,6 +33,37 @@ func _initialize() -> void:
 	_assert(fire_result.get("weakness_hit", false), "fire should exploit the demon weakness")
 	_assert_equal(wukong.bp, 0, "damage skill should spend one BP")
 
+	var bajie := Combatant.new("bajie", "猪八戒", 180, 24, 12, 15, 3, {}, "front")
+	var bajie_enemy := Combatant.new("bajie_enemy", "妖怪", 220, 20, 5, 8, 2, {}, "front")
+	var bajie_engine := CombatEngine.new()
+	bajie_engine.setup([bajie], [bajie_enemy])
+	bajie.bp = 2
+	bajie.mechanic_resource = 3
+	var eat := SkillCatalog.get_skill("BAJIE", "BAJIE_EAT")
+	var eat_result := SkillRuntime.perform(bajie_engine, bajie, bajie, eat)
+	_assert(eat_result.get("ok", false), "Bajie rage skill should execute")
+	_assert_equal(bajie.attack, 36, "Rage should amplify Bajie's attack buff")
+	_assert_equal(bajie.defense, 23, "Rage should amplify Bajie's defense buff")
+	_assert_equal(bajie.mechanic_resource, 1, "Rage skill should spend its configured resource cost")
+
+	var wujing := Combatant.new("wujing", "沙悟净", 180, 22, 10, 12, 3, {}, "front")
+	var wujing_enemy := Combatant.new("wujing_enemy", "妖怪", 220, 20, 5, 8, 3, {}, "front")
+	var wujing_engine := CombatEngine.new()
+	wujing_engine.setup([wujing], [wujing_enemy])
+	var slow := SkillCatalog.get_skill("WUJING", "WUJING_SLOW")
+	wujing.bp = 4
+	wujing.mechanic_resource = 0
+	var first_slow := SkillRuntime.perform(wujing_engine, wujing, wujing_enemy, slow)
+	_assert(first_slow.get("ok", false), "first Tide slow should execute")
+	_assert_equal(wujing.mechanic_resource, 1, "first control should build Tide")
+	_assert_equal(first_slow.get("effect_duration", 0), 2, "first slow uses base duration")
+
+	wujing_enemy.speed = 20
+	var second_slow := SkillRuntime.perform(wujing_engine, wujing, wujing_enemy, slow)
+	_assert(second_slow.get("ok", false), "second Tide slow should execute")
+	_assert_equal(wujing.mechanic_resource, 0, "stored Tide should be consumed")
+	_assert_equal(second_slow.get("effect_duration", 0), 3, "stored Tide should extend control duration")
+
 	print("ALL SKILL TESTS PASSED")
 	quit(0)
 
