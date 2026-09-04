@@ -3,11 +3,15 @@ extends RefCounted
 
 ## Converts the narrative party formation into Combatant instances.
 ## This keeps combat construction separate from the narrative save format.
-
 const PROFILE_PATH := "res://data/combat/party_profiles.json"
 const MECHANIC_PATH := "res://data/combat/character_mechanics.json"
 
 static func build_active_party(party: PartyManager) -> Array[Combatant]:
+	# Battle scenes may arrive with a transient encounter handoff after the UI has
+	# already created a convenience party object. In that case, restore the actual
+	# recruited roster + saved formation before constructing Combatants so a three-
+	# member journey cannot accidentally become a five-member battle.
+	_sync_active_encounter_party(party)
 	var profiles := _load_profiles()
 	var mechanics := _load_mechanics()
 	var result: Array[Combatant] = []
@@ -19,6 +23,16 @@ static func build_active_party(party: PartyManager) -> Array[Combatant]:
 		var row := "front" if character_id in party.front_row else "back"
 		result.append(_build_combatant(character_id, profile, mechanic, row))
 	return result
+
+static func _sync_active_encounter_party(party: PartyManager) -> void:
+	if party == null:
+		return
+	var handoff := BountyEncounterState.get_active_record()
+	if handoff.is_empty():
+		return
+	var narrative := NarrativeManager.new()
+	if narrative.load() and not narrative.state.recruited_characters.is_empty():
+		party.initialize_from_saved_state(narrative.state.recruited_characters, narrative.state.get_party_formation())
 
 static func _build_combatant(character_id: String, profile: Dictionary, mechanic: Dictionary, row: String) -> Combatant:
 	var modifier: Dictionary = profile.get("%s_modifier" % row, {})
