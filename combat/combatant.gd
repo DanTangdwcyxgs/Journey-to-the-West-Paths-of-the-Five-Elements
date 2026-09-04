@@ -70,6 +70,7 @@ func begin_turn() -> void:
 		speed_effect_turns -= 1
 		if speed_effect_turns == 0:
 			speed = base_speed + form_speed_bonus
+			speed_delta = 0
 	if longma_form_turns > 0:
 		longma_form_turns -= 1
 		if longma_form_turns == 0:
@@ -89,9 +90,18 @@ func gain_barrier(amount: int) -> int:
 	return barrier
 
 func apply_speed_delta(delta: int, duration: int) -> void:
-	speed_delta = delta
-	speed = maxi(base_speed + form_speed_bonus + delta, 1)
-	speed_effect_turns = maxi(duration, 0)
+	var safe_duration := maxi(duration, 0)
+	if safe_duration <= 0:
+		return
+	var next_delta := int(delta)
+	var should_replace := speed_effect_turns <= 0 or abs(next_delta) > abs(speed_delta)
+	if should_replace:
+		speed_delta = next_delta
+		speed = maxi(base_speed + form_speed_bonus + speed_delta, 1)
+	speed_effect_turns = maxi(speed_effect_turns, safe_duration)
+
+func apply_taunt(duration: int) -> void:
+	aggro_turns = maxi(aggro_turns, maxi(duration, 0))
 
 func add_mechanic_resource(amount: int) -> int:
 	mechanic_resource = clampi(mechanic_resource + amount, 0, mechanic_max)
