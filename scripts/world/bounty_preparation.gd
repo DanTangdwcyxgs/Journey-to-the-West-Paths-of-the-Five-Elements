@@ -9,7 +9,6 @@ static func build_report(bounty: Dictionary, loadout_manager: LoadoutManager) ->
 	var recommended_profiles: Array[String] = []
 	for profile_id in loadout_manager.definitions.keys():
 		var profile: Dictionary = loadout_manager.definitions[profile_id]
-		var effects: Dictionary = profile.get("effects", {})
 		if _matches_weaknesses(profile, weaknesses):
 			recommended_profiles.append(str(profile_id))
 
@@ -23,10 +22,8 @@ static func build_report(bounty: Dictionary, loadout_manager: LoadoutManager) ->
 	}
 
 static func _matches_weaknesses(profile: Dictionary, weaknesses: Array) -> bool:
-	var profile_name := str(profile.get("name", ""))
-	var purpose := str(profile.get("purpose", ""))
+	var tags: Array = profile.get("tags", [])
 	for weakness in weaknesses:
-		var token := str(weakness).to_lower()
-		if profile_name.to_lower().contains(token) or purpose.to_lower().contains(token):
+		if str(weakness) in tags:
 			return true
 	return false
