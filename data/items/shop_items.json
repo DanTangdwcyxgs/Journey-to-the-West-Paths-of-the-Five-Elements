@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "items": [
+    {"id":"HERB","name":"金疮草","price":60,"type":"HEAL","amount":80,"description":"恢复单体 80 HP。"},
+    {"id":"PEACH","name":"仙桃片","price":120,"type":"HEAL","amount":160,"description":"恢复单体 160 HP。"},
+    {"id":"BP_TALISMAN","name":"聚气符","price":90,"type":"BP","amount":2,"description":"战斗开始时使一名角色获得 2 BP。"},
+    {"id":"SHIELD_CHARM","name":"护心符","price":110,"type":"BARRIER","amount":40,"description":"战斗开始时为一名角色获得 40 点护盾。"},
+    {"id":"FIRE_REED","name":"火纹草","price":100,"type":"MATERIAL","amount":1,"description":"适合火弱点妖王的出战准备材料。"}
+  ]
+}
