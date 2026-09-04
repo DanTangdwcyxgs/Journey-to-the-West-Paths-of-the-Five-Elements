@@ -13,7 +13,11 @@ static func build_active_party(party: PartyManager) -> Array[Combatant]:
 	# is playable before formal recruitment at the route convergence.
 	_sync_active_encounter_party(party)
 	var origin_character := _get_origin_battle_character()
+	var origin_choices: Dictionary = {}
 	if origin_character != "":
+		var narrative := NarrativeManager.new()
+		if narrative.load():
+			origin_choices = narrative.state.origin_choices.duplicate(true)
 		party.initialize_from_recruited([origin_character])
 	var profiles := _load_profiles()
 	var mechanics := _load_mechanics()
@@ -24,7 +28,10 @@ static func build_active_party(party: PartyManager) -> Array[Combatant]:
 			continue
 		var mechanic: Dictionary = mechanics.get(character_id, {})
 		var row := "front" if character_id in party.front_row else "back"
-		result.append(_build_combatant(character_id, profile, mechanic, row))
+		var unit := _build_combatant(character_id, profile, mechanic, row)
+		if origin_character != "":
+			_apply_origin_choices(unit, origin_choices)
+		result.append(unit)
 	return result
 
 static func _sync_active_encounter_party(party: PartyManager) -> void:
@@ -46,6 +53,21 @@ static func _get_origin_battle_character() -> String:
 		return ""
 	var starting_character := str(narrative.state.starting_character)
 	return starting_character if starting_character in NarrativeState.CHARACTER_IDS else ""
+
+static func _apply_origin_choices(unit: Combatant, choices: Dictionary) -> void:
+	if unit == null:
+		return
+	# Current authored choices grant small, deterministic combat traits. They are
+	# deliberately additive and do not alter the fixed chronology or encounter data.
+	if unit.id != "wukong":
+		return
+	if str(choices.get("WUK-03", "")) == "SEEK_POWER":
+		unit.attack += 2
+	if str(choices.get("WUK-08", "")) == "REJECT_BINDING":
+		unit.speed += 1
+		unit.base_speed += 1
+	if str(choices.get("WUK-13", "")) == "ENDURE":
+		unit.defense += 2
 
 static func _build_combatant(character_id: String, profile: Dictionary, mechanic: Dictionary, row: String) -> Combatant:
 	var modifier: Dictionary = profile.get("%s_modifier" % row, {})
