@@ -13,6 +13,7 @@ static func perform(engine: CombatEngine, actor: Combatant, target: Combatant, s
 			var result := engine.perform_action(actor, target, action, boosted)
 			if not result.get("ok", false):
 				return result
+			_apply_mechanic_gain(actor, target, kind)
 			if kind == "slow":
 				target.apply_speed_delta(int(skill.get("speed_delta", 0)), int(skill.get("duration", 1)))
 				result["effect"] = "slow"
@@ -27,18 +28,38 @@ static func perform(engine: CombatEngine, actor: Combatant, target: Combatant, s
 			actor.bp -= action.bp_cost
 			var before := target.hp
 			target.heal(int(skill.get("heal_power", 0)))
-			return {"ok": true, "damage": 0, "healed": target.hp - before, "target_hp": target.hp}
+			actor.add_mechanic_resource(1)
+			return {"ok": true, "damage": 0, "healed": target.hp - before, "target_hp": target.hp, "mechanic_resource": actor.mechanic_resource}
 		"shield":
 			if actor.bp < action.bp_cost:
 				return {"ok": false, "reason": "not_enough_bp"}
 			actor.bp -= action.bp_cost
-			target.gain_barrier(int(skill.get("shield_power", 0)))
-			return {"ok": true, "damage": 0, "barrier": target.barrier}
+			var shield_amount := int(skill.get("shield_power", 0))
+			if actor.id == "tangseng" and actor.mechanic_resource > 0:
+				shield_amount += 8
+				actor.spend_mechanic_resource(1)
+			target.gain_barrier(shield_amount)
+			return {"ok": true, "damage": 0, "barrier": target.barrier, "mechanic_resource": actor.mechanic_resource}
 		"self_buff":
 			if actor.bp < action.bp_cost:
 				return {"ok": false, "reason": "not_enough_bp"}
 			actor.bp -= action.bp_cost
 			actor.attack += int(skill.get("attack_bonus", 0))
 			actor.defense += int(skill.get("defense_bonus", 0))
-			return {"ok": true, "damage": 0, "attack": actor.attack, "defense": actor.defense}
+			return {"ok": true, "damage": 0, "attack": actor.attack, "defense": actor.defense, "mechanic_resource": actor.mechanic_resource}
 	return {"ok": false, "reason": "unsupported_skill_kind"}
+
+static func _apply_mechanic_gain(actor: Combatant, target: Combatant, kind: String) -> void:
+	match actor.id:
+		"wukong":
+			if target.is_broken() or kind == "break_burst":
+				actor.add_mechanic_resource(1)
+		"bajie":
+			if kind == "taunt":
+				actor.add_mechanic_resource(1)
+		"wujing":
+			if kind == "slow":
+				actor.add_mechanic_resource(1)
+		"longma":
+			if kind == "damage" and str(target.row) == "back":
+				actor.add_mechanic_resource(1)
