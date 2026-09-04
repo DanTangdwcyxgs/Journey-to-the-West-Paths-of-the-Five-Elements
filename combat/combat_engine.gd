@@ -63,9 +63,6 @@ func perform_action(actor: Combatant, target: Combatant, action: CombatAction, b
 	var damage := maxi(int(round(raw_damage * multiplier * damage_multiplier)), 1)
 	var dealt := target.take_damage(damage)
 
-	# Bajie's Rage is earned when he actually absorbs incoming combat damage.
-	# Keep this here rather than in Combatant.take_damage so non-combat changes
-	# cannot accidentally generate Rage.
 	if target.id == "bajie" and dealt > 0:
 		target.add_mechanic_resource(1)
 
@@ -102,19 +99,20 @@ func _apply_action_effects(actor: Combatant, target: Combatant, action: CombatAc
 	var effect := str(action.effects.get("effect", "")).to_lower()
 	var duration := int(action.effects.get("effect_duration", 0))
 	var value := int(action.effects.get("effect_value", 0))
+	var effect_target: Combatant = actor if str(action.effects.get("effect_target", "target")).to_lower() == "self" else target
 	match effect:
 		"slow":
 			if duration > 0 and value != 0:
-				target.apply_speed_delta(value, duration)
-				combat_log.emit("%s 速度 %+d，持续 %d 回合。" % [target.display_name, value, duration])
+				effect_target.apply_speed_delta(value, duration)
+				combat_log.emit("%s 速度 %+d，持续 %d 回合。" % [effect_target.display_name, value, duration])
 		"taunt":
 			if duration > 0:
-				target.apply_taunt(duration)
-				combat_log.emit("%s 被嘲讽，持续 %d 回合。" % [target.display_name, duration])
+				effect_target.apply_taunt(duration)
+				combat_log.emit("%s 被嘲讽，持续 %d 回合。" % [effect_target.display_name, duration])
 		"shield", "barrier":
 			if value > 0:
-				target.gain_barrier(value)
-				combat_log.emit("%s 获得 %d 点屏障。" % [target.display_name, value])
+				effect_target.gain_barrier(value)
+				combat_log.emit("%s 获得 %d 点屏障。" % [effect_target.display_name, value])
 		_:
 			return
 
