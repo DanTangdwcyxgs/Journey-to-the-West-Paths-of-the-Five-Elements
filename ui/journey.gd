@@ -29,6 +29,7 @@ var list: ItemList
 var primary_button: Button
 var memory_button: Button
 var party_button: Button
+var world_button: Button
 var save_button: Button
 var route_index := 0
 
@@ -55,13 +56,14 @@ func _build_ui() -> void:
 	primary_button = Button.new(); primary_button.custom_minimum_size = Vector2(0,54); primary_button.pressed.connect(_advance_primary); left.add_child(primary_button)
 	memory_button = Button.new(); memory_button.text = "播放已解锁回忆"; memory_button.custom_minimum_size = Vector2(0,46); memory_button.pressed.connect(_play_selected_memory); left.add_child(memory_button)
 	party_button = Button.new(); party_button.text = "队伍编成"; party_button.custom_minimum_size = Vector2(0,46); party_button.pressed.connect(_open_party); left.add_child(party_button)
+	world_button = Button.new(); world_button.text = "进入世界地图"; world_button.custom_minimum_size = Vector2(0,46); world_button.pressed.connect(_open_world_map); left.add_child(world_button)
 	var utility := HBoxContainer.new(); utility.add_theme_constant_override("separation",8); left.add_child(utility)
 	save_button = Button.new(); save_button.text = "保存"; save_button.pressed.connect(_save); utility.add_child(save_button)
 	var back := Button.new(); back.text = "返回主菜单"; back.pressed.connect(_back_to_menu); utility.add_child(back)
 	var right := VBoxContainer.new(); right.size_flags_horizontal = Control.SIZE_EXPAND_FILL; right.add_theme_constant_override("separation",8); body.add_child(right)
 	var list_title := Label.new(); list_title.text = "路线与共享西游"; list_title.add_theme_font_size_override("font_size",18); right.add_child(list_title)
 	list = ItemList.new(); list.size_flags_vertical = Control.SIZE_EXPAND_FILL; right.add_child(list)
-	var rule := Label.new(); rule.text = "世界时间线只向前；个人故事是历史回放。招募角色后，其回忆立即开放；五人集齐只开启完整队伍层。"; rule.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART; right.add_child(rule)
+	var rule := Label.new(); rule.text = "世界时间线只向前；个人故事是历史回放。招募角色后，其回忆立即开放；五人集齐只开启完整队伍层。世界地图中的探索不会重写主线，只记录地点、情报与世界影响。"; rule.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART; right.add_child(rule)
 
 func _current_route() -> Array:
 	return ORIGIN_CHAPTERS.get(narrative.state.starting_character, [])
@@ -130,6 +132,9 @@ func _play_selected_memory() -> void:
 
 func _open_party() -> void:
 	get_tree().change_scene_to_file("res://ui/party_screen.tscn")
+
+func _open_world_map() -> void:
+	get_tree().change_scene_to_file("res://ui/world_map.tscn")
 
 func _save() -> void:
 	narrative.state.set_party_formation(party.to_dict())
