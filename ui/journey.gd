@@ -6,6 +6,7 @@ const CHARACTER_NAMES := {"TANG":"唐三藏", "WUKONG":"孙悟空", "BAJIE":"猪
 var narrative := NarrativeManager.new()
 var origin := OriginRouteManager.new()
 var origin_events := OriginEventManager.new()
+var shared_events := SharedEventManager.new()
 var party := PartyManager.new()
 var title_label: Label
 var phase_label: Label
@@ -175,6 +176,19 @@ func _advance_shared() -> void:
 		phase_label.text = "共享旅程已完成。"
 		_refresh()
 		return
+	var event_id := str(chapter.get("event", ""))
+	var event := shared_events.get_event(event_id if event_id != "" else chapter_id)
+	var selected := shared_events.get_choice(narrative, event_id if event_id != "" else chapter_id)
+	if not event.is_empty() and selected == "":
+		phase_label.text = "共享章节需要先完成剧情选择。"
+		_refresh()
+		return
+	var encounter_id := str(chapter.get("encounter_id", ""))
+	if encounter_id != "":
+		var source_id := "shared:%s" % chapter_id
+		if BountyEncounterState.start_narrative_encounter(encounter_id, source_id, "SHARED_JOURNEY"):
+			get_tree().change_scene_to_file("res://ui/battle_ui.tscn")
+		return
 	var recruit_before := narrative.state.recruited_characters.duplicate()
 	if not SharedJourneyManager.complete(chapter_id, narrative):
 		phase_label.text = "当前共享章节暂不可推进，需要先完成前置招募。"
@@ -187,6 +201,26 @@ func _advance_shared() -> void:
 	_refresh()
 	if not recruited_names.is_empty():
 		phase_label.text = "完成 %s · 新加入：%s · 对应个人回忆已开放。" % [str(chapter.get("title", chapter_id)), "、".join(recruited_names)]
+
+func _apply_shared_choice(choice_id: String) -> void:
+	var chapter_id := narrative.state.current_shared_chapter
+	var chapter := SharedJourneyManager.get_chapter(chapter_id)
+	if chapter.is_empty():
+		return
+	var event_id := str(chapter.get("event", ""))
+	if event_id == "":
+		event_id = chapter_id
+	if shared_events.apply_choice(narrative, event_id, choice_id):
+		narrative.save()
+		phase_label.text = "已记录本章选择。"
+		_refresh()
+
+func _memory_preview(character_id: String) -> Array[String]:
+	var chapters := origin.get_chapters(character_id)
+	var result: Array[String] = []
+	for i in range(min(2, chapters.size())):
+		result.append(str(chapters[i].get("id", "")))
+	return result
 
 func _play_selected_memory() -> void:
 	var selected := list.get_selected_items()
@@ -235,14 +269,24 @@ func _refresh() -> void:
 		else:
 			chapter_label.text = "%s · %s" % [chapter.get("id", ""), chapter.get("title", "")]
 			description_label.text = "固定西游时间线 T%04d。完成该章会推进到下一段共享旅程；若命中招募节点，会同时开放对应角色历史。" % int(chapter.get("timeline", 0))
-			primary_button.text = "完成共享章节"
-			primary_button.disabled = false
+			var event_id := str(chapter.get("event", ""))
+			var event := shared_events.get_event(event_id if event_id != "" else str(chapter.get("id", "")))
+			var chosen := shared_events.get_choice(narrative, event_id if event_id != "" else str(chapter.get("id", "")))
+			if not event.is_empty():
+				description_label.text += "\n\n" + str(event.get("text", ""))
+			if not event.is_empty() and chosen == "":
+				primary_button.text = "请选择剧情立场"
+				primary_button.disabled = true
+				_render_shared_choices(event)
+			else:
+				primary_button.text = "进入共享战斗" if not str(chapter.get("encounter_id", "")).is_empty() else "完成共享章节"
+				primary_button.disabled = false
 	else:
 		var chapters := _current_route()
 		var index := origin.get_current_index(narrative, start)
 		if index >= chapters.size():
 			chapter_label.text = "路线汇合"
-			description_label.text = "个人历史结束。下一步会将起始角色接回固定西游主线，并按经典招募节点建立当前队伍。"
+			description_label.text = "个人历史结束。下一步会将起始角色接回固定西游主线。"
 			primary_button.text = "完成路线并回到主线"
 			primary_button.disabled = false
 		else:
@@ -251,13 +295,9 @@ func _refresh() -> void:
 			var event := origin_events.get_event(chapter_id)
 			var chosen := narrative.state.get_origin_choice(chapter_id)
 			chapter_label.text = "%s · %s" % [chapter.get("id", ""), chapter.get("title", "")]
-			var battle_hint := str(chapter.get("battle_after", ""))
 			description_label.text = str(chapter.get("summary", ""))
 			if not event.is_empty():
 				description_label.text += "\n\n" + str(event.get("text", ""))
-			if not battle_hint.is_empty():
-				description_label.text += "\n\n战斗节点：" + battle_hint
-			description_label.text += "\n\n起始角色历史章节只推进个人路线，不改变共享西游时间线。"
 			if not event.is_empty() and chosen == "":
 				primary_button.text = "请选择立场"
 				primary_button.disabled = true
@@ -296,4 +336,14 @@ func _render_choices(event: Dictionary) -> void:
 		button.custom_minimum_size = Vector2(0, 48)
 		button.text = str(choice.get("label", choice_id))
 		button.pressed.connect(_apply_choice.bind(choice_id))
+		choice_box.add_child(button)
+
+func _render_shared_choices(event: Dictionary) -> void:
+	_clear_choices()
+	for choice in event.get("choices", []):
+		var choice_id := str(choice.get("id", ""))
+		var button := Button.new()
+		button.custom_minimum_size = Vector2(0, 48)
+		button.text = str(choice.get("label", choice_id))
+		button.pressed.connect(_apply_shared_choice.bind(choice_id))
 		choice_box.add_child(button)
