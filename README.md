@@ -45,12 +45,13 @@ A discovered Yellow Wind bounty now continues into a real battle-scene handoff: 
 
 The preparation loop now adds **camp records, shop supply, persistent equipment profiles, and battle consumables**. Equipment choices are written into `NarrativeState`; combat reads the saved profiles before creating the encounter.
 
-The first dedicated **Yellow Wind Ridge → Yellow Wind Cave → Yellow Wind Demon** path is now represented as a data-driven exploration slice with a four-stage ridge and a four-room cave greybox. fileciteturn366file0
+The first dedicated **Yellow Wind Ridge → Yellow Wind Cave → Yellow Wind Demon** path is now represented as a data-driven exploration slice with a four-stage ridge and a four-room cave greybox.
 
 ## Gameplay Pillars
 
 - **5-character party:** Tang Sanzang, Sun Wukong, Zhu Bajie, Sha Wujing, Bai Longma
 - **Formation:** 3 front / 2 back tactical formation with swapping and persistence
+- **Recruited-roster battles:** combat construction respects the saved recruited party instead of forcing all five protagonists into every encounter
 - **Back-row protection:** back-row units take reduced normal single-target damage
 - **Break / Weakness:** exploit enemy weaknesses to break their shield
 - **BP Boost:** accumulate BP and spend it to strengthen actions
@@ -84,6 +85,7 @@ Implemented and connected:
 - readable temporary combat status presentation for Break, barrier, taunt and speed changes
 - saved loadout modifiers applied inside combat formulas
 - functional Bai Longma form shift with temporary stat changes and expiry
+- recruited-party-aware battle construction
 - Yellow Wind bounty battle handoff and automatic victory reward resolution
 
 ## Current World Foundation
@@ -100,10 +102,12 @@ Implemented and connected:
 - transient world-map → battle encounter handoff
 - Yellow Wind Ridge four-stage exploration slice
 - Yellow Wind Cave four-room greybox slice
+- persistent cave room checkpoints in `NarrativeState`
+- cave → normal encounter battle source-stage handoff
 - cave → bounty battle source-stage handoff
 - post-victory return into the Yellow Wind Ridge flow
 - camp / supply / preparation entry points
-- regression checks for travel, rumor discovery, bounty handoff, combat status and Longma transformation
+- regression checks for travel, rumor discovery, bounty handoff, combat status, Longma transformation, normal encounter construction and recruited roster handling
 
 ## Roadmap
 
@@ -147,5 +151,6 @@ Implemented and connected:
 - [x] Battle consumable loop
 - [x] First complete battle: Yellow Wind Demon path
 - [x] First dungeon greybox
+- [x] Persistent dungeon checkpoints
 - [ ] Visual combat polish
-- [ ] Persistent dungeon checkpoints
+- [ ] Fully authored five-character playable route content
