@@ -1,39 +1,39 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "characters": {
     "WUKONG": {
       "skills": [
-        {"id":"WUK_BASIC","name":"金箍棒","element":"strike","power":28,"shield_hit":1,"bp_cost":0,"kind":"damage"},
-        {"id":"WUK_FIRE","name":"三昧真火","element":"fire","power":42,"shield_hit":1,"bp_cost":1,"kind":"damage"},
-        {"id":"WUK_CLONES","name":"七十二变·分身","element":"strike","power":22,"shield_hit":2,"bp_cost":2,"kind":"break_burst"}
+        {"id":"WUK_BASIC","name":"金箍棒","element":"strike","power":28,"shield_hit":1,"bp_cost":0,"kind":"damage","mechanic_gain":1},
+        {"id":"WUK_FIRE","name":"三昧真火","element":"fire","power":42,"shield_hit":1,"bp_cost":1,"kind":"damage","mechanic_gain":1},
+        {"id":"WUK_CLONES","name":"七十二变·分身","element":"strike","power":22,"shield_hit":2,"bp_cost":2,"kind":"break_burst","mechanic_cost":1}
       ]
     },
     "TANG": {
       "skills": [
         {"id":"TANG_STAFF","name":"锡杖","element":"strike","power":16,"shield_hit":1,"bp_cost":0,"kind":"damage"},
-        {"id":"TANG_HEAL","name":"慈悲咒","element":"holy","power":0,"shield_hit":0,"bp_cost":1,"kind":"heal","heal_power":48},
-        {"id":"TANG_SHIELD","name":"护心法","element":"holy","power":0,"shield_hit":0,"bp_cost":2,"kind":"shield","shield_power":32}
+        {"id":"TANG_HEAL","name":"慈悲咒","element":"holy","power":0,"shield_hit":0,"bp_cost":1,"kind":"heal","heal_power":48,"mechanic_gain":1},
+        {"id":"TANG_SHIELD","name":"护心法","element":"holy","power":0,"shield_hit":0,"bp_cost":2,"kind":"shield","shield_power":32,"mechanic_cost":1}
       ]
     },
     "BAJIE": {
       "skills": [
         {"id":"BAJIE_RAKE","name":"九齿钉耙","element":"strike","power":30,"shield_hit":1,"bp_cost":0,"kind":"damage"},
-        {"id":"BAJIE_TAUNT","name":"倒打一耙","element":"strike","power":20,"shield_hit":1,"bp_cost":1,"kind":"taunt","aggro_turns":2},
-        {"id":"BAJIE_EAT","name":"大口吞食","element":"earth","power":0,"shield_hit":0,"bp_cost":2,"kind":"self_buff","defense_bonus":8,"attack_bonus":6}
+        {"id":"BAJIE_TAUNT","name":"倒打一耙","element":"strike","power":20,"shield_hit":1,"bp_cost":1,"kind":"taunt","aggro_turns":2,"mechanic_gain":1},
+        {"id":"BAJIE_EAT","name":"大口吞食","element":"earth","power":0,"shield_hit":0,"bp_cost":2,"kind":"self_buff","defense_bonus":8,"attack_bonus":6,"mechanic_cost":2}
       ]
     },
     "WUJING": {
       "skills": [
         {"id":"WUJING_STAFF","name":"降妖杖","element":"strike","power":24,"shield_hit":1,"bp_cost":0,"kind":"damage"},
         {"id":"WUJING_ICE","name":"寒水诀","element":"ice","power":34,"shield_hit":1,"bp_cost":1,"kind":"damage"},
-        {"id":"WUJING_SLOW","name":"流沙缚","element":"water","power":12,"shield_hit":1,"bp_cost":2,"kind":"slow","speed_delta":-8,"duration":2}
+        {"id":"WUJING_SLOW","name":"流沙缚","element":"water","power":12,"shield_hit":1,"bp_cost":2,"kind":"slow","speed_delta":-8,"duration":2,"mechanic_gain":1}
       ]
     },
     "LONGMA": {
       "skills": [
         {"id":"LONGMA_BITE","name":"龙牙","element":"strike","power":26,"shield_hit":1,"bp_cost":0,"kind":"damage"},
         {"id":"LONGMA_WIND","name":"驭风","element":"wind","power":36,"shield_hit":1,"bp_cost":1,"kind":"damage"},
-        {"id":"LONGMA_DRAGON","name":"化龙","element":"water","power":44,"shield_hit":2,"bp_cost":2,"kind":"damage"}
+        {"id":"LONGMA_DRAGON","name":"化龙","element":"water","power":44,"shield_hit":2,"bp_cost":2,"kind":"damage","mechanic_cost":1}
       ]
     }
   }
