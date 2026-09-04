@@ -21,7 +21,7 @@ The game language is modern HD-2D JRPG:
 - character-specific combat mechanics;
 - strong JRPG menus and battle feedback.
 
-See [Game Vision & Canon](docs/game_vision.md), [Global Timeline](docs/global_timeline.md), [Story Structure & Chapter Pacing](docs/story_structure.md), [Memory Campaign Rules](docs/memory_campaign.md), and [Production Rules](docs/production_rules.md).
+See [Game Vision & Canon](docs/game_vision.md), [Global Timeline](docs/global_timeline.md), [Story Structure & Chapter Pacing](docs/story_structure.md), [Memory Campaign Rules](docs/memory_campaign.md), [Combat Formation](docs/combat_formation.md), and [Production Rules](docs/production_rules.md).
 
 ## Core Narrative Loop
 
@@ -66,7 +66,8 @@ The project may expand the connective material around these events, but the majo
 ## Gameplay Pillars
 
 - **5-character party:** Tang Sanzang, Sun Wukong, Zhu Bajie, Sha Wujing, Bai Longma
-- **Formation:** 3 front / 2 back tactical formation with swapping
+- **Formation:** 3 front / 2 back tactical formation with swapping and persistence
+- **Back-row protection:** back-row units take reduced normal single-target damage
 - **Break / Weakness:** exploit enemy weaknesses to break their shield
 - **BP Boost:** accumulate BP and spend it to strengthen actions
 - **Speed-based turns:** dynamic initiative affected by speed changes
@@ -95,6 +96,9 @@ Implemented foundation:
 - increased damage while Broken
 - BP generation and spending
 - speed-based turn ordering
+- narrative party formation → combatant construction
+- front/back row modifiers
+- back-row damage protection
 - headless regression tests
 
 ## Narrative Architecture
@@ -125,16 +129,23 @@ The save system tracks chronological `current_global_timeline` separately from:
 - recruited characters
 - shared chapter progress
 - historical/flashback unlocks
+- saved party formation
 
 ## Repository Layout
 
 ```text
 combat/
-  combatant.gd       # combatant state
+  combatant.gd       # combatant state + front/back row
   combat_action.gd   # skill/action definitions
-  combat_engine.gd   # turn loop, weakness, break, damage, BP
+  combat_engine.gd   # turn loop, weakness, break, damage, BP, formation effects
   battle_demo.gd     # small runnable battle setup
   test_combat.gd     # headless combat regression tests
+
+scripts/combat/
+  combat_party_builder.gd  # party formation -> Combatant construction
+
+scripts/party/
+  party_manager.gd          # five-person roster and formation
 
 docs/
   architecture.md
@@ -150,12 +161,17 @@ docs/
   narrative_state.md
   narrative_content_schema.md
   memory_campaign.md
+  combat_formation.md
   sun_wukong_route.md
   tang_sanzang_route.md
   bai_longma_route.md
   zhu_bajie_route.md
   sha_wujing_route.md
   tv_episode_alignment.md
+
+data/
+  combat/party_profiles.json
+  narrative/shared_pilgrimage.json
 
 project.godot
 .gitignore
@@ -187,6 +203,10 @@ godot --headless --path . --script res://combat/test_combat.gd
 - [x] Five-character route structure
 - [x] Global timeline and production canon
 - [x] Progressive character-story unlock rules
+- [x] Party formation persistence
+- [x] Shared recruitment events
+- [x] Formation-aware combatant construction
+- [x] Basic front/back combat effect
 - [ ] Narrative data model implementation
 - [ ] Minimal battle UI
 
@@ -194,16 +214,17 @@ godot --headless --path . --script res://combat/test_combat.gd
 
 - [ ] Five playable characters
 - [ ] Five origin chapter prototypes
-- [ ] Front/back formation swap
+- [x] Front/back formation swap
 - [ ] Bai Longma transformation states
 - [ ] Skills, resources and status effects
-- [ ] Canonical recruitment event flow
-- [ ] Progressive personal-story unlock flow
+- [x] Canonical recruitment event flow
+- [x] Progressive personal-story unlock flow
 - [ ] First complete battle: Yellow Wind Demon
 - [ ] First dungeon greybox
 
 ### Phase 3 — Shared Journey
 
+- [x] Shared recruitment/convergence backbone
 - [ ] Full party convergence chapter
 - [ ] Major Journey to the West story arcs
 - [ ] Progressive character perspective / memory chapters
@@ -231,6 +252,7 @@ godot --headless --path . --script res://combat/test_combat.gd
 6. **Personal stories can be explored before the party is complete.**
 7. **Original content expands the journey instead of replacing it without reason.**
 8. **Narrative rules and combat rules remain independently testable.**
+9. **New mechanics should extend the existing state model instead of duplicating state in UI scenes.**
 
 ## Note on IP
 
