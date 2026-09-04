@@ -98,6 +98,10 @@ static func _consume_and_gain(actor: Combatant, target: Combatant, kind: String,
 		actor.spend_mechanic_resource(mechanic_cost)
 	var explicit_gain := int(skill.get("mechanic_gain", 0))
 	if explicit_gain > 0:
+		# A resource-consuming control skill spends an existing charge instead of
+		# immediately refilling it. With no charge, the same action builds one.
+		if bool(skill.get("consume_mechanic_if_available", false)) and actor.mechanic_resource > 0:
+			return
 		actor.add_mechanic_resource(explicit_gain)
 		return
 	match actor.id:
