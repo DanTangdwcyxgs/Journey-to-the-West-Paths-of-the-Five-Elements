@@ -13,6 +13,7 @@ var shield: int
 var max_shield: int
 var weaknesses: Dictionary = {}
 var broken_turns: int = 0
+var row: String = "front"
 
 func _init(
 	p_id: String,
@@ -22,7 +23,8 @@ func _init(
 	p_defense: int,
 	p_speed: int,
 	p_shield: int,
-	p_weaknesses: Dictionary
+	p_weaknesses: Dictionary,
+	p_row: String = "front"
 ) -> void:
 	id = p_id
 	display_name = p_display_name
@@ -34,6 +36,7 @@ func _init(
 	max_shield = p_shield
 	shield = p_shield
 	weaknesses = p_weaknesses.duplicate(true)
+	row = "back" if p_row == "back" else "front"
 
 func is_alive() -> bool:
 	return hp > 0
