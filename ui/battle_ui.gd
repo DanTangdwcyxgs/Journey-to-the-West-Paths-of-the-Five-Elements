@@ -138,16 +138,11 @@ func _refresh() -> void:
 	_add_item_buttons()
 
 func _add_skill_button(skill: Dictionary) -> void:
-	var button := Button.new()
-	var cost := int(skill.get("bp_cost",0)); var mechanic_cost := int(skill.get("mechanic_cost",0))
-	var text := "%s  BP %d · %s" % [str(skill.get("name","Skill")),cost,str(skill.get("kind","damage"))]
+	var button := Button.new(); var cost := int(skill.get("bp_cost",0)); var mechanic_cost := int(skill.get("mechanic_cost",0)); var text := "%s  BP %d · %s" % [str(skill.get("name","Skill")),cost,str(skill.get("kind","damage"))]
 	if mechanic_cost > 0: text += " · 专属资源 %d" % mechanic_cost
 	if bool(skill.get("scale_with_mechanic", false)): text += " · 当前资源强化"
 	if bool(skill.get("consume_mechanic_if_available", false)): text += " · 可消耗资源强化"
-	button.text = text
-	button.disabled = current_actor.bp < cost or current_actor.mechanic_resource < mechanic_cost
-	button.pressed.connect(func(): _use_skill(skill,false))
-	skill_box.add_child(button)
+	button.text = text; button.disabled = current_actor.bp < cost or current_actor.mechanic_resource < mechanic_cost; button.pressed.connect(func(): _use_skill(skill,false)); skill_box.add_child(button)
 
 func _add_item_buttons() -> void:
 	for item_id in battle_inventory.items.keys():
@@ -162,7 +157,7 @@ func _clear_items() -> void:
 
 func _use_skill(skill: Dictionary, boosted: bool) -> void:
 	if current_actor == null or not current_actor.is_alive() or selected_target == null or not selected_target.is_alive(): return
-	selected_skill = skill.duplicate(true)
+	selected_skill = skill
 	var result := SkillRuntime.perform(engine,current_actor,selected_target,skill,boosted)
 	if not result.get("ok",false): status_label.text = "技能失败：%s" % result.get("reason","unknown"); return
 	if result.has("form_name"): _on_combat_log("白龙马变身：%s · 持续 %d 回合" % [str(result.get("form_name","")),int(result.get("form_duration",0))])
@@ -187,9 +182,7 @@ func _save_battle_inventory() -> void:
 
 func _boost_selected() -> void:
 	if current_actor == null or selected_target == null or not selected_target.is_alive(): return
-	if selected_skill.is_empty():
-		status_label.text = "先选择一个技能再使用 Boost。"
-		return
+	if selected_skill.is_empty(): status_label.text = "先选择一个技能再使用 Boost。"; return
 	_use_skill(selected_skill,true)
 
 func _on_ally_selected(index: int) -> void:
@@ -224,7 +217,7 @@ func _enemy_turn(enemy: Combatant) -> void:
 		boss_runtime.on_turn_start(enemy)
 		attack = boss_runtime.choose_action(enemy,allies)
 	else:
-		attack = CombatAction.new("NORMAL_ATTACK", "妖兵攻击", "STRIKE", 18, 1, 0)
+		attack = encounter_manager.choose_ai_action(enemy,allies,engine.turn_number)
 	var result := engine.perform_action(enemy,target,attack)
 	if encounter_type == "bounty": boss_runtime.apply_action_effects(attack.id,enemy)
 	if result.get("ok",false): _on_combat_log("%s：%s" % [_name(enemy),attack.display_name])
@@ -288,14 +281,10 @@ func _format_rewards(rewards:Array) -> String:
 
 func _return_from_battle() -> void:
 	if not encounter_resolved: BountyEncounterState.clear()
-	if encounter_type == "origin":
-		get_tree().change_scene_to_file("res://ui/journey.tscn")
-	elif encounter_type == "normal" and not source_stage_id.is_empty():
-		get_tree().change_scene_to_file("res://ui/yellow_wind_cave.tscn")
-	elif encounter_type == "bounty" and not source_stage_id.is_empty() and encounter_resolved:
-		get_tree().change_scene_to_file("res://ui/yellow_wind_cave.tscn")
-	else:
-		get_tree().change_scene_to_file("res://ui/world_map.tscn")
+	if encounter_type == "origin": get_tree().change_scene_to_file("res://ui/journey.tscn")
+	elif encounter_type == "normal" and not source_stage_id.is_empty(): get_tree().change_scene_to_file("res://ui/yellow_wind_cave.tscn")
+	elif encounter_type == "bounty" and not source_stage_id.is_empty() and encounter_resolved: get_tree().change_scene_to_file("res://ui/yellow_wind_cave.tscn")
+	else: get_tree().change_scene_to_file("res://ui/world_map.tscn")
 
 func _boss() -> Combatant: return enemies[0] if not enemies.is_empty() else null
 func _name(unit:Combatant) -> String: return NAMES.get(unit.id,unit.display_name)
