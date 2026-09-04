@@ -73,12 +73,28 @@ func choose_ai_target(enemy: Combatant, allies: Array[Combatant], action: Combat
 	if living.is_empty():
 		return null
 	if action == null:
-		return living[0]
+		return _lowest_hp_target(living)
+	var taunted := _first_status_target(living, "aggro_turns")
+	if taunted != null:
+		return taunted
 	var element := str(action.element).to_lower()
 	for ally in living:
 		if bool(ally.weaknesses.get(element, false)):
 			return ally
-	return living[0]
+	return _lowest_hp_target(living)
+
+func _first_status_target(targets: Array[Combatant], property_name: String) -> Combatant:
+	for target in targets:
+		if int(target.get(property_name)) > 0:
+			return target
+	return null
+
+func _lowest_hp_target(targets: Array[Combatant]) -> Combatant:
+	var result: Combatant = targets[0]
+	for target in targets:
+		if target.hp < result.hp:
+			result = target
+	return result
 
 func _action_from_definition(skill: Dictionary) -> CombatAction:
 	return CombatAction.new(
