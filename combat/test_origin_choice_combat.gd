@@ -27,11 +27,21 @@ static func run() -> void:
 	assert(combined.base_speed == 13)
 	assert(combined.defense == 7)
 
-	var tang := Combatant.new("tangseng", "唐三藏", 100, 10, 5, 8, 2, {})
+	var tang := Combatant.new("tangseng", "唐三藏", 120, 16, 8, 10, 2, {})
 	CombatPartyBuilder._apply_origin_choices(tang, "TANG", {"TANG-04":"SERVE_PEOPLE"})
 	assert(is_equal_approx(float(tang.combat_modifiers.get("healing_multiplier", 1.0)), 1.15))
 
-	var longma := Combatant.new("longma", "白龙马", 100, 14, 5, 12, 2, {})
+	var longma := Combatant.new("longma", "白龙马", 120, 19, 7, 12, 2, {})
 	CombatPartyBuilder._apply_origin_choices(longma, "LONGMA", {"LONGMA-02":"RESIST_FATE"})
 	assert(longma.speed == 14)
 	assert(longma.base_speed == 14)
+
+	var bajie := Combatant.new("bajie", "猪八戒", 140, 22, 9, 8, 3, {})
+	CombatPartyBuilder._apply_origin_choices(bajie, "BAJIE", {"BAJIE-06":"CHOOSE_DESIRE"})
+	assert(bajie.attack == 23)
+	assert(bajie.speed == 9)
+
+	var wujing := Combatant.new("wujing", "沙悟净", 130, 20, 10, 9, 3, {})
+	CombatPartyBuilder._apply_origin_choices(wujing, "WUJING", {"WUJING-02":"QUESTION_SENTENCE"})
+	assert(wujing.attack == 21)
+	assert(wujing.speed == 10)
