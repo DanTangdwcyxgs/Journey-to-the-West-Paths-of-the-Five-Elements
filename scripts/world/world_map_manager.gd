@@ -68,13 +68,14 @@ func get_rumors_at_current_location(narrative: NarrativeManager) -> Array[Dictio
 	if narrative == null:
 		return []
 	var location := get_current_location(narrative)
+	var heard:Array = narrative.state.get_world_state().get("heard_rumors", [])
 	var result: Array[Dictionary] = []
 	for rumor in rumors.values():
 		if str(rumor.get("node_id", "")) != location:
 			continue
 		if narrative.state.current_global_timeline < int(rumor.get("required_timeline", 0)):
 			continue
-		if str(rumor.get("id", "")) in narrative.state.get_world_state().get("heard_rumors", []):
+		if str(rumor.get("id", "")) in heard:
 			continue
 		result.append(rumor.duplicate(true))
 	return result
@@ -94,7 +95,10 @@ func hear_rumor(narrative: NarrativeManager, rumor_id: String) -> Dictionary:
 func get_discovered_bounty_ids(narrative: NarrativeManager) -> Array[String]:
 	if narrative == null:
 		return []
-	return narrative.state.get_world_state().get("discovered_bounties", []) as Array[String]
+	var result: Array[String] = []
+	for bounty_id in narrative.state.get_world_state().get("discovered_bounties", []):
+		result.append(str(bounty_id))
+	return result
 
 func save(narrative: NarrativeManager) -> bool:
 	return narrative != null and narrative.save()
