@@ -33,8 +33,10 @@ func begin_origin_route(character_id: String) -> bool:
 	if chapter.is_empty():
 		state.mark_route_complete(character_id)
 		return false
-	state.set_origin_progress(str(origin_routes.get_route(character_id).get("route_id", "%s_ORIGIN" % character_id)), str(chapter.get("id", "")))
-	state.unlocked_chapters.append(str(chapter.get("id", ""))) if str(chapter.get("id", "")) not in state.unlocked_chapters else null
+	var chapter_id := str(chapter.get("id", ""))
+	state.set_origin_progress(str(origin_routes.get_route(character_id).get("route_id", "%s_ORIGIN" % character_id)), chapter_id)
+	if chapter_id not in state.unlocked_chapters:
+		state.unlocked_chapters.append(chapter_id)
 	return true
 
 func encounter_character(character_id: String, memory_chapters: Array[String] = []) -> bool:
@@ -72,6 +74,7 @@ func complete_origin_chapter(character_id: String) -> Dictionary:
 	var next := origin_routes.get_current_chapter(self, character_id)
 	if next.is_empty():
 		state.mark_route_complete(character_id)
+		state.clear_origin_progress()
 		return chapter
 	var next_id := str(next.get("id", ""))
 	state.set_origin_progress(str(origin_routes.get_route(character_id).get("route_id", "%s_ORIGIN" % character_id)), next_id)
