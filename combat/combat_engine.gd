@@ -64,8 +64,8 @@ func perform_action(actor: Combatant, target: Combatant, action: CombatAction, b
 	var dealt := target.take_damage(damage)
 
 	# Bajie's Rage is earned when he actually absorbs incoming combat damage.
-	# Keep this here rather than in Combatant.take_damage so self-inflicted or
-	# non-combat state changes cannot accidentally generate Rage.
+	# Keep this here rather than in Combatant.take_damage so non-combat changes
+	# cannot accidentally generate Rage.
 	if target.id == "bajie" and dealt > 0:
 		target.add_mechanic_resource(1)
 
@@ -80,6 +80,7 @@ func perform_action(actor: Combatant, target: Combatant, action: CombatAction, b
 	else:
 		target.shield = maxi(target.shield - action.shield_hit, 0)
 
+	_apply_action_effects(actor, target, action)
 	combat_log.emit("%s uses %s on %s for %d damage." % [actor.display_name, action.display_name, target.display_name, dealt])
 	_check_end()
 	return {
@@ -90,7 +91,32 @@ func perform_action(actor: Combatant, target: Combatant, action: CombatAction, b
 		"target_hp": target.hp,
 		"target_shield": target.shield,
 		"target_mechanic_resource": target.mechanic_resource,
+		"target_barrier": target.barrier,
+		"target_aggro_turns": target.aggro_turns,
+		"target_speed": target.speed,
 	}
+
+func _apply_action_effects(actor: Combatant, target: Combatant, action: CombatAction) -> void:
+	if action == null or action.effects.is_empty():
+		return
+	var effect := str(action.effects.get("effect", "")).to_lower()
+	var duration := int(action.effects.get("effect_duration", 0))
+	var value := int(action.effects.get("effect_value", 0))
+	match effect:
+		"slow":
+			if duration > 0 and value != 0:
+				target.apply_speed_delta(value, duration)
+				combat_log.emit("%s 速度 %+d，持续 %d 回合。" % [target.display_name, value, duration])
+		"taunt":
+			if duration > 0:
+				target.apply_taunt(duration)
+				combat_log.emit("%s 被嘲讽，持续 %d 回合。" % [target.display_name, duration])
+		"shield", "barrier":
+			if value > 0:
+				target.gain_barrier(value)
+				combat_log.emit("%s 获得 %d 点屏障。" % [target.display_name, value])
+		_:
+			return
 
 func advance_turn() -> Combatant:
 	var actor := next_actor()
