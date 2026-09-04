@@ -108,7 +108,8 @@ Implemented and connected:
 - post-victory return into the Yellow Wind Ridge flow
 - camp / supply / preparation entry points
 - unified origin-route lifecycle API with deterministic chapter unlock/progress reporting
-- regression checks for travel, rumor discovery, bounty handoff, combat status, Longma transformation, normal encounter construction, recruited roster handling, and origin route lifecycle
+- data-driven shared-journey chapter spine with recruitment, rewards and world-effect metadata
+- regression checks for travel, rumor discovery, bounty handoff, combat status, Longma transformation, normal encounter construction, recruited roster handling, origin route lifecycle, and shared journey chronology
 
 ## Roadmap
 
