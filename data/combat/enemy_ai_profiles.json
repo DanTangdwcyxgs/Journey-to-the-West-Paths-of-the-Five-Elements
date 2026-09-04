@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "profiles": {
+    "SAND_GUARD": "lowest_defense",
+    "WIND_SPIRIT": "lowest_hp",
+    "CAVE_GHOUL": "lowest_hp",
+    "STONE_IMP": "lowest_defense",
+    "CRAB_GUARD": "lowest_defense",
+    "SHRIMP_SPEAR": "highest_speed",
+    "HEAVENLY_SOLDIER": "highest_attack",
+    "HEAVENLY_ARCHER": "highest_speed",
+    "ERLANG_SHEN": "highest_attack",
+    "CELESTIAL_HOUND": "lowest_hp",
+    "CELESTIAL_GENERAL": "highest_attack",
+    "HEAVEN_GUARD_CAPTAIN": "lowest_defense",
+    "MOUNTAIN_GHOUL": "lowest_hp",
+    "RIDGE_WOLF": "lowest_hp",
+    "MOUNTAIN_SPIRIT": "highest_attack",
+    "STONE_FOX": "highest_speed",
+    "SEA_SERPENT": "lowest_hp",
+    "TIDAL_SPIRIT": "highest_attack",
+    "YING_WATER_DEMON": "lowest_defense",
+    "RIVER_EEL": "highest_speed",
+    "VILLAGE_GHOUL": "lowest_hp",
+    "WILD_BOAR": "highest_attack",
+    "WUKONG_MIRROR": "highest_attack",
+    "MOUNTAIN_MONKEY": "lowest_hp",
+    "SAND_SHARK": "lowest_hp",
+    "RIVER_WRAITH": "highest_attack",
+    "RIVER_DEMON": "highest_attack",
+    "SAND_GUARDIAN": "lowest_defense"
+  }
+}
