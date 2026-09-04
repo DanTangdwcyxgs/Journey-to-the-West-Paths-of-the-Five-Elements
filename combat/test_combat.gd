@@ -14,15 +14,15 @@ func _initialize() -> void:
 	var first := engine.perform_action(wukong, demon, fire)
 	_assert(first.get("weakness_hit", false), "fire must hit fire weakness")
 	_assert_equal(demon.shield, 1, "weakness attack reduces shield")
+	var normal_damage := first.get("damage", 0)
 
 	var second := engine.perform_action(wukong, demon, fire)
-	_assert(demon.is_broken(), "second weakness hit should trigger Break")
+	_assert(second.get("target_broken", false), "second weakness hit should trigger Break")
 	_assert_equal(demon.shield, 0, "shield reaches zero on Break")
+	_assert(second.get("damage", 0) > normal_damage, "Break should amplify incoming damage")
 
-	var incoming := CombatAction.new("hit", "Hit", "strike", 1, 0, 0)
-	var hp_before := demon.hp
-	var boosted := engine.perform_action(wukong, demon, incoming)
-	_assert(boosted.get("damage", 0) > (hp_before - demon.hp - 1), "Broken target should take amplified damage")
+	var blocked := engine.perform_action(tang, demon, fire)
+	_assert(blocked.get("ok", false), "a living ally can attack a Broken target")
 
 	_assert_equal(engine.advance_turn(), tang, "next living actor should be Tang Sanzang")
 	_assert_equal(tang.bp, 1, "Tang Sanzang gains BP at turn start")
