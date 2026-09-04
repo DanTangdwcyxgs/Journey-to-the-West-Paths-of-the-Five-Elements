@@ -62,8 +62,6 @@ func begin_turn() -> void:
 	if not is_alive():
 		return
 	bp = mini(bp + 1, 5)
-	if mechanic_resource < mechanic_max:
-		mechanic_resource += 1
 	if broken_turns > 0:
 		broken_turns -= 1
 	if aggro_turns > 0:
