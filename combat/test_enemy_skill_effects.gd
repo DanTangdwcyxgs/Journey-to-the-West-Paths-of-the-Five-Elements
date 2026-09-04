@@ -81,4 +81,14 @@ static func run() -> void:
 	assert(result.get("effect_applied", false))
 	assert(turn_target.aggro_turns == 1)
 
+	var lethal_target := Combatant.new("lethal_target", "濒死目标", 20, 1, 0, 5, 0, {})
+	var lethal_actor := Combatant.new("lethal_actor", "处决妖", 100, 50, 0, 8, 0, {})
+	var lethal_action := CombatAction.new("TEST_LETHAL_STATUS", "终结", "strike", 10, 0, 0, {"effect":"taunt","effect_duration":2,"condition":"on_hit"})
+	engine.setup([lethal_target], [lethal_actor])
+	result = engine.perform_action(lethal_actor, lethal_target, lethal_action)
+	assert(result.get("ok", false))
+	assert(lethal_target.hp == 0)
+	assert(result.get("effect_applied", false) == false)
+	assert(lethal_target.aggro_turns == 0)
+
 	print("ALL ENEMY SKILL EFFECT TESTS PASSED")
