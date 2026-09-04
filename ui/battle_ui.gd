@@ -70,10 +70,10 @@ func _apply_loadout_modifiers() -> void:
 	for ally in allies:
 		var effects := loadout.get_effects(ally.id.to_upper())
 		ally.combat_modifiers = effects.duplicate(true)
-		if effects.has("defense_multiplier"): ally.defense = maxi(int(round(ally.defense * float(effects["defense_multiplier"])), 1)
-		if effects.has("damage_multiplier"): ally.attack = maxi(int(round(ally.attack * float(effects["damage_multiplier"])), 1)
+		if effects.has("defense_multiplier"): ally.defense = maxi(int(round(ally.defense * float(effects["defense_multiplier"]))), 1)
+		if effects.has("damage_multiplier"): ally.attack = maxi(int(round(ally.attack * float(effects["damage_multiplier"]))), 1)
 		if effects.has("speed_modifier"):
-			ally.speed = maxi(int(round(ally.speed * float(effects["speed_modifier"])), 1)
+			ally.speed = maxi(int(round(ally.speed * float(effects["speed_modifier"]))), 1)
 			ally.base_speed = ally.speed
 
 func _build_ui() -> void:
