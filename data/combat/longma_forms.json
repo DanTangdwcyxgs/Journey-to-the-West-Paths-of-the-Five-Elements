@@ -1,12 +1,12 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "character_id": "LONGMA",
   "default_form": "horse",
   "forms": [
-    {"id":"horse","name":"白马形态","description":"均衡基础形态。","attack_bonus":0,"defense_bonus":0,"speed_bonus":0},
-    {"id":"eagle","name":"鹰形态","description":"高速机动，降低防御。","attack_bonus":3,"defense_bonus":-2,"speed_bonus":8},
-    {"id":"tiger","name":"虎形态","description":"强化近身压制，牺牲速度。","attack_bonus":7,"defense_bonus":5,"speed_bonus":-4},
-    {"id":"dragon","name":"龙形态","description":"短时间爆发，攻防同时提高。","attack_bonus":12,"defense_bonus":6,"speed_bonus":4}
+    {"id":"horse","name":"白马形态","description":"均衡基础形态。","attack_bonus":0,"defense_bonus":0,"speed_bonus":0,"damage_multiplier":1.0},
+    {"id":"eagle","name":"鹰形态","description":"高速机动，降低防御，技能伤害小幅提高。","attack_bonus":3,"defense_bonus":-2,"speed_bonus":8,"damage_multiplier":1.10},
+    {"id":"tiger","name":"虎形态","description":"强化近身压制，牺牲速度，技能伤害进一步提高。","attack_bonus":7,"defense_bonus":5,"speed_bonus":-4,"damage_multiplier":1.20},
+    {"id":"dragon","name":"龙形态","description":"短时间爆发，攻防同时提高，技能伤害最高。","attack_bonus":12,"defense_bonus":6,"speed_bonus":4,"damage_multiplier":1.35}
   ],
   "duration": 3,
   "mechanic_cost": 1
