@@ -1,0 +1,84 @@
+{
+  "schema_version": 1,
+  "route_id": "SHARED_PILGRIMAGE",
+  "chronology": [
+    {
+      "id": "SHARED-01-FIVE-ELEMENTS",
+      "title": "五行山",
+      "timeline_gate": "FIVE_ELEMENTS_MOUNTAIN_REACHED",
+      "milestone_on_complete": "WUKONG_RECRUITED",
+      "party": ["TANG", "WUKONG"],
+      "memory_unlock": "WUKONG"
+    },
+    {
+      "id": "SHARED-02-EARLY-PILGRIMAGE",
+      "title": "师徒初行",
+      "timeline_gate": "WUKONG_RECRUITED",
+      "milestone_on_complete": "EARLY_PILGRIMAGE",
+      "party": ["TANG", "WUKONG"],
+      "memory_unlock": null
+    },
+    {
+      "id": "SHARED-03-EAGLE-SORROW",
+      "title": "鹰愁涧",
+      "timeline_gate": "EARLY_PILGRIMAGE",
+      "milestone_on_complete": "BAI_LONGMA_RECRUITED",
+      "party": ["TANG", "WUKONG", "LONGMA"],
+      "memory_unlock": "LONGMA"
+    },
+    {
+      "id": "SHARED-04-EARLY-DEMON-TALES",
+      "title": "黑风山与早期妖患",
+      "timeline_gate": "BAI_LONGMA_RECRUITED",
+      "milestone_on_complete": "EARLY_PILGRIMAGE_2",
+      "party": ["TANG", "WUKONG", "LONGMA"],
+      "memory_unlock": null
+    },
+    {
+      "id": "SHARED-05-GAOJIAZHUANG",
+      "title": "高老庄",
+      "timeline_gate": "EARLY_PILGRIMAGE_2",
+      "milestone_on_complete": "ZHU_BAJIE_RECRUITED",
+      "party": ["TANG", "WUKONG", "LONGMA", "BAJIE"],
+      "memory_unlock": "BAJIE"
+    },
+    {
+      "id": "SHARED-06-FOUR-PERSON-JOURNEY",
+      "title": "四人西行",
+      "timeline_gate": "ZHU_BAJIE_RECRUITED",
+      "milestone_on_complete": "PRE_FLOWING_SANDS",
+      "party": ["TANG", "WUKONG", "LONGMA", "BAJIE"],
+      "memory_unlock": null
+    },
+    {
+      "id": "SHARED-07-FLOWING-SANDS",
+      "title": "流沙河",
+      "timeline_gate": "PRE_FLOWING_SANDS",
+      "milestone_on_complete": "SHA_WUJING_RECRUITED",
+      "party": ["TANG", "WUKONG", "LONGMA", "BAJIE", "WUJING"],
+      "memory_unlock": "WUJING"
+    },
+    {
+      "id": "SHARED-08-PARTY-FULL",
+      "title": "五人归队",
+      "timeline_gate": "SHA_WUJING_RECRUITED",
+      "milestone_on_complete": "PARTY_FULL",
+      "party": ["TANG", "WUKONG", "LONGMA", "BAJIE", "WUJING"],
+      "memory_unlock": null
+    },
+    {
+      "id": "SHARED-09-FULL-PILGRIMAGE",
+      "title": "完整西行",
+      "timeline_gate": "PARTY_FULL",
+      "milestone_on_complete": "SHARED_JOURNEY_BEGUN",
+      "party": ["TANG", "WUKONG", "LONGMA", "BAJIE", "WUJING"],
+      "memory_unlock": null
+    }
+  ],
+  "invariants": [
+    "A starting character never rewinds the canonical world chronology.",
+    "Recruitment is the event that unlocks that character's personal route.",
+    "Personal route playback never advances the shared timeline.",
+    "PARTY_FULL is not required to unlock any already encountered character route."
+  ]
+}
