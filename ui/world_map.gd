@@ -10,6 +10,7 @@ var status_label: Label
 var travel_button: Button
 var rumor_button: Button
 var bounty_button: Button
+var ridge_button: Button
 var bounty_label: Label
 var selected_node_id := ""
 var selected_bounty_id := ""
@@ -78,6 +79,11 @@ func _build_ui() -> void:
 	bounty_label = Label.new()
 	bounty_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	center.add_child(bounty_label)
+	rib_button = Button.new()
+	ridge_button.text = "进入黄风岭"
+	ridge_button.custom_minimum_size = Vector2(0, 48)
+	ridge_button.pressed.connect(_enter_yellow_wind_ridge)
+	center.add_child(ridge_button)
 	bounty_button = Button.new()
 	bounty_button.text = "接受悬赏并出战"
 	bounty_button.custom_minimum_size = Vector2(0, 46)
@@ -118,6 +124,7 @@ func _refresh() -> void:
 	if not selected_node_id.is_empty(): _render_node(world.get_node(selected_node_id))
 	_refresh_rumors()
 	travel_button.disabled = selected_node_id.is_empty() or selected_node_id == current
+	ridge_button.disabled = current != "BLACK_WIND_NORTH_PATH" or not YellowWindRidgeManager.new().is_available(narrative)
 
 func _render_node(node: Dictionary) -> void:
 	selected_bounty_id = ""
@@ -156,6 +163,10 @@ func _hear_rumor() -> void:
 	var rumor:Dictionary = world.hear_rumor(narrative,str(rumors[selected[0]].get("id","")))
 	if rumor.is_empty(): return
 	narrative.save(); _refresh(); status_label.text += " · 已获得情报：%s" % str(rumor.get("reward_intel",""))
+
+func _enter_yellow_wind_ridge() -> void:
+	if not YellowWindRidgeManager.new().is_available(narrative): return
+	get_tree().change_scene_to_file("res://ui/yellow_wind_ridge.tscn")
 
 func _challenge_bounty() -> void:
 	if selected_bounty_id.is_empty(): return
