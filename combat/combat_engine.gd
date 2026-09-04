@@ -63,6 +63,12 @@ func perform_action(actor: Combatant, target: Combatant, action: CombatAction, b
 	var damage := maxi(int(round(raw_damage * multiplier * damage_multiplier)), 1)
 	var dealt := target.take_damage(damage)
 
+	# Bajie's Rage is earned when he actually absorbs incoming combat damage.
+	# Keep this here rather than in Combatant.take_damage so self-inflicted or
+	# non-combat state changes cannot accidentally generate Rage.
+	if target.id == "bajie" and dealt > 0:
+		target.add_mechanic_resource(1)
+
 	var weakness_hit := false
 	if target.weaknesses.get(action.element, false):
 		weakness_hit = true
@@ -83,6 +89,7 @@ func perform_action(actor: Combatant, target: Combatant, action: CombatAction, b
 		"target_broken": target.is_broken(),
 		"target_hp": target.hp,
 		"target_shield": target.shield,
+		"target_mechanic_resource": target.mechanic_resource,
 	}
 
 func advance_turn() -> Combatant:
