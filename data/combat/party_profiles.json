@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "characters": {
+    "TANG": {
+      "display_name": "唐三藏",
+      "max_hp": 180,
+      "attack": 18,
+      "defense": 12,
+      "speed": 20,
+      "shield": 3,
+      "weaknesses": {"holy": true, "water": true},
+      "role": "support",
+      "front_modifier": {"defense": 0.95, "speed": 0.95},
+      "back_modifier": {"defense": 1.10, "speed": 1.05}
+    },
+    "WUKONG": {
+      "display_name": "孙悟空",
+      "max_hp": 220,
+      "attack": 42,
+      "defense": 16,
+      "speed": 28,
+      "shield": 4,
+      "weaknesses": {"fire": true, "strike": true},
+      "role": "burst",
+      "front_modifier": {"defense": 1.00, "speed": 1.00},
+      "back_modifier": {"defense": 0.95, "speed": 1.05}
+    },
+    "BAJIE": {
+      "display_name": "猪八戒",
+      "max_hp": 300,
+      "attack": 30,
+      "defense": 24,
+      "speed": 14,
+      "shield": 5,
+      "weaknesses": {"strike": true, "water": true},
+      "role": "tank",
+      "front_modifier": {"defense": 1.15, "speed": 0.95},
+      "back_modifier": {"defense": 1.00, "speed": 1.00}
+    },
+    "WUJING": {
+      "display_name": "沙悟净",
+      "max_hp": 230,
+      "attack": 25,
+      "defense": 20,
+      "speed": 18,
+      "shield": 4,
+      "weaknesses": {"ice": true, "water": true},
+      "role": "control",
+      "front_modifier": {"defense": 1.05, "speed": 0.95},
+      "back_modifier": {"defense": 1.00, "speed": 1.05}
+    },
+    "LONGMA": {
+      "display_name": "白龙马",
+      "max_hp": 210,
+      "attack": 34,
+      "defense": 18,
+      "speed": 25,
+      "shield": 4,
+      "weaknesses": {"wind": true, "water": true},
+      "role": "mobility",
+      "front_modifier": {"defense": 0.95, "speed": 1.05},
+      "back_modifier": {"defense": 0.90, "speed": 1.15}
+    }
+  }
+}
