@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "encounters": {
+    "YELLOW_WIND": {
+      "display_name": "黄风妖王",
+      "victory_rewards": {
+        "gold": 1200,
+        "materials": ["YELLOW_WIND_CORE", "WIND_REED"]
+      },
+      "bounty_id": "BOUNTY_YELLOW_FANG",
+      "journal_entry": "黄风岭妖患已平"
+    }
+  }
+}
