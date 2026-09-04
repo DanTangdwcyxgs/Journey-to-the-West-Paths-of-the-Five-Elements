@@ -1,6 +1,6 @@
 extends RefCounted
 
-## Regression coverage for data-driven enemy skill effects and conditions.
+## Regression coverage for data-driven enemy skill effects, shield modifiers, and conditions.
 static func run() -> void:
 	var manager := EncounterManager.new()
 	var enemies := manager.build_enemies("YELLOW_WIND_CAVE_SAND_GUARDS")
@@ -48,5 +48,37 @@ static func run() -> void:
 	assert(result.get("ok", false))
 	assert(shield_actor.barrier == 10)
 	assert(shield_target.barrier == 0)
+
+	var shield_target_2 := Combatant.new("shield_target", "破盾测试", 100, 10, 5, 10, 5, {})
+	var shield_actor_2 := Combatant.new("shield_breaker", "破盾测试妖", 100, 30, 5, 10, 0, {})
+	var bonus_action := CombatAction.new("TEST_SHIELD_BREAK", "重破", "strike", 1, 2, 0, {"shield_damage_bonus":2,"condition":"always"})
+	engine.setup([shield_target_2], [shield_actor_2])
+	result = engine.perform_action(shield_actor_2, shield_target_2, bonus_action)
+	assert(result.get("ok", false))
+	assert(result.get("shield_damage", 0) == 4)
+	assert(shield_target_2.shield == 1)
+
+	var conditional_target := Combatant.new("conditional", "条件目标", 100, 10, 5, 10, 0, {})
+	var conditional_actor := Combatant.new("conditional_enemy", "条件妖", 100, 10, 5, 10, 0, {})
+	var hp_condition_action := CombatAction.new("TEST_HP_CONDITION", "追伤", "strike", 1, 0, 0, {"effect":"taunt","effect_duration":2,"condition":"hp_below_percent","condition_value":50})
+	engine.setup([conditional_target], [conditional_actor])
+	result = engine.perform_action(conditional_actor, conditional_target, hp_condition_action)
+	assert(result.get("effect_applied", false) == false)
+	assert(conditional_target.aggro_turns == 0)
+	conditional_target.hp = 40
+	result = engine.perform_action(conditional_actor, conditional_target, hp_condition_action)
+	assert(result.get("effect_applied", false))
+	assert(conditional_target.aggro_turns == 2)
+
+	var turn_actor := Combatant.new("turn_enemy", "回合妖", 100, 10, 5, 10, 0, {})
+	var turn_target := Combatant.new("turn_target", "回合目标", 100, 10, 5, 10, 0, {})
+	var turn_action := CombatAction.new("TEST_TURN_CONDITION", "迟来一击", "strike", 1, 0, 0, {"effect":"taunt","effect_duration":1,"condition":"turn_gte","condition_value":2})
+	engine.setup([turn_target], [turn_actor])
+	result = engine.perform_action(turn_actor, turn_target, turn_action)
+	assert(result.get("effect_applied", false) == false)
+	engine.turn_number = 2
+	result = engine.perform_action(turn_actor, turn_target, turn_action)
+	assert(result.get("effect_applied", false))
+	assert(turn_target.aggro_turns == 1)
 
 	print("ALL ENEMY SKILL EFFECT TESTS PASSED")
