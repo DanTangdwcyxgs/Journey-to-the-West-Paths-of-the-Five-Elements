@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "description": "五条可选起始路线的章节原型。章节只描述人物历史，不推进共享西游时间线。",
+  "routes": {
+    "WUKONG": {
+      "route_id": "WUKONG_ORIGIN",
+      "theme": "自由与反抗",
+      "chapters": [
+        {"id":"WUK-01","title":"石猴出世","summary":"灵石孕猴，天性不受拘束。"},
+        {"id":"WUK-02","title":"水帘洞主","summary":"猴群拥立山王，第一次尝到自由的重量。"},
+        {"id":"WUK-03","title":"寻仙问道","summary":"为逃生老病踏上海上求道之路。"},
+        {"id":"WUK-04","title":"菩提门下","summary":"学得七十二变，却被告诫不可炫耀。"},
+        {"id":"WUK-05","title":"大圣初醒","summary":"回花果山后悟出本领必须由自己承担。"},
+        {"id":"WUK-06","title":"龙宫取宝","summary":"金箍棒到手，兵器第一次成为命运象征。"},
+        {"id":"WUK-07","title":"地府改命","summary":"生死簿前，他拒绝接受既定寿数。"},
+        {"id":"WUK-08","title":"弼马温","summary":"天界授官后发现自由仍被职位束缚。"},
+        {"id":"WUK-09","title":"齐天大圣","summary":"反抗天庭秩序，建立自己的名号。"},
+        {"id":"WUK-10","title":"偷食蟠桃","summary":"欲望与不服管束让他越过天庭禁线。"},
+        {"id":"WUK-11","title":"天兵天将","summary":"第一次全面面对天庭军势。"},
+        {"id":"WUK-12","title":"二郎神","summary":"棋逢对手，力量之外开始理解规则的锋利。"},
+        {"id":"WUK-13","title":"炼丹炉","summary":"八卦炉中炼出火眼金睛，也炼出更深的孤独。"},
+        {"id":"WUK-14","title":"大闹天宫","summary":"反抗达到顶峰，最终败给更高层次的秩序。"},
+        {"id":"WUK-15","title":"五行山","summary":"被压山下，直到一个取经人的脚步接近。"}
+      ]
+    },
+    "TANG": {
+      "route_id": "TANG_ORIGIN",
+      "theme": "信仰与现实",
+      "chapters": [
+        {"id":"TANG-01","title":"陈玄奘","summary":"少年玄奘在寺院中形成对真经的执念。"},
+        {"id":"TANG-02","title":"出家","summary":"告别世俗身份，把修行变成终身责任。"},
+        {"id":"TANG-03","title":"玄奘法师","summary":"声望增加，也逐渐发现教义与现实之间存在裂缝。"},
+        {"id":"TANG-04","title":"长安受命","summary":"奉旨西行，理想第一次变成政治与众生的共同任务。"},
+        {"id":"TANG-05","title":"踏上取经路","summary":"离开长安后，取经成为每天都要重新确认的选择。"},
+        {"id":"TANG-06","title":"双叉岭","summary":"遭遇妖患，第一次真正意识到凡人的脆弱。"},
+        {"id":"TANG-07","title":"鹰愁涧前夜","summary":"孤身面对未知，仍选择继续向西。"},
+        {"id":"TANG-08","title":"五行山","summary":"听见山下的大圣呼唤，两个截然不同的人生开始交汇。"}
+      ]
+    },
+    "LONGMA": {
+      "route_id": "LONGMA_ORIGIN",
+      "theme": "身份与使命",
+      "chapters": [
+        {"id":"LONGMA-01","title":"西海龙宫","summary":"龙族少年在血脉与职责之间成长。"},
+        {"id":"LONGMA-02","title":"龙子获罪","summary":"一次失控的选择让他背上必须偿还的罪责。"},
+        {"id":"LONGMA-03","title":"鹰愁涧","summary":"来到陌生河谷，第一次看见取经人的命运。"},
+        {"id":"LONGMA-04","title":"白马之誓","summary":"决定把被惩罚的身份转化为护送使命。"},
+        {"id":"LONGMA-05","title":"唐僧来临","summary":"取经队伍出现，责任不再只是父辈给予的命令。"},
+        {"id":"LONGMA-06","title":"化作白马","summary":"以坐骑之身同行，暂时放下龙族身份。"}
+      ]
+    },
+    "BAJIE": {
+      "route_id": "BAJIE_ORIGIN",
+      "theme": "欲望与责任",
+      "chapters": [
+        {"id":"BAJIE-01","title":"天蓬元帅","summary":"天河水军统帅风光一时，却也习惯了享乐。"},
+        {"id":"BAJIE-02","title":"蟠桃宴","summary":"一次宴席让放纵成为公开代价。"},
+        {"id":"BAJIE-03","title":"天河逐罚","summary":"职位尽失，过去的荣耀一夜崩塌。"},
+        {"id":"BAJIE-04","title":"投胎凡间","summary":"带着前世记忆进入凡间，开始新的欲望生活。"},
+        {"id":"BAJIE-05","title":"高老庄","summary":"遇到新的家庭与归宿，却无法真正摆脱妖身。"},
+        {"id":"BAJIE-06","title":"招亲","summary":"情感与欲望纠缠，责任第一次要求他做出取舍。"},
+        {"id":"BAJIE-07","title":"妖身","summary":"身份暴露后，他必须面对别人眼中的自己。"},
+        {"id":"BAJIE-08","title":"悟空斗法","summary":"与悟空交锋，第一次正视自己逃避已久的选择。"},
+        {"id":"BAJIE-09","title":"放下","summary":"舍弃高老庄的旧人生，准备随取经人继续西行。"}
+      ]
+    },
+    "WUJING": {
+      "route_id": "WUJING_ORIGIN",
+      "theme": "罪责与救赎",
+      "chapters": [
+        {"id":"WUJING-01","title":"卷帘大将","summary":"掌天界仪仗，日复一日守着看似不变的秩序。"},
+        {"id":"WUJING-02","title":"失手","summary":"一次失手打碎琉璃盏，人生由荣转罚。"},
+        {"id":"WUJING-03","title":"流沙河","summary":"被贬河中，以吞噬过路人为生。"},
+        {"id":"WUJING-04","title":"无尽","summary":"漫长惩罚让他开始反思自己到底在赎什么罪。"},
+        {"id":"WUJING-05","title":"河中来客","summary":"一次又一次阻拦取经人，直到发现自己并不想再继续。"},
+        {"id":"WUJING-06","title":"观音渡厄","summary":"得到一条重新证明自己的道路。"},
+        {"id":"WUJING-07","title":"流沙河之战","summary":"最后一次以妖身作战，为新的身份争取机会。"},
+        {"id":"WUJING-08","title":"皈依","summary":"愿意背负过去，加入取经队伍。"}
+      ]
+    }
+  }
+}
