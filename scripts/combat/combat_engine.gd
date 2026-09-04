@@ -116,6 +116,8 @@ func _apply_action_effects(actor: Combatant, target: Combatant, action: CombatAc
 	var duration := maxi(int(action.effects.get("effect_duration", 0)), 0)
 	var effect_target := str(action.effects.get("effect_target", action.effects.get("target", "target"))).to_lower()
 	var receiver := actor if effect_target == "self" else target
+	if effect_target != "self" and not receiver.is_alive():
+		return {"applied": false, "reason": "target_died"}
 	var shield_bonus := maxi(int(action.effects.get("shield_bonus", 0)), 0)
 	if shield_bonus > 0:
 		receiver.gain_barrier(shield_bonus)
