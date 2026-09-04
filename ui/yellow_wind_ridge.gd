@@ -128,9 +128,9 @@ func _render_stage(stage_id: String) -> void:
 
 func _add_boss_button(stage: Dictionary) -> void:
 	var button := Button.new()
-	button.text = "接受悬赏：黄风妖王 · 进入战斗"
+	button.text = "进入黄风洞 · 灰盒地城"
 	button.custom_minimum_size = Vector2(0, 54)
-	button.pressed.connect(_enter_boss.bind(stage))
+	button.pressed.connect(_enter_dungeon)
 	action_box.add_child(button)
 
 func _resolve_choice(stage: Dictionary, choice: Dictionary) -> void:
@@ -146,10 +146,8 @@ func _resolve_event(stage: Dictionary) -> void:
 	narrative.save()
 	_refresh()
 
-func _enter_boss(stage: Dictionary) -> void:
-	var bounty_id := str(stage.get("bounty_id", "BOUNTY_YELLOW_FANG"))
-	if BountyEncounterState.start(bounty_id, str(stage.get("id", ""))):
-		get_tree().change_scene_to_file("res://ui/battle_ui.tscn")
+func _enter_dungeon() -> void:
+	get_tree().change_scene_to_file("res://ui/yellow_wind_cave.tscn")
 
 func _on_stage_selected(index: int) -> void:
 	var stages := ridge.get_stages(narrative)
