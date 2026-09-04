@@ -87,18 +87,41 @@ func choose_ai_target(enemy: Combatant, allies: Array[Combatant], action: Combat
 			living.append(ally)
 	if living.is_empty():
 		return null
-	var taunted := _first_status_target(living, "aggro_turns")
-	if taunted != null:
-		return taunted
-	if action != null:
-		var element := str(action.element).to_lower()
-		var weak_target := _first_weak_target(living, element)
-		if weak_target != null:
-			return weak_target
-	var tactical := _target_by_profile(enemy, living)
-	if tactical != null:
-		return tactical
-	return _lowest_hp_target(living)
+	var scored := _score_targets(enemy, living, action)
+	if scored.is_empty():
+		return null
+	return scored[0]["target"]
+
+func _score_targets(enemy: Combatant, targets: Array[Combatant], action: CombatAction) -> Array:
+	var ranked: Array = []
+	var element := str(action.element).to_lower() if action != null else ""
+	var profile := str(enemy.combat_modifiers.get("target_profile", "lowest_hp"))
+	for index in targets.size():
+		var target: Combatant = targets[index]
+		var score := 0
+		if target.aggro_turns > 0:
+			score += 1000
+		if element != "" and bool(target.weaknesses.get(element, false)):
+			score += 600
+		score += _profile_score(profile, target)
+		score += maxi(0, 100 - int((float(target.hp) / maxi(target.max_hp, 1)) * 100.0))
+		score -= index
+		ranked.append({"target": target, "score": score})
+	ranked.sort_custom(func(a, b): return int(a["score"]) > int(b["score"]))
+	return ranked
+
+func _profile_score(profile: String, target: Combatant) -> int:
+	match profile:
+		"highest_attack":
+			return target.attack
+		"lowest_defense":
+			return maxi(0, 100 - target.defense * 5)
+		"highest_speed":
+			return target.speed
+		"lowest_hp":
+			return maxi(0, 100 - int((float(target.hp) / maxi(target.max_hp, 1)) * 100.0))
+		_:
+			return 0
 
 func _preferred_skill_id(enemy: Combatant, turn_number: int) -> String:
 	var config: Dictionary = enemy.combat_modifiers
@@ -117,55 +140,6 @@ func _find_skill(skills: Array, skill_id: String):
 		if skill is Dictionary and str(skill.get("id", "")) == skill_id:
 			return skill
 	return null
-
-func _first_weak_target(targets: Array[Combatant], element: String) -> Combatant:
-	if element == "":
-		return null
-	for target in targets:
-		if bool(target.weaknesses.get(element, false)):
-			return target
-	return null
-
-func _target_by_profile(enemy: Combatant, targets: Array[Combatant]) -> Combatant:
-	var profile := str(enemy.combat_modifiers.get("target_profile", "lowest_hp"))
-	match profile:
-		"highest_attack":
-			return _highest_value_target(targets, "attack")
-		"lowest_defense":
-			return _lowest_value_target(targets, "defense")
-		"highest_speed":
-			return _highest_value_target(targets, "speed")
-		"lowest_hp":
-			return _lowest_hp_target(targets)
-		_:
-			return null
-
-func _first_status_target(targets: Array[Combatant], property_name: String) -> Combatant:
-	for target in targets:
-		if int(target.get(property_name)) > 0:
-			return target
-	return null
-
-func _lowest_hp_target(targets: Array[Combatant]) -> Combatant:
-	var result: Combatant = targets[0]
-	for target in targets:
-		if target.hp < result.hp:
-			result = target
-	return result
-
-func _highest_value_target(targets: Array[Combatant], property_name: String) -> Combatant:
-	var result: Combatant = targets[0]
-	for target in targets:
-		if int(target.get(property_name)) > int(result.get(property_name)):
-			result = target
-	return result
-
-func _lowest_value_target(targets: Array[Combatant], property_name: String) -> Combatant:
-	var result: Combatant = targets[0]
-	for target in targets:
-		if int(target.get(property_name)) < int(result.get(property_name)):
-			result = target
-	return result
 
 func _action_from_definition(skill: Dictionary) -> CombatAction:
 	return CombatAction.new(
