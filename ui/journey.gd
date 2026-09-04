@@ -142,7 +142,7 @@ func _advance_primary() -> void:
 		if BountyEncounterState.start_narrative_encounter(encounter_id, chapter_id, route_id):
 			get_tree().change_scene_to_file("res://ui/battle_ui.tscn")
 		return
-	var completed := origin.complete_current(narrative, start)
+	var completed := narrative.complete_origin_chapter(start)
 	if completed.is_empty():
 		return
 	narrative.save()
@@ -161,36 +161,12 @@ func _apply_choice(choice_id: String) -> void:
 
 func _finish_origin() -> void:
 	var start := narrative.state.starting_character
-	var route := StartRouteCatalog.get_route(start)
-	if route.is_empty():
+	if not narrative.handoff_origin_to_shared(start):
+		phase_label.text = "路线尚未完成，无法汇入共享西游。"
 		return
-	narrative.state.mark_route_complete(start)
-	narrative.advance_world_milestone(str(route.get("handoff_milestone", "")), _handoff_timeline(start))
-	narrative.set_shared_chapter(str(route.get("handoff_shared_chapter", "")))
-	var recruit: Array = _recruitment_for_route(start)
-	for character_id in recruit:
-		var cid := str(character_id)
-		var memories: Array[String] = [] if cid == start else _memory_preview(cid)
-		narrative.encounter_character(cid, memories)
 	party.initialize_from_recruited(narrative.state.recruited_characters)
 	narrative.save()
 	_refresh()
-
-func _handoff_timeline(character_id: String) -> int:
-	match character_id:
-		"WUKONG", "TANG": return 100
-		"LONGMA": return 110
-		"BAJIE": return 130
-		"WUJING": return 150
-	return narrative.state.current_global_timeline
-
-func _recruitment_for_route(character_id: String) -> Array:
-	match character_id:
-		"WUKONG", "TANG": return ["TANG", "WUKONG"]
-		"LONGMA": return ["TANG", "WUKONG", "LONGMA"]
-		"BAJIE": return ["TANG", "WUKONG", "LONGMA", "BAJIE"]
-		"WUJING": return ["TANG", "WUKONG", "LONGMA", "BAJIE", "WUJING"]
-	return []
 
 func _advance_shared() -> void:
 	var chapter_id := narrative.state.current_shared_chapter
@@ -211,13 +187,6 @@ func _advance_shared() -> void:
 	_refresh()
 	if not recruited_names.is_empty():
 		phase_label.text = "完成 %s · 新加入：%s · 对应个人回忆已开放。" % [str(chapter.get("title", chapter_id)), "、".join(recruited_names)]
-
-func _memory_preview(character_id: String) -> Array[String]:
-	var chapters := origin.get_chapters(character_id)
-	var result: Array[String] = []
-	for i in range(min(2, chapters.size())):
-		result.append(str(chapters[i].get("id", "")))
-	return result
 
 func _play_selected_memory() -> void:
 	var selected := list.get_selected_items()
