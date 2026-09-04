@@ -1,6 +1,6 @@
 extends RefCounted
 
-## Lightweight regression tests for narrative invariants.
+## Lightweight regression tests for narrative, party, and combat-construction invariants.
 ## Invoke from a Godot test runner or manually during development.
 
 func test_all() -> void:
@@ -11,6 +11,7 @@ func test_all() -> void:
 	_test_memory_does_not_rewind_world()
 	_test_shared_recruitment_events()
 	_test_party_formation_round_trip()
+	_test_party_formation_drives_combat_construction()
 	_test_save_round_trip()
 
 func _test_any_starting_character() -> void:
@@ -99,6 +100,17 @@ func _test_party_formation_round_trip() -> void:
 	state.set_party_formation(serialized)
 	var restored_state := NarrativeState.from_dict(state.to_dict())
 	assert(restored_state.get_party_formation() == serialized)
+
+func _test_party_formation_drives_combat_construction() -> void:
+	var party := PartyManager.new()
+	party.initialize_from_recruited(["TANG", "WUKONG", "BAJIE"])
+	assert(party.move_to_back("TANG"))
+	var combatants := CombatPartyBuilder.build_active_party(party)
+	assert(combatants.size() == 3)
+	assert(combatants[0].id == "wukong")
+	assert(combatants[1].id == "bajie")
+	assert(combatants[2].id == "tang")
+	assert(combatants[2].defense > combatants[0].defense)
 
 func _test_save_round_trip() -> void:
 	var path := "user://narrative_test_slot.json"
