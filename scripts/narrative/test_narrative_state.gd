@@ -9,6 +9,8 @@ func test_all() -> void:
 	_test_recruitment_immediately_unlocks_memory()
 	_test_party_full_is_not_required()
 	_test_memory_does_not_rewind_world()
+	_test_shared_recruitment_events()
+	_test_party_formation_round_trip()
 	_test_save_round_trip()
 
 func _test_any_starting_character() -> void:
@@ -56,6 +58,47 @@ func _test_memory_does_not_rewind_world() -> void:
 	assert(manager.finish_memory("WUK-01"))
 	assert(manager.state.current_global_timeline == 80)
 	assert(manager.state.current_shared_chapter == "SHARED-01")
+
+func _test_shared_recruitment_events() -> void:
+	var manager := NarrativeManager.new()
+	manager.start_new_game("TANG")
+	manager.encounter_character("WUKONG", ["WUK-01"])
+	manager.set_shared_chapter("SHARED-01-FIVE-ELEMENTS")
+	assert(SharedJourneyManager.complete("SHARED-01-FIVE-ELEMENTS", manager))
+	assert(manager.state.current_shared_chapter == "SHARED-02-EARLY-PILGRIMAGE")
+	assert(SharedJourneyManager.complete("SHARED-02-EARLY-PILGRIMAGE", manager))
+	assert(SharedJourneyManager.complete("SHARED-03-EAGLE-SORROW", manager))
+	assert("LONGMA" in manager.state.recruited_characters)
+	assert(manager.can_enter_memory("LONGMA-01"))
+	assert(manager.state.current_global_timeline == 110)
+
+	assert(SharedJourneyManager.complete("SHARED-04-EARLY-DEMON-TALES", manager))
+	assert(SharedJourneyManager.complete("SHARED-05-GAOJIAZHUANG", manager))
+	assert("BAJIE" in manager.state.recruited_characters)
+	assert(manager.can_enter_memory("BAJIE-01"))
+
+	assert(SharedJourneyManager.complete("SHARED-06-FOUR-PERSON-JOURNEY", manager))
+	assert(SharedJourneyManager.complete("SHARED-07-FLOWING-SANDS", manager))
+	assert("WUJING" in manager.state.recruited_characters)
+	assert(manager.can_enter_memory("WUJING-01"))
+
+func _test_party_formation_round_trip() -> void:
+	var party := PartyManager.new()
+	party.initialize_from_recruited(["TANG", "WUKONG", "LONGMA", "BAJIE", "WUJING"])
+	assert(party.move_to_back("TANG"))
+	assert(party.move_to_front("WUKONG"))
+	var serialized := party.to_dict()
+	var restored := PartyManager.new()
+	restored.initialize_from_saved_state(["TANG", "WUKONG", "LONGMA", "BAJIE", "WUJING"], serialized)
+	assert(restored.front_row == party.front_row)
+	assert(restored.back_row == party.back_row)
+
+	var state := NarrativeState.new()
+	state.starting_character = "TANG"
+	state.recruited_characters = ["TANG", "WUKONG", "LONGMA", "BAJIE", "WUJING"]
+	state.set_party_formation(serialized)
+	var restored_state := NarrativeState.from_dict(state.to_dict())
+	assert(restored_state.get_party_formation() == serialized)
 
 func _test_save_round_trip() -> void:
 	var path := "user://narrative_test_slot.json"
