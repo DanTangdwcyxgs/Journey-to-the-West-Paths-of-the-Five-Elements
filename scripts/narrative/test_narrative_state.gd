@@ -5,6 +5,7 @@ extends RefCounted
 
 func test_all() -> void:
 	_test_any_starting_character()
+	_test_origin_progress_persists()
 	_test_recruitment_immediately_unlocks_memory()
 	_test_party_full_is_not_required()
 	_test_memory_does_not_rewind_world()
@@ -16,6 +17,19 @@ func _test_any_starting_character() -> void:
 		assert(manager.start_new_game(character_id))
 		assert(manager.state.starting_character == character_id)
 		assert(manager.state.route_progress[character_id] == NarrativeState.ROUTE_UNLOCKED)
+
+func _test_origin_progress_persists() -> void:
+	var manager := NarrativeManager.new()
+	manager.start_new_game("WUKONG")
+	manager.state.set_origin_progress("WUKONG_ORIGIN", "WUK-07")
+	assert(manager.state.current_origin_route == "WUKONG_ORIGIN")
+	assert(manager.state.current_origin_chapter == "WUK-07")
+	var restored := NarrativeState.from_dict(manager.serialize())
+	assert(restored.current_origin_route == "WUKONG_ORIGIN")
+	assert(restored.current_origin_chapter == "WUK-07")
+	manager.state.mark_route_complete("WUKONG")
+	assert(manager.state.current_origin_route == "")
+	assert(manager.state.route_progress["WUKONG"] == NarrativeState.ROUTE_COMPLETE)
 
 func _test_recruitment_immediately_unlocks_memory() -> void:
 	var manager := NarrativeManager.new()
