@@ -26,19 +26,19 @@ func get_event(event_id: String) -> Dictionary:
 func has_event(event_id: String) -> bool:
 	return not get_event(event_id).is_empty()
 
-func apply_choice(manager: NarrativeManager, chapter_id: String, choice_id: String) -> bool:
-	if manager == null or chapter_id == "" or choice_id == "":
+func apply_choice(manager: NarrativeManager, event_id: String, choice_id: String) -> bool:
+	if manager == null or event_id == "" or choice_id == "":
 		return false
-	var event := get_event(chapter_id)
+	var event := get_event(event_id)
 	if event.is_empty():
 		return false
 	for choice in event.get("choices", []):
 		if str(choice.get("id", "")) == choice_id:
-			manager.state.origin_choices["SHARED:%s" % chapter_id] = choice_id
+			manager.state.record_shared_choice(event_id, choice_id)
 			return true
 	return false
 
-func get_choice(manager: NarrativeManager, chapter_id: String) -> String:
+func get_choice(manager: NarrativeManager, event_id: String) -> String:
 	if manager == null:
 		return ""
-	return str(manager.state.origin_choices.get("SHARED:%s" % chapter_id, ""))
+	return manager.state.get_shared_choice(event_id)
