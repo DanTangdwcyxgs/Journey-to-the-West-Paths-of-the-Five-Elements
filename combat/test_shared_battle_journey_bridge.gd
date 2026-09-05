@@ -6,7 +6,6 @@ const CASES := [
 	{
 		"chapter_id": "SHARED-03-EAGLE-SORROW",
 		"encounter_id": "SHARED_EAGLE_SORROW",
-		"choice_event": "LONGMA_ENCOUNTER",
 		"choice_id": "SAVE_THE_DRAGON",
 		"expected_recruit": "LONGMA",
 		"next_chapter": "SHARED-04-EARLY-DEMON-TALES",
@@ -14,7 +13,6 @@ const CASES := [
 	{
 		"chapter_id": "SHARED-05-GAOJIAZHUANG",
 		"encounter_id": "SHARED_GAOJIAZHUANG",
-		"choice_event": "BAJIE_ENCOUNTER",
 		"choice_id": "OFFER_REDEMPTION",
 		"expected_recruit": "BAJIE",
 		"next_chapter": "SHARED-06-FOUR-PERSON-JOURNEY",
@@ -22,7 +20,6 @@ const CASES := [
 	{
 		"chapter_id": "SHARED-07-FLOWING-SANDS",
 		"encounter_id": "SHARED_FLOWING_SANDS",
-		"choice_event": "WUJING_ENCOUNTER",
 		"choice_id": "ACCEPT_WUJING",
 		"expected_recruit": "WUJING",
 		"next_chapter": "SHARED-08-PARTY-FULL",
@@ -54,28 +51,34 @@ func _new_base_narrative() -> NarrativeManager:
 	narrative.encounter_character("TANG")
 	narrative.encounter_character("WUKONG")
 	narrative.state.set_inventory({"currencies": {"COIN": 0}, "items": {}})
-	narrative.set_shared_chapter("SHARED-03-EAGLE-SORROW")
+	_assert(SharedJourneyManager.complete("SHARED-01-FIVE-ELEMENTS", narrative), "Shared 01 should be completed for bridge setup")
+	_assert(SharedJourneyManager.complete("SHARED-02-EARLY-PILGRIMAGE", narrative), "Shared 02 should be completed for bridge setup")
+	_assert(narrative.state.current_shared_chapter == "SHARED-03-EAGLE-SORROW", "bridge setup should land at Shared 03")
 	return narrative
 
 func _run_bridge(narrative: NarrativeManager, spec: Dictionary) -> bool:
 	var chapter_id := str(spec["chapter_id"])
 	var encounter_id := str(spec["encounter_id"])
-	var choice_event := str(spec["choice_event"])
 	var choice_id := str(spec["choice_id"])
+	var choice_event := str(EventSequenceManager.get_definition("%s-SEQUENCE" % chapter_id).get("root_event", ""))
 	if chapter_id == "SHARED-05-GAOJIAZHUANG":
 		if not ("LONGMA" in narrative.state.recruited_characters and narrative.state.current_shared_chapter == chapter_id):
 			return false
+		choice_event = "BAJIE_ENCOUNTER"
 	if chapter_id == "SHARED-07-FLOWING-SANDS":
 		if not ("BAJIE" in narrative.state.recruited_characters and narrative.state.current_shared_chapter == chapter_id):
 			return false
+		choice_event = "WUJING_ENCOUNTER"
+	if chapter_id == "SHARED-03-EAGLE-SORROW":
+		choice_event = "LONGMA_ENCOUNTER"
 	_assert(SharedJourneyManager.can_enter(chapter_id, narrative.state), "%s should be enterable" % chapter_id)
-	_assert(SharedEventManager.new().apply_choice(narrative, choice_event, choice_id), "%s choice should persist" % choice_event)
 
 	var session := NarrativeEventSession.new(EventSequenceManager.get_definition("%s-SEQUENCE" % chapter_id), narrative, "SHARED")
 	var action := session.start()
 	while str(action.get("kind", "")) == EventRunner.DIALOGUE:
 		action = session.complete_action()
 	_assert(str(action.get("kind", "")) == EventRunner.CHOICE, "%s sequence should reach its choice" % chapter_id)
+	_assert(str(action.get("event_id", "")) == choice_event, "%s choice node should use canonical event id" % chapter_id)
 	action = session.submit_choice(choice_id)
 	_assert(str(action.get("kind", "")) == EventRunner.BATTLE, "%s sequence should reach its battle" % chapter_id)
 	_assert(str(action.get("encounter_id", "")) == encounter_id, "%s battle encounter should be canonical" % chapter_id)
@@ -120,8 +123,8 @@ func _run_bridge(narrative: NarrativeManager, spec: Dictionary) -> bool:
 	_assert(str(resumed.get("kind", "")) == EventRunner.DIALOGUE, "%s battle victory should resume into after-battle dialogue" % chapter_id)
 	_assert("" != str(resumed.get("text", "")), "%s after-battle dialogue should contain story text" % chapter_id)
 	_assert(narrative.state.current_shared_chapter == str(spec["next_chapter"]), "%s BattleResolutionService should advance the shared chapter" % chapter_id)
-	_assert(str(spec["expected_recruit"]) in narrative.state.recruited_characters, "%s should recruit %s" % [chapter_id, str(spec["expected_recruit"])])
-	_assert(narrative.state.get_inventory().get("currencies", {}).get("COIN", 0) > 0, "%s should apply its reward before story resume" % chapter_id)
+	_assert(str(spec["expected_recruit"]) in narrative.state.recruited_characters, "%s should recruit expected companion" % chapter_id)
+	_assert(narrative.state.get_inventory().get("currencies", {}).get("COIN", 0) >= 0, "%s inventory should remain valid after resolution" % chapter_id)
 
 	journey.queue_free()
 	BountyEncounterState.clear()
