@@ -6,6 +6,8 @@ extends RefCounted
 ## verifies every migrated sequence reaches its expected handoff or END node.
 
 const SHARED_SEQUENCE_IDS := [
+	"SHARED-01-FIVE-ELEMENTS-SEQUENCE",
+	"SHARED-02-EARLY-PILGRIMAGE-SEQUENCE",
 	"SHARED-03-EAGLE-SORROW-SEQUENCE",
 	"SHARED-04-EARLY-DEMON-TALES-SEQUENCE",
 	"SHARED-05-GAOJIAZHUANG-SEQUENCE",
@@ -16,6 +18,8 @@ const SHARED_SEQUENCE_IDS := [
 ]
 
 const CHOICE_IDS := {
+	"SHARED-01-FIVE-ELEMENTS-SEQUENCE": "TRUST_WUKONG",
+	"SHARED-02-EARLY-PILGRIMAGE-SEQUENCE": "KEEP_MOVING",
 	"SHARED-03-EAGLE-SORROW-SEQUENCE": "SAVE_THE_DRAGON",
 	"SHARED-05-GAOJIAZHUANG-SEQUENCE": "OFFER_REDEMPTION",
 	"SHARED-07-FLOWING-SANDS-SEQUENCE": "ACCEPT_WUJING",
@@ -30,6 +34,7 @@ const EXPECTED_BATTLES := {
 
 static func run_all() -> Dictionary:
 	var completed_sequences := 0
+	var choice_nodes := 0
 	var battle_handoffs := 0
 	var world_moves := 0
 
@@ -68,7 +73,10 @@ static func run_all() -> Dictionary:
 					world_moves += 1
 				EventRunner.CHOICE:
 					assert(CHOICE_IDS.has(sequence_id))
-					action = runner.submit_choice(str(CHOICE_IDS[sequence_id]))
+					var selected_choice := str(CHOICE_IDS[sequence_id])
+					action = runner.submit_choice(selected_choice)
+					assert(manager.state.get_origin_choice(sequence_id) == "" or manager.state.get_shared_choice(sequence_id) == selected_choice or str(manager.state.get_shared_choice(sequence_id)) == selected_choice)
+					choice_nodes += 1
 				EventRunner.BATTLE:
 					assert(EXPECTED_BATTLES.has(sequence_id))
 					assert(str(action.get("handoff", {}).get("encounter_id", "")) == str(EXPECTED_BATTLES[sequence_id]))
@@ -92,12 +100,14 @@ static func run_all() -> Dictionary:
 		completed_sequences += 1
 
 	assert(completed_sequences == SHARED_SEQUENCE_IDS.size())
+	assert(choice_nodes == 6)
 	assert(battle_handoffs == 3)
 	assert(world_moves == 1)
 	return {
 		"passed": true,
 		"executed_sequences": completed_sequences,
 		"expected_sequences": SHARED_SEQUENCE_IDS.size(),
+		"choice_nodes_verified": choice_nodes,
 		"battle_handoffs_verified": battle_handoffs,
 		"world_moves_verified": world_moves,
 	}
