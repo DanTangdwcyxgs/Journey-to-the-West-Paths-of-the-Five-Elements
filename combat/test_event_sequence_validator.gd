@@ -20,6 +20,7 @@ static func run_all() -> Dictionary:
 
 	var invalid := EventSequenceDefinition.new({
 		"id": "TEST-EVENT-SEQUENCE-INVALID-REF",
+		"chapter_id": "SHARED-03-EAGLE-SORROW",
 		"namespace": "SHARED",
 		"start": "choice",
 		"nodes": [
@@ -32,8 +33,35 @@ static func run_all() -> Dictionary:
 	assert(not invalid_result.get("valid", true))
 	assert(invalid_result.get("errors", []).size() >= 3)
 
+	var chapter_mismatch := EventSequenceDefinition.new({
+		"id": "TEST-EVENT-SEQUENCE-CHAPTER-MISMATCH",
+		"chapter_id": "SHARED-03-EAGLE-SORROW",
+		"namespace": "SHARED",
+		"start": "battle",
+		"nodes": [
+			{"id":"battle", "type":"battle", "encounter_id":"SHARED_EAGLE_SORROW", "source_chapter_id":"SHARED-05-GAOJIAZHUANG", "next":"end"},
+			{"id":"end", "type":"end"}
+		]
+	})
+	var mismatch_result := EventSequenceValidator.validate(chapter_mismatch)
+	assert(not mismatch_result.get("valid", true))
+	assert("does not match sequence chapter" in str(mismatch_result.get("errors", [])))
+
+	var namespace_mismatch := EventSequenceDefinition.new({
+		"id": "TEST-EVENT-SEQUENCE-NAMESPACE-MISMATCH",
+		"chapter_id": "SHARED-03-EAGLE-SORROW",
+		"namespace": "ORIGIN",
+		"start": "end",
+		"nodes": [{"id":"end", "type":"end"}]
+	})
+	var namespace_result := EventSequenceValidator.validate(namespace_mismatch)
+	assert(not namespace_result.get("valid", true))
+	assert("origin sequence chapter not found" in str(namespace_result.get("errors", [])))
+
 	return {
 		"passed": true,
 		"shared_sequences_validated": sequence_ids.size(),
 		"invalid_sequence_rejected": true,
+		"chapter_cross_reference_rejected": true,
+		"namespace_cross_reference_rejected": true,
 	}
