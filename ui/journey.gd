@@ -260,9 +260,8 @@ func _start_event_transition(action: Dictionary) -> void:
 	event_transition_pending = true
 	primary_button.disabled = true
 	var seconds := max(float(action.get("seconds", 0.0)), EVENT_TRANSITION_DELAY)
-	if action.get("kind", "") == EventRunner.WAIT:
-		phase_label.text = "等待 · %.1f 秒" % seconds
-		dialogue_hint_label.text = "场景过渡中…"
+	phase_label.text = "等待 · %.1f 秒" % seconds
+	dialogue_hint_label.text = "场景过渡中…"
 	await get_tree().create_timer(seconds).timeout
 	event_transition_pending = false
 	if event_session == null:
@@ -325,9 +324,10 @@ func _finish_origin() -> void:
 
 func _advance_shared() -> void:
 	var chapter_id := narrative.state.current_shared_chapter
-	if chapter_id == "SHARED-03-EAGLE-SORROW" and EventSequenceManager.has_sequence("SHARED-03-EAGLE-SORROW-SEQUENCE"):
+	var sequence_id := "%s-SEQUENCE" % chapter_id
+	if EventSequenceManager.has_sequence(sequence_id):
 		if event_session == null:
-			event_session = NarrativeEventSession.new(EventSequenceManager.get_definition("SHARED-03-EAGLE-SORROW-SEQUENCE"), narrative, "SHARED")
+			event_session = NarrativeEventSession.new(EventSequenceManager.get_definition(sequence_id), narrative, "SHARED")
 			_handle_event_action(event_session.start())
 		else:
 			_advance_event_session()
@@ -415,8 +415,21 @@ func _back_to_menu() -> void:
 	get_tree().change_scene_to_file("res://ui/main_menu.tscn")
 
 func _finish_event_session() -> void:
+	var sequence_chapter_id := ""
+	var sequence_has_battle := false
+	if event_session != null and event_session.sequence != null:
+		var definition := event_session.sequence.to_dict()
+		sequence_chapter_id = str(definition.get("chapter_id", ""))
+		for node in definition.get("nodes", []):
+			if str(node.get("type", node.get("kind", ""))).to_lower() == EventRunner.BATTLE:
+				sequence_has_battle = true
+				break
+	var complete_shared_chapter := not sequence_chapter_id.is_empty() and not sequence_has_battle and narrative.state.current_shared_chapter == sequence_chapter_id
 	event_session = null
 	BountyEncounterState.clear()
+	if complete_shared_chapter:
+		SharedJourneyManager.complete(sequence_chapter_id, narrative, false)
+		party.initialize_from_saved_state(narrative.state.recruited_characters, narrative.state.get_party_formation())
 	narrative.save()
 	phase_label.text = "本段剧情完成。"
 	_refresh()
@@ -481,7 +494,7 @@ func _render_event_action(action: Dictionary) -> void:
 			primary_button.disabled = false
 		EventRunner.END:
 			phase_label.text = "事件完成"
-			_set_dialogue("", "这一段故事已经完整走完。", false)
+			_set_dialogue("", "这一段故事已经走完。", false)
 			primary_button.text = "完成"
 			primary_button.disabled = false
 		_:
