@@ -80,7 +80,7 @@ static func run_all() -> Dictionary:
 						assert(not event_definition.is_empty(), "%s choice event %s must exist" % [sequence_id, expected_chapter])
 						var expected_choice := str(choices[sequence_id])
 						var found_choice := false
-						var choice_variants: Array = event_definition.get("choices")
+						var choice_variants: Array = event_definition.get_choices()
 						for choice_variant in choice_variants:
 							if str(choice_variant.get("id")) == expected_choice:
 								found_choice = true
