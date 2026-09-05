@@ -10,6 +10,7 @@
 
 ## 最新记录
 
+- [`2026-09-05 — Shared Sequence Runtime Regression`](2026-09-05-shared-sequence-runtime-regression.md)
 - [`2026-09-05 — Godot Runtime Journey Parse Fix`](2026-09-05-godot-runtime-journey-parse-fix.md)
 - [`2026-09-05 — Shared-07 / Shared-08 / Shared-09 EventSequence Migration`](2026-09-05-shared07-shared09-migration.md)
 - [`2026-09-05 — Shared-05 / Shared-06 EventSequence Migration`](2026-09-05-shared05-shared06-migration.md)
