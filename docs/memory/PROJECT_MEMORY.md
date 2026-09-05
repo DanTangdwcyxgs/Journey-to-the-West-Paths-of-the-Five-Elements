@@ -46,7 +46,7 @@
 - 保留原有叙事、选项、战斗接管、共享主线、存档和队伍逻辑。
 - `ui/visual_overlay.gd` 同步调整：进入个人序章时不再把五人横排在画面中，而是突出当前起始角色的大像素立绘，并加入地面阴影和少量场景地标；进入共享旅途后才恢复五人队伍构图。
 - 新提交：`b24c93787848bf6bb148e96de75eff908b7ace9b`（`ui: rebuild opening journey scene as jrpg dialogue screen`）。
-- 新提交：`c766f5e49e02e5d5d5f9c261dcc01741c612c49f`（`ui: make journey origin scene character-focused`）。
+- 新提交：`c766f5e49e02e5d5f9c261dcc01741c612c49f`（`ui: make journey origin scene character-focused`）。
 
 ### 当前验收状态
 - Web Demo run #45 已针对 `c766f5e...` 自动触发，目前状态为 queued，尚未得到最终 conclusion；因此不能宣称 Web 已部署完成。
@@ -65,15 +65,19 @@
 - 新增 `ui/pixel_ui.gd`：全局 UI Theme 工厂，统一 Button / ItemList 的深色装甲底、青色 hover、金色 pressed、硬边框和紧凑字体规格。
 - 新增 `ui/pixel_hud.gd`：全局 HUD 皮肤层，按照当前场景自动绘制主菜单、剧情、战斗、世界地图、黄风场景的切角装甲框；战斗额外绘制 TURN / ACTION QUEUE、TARGET / HP / WEAK / SHIELD、角色 FRAME STATUS、COMMAND // ACT 和分段式状态条。
 - `ui/visual_overlay.gd` 接入 `PixelHUD`，使全项目自动获得统一 HUD 皮肤，同时保留原有场景背景和角色层。
+- `ui/main_theme.tres` 去掉了仓库中不存在的旧字体依赖，避免 Godot 启动时持续报资源缺失。
 
-### 工程状态
-- 全局视觉提交：`064ffbfca63e09590544fbe5d2e0392b2d92c75e`，message=`ui: apply global pixel HUD skin to all screens`。
-- 当前 Godot Runtime #249 正在执行；前置的 Checkout / Setup Godot / Verify Godot 已通过，`Import project and register scripts` 当时仍 in_progress，尚未拿到最终 conclusion。
-- 当前 Web Demo 的上一条 build 已存在；不要把 in_progress / queued 描述成部署成功。
+### 工程验证与修复
+- 首次全局 HUD 提交曾因 `pixel_frame.gd` / `pixel_hud.gd` 的 Variant 类型推断触发 Warning treated as error；已全部显式类型化并修复。
+- 主菜单重构曾暂时删掉“开发者 / 投资合作”入口；已补回，并通过现有 `test_main_menu_contact` 回归。
+- Runtime #252 曾失败，根因是上述 HUD 脚本类型错误；随后修复后，最新 Runtime #255 已 SUCCESS。
+- Runtime #255 的 Checkout、Godot 导入、签名探针、EventRuntime、EventRunner、完整 runtime suite 全部成功。
+- Web Demo #57：Build Web Demo 的导入、runtime suite、Web export、landing page、GitHub Pages、artifact upload 全部 SUCCESS；截至记录时 Deploy Web Demo 的“Deploy to GitHub Pages”步骤仍 in_progress，不能提前宣称最终部署完成。
 
-### 当前执行方式
-- 用户明确要求可以直接参照该战斗示例图调整“其他所有画风”。因此本规范视为全项目长期视觉规范，而不是单个战斗页面的临时主题。
-- 下一次模型接手前，优先等待 `064ffb...` 的 Runtime / Web CI 最终结论，再根据用户验收反馈决定是否继续逐屏精修；不要恢复旧式网页表单风格。
+### 当前稳定基线
+- 最新代码 head：`8669c69737e7937a36167966a2b1d3abff3ebee9`。
+- 全项目长期视觉规范已改为“参考图式硬朗 2D 像素 JRPG HUD”；后续所有新页面、新面板、新敌人状态框都必须沿用这一规范。
+- 允许各页面在信息结构上不同，但框体几何、描边语言、色彩层级、像素密度、状态条风格必须统一。
 
 ### 后续模型接手注意
 - 不要重新采用“圆头 + 方身体 + 简单线条”的程序人物。
