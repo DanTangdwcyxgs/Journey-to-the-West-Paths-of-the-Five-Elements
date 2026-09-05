@@ -52,6 +52,41 @@
         {"id":"resolve","type":"dialogue","speaker":"猪八戒","text":"俺也去取经就是了。先说好，路上若有好吃的，可别全叫猴哥一个人抢了。","next":"finish"},
         {"id":"finish","type":"end"}
       ]
+    },
+    {
+      "id": "SHARED-07-FLOWING-SANDS-SEQUENCE",
+      "chapter_id": "SHARED-07-FLOWING-SANDS",
+      "namespace": "SHARED",
+      "start": "river",
+      "nodes": [
+        {"id":"river","type":"dialogue","speaker":"玄奘","text":"流沙河水势凶险。若河中之人真在等一个能够理解他的人，我们也不该只以妖怪二字定他的生死。","next":"encounter_choice"},
+        {"id":"encounter_choice","type":"choice","event_id":"WUJING_ENCOUNTER","next":"battle"},
+        {"id":"battle","type":"battle","encounter_type":"shared","encounter_id":"SHARED_FLOWING_SANDS","source_chapter_id":"SHARED-07-FLOWING-SANDS","source_route_id":"SHARED_JOURNEY","next":"after_battle"},
+        {"id":"after_battle","type":"dialogue","speaker":"沙悟净","text":"俺在这河中守了太久。今日既有人愿意带我走，我便用余生护住这条西行路。","next":"finish"},
+        {"id":"finish","type":"end"}
+      ]
+    },
+    {
+      "id": "SHARED-08-PARTY-FULL-SEQUENCE",
+      "chapter_id": "SHARED-08-PARTY-FULL",
+      "namespace": "SHARED",
+      "start": "gather",
+      "nodes": [
+        {"id":"gather","type":"dialogue","speaker":"玄奘","text":"从今日起，我们不再只是各自背负过去的人。五个人，要走同一条取经路。","next":"party_choice"},
+        {"id":"party_choice","type":"choice","event_id":"PARTY_FULL","next":"oath"},
+        {"id":"oath","type":"dialogue","speaker":"孙悟空","text":"俺老孙先说一句：这条路，谁也别想半道把谁丢下。","next":"finish"},
+        {"id":"finish","type":"end"}
+      ]
+    },
+    {
+      "id": "SHARED-09-FULL-PILGRIMAGE-SEQUENCE",
+      "chapter_id": "SHARED-09-FULL-PILGRIMAGE",
+      "namespace": "SHARED",
+      "start": "departure",
+      "nodes": [
+        {"id":"departure","type":"dialogue","speaker":"玄奘","text":"五人齐备，西天路也终于真正展开。前方还有千山万水，但这一次，我们一起走。","next":"finish"},
+        {"id":"finish","type":"end"}
+      ]
     }
   ]
 }
