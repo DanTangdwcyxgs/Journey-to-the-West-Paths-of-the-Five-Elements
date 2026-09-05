@@ -6,6 +6,16 @@ func _initialize() -> void:
 	state.initialize_for_start("WUKONG")
 	state.mark_recruited("WUKONG")
 
+	var prerequisite_blocked := ChapterDefinition.new({
+		"id": "TEST-PREREQ",
+		"chapter_type": "SHARED_JOURNEY",
+		"required": "WUKONG_RECRUITED",
+		"prerequisites": ["TEST-PREVIOUS"],
+	})
+	_assert(not ChapterRuntime.can_enter(prerequisite_blocked, state), "missing prerequisite should block chapter")
+	state.record_chapter_complete("TEST-PREVIOUS", true)
+	_assert(ChapterRuntime.can_enter(prerequisite_blocked, state), "completed prerequisite should allow chapter")
+
 	var shared := ChapterDefinition.new({
 		"id": "TEST-SHARED",
 		"title": "测试共享章节",
