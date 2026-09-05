@@ -135,7 +135,7 @@ Victory atomic boundary：预检 → reward preview → state mutation → progr
 新增 `test_shared_event_sequences.gd`，真实执行 Shared-03~09 production Sequence。#81 暴露测试控制流问题，修复后 #82 success：7/7 Sequence、3/3 battle resume、1/1 move side effect。
 
 ### Round 22
-增强 Sequence cross-reference validation；迁移 Wukong WUK-01~03；新增 `ui/origin_sequence_journey.gd` 兼容桥；修复 `OriginEventManager` 缺失 event id 兼容问题。#89 success；#94/#96 定位问题；#98 success；#101 SceneTree bridge success。
+增强 Sequence cross-reference validation；迁移 Wukong WUK-01~03；新增 `ui/origin_sequence_journey.gd` 兼容桥；修复 `OriginEventManager` 缺失 event id 兼容问题。#94/#96 暴露问题，#98 success，#101 SceneTree bridge success。
 
 ### Round 23
 完整迁移 Wukong `WUK-04~15`，形成 `WUK-01→WUK-15` 全链；5 个 Origin battle 复用既有 `WUKONG_ORIGIN_*` Encounter；3 个 choice；全路线 Sequence regression。#106 是测试控制流误报，修复后 #109 success，Godot 4.5.1 headless suite 通过。
@@ -178,6 +178,23 @@ Victory atomic boundary：预检 → reward preview → state mutation → progr
 
 Wukong progression 修正后的完整 Runtime 已成功通过上一轮验证；唐僧新 catalog 之后的最新 head Runtime 仍需以对应 check-run 最终结果为准。
 
+### Round 27
+根据项目负责人新的最终愿景，更新项目情绪北极星并继续扩大 Origin：
+- `README.md` 的“最终愿景”统一为：
+  `像素与回合制，是我一直以来的偏爱。`
+  `我想在方块构筑的世界里，重现儿时傍晚在公园握着掌机、发着光的夏夜。`
+  `愿这份游戏，能为你寻回一段沉睡的时光。`
+- `docs/game_vision.md` 增加 Emotional North Star / World Construction Aesthetic，把方块构筑、掌机节奏、夏夜光照和“少一点 spectacle、多一点情绪”转成长期设计约束；
+- `TANG-01~08` 已完成独立 Origin Sequence catalog；
+- `LONGMA-01~06` 已全部加入 `data/narrative/event_sequences_origin.json`；LONGMA-02 / LONGMA-05 为 battle，LONGMA-02 / LONGMA-04 为 choice；
+- 新增 `combat/test_tang_journey_bridge.gd`，验证 `journey.tscn` 对 Tang-01 进入统一 Origin Sequence bridge；
+- 新增 `combat/test_longma_origin_progression.gd`，验证 LONGMA-01→06 chapter cursor、2 battle、2 choice、save/load、route complete；
+- `tests/runtime_suite.gd` 扩展至 19 项；
+- 新增 `docs/development_log/2026-09-05-vision-and-origin-expansion.md`；
+- `docs/development_log/README.md` 已将本轮记录置于最新记录区。
+
+截至当前最后检查，包含 Longma regression 的 19-test head 已触发 Godot Runtime；Engine import、signature probe、EventRuntime 已通过，最终 runtime suite 仍需等待最终 check-run 结论。
+
 ---
 
 ## 4. Wukong Origin 当前状态
@@ -195,13 +212,13 @@ Choices：WUK-03 `SEEK_FREEDOM`；WUK-08 `ACCEPT_TITLE`；WUK-13 `ENDURE`。
 
 `ui/origin_sequence_journey.gd`：已迁移章节使用 EventSequence；未迁移章节继续 legacy；non-battle END 完成当前 Origin chapter；battle 由 `BattleResolutionService` 原子推进。
 
-Wukong progression/save regression 已形成；下一步仍建议补最小 SceneTree 入口 smoke coverage，确认 `main menu → journey → event sequence → battle/END → save`。
+Wukong progression/save regression 已形成；下一步优先补最小 SceneTree 入口 smoke coverage，确认 `main menu → journey → event sequence → battle/END → save`。
 
 ---
 
 ## 5. Tang Origin 当前状态
 
-Production route 已有 8 章：`TANG-01~08`。
+Production route：`TANG-01~08`。
 
 Route-specific Sequence catalog：`data/narrative/event_sequences_origin.json`。
 
@@ -209,15 +226,31 @@ Battle：
 - TANG-06：`TANG_ORIGIN_DOUBLE_RIDGE`
 - TANG-08：`TANG_ORIGIN_FIVE_ELEMENTS`
 
-Choices：TANG-04 / TANG-07，分别复用现有 Origin events。
+Choices：TANG-04 / TANG-07。
 
-当前已完成：Sequence catalog、validator 抽查、8 chapter Sequence regression、8 chapter progression/save regression。
+当前已完成：Sequence catalog、8 chapter Sequence regression、8 chapter progression/save regression、Tang Journey bridge smoke。
 
-尚未确认：最新包含唐僧迁移与 progression regression 的 head 是否已经获得成功 Godot Runtime；必须检查最新 check-run。
+尚未确认：最新包含 Longma regression 的 19-test head 的最终 Godot Runtime。
 
 ---
 
-## 6. Shared Journey 当前边界
+## 6. Longma Origin 当前状态
+
+Production route：`LONGMA-01~06`。
+
+Battle：
+- LONGMA-02：`LONGMA_ORIGIN_SEA_CLIFF`
+- LONGMA-05：`LONGMA_ORIGIN_YINGCHOU`
+
+Choices：LONGMA-02 / LONGMA-04。
+
+当前已完成：Sequence migration、完整 progression/save regression。
+
+尚未确认：最新包含 Longma regression 的 19-test head 的最终 Godot Runtime。
+
+---
+
+## 7. Shared Journey 当前边界
 
 `shared_chapters.json` 是 Shared chapter 事实来源；Sequence 不得复制 chapter reward。
 
@@ -233,13 +266,13 @@ Shared-09：full pilgrimage / COIN_MEDIUM / timeline 170。
 
 ---
 
-## 7. 当前产品任务地图
+## 8. 当前产品任务地图
 
-### P0 — Journey presentation
-MOVE 视觉/状态反馈；WAIT 过渡；END / chapter completion feedback；保持 Battle → Resume → END 不重复结算；必要时增加 SceneTree regression。
+### P0 — Emotional / Journey presentation
+MOVE 视觉/状态反馈；WAIT 过渡；END / chapter completion feedback；保持 Battle → Resume → END 不重复结算；把“方块构筑世界里的掌机夏夜”逐步落实到灯光、镜头、环境层次、UI节奏和音频，而不是只停留在文案。
 
 ### P1 — Origin migration
-Wukong WUK-01~15 已完成；Tang TANG-01~08 已完成第一阶段迁移与 backend progression regression；下一步优先完成两条路线的 SceneTree smoke coverage，再迁移 Longma。
+Wukong WUK-01~15、Tang TANG-01~08、Longma LONGMA-01~06 已进入 Sequence 化。下一步优先完成 Tang / Longma SceneTree 入口验证，然后迁移 Bajie / Wujing。
 
 ### P2 — Cleanup
 逐步收敛旧 BattleUI 结算职责与 `BountyEncounterState`，不得提前破坏兼容链。
@@ -255,20 +288,25 @@ Wukong WUK-01~15 已完成；Tang TANG-01~08 已完成第一阶段迁移与 back
 
 ---
 
-## 8. 接手点
+## 9. 接手点
 
 优先阅读：
 - `docs/AI_MEMORY.md`
 - `AI_HANDOFF.md`
 - `docs/development_log/README.md`
+- `docs/development_log/2026-09-05-vision-and-origin-expansion.md`
 - `docs/development_log/2026-09-05-tang-origin-sequence-migration.md`
 - `docs/development_log/2026-09-05-wukong-origin-progression-regression.md`
 - `docs/development_log/2026-09-05-developer-credit-investor-contact.md`
+- `docs/game_vision.md`
+- `README.md`
 - `ui/main_menu.gd`
 - `combat/test_main_menu_contact.gd`
 - `combat/test_wukong_origin_progression.gd`
 - `combat/test_tang_origin_event_sequences.gd`
 - `combat/test_tang_origin_progression.gd`
+- `combat/test_longma_origin_progression.gd`
+- `combat/test_tang_journey_bridge.gd`
 - `ui/origin_sequence_journey.gd`
 - `ui/journey.gd`
 - `scripts/narrative/event_sequence_manager.gd`
