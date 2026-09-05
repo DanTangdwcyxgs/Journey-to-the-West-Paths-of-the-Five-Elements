@@ -199,6 +199,37 @@ Runtime 验证：
 
 当前 Origin 迁移基线包含：Wukong WUK-01~03 + Journey bridge；其余 Origin chapter 仍为渐进迁移。
 
+### Round 23 — Wukong Full Origin Route Sequence Migration
+将悟空 Origin Route 的 `WUK-04` 至 `WUK-15` 全部加入生产 `EventSequence`，使 `WUK-01 → WUK-15` 成为一条完整个人历史链。
+
+新增 Sequence：
+- WUK-04 菩提门下：dialogue → wait → dialogue → end；
+- WUK-05 大圣初醒：dialogue → dialogue → end；
+- WUK-06 龙宫取宝：dialogue → battle → after_battle → end；
+- WUK-07 地府改命：dialogue → dialogue → end；
+- WUK-08 弼马温：dialogue → choice → end；
+- WUK-09 齐天大圣：dialogue → dialogue → end；
+- WUK-10 偷食蟠桃：dialogue → dialogue → end；
+- WUK-11 天兵天将：dialogue → battle → after_battle → end；
+- WUK-12 二郎神：dialogue → battle → after_battle → end；
+- WUK-13 炼丹炉：dialogue → choice → end；
+- WUK-14 大闹天宫：dialogue → battle → after_battle → end；
+- WUK-15 五行山：dialogue → dialogue → end。
+
+5 个 Origin battle sequence 直接复用现有 `WUKONG_ORIGIN_*` encounter，不复制 Combat 数据。
+
+`combat/test_origin_event_sequences.gd` 从原先仅验证 WUK-01~03 扩展为覆盖全部 15 条 production Sequence：
+- 所有 definition graph validate；
+- 5 个 battle handoff + snapshot/restore/victory resume；
+- 3 个 choice sequence 与持久化；
+- 全部 15 条进入 END。
+
+首次全路线回归 Runtime #106 失败，失败范围集中在新 regression 的 action-loop 写法；项目导入、脚本注册、signature probe、EventRuntime、EventRunner 均通过。随后测试改成与已验证 Shared regression 一致的显式 END 节点控制流，避免把测试本身的时序误判为生产失败。
+
+本轮开发日志：`docs/development_log/2026-09-05-wukong-full-origin-sequence-migration.md`。
+
+当前最新状态：生产数据与 regression 已更新；最终是否通过 Godot Runtime 必须以这次修正提交之后最新 workflow 的真实结果为准，未确认前不得写“本轮 Runtime 通过”。
+
 ---
 
 ## 4. Shared Journey 当前数据边界
@@ -241,7 +272,7 @@ Sequence **不得复制 chapter reward**，避免重复经济结算。
 ### P1 — Origin Migration
 Shared-03 → Shared-09 Sequence 迁移完成后，逐角色逐章把 Origin Route 迁移到 EventSequence，必须保持固定世界时间线和经典招募节点。
 
-当前第一条样板：WUKONG `WUK-01 → WUK-02 → WUK-03` 已接入 Journey。下一阶段继续沿同一模式扩到 WUK-04~WUK-15，然后再复制到其他四条路线。
+Wukong `WUK-01 → WUK-15` 已全部进入 Sequence 数据层，并继续使用 Origin bridge。下一阶段优先做悟空整条路线的 **chapter progression / save / SceneTree 端到端检查**，确认 15 章从玩家入口切换章节、战斗胜利推进章节、END 保存之间没有断点；通过后再开始 Tang Origin。
 
 ### P2 — Cleanup / Convergence
 逐步收敛旧 BattleUI 结算职责与 `BountyEncounterState`，但不能提前破坏现有兼容链。
@@ -260,6 +291,7 @@ Shared-03 → Shared-09 Sequence 迁移完成后，逐角色逐章把 Origin Rou
 - `docs/AI_MEMORY.md`
 - `AI_HANDOFF.md`
 - `docs/development_log/README.md`
+- `docs/development_log/2026-09-05-wukong-full-origin-sequence-migration.md`
 - `docs/development_log/2026-09-05-origin-wukong-sequence-migration.md`
 - `ui/origin_sequence_journey.gd`
 - `ui/journey.gd`
