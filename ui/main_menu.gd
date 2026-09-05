@@ -17,6 +17,9 @@ const CHARACTER_DESCRIPTIONS := {
 	"LONGMA": "龙族血脉与白马之身。身份、荣誉与使命的故事。",
 }
 
+const DEVELOPER_NAME := "蛋汤"
+const CONTACT_WECHAT := "DanTangdwcyxgs"
+
 var narrative := NarrativeManager.new()
 var selected_character := "WUKONG"
 var selected_label: Label
@@ -131,6 +134,21 @@ func _build_ui() -> void:
 	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	right.add_child(hint)
 
+	var footer := HBoxContainer.new()
+	footer.alignment = BoxContainer.ALIGNMENT_CENTER
+	footer.add_theme_constant_override("separation", 12)
+	root.add_child(footer)
+	var credit := Label.new()
+	credit.text = "开发者：%s" % DEVELOPER_NAME
+	credit.add_theme_font_size_override("font_size", 13)
+	footer.add_child(credit)
+	var contact_button := Button.new()
+	contact_button.text = "投资合作 / 联系开发者"
+	contact_button.custom_minimum_size = Vector2(190, 36)
+	contact_button.tooltip_text = "联系开发者：%s" % CONTACT_WECHAT
+	contact_button.pressed.connect(_show_contact_dialog)
+	footer.add_child(contact_button)
+
 func _select_character(character_id: String) -> void:
 	selected_character = character_id
 	_refresh_ui()
@@ -152,6 +170,20 @@ func _load_game() -> void:
 
 func _open_battle_ui() -> void:
 	get_tree().change_scene_to_file("res://ui/battle_ui.tscn")
+
+func _show_contact_dialog() -> void:
+	var dialog := AcceptDialog.new()
+	dialog.title = "投资合作 / 联系开发者"
+	dialog.dialog_text = "开发者：%s\n\n微信：%s\n\n感谢关注《西游：五行之路》。如有投资、发行、商务合作或项目交流，可通过微信联系。" % [DEVELOPER_NAME, CONTACT_WECHAT]
+	dialog.ok_button_text = "复制微信号"
+	dialog.confirmed.connect(_copy_contact_to_clipboard.bind(dialog))
+	add_child(dialog)
+	dialog.popup_centered(Vector2i(560, 300))
+
+func _copy_contact_to_clipboard(dialog: AcceptDialog) -> void:
+	DisplayServer.clipboard_set(CONTACT_WECHAT)
+	status_label.text = "微信号已复制：%s" % CONTACT_WECHAT
+	dialog.queue_free()
 
 func _refresh_ui() -> void:
 	if status_label == null:
