@@ -26,6 +26,15 @@ const CHOICE_IDS := {
 	"SHARED-08-PARTY-FULL-SEQUENCE": "SWEAR_TOGETHER",
 }
 
+const CHOICE_EVENT_IDS := {
+	"SHARED-01-FIVE-ELEMENTS-SEQUENCE": "SHARED-01-FIVE-ELEMENTS",
+	"SHARED-02-EARLY-PILGRIMAGE-SEQUENCE": "SHARED-02-EARLY-PILGRIMAGE",
+	"SHARED-03-EAGLE-SORROW-SEQUENCE": "LONGMA_ENCOUNTER",
+	"SHARED-05-GAOJIAZHUANG-SEQUENCE": "BAJIE_ENCOUNTER",
+	"SHARED-07-FLOWING-SANDS-SEQUENCE": "WUJING_ENCOUNTER",
+	"SHARED-08-PARTY-FULL-SEQUENCE": "PARTY_FULL",
+}
+
 const EXPECTED_BATTLES := {
 	"SHARED-03-EAGLE-SORROW-SEQUENCE": "SHARED_EAGLE_SORROW",
 	"SHARED-05-GAOJIAZHUANG-SEQUENCE": "SHARED_GAOJIAZHUANG",
@@ -74,8 +83,9 @@ static func run_all() -> Dictionary:
 				EventRunner.CHOICE:
 					assert(CHOICE_IDS.has(sequence_id))
 					var selected_choice := str(CHOICE_IDS[sequence_id])
+					var choice_event_id := str(CHOICE_EVENT_IDS[sequence_id])
 					action = runner.submit_choice(selected_choice)
-					assert(manager.state.get_origin_choice(sequence_id) == "" or manager.state.get_shared_choice(sequence_id) == selected_choice or str(manager.state.get_shared_choice(sequence_id)) == selected_choice)
+					assert(manager.state.get_shared_choice(choice_event_id) == selected_choice)
 					choice_nodes += 1
 				EventRunner.BATTLE:
 					assert(EXPECTED_BATTLES.has(sequence_id))
