@@ -122,8 +122,6 @@ func _restore_event_session() -> void:
 	if not record.has("event_resume"):
 		return
 	event_session = NarrativeEventSession.resume_from_battle_record(record, narrative)
-	if event_session == null:
-		phase_label = Label.new()
 
 func _current_route() -> Array:
 	return origin.get_chapters(narrative.state.starting_character)
