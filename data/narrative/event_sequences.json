@@ -41,6 +41,58 @@
           "type": "end"
         }
       ]
+    },
+    {
+      "id": "SHARED-04-EARLY-DEMON-TALES-SEQUENCE",
+      "chapter_id": "SHARED-04-EARLY-DEMON-TALES",
+      "namespace": "SHARED",
+      "start": "departure",
+      "nodes": [
+        {
+          "id": "departure",
+          "type": "dialogue",
+          "speaker": "玄奘",
+          "text": "黑风山的妖气已经逼近。我们先沿北道探看一番，再决定是否继续赶路。",
+          "next": "move_to_north_path"
+        },
+        {
+          "id": "move_to_north_path",
+          "type": "move",
+          "map_id": "WORLD_MAP",
+          "marker_id": "BLACK_WIND_NORTH_PATH",
+          "next": "warning"
+        },
+        {
+          "id": "warning",
+          "type": "dialogue",
+          "speaker": "孙悟空",
+          "text": "俺老孙闻到的妖气就在前头。师父，你们跟紧些，莫叫小妖钻了空子。",
+          "next": "pause"
+        },
+        {
+          "id": "pause",
+          "type": "wait",
+          "seconds": 0.3,
+          "next": "resolve"
+        },
+        {
+          "id": "resolve",
+          "type": "dialogue",
+          "speaker": "玄奘",
+          "text": "先不急着深入。记下此处妖踪，我们向前一步，也为后面的路留一步退处。",
+          "next": "reward"
+        },
+        {
+          "id": "reward",
+          "type": "reward",
+          "rewards": ["HERB"],
+          "next": "finish"
+        },
+        {
+          "id": "finish",
+          "type": "end"
+        }
+      ]
     }
   ]
 }
