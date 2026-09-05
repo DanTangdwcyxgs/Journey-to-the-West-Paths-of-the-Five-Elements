@@ -89,6 +89,7 @@ Implemented and connected:
 - Yellow Wind bounty battle handoff and automatic victory reward resolution
 - shared encounter definitions for Eagle Sorrow, Gaojiazhuang and Flowing Sands
 - shared encounter CombatEngine regression coverage for weakness targeting, AI turns, defeat resolution and deterministic ally victory
+- atomic shared-chapter mutation with rollback coverage for late recruitment/world-effect failures
 
 ## Current World Foundation
 
@@ -145,6 +146,7 @@ Implemented and connected:
 - [x] Shared journey chapter data model
 - [x] Shared journey narrative event layer
 - [x] Shared encounter CombatEngine regression coverage
+- [x] Shared chapter atomic rollback coverage
 - [ ] Minimal battle UI polish
 
 ### Phase 2 — Playable Vertical Slice
