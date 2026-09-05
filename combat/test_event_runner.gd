@@ -54,8 +54,10 @@ static func run_all() -> Dictionary:
 	assert(resumed.get_action().get("kind", "") == EventRunner.BATTLE)
 
 	action = resumed.resolve_battle(true)
+	print("EVENT_RUNNER_DEBUG after resolve_battle: ", action)
 	assert(action.get("kind", "") == EventRunner.REWARD)
 	action = resumed.complete_action()
+	print("EVENT_RUNNER_DEBUG after reward complete: ", action)
 	assert(action.get("kind", "") == EventRunner.END)
 	assert(resumed.is_finished())
 
