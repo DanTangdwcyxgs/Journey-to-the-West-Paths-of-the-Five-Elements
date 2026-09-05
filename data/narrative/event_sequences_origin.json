@@ -251,6 +251,92 @@
         {"id":"departure","type":"dialogue","speaker":"猪八戒","text":"高老庄的日子放不下，也不能再回头。若西行真能让我学会负责，那就走这一趟。","next":"finish"},
         {"id":"finish","type":"end"}
       ]
+    },
+    {
+      "id": "WUJING-01-SEQUENCE",
+      "chapter_id": "WUJING-01",
+      "namespace": "ORIGIN",
+      "start": "guard",
+      "nodes": [
+        {"id":"guard","type":"dialogue","speaker":"旁白","text":"天界仪仗一日复一日地沿着旧轨道前行。卷帘大将守着秩序，却很少问自己为什么必须守到最后。","next":"finish"},
+        {"id":"finish","type":"end"}
+      ]
+    },
+    {
+      "id": "WUJING-02-SEQUENCE",
+      "chapter_id": "WUJING-02",
+      "namespace": "ORIGIN",
+      "start": "broken",
+      "nodes": [
+        {"id":"broken","type":"dialogue","speaker":"沙僧","text":"琉璃盏碎在脚边的一刻，我才发现所谓秩序也会因为一次失手突然把一个人推到最底下。","next":"choice"},
+        {"id":"choice","type":"choice","event_id":"WUJING-02","next":"finish"},
+        {"id":"finish","type":"end"}
+      ]
+    },
+    {
+      "id": "WUJING-03-SEQUENCE",
+      "chapter_id": "WUJING-03",
+      "namespace": "ORIGIN",
+      "start": "sands",
+      "nodes": [
+        {"id":"sands","type":"dialogue","speaker":"沙僧","text":"流沙河没有尽头。妖身、河水和惩罚缠在一起，我只能先学会在这里活下来。","next":"battle"},
+        {"id":"battle","type":"battle","encounter_type":"origin","encounter_id":"WUJING_ORIGIN_FLOWING_SANDS","source_chapter_id":"WUJING-03","source_route_id":"WUJING_ORIGIN","next":"after_battle"},
+        {"id":"after_battle","type":"dialogue","speaker":"沙僧","text":"原来活下来并不等于赎清罪。可至少今天，我没有再任由河水替我决定命运。","next":"finish"},
+        {"id":"finish","type":"end"}
+      ]
+    },
+    {
+      "id": "WUJING-04-SEQUENCE",
+      "chapter_id": "WUJING-04",
+      "namespace": "ORIGIN",
+      "start": "endless",
+      "nodes": [
+        {"id":"endless","type":"dialogue","speaker":"旁白","text":"漫长岁月把惩罚变成日常。越是没有尽头，越逼人去问：我究竟是在赎罪，还是只是在等待别人原谅？","next":"finish"},
+        {"id":"finish","type":"end"}
+      ]
+    },
+    {
+      "id": "WUJING-05-SEQUENCE",
+      "chapter_id": "WUJING-05",
+      "namespace": "ORIGIN",
+      "start": "traveler",
+      "nodes": [
+        {"id":"traveler","type":"dialogue","speaker":"沙僧","text":"一次又一次有人渡河，我也一次又一次出手阻拦。可最近我开始发现，真正让我疲惫的不是饥饿，而是不想再继续这样活下去。","next":"finish"},
+        {"id":"finish","type":"end"}
+      ]
+    },
+    {
+      "id": "WUJING-06-SEQUENCE",
+      "chapter_id": "WUJING-06",
+      "namespace": "ORIGIN",
+      "start": "crossing",
+      "nodes": [
+        {"id":"crossing","type":"dialogue","speaker":"观音","text":"救赎不是替你抹掉过去，而是给你一次重新证明自己能为别人承担风险的机会。","next":"choice"},
+        {"id":"choice","type":"choice","event_id":"WUJING-06","next":"finish"},
+        {"id":"finish","type":"end"}
+      ]
+    },
+    {
+      "id": "WUJING-07-SEQUENCE",
+      "chapter_id": "WUJING-07",
+      "namespace": "ORIGIN",
+      "start": "trial",
+      "nodes": [
+        {"id":"trial","type":"dialogue","speaker":"沙僧","text":"机会就在眼前，可我已经没有资格只为自己出手。若想走出去，就得先证明自己愿意替别人挡下这一击。","next":"battle"},
+        {"id":"battle","type":"battle","encounter_type":"origin","encounter_id":"WUJING_ORIGIN_BODHISATTVA","source_chapter_id":"WUJING-07","source_route_id":"WUJING_ORIGIN","next":"after_battle"},
+        {"id":"after_battle","type":"dialogue","speaker":"沙僧","text":"这一次，我护住的不是自己的命，而是一条陌生人的渡河路。也许这才是重新做人真正的开始。","next":"finish"},
+        {"id":"finish","type":"end"}
+      ]
+    },
+    {
+      "id": "WUJING-08-SEQUENCE",
+      "chapter_id": "WUJING-08",
+      "namespace": "ORIGIN",
+      "start": "refuge",
+      "nodes": [
+        {"id":"refuge","type":"dialogue","speaker":"沙僧","text":"我不会忘记流沙河，也不会假装过去从没发生。若取经路允许我继续背着这些过去往前走，我愿意跟上。","next":"finish"},
+        {"id":"finish","type":"end"}
+      ]
     }
   ]
 }
