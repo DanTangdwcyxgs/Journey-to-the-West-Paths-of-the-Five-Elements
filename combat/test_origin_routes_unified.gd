@@ -62,7 +62,7 @@ static func run_all() -> Dictionary:
 			assert(str(definition_dict.get("namespace")) == "ORIGIN", "%s must be Origin namespace" % sequence_id)
 			assert(str(definition_dict.get("chapter_id")) == expected_chapter, "%s chapter id must be exact" % sequence_id)
 			var validation := EventSequenceValidator.validate(definition)
-			assert(validation.get("valid", false), "%s -> %s" % [sequence_id, str(validation)])
+			assert(validation.get("valid"), "%s -> %s" % [sequence_id, str(validation)])
 
 			var runner := EventRunner.new(definition, manager, "ORIGIN")
 			var action: Dictionary = runner.start()
@@ -80,7 +80,8 @@ static func run_all() -> Dictionary:
 						assert(not event_definition.is_empty(), "%s choice event %s must exist" % [sequence_id, expected_chapter])
 						var expected_choice := str(choices[sequence_id])
 						var found_choice := false
-						for choice_variant in event_definition.get("choices", []):
+						var choice_variants: Array = event_definition.get("choices")
+						for choice_variant in choice_variants:
 							if str(choice_variant.get("id")) == expected_choice:
 								found_choice = true
 								break
