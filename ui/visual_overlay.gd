@@ -13,24 +13,38 @@ const RED := Color("8f473c")
 const JADE := Color("5c8b77")
 
 var scene_name := ""
+var applied_root: Node = null
 
 func _ready() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
-	z_index = 100
+	z_index = -100
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	set_process(true)
-	_update_scene()
+	_apply_scene_visuals()
 	queue_redraw()
 
 func _process(_delta: float) -> void:
 	var next_scene := get_tree().current_scene.scene_file_path if get_tree().current_scene != null else ""
 	if next_scene != scene_name:
-		_update_scene()
+		_apply_scene_visuals()
 		queue_redraw()
 
-func _update_scene() -> void:
-	scene_name = get_tree().current_scene.scene_file_path if get_tree().current_scene != null else ""
+func _apply_scene_visuals() -> void:
+	var root := get_tree().current_scene
+	if root == null:
+		return
+	scene_name = root.scene_file_path
+	applied_root = root
+	# Existing screens were written as pure UI. Make their opaque backdrop
+	# translucent so the low-resource illustrated layer can sit underneath.
+	for child in root.get_children():
+		if child is ColorRect:
+			var rect := child as ColorRect
+			if rect.size.x >= 900.0 and rect.size.y >= 500.0:
+				var c := rect.color
+				c.a = 0.18
+				rect.color = c
 
 func _draw() -> void:
 	if scene_name.ends_with("main_menu.tscn"):
@@ -173,7 +187,6 @@ func _draw_character(base: Vector2, scale_factor: float, kind: String) -> void:
 	match kind:
 		"WUKONG":
 			body = Color("6c4b3a", 0.94); accent = Color(GOLD, 0.82)
-			# staff
 			draw_line(base + Vector2(35,-86)*s, base + Vector2(44,76)*s, Color(GOLD,0.72), 6.0*s)
 		"TANG":
 			body = Color("5c6b69", 0.88); accent = Color("d6c6a1",0.72)
@@ -185,18 +198,14 @@ func _draw_character(base: Vector2, scale_factor: float, kind: String) -> void:
 			body = Color("b7b3a5",0.72); accent = Color("d7d6cc",0.80)
 		"YELLOW_WIND":
 			body = Color("9a7954",0.92); accent = Color(RED,0.78)
-		# head
 	var head := base + Vector2(0,-88)*s
 	draw_circle(head, 26*s, Color(body, 0.96))
-	# body + robe
 	var torso := PackedVector2Array([
 		base + Vector2(-35,-54)*s, base + Vector2(34,-54)*s,
 		base + Vector2(49,62)*s, base + Vector2(-49,62)*s
 	])
 	draw_colored_polygon(torso, body)
 	draw_line(base + Vector2(-28,-12)*s, base + Vector2(28,-12)*s, accent, 4.0*s)
-	# legs
 	draw_line(base + Vector2(-20,60)*s, base + Vector2(-28,108)*s, body, 12*s)
 	draw_line(base + Vector2(20,60)*s, base + Vector2(28,108)*s, body, 12*s)
-	# glow outline
 	draw_arc(head, 30*s, 0.0, TAU, 24, Color(accent,0.24), 2.0*s)
