@@ -14,7 +14,7 @@ func _load() -> void:
 		return
 	var parsed = JSON.parse_string(file.get_as_text())
 	if parsed is Dictionary:
-		var raw := parsed.get("events", {})
+		var raw: Variant = parsed.get("events", {})
 		if raw is Dictionary:
 			for key in raw.keys():
 				if raw[key] is Dictionary:
