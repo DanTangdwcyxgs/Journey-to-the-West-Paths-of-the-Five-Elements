@@ -12,6 +12,7 @@ const TEST_SCRIPTS := [
 	"res://combat/test_shared_event_sequences.gd",
 	"res://combat/test_origin_event_sequences.gd",
 	"res://combat/test_wukong_origin_progression.gd",
+	"res://combat/test_tang_origin_event_sequences.gd",
 	"res://combat/test_reward_service.gd",
 	"res://combat/test_world_action_service.gd",
 	"res://combat/test_shared_encounter_combat.gd",
