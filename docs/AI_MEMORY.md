@@ -163,11 +163,20 @@ Victory atomic boundary：预检 → reward preview → state mutation → progr
 
 该测试已加入 `tests/runtime_suite.gd`，suite 从 14 项增加到 15 项。
 
-第一次 progression regression Runtime 失败原因是测试第 47 行 Variant 类型推断被 Godot 4.5.1 warning-as-error 拒绝；加入显式 `Dictionary` 类型后，静态检查又发现非战斗 END 少了 chapter completion 收口，随后按生产桥接逻辑修正。
+第一次 progression regression Runtime 失败原因是测试第 47 行 Variant 类型推断被 Godot 4.5.1 warning-as-error 拒绝；加入显式 `Dictionary` / `Array` 类型后，又发现非战斗 END 少了 chapter completion 收口，随后按生产桥接逻辑修正。
 
-最终修正提交：`beda90ccac8204b05d07f4191972fd0cc46074d1`。
+最终修正提交：`beda90ccac8204b05d07f4191972fd0cc46074d1`。上一版完整 Godot Runtime 对修正前提交 `7e70775...` 成功；最终追加修正后的 workflow 需要以最新 head 为准。
 
-当前最终 progression regression 的 Godot workflow 结果仍需以该提交对应最新 check-run 为准；未确认前不能写 Runtime 通过。
+### Round 26
+完成首个 route-specific Origin catalog 架构，并开始唐僧路线迁移：
+- 新增 `data/narrative/event_sequences_origin.json`，包含 TANG-01~08 全部生产 Sequence；
+- `EventSequenceManager` 同时加载 shared `event_sequences.json` 与 route-specific Origin catalog，并拒绝 duplicate sequence id；
+- 新增 `combat/test_tang_origin_event_sequences.gd`：验证唐僧 8 条 Sequence、2 个 battle handoff/resume、2 个 choice persistence；
+- 新增 `combat/test_tang_origin_progression.gd`：按 TANG-01→TANG-08 验证真实 chapter cursor、battle victory、non-battle END、TANG-06 Save/Load 恢复到 TANG-07、最终 route complete；
+- `tests/runtime_suite.gd` 增至 17 tests；
+- `test_event_sequence_validator.gd` 增加 TANG-01 route-specific catalog 交叉引用验证。
+
+Wukong progression 修正后的完整 Runtime 已成功通过上一轮验证；唐僧新 catalog 之后的最新 head Runtime 仍需以对应 check-run 最终结果为准。
 
 ---
 
@@ -186,11 +195,29 @@ Choices：WUK-03 `SEEK_FREEDOM`；WUK-08 `ACCEPT_TITLE`；WUK-13 `ENDURE`。
 
 `ui/origin_sequence_journey.gd`：已迁移章节使用 EventSequence；未迁移章节继续 legacy；non-battle END 完成当前 Origin chapter；battle 由 `BattleResolutionService` 原子推进。
 
-当前重点：确认 Wukong progression/save regression 的最终 Runtime；之后增加真实 Journey SceneTree 入口 smoke coverage，再开始 Tang Origin 第一批迁移。
+Wukong progression/save regression 已形成；下一步仍建议补最小 SceneTree 入口 smoke coverage，确认 `main menu → journey → event sequence → battle/END → save`。
 
 ---
 
-## 5. Shared Journey 当前边界
+## 5. Tang Origin 当前状态
+
+Production route 已有 8 章：`TANG-01~08`。
+
+Route-specific Sequence catalog：`data/narrative/event_sequences_origin.json`。
+
+Battle：
+- TANG-06：`TANG_ORIGIN_DOUBLE_RIDGE`
+- TANG-08：`TANG_ORIGIN_FIVE_ELEMENTS`
+
+Choices：TANG-04 / TANG-07，分别复用现有 Origin events。
+
+当前已完成：Sequence catalog、validator 抽查、8 chapter Sequence regression、8 chapter progression/save regression。
+
+尚未确认：最新包含唐僧迁移与 progression regression 的 head 是否已经获得成功 Godot Runtime；必须检查最新 check-run。
+
+---
+
+## 6. Shared Journey 当前边界
 
 `shared_chapters.json` 是 Shared chapter 事实来源；Sequence 不得复制 chapter reward。
 
@@ -206,13 +233,13 @@ Shared-09：full pilgrimage / COIN_MEDIUM / timeline 170。
 
 ---
 
-## 6. 当前产品任务地图
+## 7. 当前产品任务地图
 
 ### P0 — Journey presentation
 MOVE 视觉/状态反馈；WAIT 过渡；END / chapter completion feedback；保持 Battle → Resume → END 不重复结算；必要时增加 SceneTree regression。
 
 ### P1 — Origin migration
-Wukong WUK-01~15 已完成 Sequence 数据迁移，正在做 progression / save / SceneTree 端到端验收；通过后迁移 Tang / Longma / Bajie / Wujing。
+Wukong WUK-01~15 已完成；Tang TANG-01~08 已完成第一阶段迁移与 backend progression regression；下一步优先完成两条路线的 SceneTree smoke coverage，再迁移 Longma。
 
 ### P2 — Cleanup
 逐步收敛旧 BattleUI 结算职责与 `BountyEncounterState`，不得提前破坏兼容链。
@@ -228,23 +255,27 @@ Wukong WUK-01~15 已完成 Sequence 数据迁移，正在做 progression / save 
 
 ---
 
-## 7. 接手点
+## 8. 接手点
 
 优先阅读：
 - `docs/AI_MEMORY.md`
 - `AI_HANDOFF.md`
 - `docs/development_log/README.md`
+- `docs/development_log/2026-09-05-tang-origin-sequence-migration.md`
 - `docs/development_log/2026-09-05-wukong-origin-progression-regression.md`
 - `docs/development_log/2026-09-05-developer-credit-investor-contact.md`
-- `docs/development_log/2026-09-05-wukong-full-origin-sequence-migration.md`
 - `ui/main_menu.gd`
 - `combat/test_main_menu_contact.gd`
 - `combat/test_wukong_origin_progression.gd`
+- `combat/test_tang_origin_event_sequences.gd`
+- `combat/test_tang_origin_progression.gd`
 - `ui/origin_sequence_journey.gd`
 - `ui/journey.gd`
+- `scripts/narrative/event_sequence_manager.gd`
 - `scripts/narrative/event_sequence_validator.gd`
 - `scripts/narrative/event_runner.gd`
 - `scripts/narrative/narrative_event_session.gd`
+- `scripts/narrative/narrative_manager.gd`
 - `scripts/world/battle_resolution_service.gd`
 
 任何下一轮继续：
