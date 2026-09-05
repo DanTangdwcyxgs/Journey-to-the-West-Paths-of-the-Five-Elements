@@ -7,6 +7,7 @@ const TEST_SCRIPTS := [
 	"res://combat/test_chapter_runtime.gd",
 	"res://combat/test_event_runtime.gd",
 	"res://combat/test_event_runner.gd",
+	"res://combat/test_narrative_event_session.gd",
 	"res://combat/test_shared_encounter_combat.gd",
 	"res://combat/test_shared_journey_battles.gd",
 	"res://combat/test_battle_resolution_service.gd",
