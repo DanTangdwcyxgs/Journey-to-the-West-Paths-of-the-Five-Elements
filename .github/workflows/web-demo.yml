@@ -41,16 +41,28 @@ jobs:
         run: godot --version
 
       - name: Import project
-        run: godot --headless --path . --editor --quit
+        run: |
+          set -o pipefail
+          mkdir -p build
+          godot --headless --path . --editor --quit 2>&1 | tee build/import.log
+          if grep -Eq 'SCRIPT ERROR: Parse Error|Failed to load script ".*" with error "Parse error"' build/import.log; then
+            echo "::error::Godot project import reported script parse errors."
+            exit 1
+          fi
 
       - name: Run runtime suite before export
         run: godot --headless --path . --script res://tests/runtime_suite.gd
 
       - name: Export Web build
         run: |
+          set -o pipefail
           rm -rf build/web
           mkdir -p build/web
-          godot --headless --path . --export-release "Web" build/web/index.html
+          godot --headless --path . --export-release "Web" build/web/index.html 2>&1 | tee build/export.log
+          if grep -Eq 'SCRIPT ERROR: Parse Error|Failed to load script ".*" with error "Parse error"' build/export.log; then
+            echo "::error::Godot Web export reported script parse errors."
+            exit 1
+          fi
           test -f build/web/index.html
           test -f build/web/index.pck
           test -f build/web/index.wasm
