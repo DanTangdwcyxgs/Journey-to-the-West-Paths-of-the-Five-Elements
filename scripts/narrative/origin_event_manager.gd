@@ -20,7 +20,10 @@ func get_event(chapter_id: String) -> Dictionary:
 	return definitions.get(chapter_id, {}).duplicate(true)
 
 func get_definition(chapter_id: String) -> EventDefinition:
-	return EventDefinition.new(get_event(chapter_id))
+	var data := get_event(chapter_id)
+	if not data.has("id") and not data.has("event_id") and not chapter_id.is_empty():
+		data["id"] = chapter_id
+	return EventDefinition.new(data)
 
 func has_event(chapter_id: String) -> bool:
 	return not get_event(chapter_id).is_empty()
