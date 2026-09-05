@@ -162,6 +162,12 @@ func record_bounty_defeat(target_id: String, target_name: String, rewards: Array
 func serialize() -> Dictionary:
 	return state.to_dict()
 
+func restore_snapshot(snapshot: Dictionary) -> bool:
+	if snapshot.is_empty():
+		return false
+	state = NarrativeState.from_dict(snapshot)
+	return true
+
 func save(path: String = NarrativeSave.SAVE_PATH) -> bool:
 	return NarrativeSave.save_state(state, path)
 
