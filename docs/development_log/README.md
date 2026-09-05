@@ -2,7 +2,7 @@
 
 所有重要开发更新都必须在本目录留下单独的 Markdown 记录。
 
-项目长期 AI 记忆见：[`docs/AI_MEMORY.md`](../AI_MEMORY.md)。任何 AI / Agent 接手时，先阅读该文件，再按本索引进入最新开发日志。
+项目长期 AI 记忆见：[`docs/AI_MEMORY.md`](../AI_MEMORY.md)。任何 AI / Agent 接手时，先阅读该文件，再按本索引进入最新 development log。
 
 命名格式：
 
@@ -10,6 +10,7 @@
 
 ## 最新记录
 
+- [`2026-09-05 — Sequence Cross-Reference Validation`](2026-09-05-sequence-cross-reference-validation.md)
 - [`2026-09-05 — Shared Sequence Runtime Regression`](2026-09-05-shared-sequence-runtime-regression.md)
 - [`2026-09-05 — Godot Runtime Journey Parse Fix`](2026-09-05-godot-runtime-journey-parse-fix.md)
 - [`2026-09-05 — Shared-07 / Shared-08 / Shared-09 EventSequence Migration`](2026-09-05-shared07-shared09-migration.md)
