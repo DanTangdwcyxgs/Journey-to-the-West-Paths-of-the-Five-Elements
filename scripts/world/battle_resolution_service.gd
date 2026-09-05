@@ -26,7 +26,7 @@ static func resolve_narrative_victory(manager: NarrativeManager, encounter_type:
 			return {}
 	elif encounter_type == "shared":
 		manager.state.record_milestone("SHARED_BATTLE_%s" % encounter_id, manager.state.current_global_timeline)
-		if not SharedJourneyManager.complete(source_chapter_id, manager):
+		if not SharedJourneyManager.complete(source_chapter_id, manager, false):
 			manager.restore_snapshot(snapshot)
 			return {}
 	if not manager.save():
