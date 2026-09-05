@@ -10,6 +10,7 @@
 
 ## 最新记录
 
+- [`2026-09-05 — Tang Origin EventSequence Migration`](2026-09-05-tang-origin-sequence-migration.md)
 - [`2026-09-05 — Wukong Origin Chapter Progression Regression`](2026-09-05-wukong-origin-progression-regression.md)
 - [`2026-09-05 — Developer Credit / Investor Contact Entry`](2026-09-05-developer-credit-investor-contact.md)
 - [`2026-09-05 — Wukong Full Origin EventSequence Migration`](2026-09-05-wukong-full-origin-sequence-migration.md)
