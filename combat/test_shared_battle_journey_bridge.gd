@@ -82,18 +82,19 @@ func _run_bridge(narrative: NarrativeManager, spec: Dictionary) -> bool:
 	_assert(str(action.get("event_id", "")) == choice_event, "%s choice node should use canonical event id" % chapter_id)
 	action = session.submit_choice(choice_id)
 	_assert(str(action.get("kind", "")) == EventRunner.BATTLE, "%s sequence should reach its battle" % chapter_id)
-	_assert(str(action.get("encounter_id", "")) == encounter_id, "%s battle encounter should be canonical" % chapter_id)
+	var handoff: Dictionary = action.get("handoff", {})
+	_assert(str(handoff.get("encounter_id", "")) == encounter_id, "%s battle handoff should use canonical encounter id" % chapter_id)
 	_assert(narrative.save(), "%s pre-battle narrative should be persisted" % chapter_id)
 
-	var handoff := session.start_battle_handoff()
-	_assert(not handoff.is_empty(), "%s should create a battle handoff" % chapter_id)
+	var battle_handoff := session.start_battle_handoff()
+	_assert(not battle_handoff.is_empty(), "%s should create a battle handoff" % chapter_id)
 	_assert(BountyEncounterState.start_encounter(
-		str(handoff.get("encounter_type", "shared")),
-		str(handoff.get("encounter_id", "")),
-		str(handoff.get("source_stage_id", "")),
-		str(handoff.get("source_chapter_id", "")),
-		str(handoff.get("source_route_id", "SHARED_JOURNEY")),
-		{"event_resume": handoff.get("event_resume", {})}
+		str(battle_handoff.get("encounter_type", "shared")),
+		str(battle_handoff.get("encounter_id", "")),
+		str(battle_handoff.get("source_stage_id", "")),
+		str(battle_handoff.get("source_chapter_id", "")),
+		str(battle_handoff.get("source_route_id", "SHARED_JOURNEY")),
+		{"event_resume": battle_handoff.get("event_resume", {})}
 	), "%s battle handoff should enter neutral encounter state" % chapter_id)
 
 	var battle_scene := load("res://ui/battle_ui.tscn") as PackedScene
