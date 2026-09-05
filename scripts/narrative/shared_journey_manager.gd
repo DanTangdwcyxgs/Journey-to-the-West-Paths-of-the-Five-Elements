@@ -2,7 +2,7 @@ class_name SharedJourneyManager
 extends RefCounted
 
 ## Canonical shared-journey progression. World chronology only moves forward.
-## Chapter content is data-driven; this class owns validation, recruitment and state mutation.
+## Chapter data is normalized through ChapterDefinition / ChapterRuntime.
 
 const DATA_PATH := "res://data/narrative/shared_chapters.json"
 const SHARED_BATTLE_MILESTONE_PREFIX := "SHARED_BATTLE_"
@@ -35,33 +35,32 @@ static func get_chapter(chapter_id: String) -> Dictionary:
 			return chapter.duplicate(true)
 	return {}
 
+static func get_definition(chapter_id: String) -> ChapterDefinition:
+	return ChapterDefinition.new(get_chapter(chapter_id))
+
 static func first_chapter_for_state(state: NarrativeState) -> Dictionary:
 	_ensure_loaded()
 	if state.current_shared_chapter != "":
 		return get_chapter(state.current_shared_chapter)
-	for chapter in _chapters:
-		if _requirements_met(chapter, state):
-			return chapter.duplicate(true)
+	for raw_chapter in _chapters:
+		var chapter := ChapterDefinition.new(raw_chapter)
+		if ChapterRuntime.can_enter(chapter, state):
+			return chapter.to_dict()
 	return {}
 
 static func can_enter(chapter_id: String, state: NarrativeState) -> bool:
-	var chapter := get_chapter(chapter_id)
-	if chapter.is_empty():
-		return false
-	if chapter_id in state.completed_shared_chapters:
-		return false
-	return _requirements_met(chapter, state)
+	var chapter := get_definition(chapter_id)
+	return ChapterRuntime.can_enter(chapter, state)
 
 static func complete(chapter_id: String, manager: NarrativeManager, persist: bool = true) -> bool:
 	if manager == null:
 		return false
-	var chapter := get_chapter(chapter_id)
-	if chapter.is_empty() or not can_enter(chapter_id, manager.state):
+	var chapter := get_definition(chapter_id)
+	if not ChapterRuntime.can_enter(chapter, manager.state):
 		return false
 	var snapshot := manager.state.to_dict()
-	var encounter_id := str(chapter.get("encounter_id", ""))
-	if encounter_id != "":
-		var battle_milestone := "%s%s" % [SHARED_BATTLE_MILESTONE_PREFIX, encounter_id]
+	if chapter.is_combat():
+		var battle_milestone := "%s%s" % [SHARED_BATTLE_MILESTONE_PREFIX, chapter.get_encounter_id()]
 		if battle_milestone not in manager.state.completed_milestones:
 			return false
 	else:
@@ -69,31 +68,31 @@ static func complete(chapter_id: String, manager: NarrativeManager, persist: boo
 	if not manager.complete_chapter(chapter_id, true):
 		manager.state = NarrativeState.from_dict(snapshot)
 		return false
-	manager.advance_world_milestone(str(chapter.get("id", "")), int(chapter.get("timeline", 0)))
+	manager.advance_world_milestone(chapter.get_id(), chapter.get_timeline())
 	if not _apply_recruitment_events(chapter, manager):
 		manager.state = NarrativeState.from_dict(snapshot)
 		return false
 	if not _apply_world_effects(chapter, manager):
 		manager.state = NarrativeState.from_dict(snapshot)
 		return false
-	var next_id := str(chapter.get("next", ""))
-	manager.set_shared_chapter(next_id if next_id != "" else chapter_id)
+	var next_id := ChapterRuntime.next_id(chapter)
+	manager.set_shared_chapter(next_id if next_id != "" else chapter.get_id())
 	if persist and not manager.save():
 		manager.state = NarrativeState.from_dict(snapshot)
 		return false
 	return true
 
 static func next_for_state(state: NarrativeState) -> Dictionary:
-	var current := get_chapter(state.current_shared_chapter)
+	var current := get_definition(state.current_shared_chapter)
 	if current.is_empty():
 		return first_chapter_for_state(state)
-	var next_id := str(current.get("next", ""))
+	var next_id := ChapterRuntime.next_id(current)
 	if next_id == "":
-		return current
+		return current.to_dict()
 	return get_chapter(next_id)
 
-static func _apply_chapter_rewards(chapter: Dictionary, manager: NarrativeManager) -> void:
-	var rewards: Array = chapter.get("rewards", [])
+static func _apply_chapter_rewards(chapter: ChapterDefinition, manager: NarrativeManager) -> void:
+	var rewards := chapter.get_rewards()
 	if rewards.is_empty():
 		return
 	var inventory := InventoryManager.new()
@@ -111,33 +110,28 @@ static func _apply_reward(inventory: InventoryManager, reward_id: String) -> voi
 		_:
 			if reward_id != "": inventory.add_item(reward_id, 1)
 
-static func _apply_recruitment_events(chapter: Dictionary, manager: NarrativeManager) -> bool:
-	for event in chapter.get("recruit", []):
-		if not event is Dictionary: continue
+static func _apply_recruitment_events(chapter: ChapterDefinition, manager: NarrativeManager) -> bool:
+	for event in chapter.get_recruitments():
+		if not event is Dictionary:
+			continue
 		var character_id := str(event.get("character", ""))
-		if character_id == "": continue
+		if character_id == "":
+			continue
 		var memories: Array[String] = []
-		for memory_id in event.get("memories", []): memories.append(str(memory_id))
-		if not manager.encounter_character(character_id, memories): return false
+		for memory_id in event.get("memories", []):
+			memories.append(str(memory_id))
+		if not manager.encounter_character(character_id, memories):
+			return false
 	return true
 
-static func _apply_world_effects(chapter: Dictionary, manager: NarrativeManager) -> bool:
-	for effect in chapter.get("world_effects", []):
+static func _apply_world_effects(chapter: ChapterDefinition, manager: NarrativeManager) -> bool:
+	for effect in chapter.get_world_effects():
 		var effect_id := str(effect)
-		if effect_id == "" or effect_id in manager.state.journey_log.get("active_world_effects", []): continue
+		if effect_id == "" or effect_id in manager.state.journey_log.get("active_world_effects", []):
+			continue
 		var log := manager.state.get_journey_log()
 		var effects: Array = log.get("active_world_effects", []).duplicate()
 		effects.append(effect_id)
 		log["active_world_effects"] = effects
 		manager.state.set_journey_log(log)
-	return true
-
-static func _requirements_met(chapter: Dictionary, state: NarrativeState) -> bool:
-	var required := str(chapter.get("required", ""))
-	match required:
-		"WUKONG_RECRUITED": return "WUKONG" in state.recruited_characters
-		"BAI_LONGMA_RECRUITED": return "LONGMA" in state.recruited_characters
-		"ZHU_BAJIE_RECRUITED": return "BAJIE" in state.recruited_characters
-		"SHA_WUJING_RECRUITED": return "WUJING" in state.recruited_characters
-		"PARTY_FULL": return state.recruited_characters.size() >= NarrativeState.CHARACTER_IDS.size()
 	return true
