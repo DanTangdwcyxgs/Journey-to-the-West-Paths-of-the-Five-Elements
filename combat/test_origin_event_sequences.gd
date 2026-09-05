@@ -34,10 +34,7 @@ static func run_all() -> Dictionary:
 	var origin_events := OriginEventManager.new()
 	var wuk03_data := origin_events.get_event("WUK-03")
 	var wuk03_definition := origin_events.get_definition("WUK-03")
-	print("WUK-03 data_empty=" + str(wuk03_data.is_empty()))
-	print("WUK-03 definition_id=" + wuk03_definition.get_id() + " definition_empty=" + str(wuk03_definition.is_empty()))
-	print("WUK-03 choices=" + str(wuk03_definition.get_choices()))
-	assert(origin_events.has_event("WUK-03"), "WUK-03 origin event should load")
+	assert(not wuk03_data.is_empty(), "WUK-03 raw event should exist")
 	assert(not wuk03_definition.is_empty(), "WUK-03 definition should not be empty")
 	assert(EventRuntime.can_present(wuk03_definition, manager, "ORIGIN"), "WUK-03 should be presentable")
 
