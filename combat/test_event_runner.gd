@@ -9,6 +9,15 @@ static func run_all() -> Dictionary:
 	assert(manager.start_new_game("TANG"))
 	assert(manager.encounter_character("WUKONG"))
 
+	var invalid_sequence := EventSequenceDefinition.new({
+		"id": "TEST-EVENT-RUNNER-INVALID",
+		"start": "intro",
+		"nodes": [
+			{"id":"intro", "type":"dialogue", "text":"x", "next":"missing"}
+		]
+	})
+	assert(not invalid_sequence.validate().get("valid", true))
+
 	var sequence := EventSequenceDefinition.new({
 		"schema_version": 1,
 		"id": "TEST-EVENT-RUNNER",
@@ -30,6 +39,7 @@ static func run_all() -> Dictionary:
 	action = runner.complete_action()
 	assert(action.get("kind", "") == EventRunner.CHOICE)
 	assert(action.get("event_id", "") == "SHARED-01-FIVE-ELEMENTS")
+	assert(action.get("next_map", {}).get("TRUST_WUKONG", "") == "battle")
 
 	action = runner.submit_choice("TRUST_WUKONG")
 	assert(action.get("kind", "") == EventRunner.BATTLE)
@@ -49,12 +59,13 @@ static func run_all() -> Dictionary:
 	assert(action.get("kind", "") == EventRunner.END)
 	assert(resumed.is_finished())
 
-	# A persisted choice must not be selectable twice, and runner must reject stale choice input.
+	# The choice is persisted by EventRuntime and cannot be selected twice.
 	assert(resumed.submit_choice("TRUST_WUKONG").is_empty())
 
 	return {
 		"passed": true,
 		"sequence_id": sequence.get_id(),
+		"supports_graph_validation": true,
 		"supports_battle_resume": true,
 		"supports_choice_persistence": true,
 	}
