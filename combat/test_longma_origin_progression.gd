@@ -23,6 +23,7 @@ static func run_all() -> Dictionary:
 		var action := runner.start()
 		assert(not action.is_empty(), "%s should start" % chapter_id)
 		var guard := 0
+		var has_battle := false
 		while true:
 			guard += 1
 			assert(guard < 16, "%s exceeded progression guard" % chapter_id)
@@ -34,6 +35,7 @@ static func run_all() -> Dictionary:
 					action = runner.submit_choice(str(CHOICE_IDS[chapter_id]))
 					choices_verified += 1
 				EventRunner.BATTLE:
+					has_battle = true
 					var handoff: Dictionary = action.get("handoff", {})
 					var encounter_id := str(handoff.get("encounter_id", ""))
 					assert(encounter_id != "", "%s battle needs encounter id" % chapter_id)
@@ -63,6 +65,10 @@ static func run_all() -> Dictionary:
 					break
 				_:
 					assert(false, "%s returned unsupported action" % chapter_id)
+
+		if not has_battle:
+			var completed := manager.complete_origin_chapter("LONGMA")
+			assert(str(completed.get("id", "")) == chapter_id, "%s END should complete the current non-battle origin chapter" % chapter_id)
 
 		assert(str(manager.state.completed_chapters[manager.state.completed_chapters.size() - 1]) == chapter_id, "%s should be the latest completed chapter" % chapter_id)
 
