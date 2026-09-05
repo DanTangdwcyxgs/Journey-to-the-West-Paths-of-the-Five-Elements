@@ -97,7 +97,7 @@ func apply_speed_delta(delta: int, duration: int) -> void:
 	if safe_duration <= 0:
 		return
 	var next_delta := int(delta)
-	var should_replace := speed_effect_turns <= 0 or abs(next_delta) > abs(speed_delta)
+	var should_replace: bool = speed_effect_turns <= 0 or abs(next_delta) > abs(speed_delta)
 	if should_replace:
 		speed_delta = next_delta
 		_recalculate_speed()
