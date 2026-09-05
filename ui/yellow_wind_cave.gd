@@ -34,7 +34,7 @@ func _load_data() -> void:
 		rooms = parsed.get("rooms", [])
 
 func _recover_room_index() -> int:
-	var heard := narrative.state.get_world_state().get("heard_rumors", [])
+	var heard: Array = narrative.state.get_world_state().get("heard_rumors", [])
 	var index := 0
 	for i in range(rooms.size() - 1):
 		var room_id := str(rooms[i].get("id", ""))
