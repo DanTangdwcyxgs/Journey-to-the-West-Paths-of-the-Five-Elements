@@ -34,15 +34,17 @@ const CASES := [
 
 func _initialize() -> void:
 	var first := _new_base_narrative()
-	_assert(_run_bridge(first, CASES[0]), "Eagle Sorrow bridge should complete")
+	_assert(await _run_bridge(first, CASES[0]), "Eagle Sorrow bridge should complete")
 	_assert(first.state.current_shared_chapter == "SHARED-04-EARLY-DEMON-TALES", "Eagle bridge should advance shared chapter")
 	_assert(SharedJourneyManager.complete("SHARED-04-EARLY-DEMON-TALES", first), "Early demon chapter should advance before Gaojiazhuang")
+	_assert(first.save(), "progress before Gaojiazhuang should be persisted")
 
-	_assert(_run_bridge(first, CASES[1]), "Gaojiazhuang bridge should complete")
+	_assert(await _run_bridge(first, CASES[1]), "Gaojiazhuang bridge should complete")
 	_assert(first.state.current_shared_chapter == "SHARED-06-FOUR-PERSON-JOURNEY", "Gaojiazhuang bridge should advance shared chapter")
 	_assert(SharedJourneyManager.complete("SHARED-06-FOUR-PERSON-JOURNEY", first), "Four-person chapter should advance before Flowing Sands")
+	_assert(first.save(), "progress before Flowing Sands should be persisted")
 
-	_assert(_run_bridge(first, CASES[2]), "Flowing Sands bridge should complete")
+	_assert(await _run_bridge(first, CASES[2]), "Flowing Sands bridge should complete")
 	_assert(first.state.current_shared_chapter == "SHARED-08-PARTY-FULL", "Flowing Sands bridge should advance shared chapter")
 	_assert(first.state.recruited_characters == ["WUKONG", "TANG", "LONGMA", "BAJIE", "WUJING"], "all three shared battle bridges should recruit the canonical companions")
 
@@ -80,6 +82,7 @@ func _run_bridge(narrative: NarrativeManager, spec: Dictionary) -> bool:
 	action = session.submit_choice(choice_id)
 	_assert(str(action.get("kind", "")) == EventRunner.BATTLE, "%s sequence should reach its battle" % chapter_id)
 	_assert(str(action.get("encounter_id", "")) == encounter_id, "%s battle encounter should be canonical" % chapter_id)
+	_assert(narrative.save(), "%s pre-battle narrative should be persisted" % chapter_id)
 
 	var handoff := session.start_battle_handoff()
 	_assert(not handoff.is_empty(), "%s should create a battle handoff" % chapter_id)
@@ -105,6 +108,7 @@ func _run_bridge(narrative: NarrativeManager, spec: Dictionary) -> bool:
 	battle_ui.queue_free()
 	await process_frame
 
+	_assert(narrative.load(), "%s test narrative should reload the committed battle result" % chapter_id)
 	var active_after := BountyEncounterState.get_active_record()
 	_assert(not active_after.is_empty(), "%s event resume should survive BattleUI victory" % chapter_id)
 	_assert(not active_after.get("event_resume", {}).is_empty(), "%s event resume payload should survive victory" % chapter_id)
