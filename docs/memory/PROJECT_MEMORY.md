@@ -46,7 +46,7 @@
 - 保留原有叙事、选项、战斗接管、共享主线、存档和队伍逻辑。
 - `ui/visual_overlay.gd` 同步调整：进入个人序章时不再把五人横排在画面中，而是突出当前起始角色的大像素立绘，并加入地面阴影和少量场景地标；进入共享旅途后才恢复五人队伍构图。
 - 新提交：`b24c93787848bf6bb148e96de75eff908b7ace9b`（`ui: rebuild opening journey scene as jrpg dialogue screen`）。
-- 新提交：`c766f5e49e02e5d5f9c261dcc01741c612c49f`（`ui: make journey origin scene character-focused`）。
+- 新提交：`c766f5e49e02e5d5f5f9c261dcc01741c612c49f`（`ui: make journey origin scene character-focused`）。
 
 ### 当前验收状态
 - Web Demo run #45 已针对 `c766f5e...` 自动触发，目前状态为 queued，尚未得到最终 conclusion；因此不能宣称 Web 已部署完成。
@@ -72,10 +72,10 @@
 - 主菜单重构曾暂时删掉“开发者 / 投资合作”入口；已补回，并通过现有 `test_main_menu_contact` 回归。
 - Runtime #252 曾失败，根因是上述 HUD 脚本类型错误；随后修复后，最新 Runtime #255 已 SUCCESS。
 - Runtime #255 的 Checkout、Godot 导入、签名探针、EventRuntime、EventRunner、完整 runtime suite 全部成功。
-- Web Demo #57：Build Web Demo 的导入、runtime suite、Web export、landing page、GitHub Pages、artifact upload 全部 SUCCESS；截至记录时 Deploy Web Demo 的“Deploy to GitHub Pages”步骤仍 in_progress，不能提前宣称最终部署完成。
+- Web Demo #57：Build Web Demo 的导入、runtime suite、Web export、landing page、GitHub Pages、artifact upload 全部 SUCCESS；Deploy Web Demo 最终状态需要以该 run 的最终结论为准。
 
 ### 当前稳定基线
-- 最新代码 head：`8669c69737e7937a36167966a2b1d3abff3ebee9`。
+- 当前核心代码基线：`8669c69737e7937a36167966a2b1d3abff3ebee9`。
 - 全项目长期视觉规范已改为“参考图式硬朗 2D 像素 JRPG HUD”；后续所有新页面、新面板、新敌人状态框都必须沿用这一规范。
 - 允许各页面在信息结构上不同，但框体几何、描边语言、色彩层级、像素密度、状态条风格必须统一。
 
@@ -90,3 +90,33 @@
 - 后续模型开始 UI 工作前，优先查看 `docs/visual_reference/battle_ui_reference.webp` 与 `docs/visual_reference/README.md`。
 - 该参考图不是某个单独战斗场景的灵感，而是全项目 HUD 的长期视觉母版。
 - 不要因为页面类型不同而回到普通圆角卡片、网页表格、浅色表单或简单几何框。
+
+## 2026-09-05 · 非图片优先开发与 AI 美术接口
+
+### 用户新的工作分工
+- 用户没有游戏开发/美术经验，因此不要求用户自己定义具体美术规范。
+- 用户允许使用 Gemini Banana 等 AI 绘图工具生成最终角色、场景、特效资源。
+- 当前优先完成所有非图片工程；美术资源不足不应阻塞玩法、剧情、战斗、地图、保存和 Vertical Slice。
+- 程序需要提供稳定的资源接口，使未来替换图片不会修改核心游戏逻辑。
+
+### 本轮新增
+- 新增 `scripts/presentation/art_asset_catalog.gd`：统一登记角色与场景资源，提供 `character_texture()` / `scene_texture()` 等访问接口。
+- `ui/visual_overlay.gd` 已改为通过 `ArtAssetCatalog` 读取资源，不再把具体文件路径散落在场景表现代码里。
+- 新增 `docs/visual_reference/AI_ASSET_PIPELINE.md`：明确 AI 美术资源的尺寸、透明背景、轮廓、像素化、角色识别点、场景留白、HUD 禁区和换图流程。
+- 新增 `combat/test_art_asset_catalog.gd`，并加入 `tests/runtime_suite.gd`，用于在换图后自动检查所有登记资源是否仍可加载。
+
+### 当前原则
+- 游戏逻辑与美术彻底解耦：Domain / Narrative / World / Save / Presentation Layout 是代码职责；角色图、场景图、特效图由资源生产工具负责。
+- 当前 SVG 仍是可运行占位资源，不代表最终美术完成度。
+- Gemini Banana 生成的 PNG/WebP 可以在不修改剧情和战斗代码的情况下替换；必要时只需要更新 `ArtAssetCatalog` 的资源路径或文件。
+
+### 接下来推荐
+- 优先继续清理非图片技术债：RewardService、WorldActionService、Scene Handoff、Save/Resume、Camp/Relationship、Vertical Slice。
+- 美术随后按 `AI_ASSET_PIPELINE.md` 分批替换。
+- 每次重要工程批次仍需实际跑 Godot Runtime / Web CI，并更新本文件。
+
+### 后续模型接手注意
+- 不要重新采用“圆头 + 方身体 + 简单线条”的程序人物。
+- 不要把“有 SVG 资源”直接等同于“美术完成”；仍需检查画面构图、缩放、遮挡层级、角色比例、UI 占比和可玩感。
+- 用户希望程序持续直接修改 GitHub 仓库、测试并提交，不要反复询问已经明确的目标。
+- 每个工作会话都必须把实际改动、测试、当前 commit、未完成事项和下一步写入本文件。
