@@ -22,5 +22,8 @@ jobs:
       - name: Verify Godot
         run: godot --version
 
+      - name: Import project and register scripts
+        run: godot --headless --path . --editor --quit
+
       - name: Run headless runtime suite
         run: godot --headless --path . --script res://tests/runtime_suite.gd
