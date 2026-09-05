@@ -22,6 +22,7 @@ static func validate(definition: EventSequenceDefinition) -> Dictionary:
 		return {"valid": false, "errors": errors}
 
 	var chapter_id := str(data.get("chapter_id", ""))
+	var origin_routes := OriginRouteManager.new().definitions
 	if chapter_id.is_empty():
 		errors.append("sequence missing chapter_id")
 	else:
@@ -29,15 +30,12 @@ static func validate(definition: EventSequenceDefinition) -> Dictionary:
 			var shared_chapter := SharedJourneyManager.get_chapter(chapter_id)
 			if shared_chapter.is_empty():
 				errors.append("shared sequence chapter not found: %s" % chapter_id)
-		else:
-			var origin_routes := OriginRouteManager.new().definitions
-			if not _origin_chapter_exists(origin_routes, chapter_id):
-				errors.append("origin sequence chapter not found: %s" % chapter_id)
+		elif not _origin_chapter_exists(origin_routes, chapter_id):
+			errors.append("origin sequence chapter not found: %s" % chapter_id)
 
 	var encounter_manager := EncounterManager.new()
 	var origin_manager := OriginEventManager.new()
 	var shared_manager := SharedEventManager.new()
-	var origin_routes := origin_manager.definitions
 	for node in definition.get_nodes():
 		if not node is Dictionary:
 			continue
