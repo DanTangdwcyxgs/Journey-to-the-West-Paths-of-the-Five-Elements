@@ -40,10 +40,15 @@ jobs:
       - name: Verify Godot
         run: godot --version
 
-      - name: Import project
+      - name: Warm up Godot asset import
         run: |
           set -o pipefail
           mkdir -p build
+          godot --headless --path . --editor --quit 2>&1 | tee build/import-warmup.log || true
+
+      - name: Import project
+        run: |
+          set -o pipefail
           godot --headless --path . --editor --quit 2>&1 | tee build/import.log
           if grep -Eq 'SCRIPT ERROR: Parse Error|Failed to load script ".*" with error "Parse error"' build/import.log; then
             echo "::error::Godot project import reported script parse errors."
