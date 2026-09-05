@@ -15,7 +15,7 @@ const EDGE := Color("20323d")
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_PASS
 	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-	var empty := StyleBoxEmpty.new()
+	var empty: StyleBoxEmpty = StyleBoxEmpty.new()
 	add_theme_stylebox_override("panel", empty)
 	queue_redraw()
 
@@ -24,7 +24,7 @@ func _notification(what: int) -> void:
 		queue_redraw()
 
 func _poly(w: float, h: float, inset: float = 0.0) -> PackedVector2Array:
-	var c := max(4.0, cut - inset * 0.45)
+	var c: float = maxf(4.0, cut - inset * 0.45)
 	return PackedVector2Array([
 		Vector2(inset + c, inset),
 		Vector2(w - inset - c, inset),
@@ -39,15 +39,15 @@ func _poly(w: float, h: float, inset: float = 0.0) -> PackedVector2Array:
 func _draw() -> void:
 	if size.x < 8.0 or size.y < 8.0:
 		return
-	var outer := _poly(size.x, size.y)
-	var inner := _poly(size.x, size.y, 4.0)
+	var outer: PackedVector2Array = _poly(size.x, size.y)
+	var inner: PackedVector2Array = _poly(size.x, size.y, 4.0)
 	draw_colored_polygon(outer, Color(INK, panel_alpha))
-	draw_colored_polygon(inner, Color(INNER, min(panel_alpha, 0.92)))
+	draw_colored_polygon(inner, Color(INNER, minf(panel_alpha, 0.92)))
 	draw_polyline(outer + PackedVector2Array([outer[0]]), Color(EDGE, 0.98), 2.0, true)
 	draw_polyline(inner + PackedVector2Array([inner[0]]), Color(accent, 0.78), 1.0, true)
-	var line_y := 7.0
+	var line_y: float = 7.0
 	draw_line(Vector2(cut + 8.0, line_y), Vector2(size.x - cut - 8.0, line_y), Color(accent, 0.28), 1.0, true)
-	for x in range(int(cut + 14.0), int(max(cut + 14.0, size.x - cut - 8.0)), 10):
+	for x in range(int(cut + 14.0), int(maxf(cut + 14.0, size.x - cut - 8.0)), 10):
 		draw_rect(Rect2(float(x), line_y + 3.0, 3.0, 2.0), Color(accent, 0.20))
 	for p in [Vector2(8, size.y * 0.5 - 1), Vector2(size.x - 11, size.y * 0.5 - 1)]:
 		draw_rect(Rect2(p, Vector2(3, 3)), Color(accent, 0.42))
