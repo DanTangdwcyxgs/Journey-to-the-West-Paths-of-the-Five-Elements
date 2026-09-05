@@ -154,6 +154,103 @@
         {"id":"change","type":"dialogue","speaker":"白龙","text":"龙身留在过去，白马踏上西行路。身份可以改变，真正愿意承担的使命却要一直带在身上。","next":"finish"},
         {"id":"finish","type":"end"}
       ]
+    },
+    {
+      "id": "BAJIE-01-SEQUENCE",
+      "chapter_id": "BAJIE-01",
+      "namespace": "ORIGIN",
+      "start": "heaven",
+      "nodes": [
+        {"id":"heaven","type":"dialogue","speaker":"旁白","text":"天河水府的号令如潮。天蓬元帅统领水军，威风与掌声都来得太容易，也让他渐渐忘了职责背后的重量。","next":"finish"},
+        {"id":"finish","type":"end"}
+      ]
+    },
+    {
+      "id": "BAJIE-02-SEQUENCE",
+      "chapter_id": "BAJIE-02",
+      "namespace": "ORIGIN",
+      "start": "banquet",
+      "nodes": [
+        {"id":"banquet","type":"dialogue","speaker":"猪八戒","text":"蟠桃宴上的热闹让人忘了规矩。可若连自己都管不住，又凭什么说掌得住天河水军？","next":"choice"},
+        {"id":"choice","type":"choice","event_id":"BAJIE-02","next":"finish"},
+        {"id":"finish","type":"end"}
+      ]
+    },
+    {
+      "id": "BAJIE-03-SEQUENCE",
+      "chapter_id": "BAJIE-03",
+      "namespace": "ORIGIN",
+      "start": "fall",
+      "nodes": [
+        {"id":"fall","type":"dialogue","speaker":"旁白","text":"天河旧职一朝褪去。失去元帅名号之后，八戒第一次只能用一个普通人的眼光重新看待自己的得失。","next":"resolve"},
+        {"id":"resolve","type":"dialogue","speaker":"猪八戒","text":"原来没了官印，肚子还是会饿，路还是得自己走。","next":"finish"},
+        {"id":"finish","type":"end"}
+      ]
+    },
+    {
+      "id": "BAJIE-04-SEQUENCE",
+      "chapter_id": "BAJIE-04",
+      "namespace": "ORIGIN",
+      "start": "mortal",
+      "nodes": [
+        {"id":"mortal","type":"dialogue","speaker":"旁白","text":"凡间的烟火比天庭更近。旧日记忆没有消失，新的欲望却也随肉身一同生长。","next":"finish"},
+        {"id":"finish","type":"end"}
+      ]
+    },
+    {
+      "id": "BAJIE-05-SEQUENCE",
+      "chapter_id": "BAJIE-05",
+      "namespace": "ORIGIN",
+      "start": "gao",
+      "nodes": [
+        {"id":"gao","type":"dialogue","speaker":"旁白","text":"高老庄给了八戒一个看似安稳的归宿。可他越想留下，越害怕妖身迟早会把这份安稳撕碎。","next":"finish"},
+        {"id":"finish","type":"end"}
+      ]
+    },
+    {
+      "id": "BAJIE-06-SEQUENCE",
+      "chapter_id": "BAJIE-06",
+      "namespace": "ORIGIN",
+      "start": "choice",
+      "nodes": [
+        {"id":"choice","type":"choice","event_id":"BAJIE-06","next":"battle"},
+        {"id":"battle","type":"battle","encounter_type":"origin","encounter_id":"BAJIE_ORIGIN_GAO_WILD","source_chapter_id":"BAJIE-06","source_route_id":"BAJIE_ORIGIN","next":"after_battle"},
+        {"id":"after_battle","type":"dialogue","speaker":"猪八戒","text":"家不是只拿来躲风的地方。真要留下，就得肯替身边的人扛一次。","next":"finish"},
+        {"id":"finish","type":"end"}
+      ]
+    },
+    {
+      "id": "BAJIE-07-SEQUENCE",
+      "chapter_id": "BAJIE-07",
+      "namespace": "ORIGIN",
+      "start": "reveal",
+      "nodes": [
+        {"id":"reveal","type":"dialogue","speaker":"旁白","text":"妖身终于无法再藏。别人眼中的猪妖，与八戒心里那个还想过安稳日子的人，第一次正面撞在一起。","next":"resolve"},
+        {"id":"resolve","type":"dialogue","speaker":"猪八戒","text":"笑我也好，怕我也罢，至少这回我不再装作自己什么都没做。","next":"finish"},
+        {"id":"finish","type":"end"}
+      ]
+    },
+    {
+      "id": "BAJIE-08-SEQUENCE",
+      "chapter_id": "BAJIE-08",
+      "namespace": "ORIGIN",
+      "start": "duel",
+      "nodes": [
+        {"id":"duel","type":"dialogue","speaker":"孙悟空","text":"猪八戒，躲在高老庄不是一辈子的法子。你若真有本事，就把该面对的都面对了。","next":"battle"},
+        {"id":"battle","type":"battle","encounter_type":"origin","encounter_id":"BAJIE_ORIGIN_WUKONG_DUEL","source_chapter_id":"BAJIE-08","source_route_id":"BAJIE_ORIGIN","next":"after_battle"},
+        {"id":"after_battle","type":"dialogue","speaker":"猪八戒","text":"猴哥，你赢了这一场，也逼得我终于没法再躲。","next":"finish"},
+        {"id":"finish","type":"end"}
+      ]
+    },
+    {
+      "id": "BAJIE-09-SEQUENCE",
+      "chapter_id": "BAJIE-09",
+      "namespace": "ORIGIN",
+      "start": "departure",
+      "nodes": [
+        {"id":"departure","type":"dialogue","speaker":"猪八戒","text":"高老庄的日子放不下，也不能再回头。若西行真能让我学会负责，那就走这一趟。","next":"finish"},
+        {"id":"finish","type":"end"}
+      ]
     }
   ]
 }
