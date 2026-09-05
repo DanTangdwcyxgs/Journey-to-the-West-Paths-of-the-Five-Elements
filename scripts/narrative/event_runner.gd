@@ -21,12 +21,12 @@ var current_node_id: String = ""
 var pending_action: Dictionary = {}
 var status: String = "idle"
 var last_error: String = ""
-var namespace: String = "SHARED"
+var event_namespace: String = "SHARED"
 
-func _init(definition: EventSequenceDefinition = null, narrative_manager = null, event_namespace: String = "SHARED") -> void:
+func _init(definition: EventSequenceDefinition = null, narrative_manager = null, event_namespace_id: String = "SHARED") -> void:
 	sequence = definition
 	manager = narrative_manager
-	namespace = event_namespace
+	event_namespace = event_namespace_id
 
 func start() -> Dictionary:
 	last_error = ""
@@ -84,12 +84,12 @@ func submit_choice(choice_id: String) -> Dictionary:
 	var event := _load_event(event_id)
 	if event == null or event.is_empty():
 		return _fail("event not found: %s" % event_id)
-	if not EventRuntime.can_present(event, manager, namespace):
+	if not EventRuntime.can_present(event, manager, event_namespace):
 		return _fail("event cannot be presented: %s" % event_id)
 	var choice := event.get_choice(choice_id)
 	if choice.is_empty():
 		return _fail("choice not found: %s" % choice_id)
-	if not EventRuntime.apply_choice(event, manager, choice_id, namespace):
+	if not EventRuntime.apply_choice(event, manager, choice_id, event_namespace):
 		return _fail("choice rejected: %s" % choice_id)
 	var next_id := _resolve_choice_next(pending_action, choice)
 	if next_id.is_empty():
@@ -113,7 +113,7 @@ func to_dict() -> Dictionary:
 		"pending_action": pending_action.duplicate(true),
 		"status": status,
 		"last_error": last_error,
-		"namespace": namespace,
+		"namespace": event_namespace,
 	}
 
 func restore(snapshot: Dictionary) -> bool:
@@ -129,6 +129,7 @@ func restore(snapshot: Dictionary) -> bool:
 	pending_action = snapshot.get("pending_action", {}).duplicate(true)
 	status = str(snapshot.get("status", "idle"))
 	last_error = str(snapshot.get("last_error", ""))
+	event_namespace = str(snapshot.get("namespace", event_namespace))
 	return true
 
 func _present_current_node() -> Dictionary:
@@ -196,7 +197,7 @@ func _present_choice(node: Dictionary) -> Dictionary:
 	var event := _load_event(event_id)
 	if event == null or event.is_empty():
 		return _fail("event not found: %s" % event_id)
-	if not EventRuntime.can_present(event, manager, namespace):
+	if not EventRuntime.can_present(event, manager, event_namespace):
 		return _fail("event cannot be presented: %s" % event_id)
 	var action := {
 		"kind": CHOICE,
@@ -213,7 +214,7 @@ func _present_battle(node: Dictionary) -> Dictionary:
 	var encounter_id := str(node.get("encounter_id", ""))
 	if encounter_id.is_empty():
 		return _fail("battle node missing encounter_id")
-	var encounter_type := str(node.get("encounter_type", namespace.to_lower()))
+	var encounter_type := str(node.get("encounter_type", event_namespace.to_lower()))
 	var route_id := str(node.get("source_route_id", ""))
 	if encounter_type == "shared" and route_id.is_empty():
 		route_id = "SHARED_JOURNEY"
@@ -274,7 +275,7 @@ func _resolve_choice_next(node_action: Dictionary, choice: Dictionary) -> String
 
 func _load_event(event_id: String) -> EventDefinition:
 	var event_manager
-	if namespace == "ORIGIN":
+	if event_namespace == "ORIGIN":
 		event_manager = OriginEventManager.new()
 	else:
 		event_manager = SharedEventManager.new()
