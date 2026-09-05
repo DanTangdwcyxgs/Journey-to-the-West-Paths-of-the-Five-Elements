@@ -87,6 +87,39 @@
         {"id":"departure","type":"dialogue","speaker":"玄奘","text":"五人齐备，西天路也终于真正展开。前方还有千山万水，但这一次，我们一起走。","next":"finish"},
         {"id":"finish","type":"end"}
       ]
+    },
+    {
+      "id": "WUK-01-SEQUENCE",
+      "chapter_id": "WUK-01",
+      "namespace": "ORIGIN",
+      "start": "birth",
+      "nodes": [
+        {"id":"birth","type":"dialogue","speaker":"旁白","text":"一块灵石在花果山顶裂开。石猴睁眼看见天地，也第一次感到自己不属于任何人的安排。","next":"finish"},
+        {"id":"finish","type":"end"}
+      ]
+    },
+    {
+      "id": "WUK-02-SEQUENCE",
+      "chapter_id": "WUK-02",
+      "namespace": "ORIGIN",
+      "start": "cave",
+      "nodes": [
+        {"id":"cave","type":"dialogue","speaker":"孙悟空","text":"水帘洞虽是猴儿们的新家，也总有人想来抢走这份安稳。那就让我自己守住它。","next":"battle"},
+        {"id":"battle","type":"battle","encounter_type":"origin","encounter_id":"WUKONG_ORIGIN_WATER_CAVE","source_chapter_id":"WUK-02","source_route_id":"WUKONG_ORIGIN","next":"after_battle"},
+        {"id":"after_battle","type":"dialogue","speaker":"孙悟空","text":"原来守住自由，也得有承担后果的本事。","next":"finish"},
+        {"id":"finish","type":"end"}
+      ]
+    },
+    {
+      "id": "WUK-03-SEQUENCE",
+      "chapter_id": "WUK-03",
+      "namespace": "ORIGIN",
+      "start": "sea",
+      "nodes": [
+        {"id":"sea","type":"dialogue","speaker":"孙悟空","text":"花果山再好，也回答不了寿数将尽的问题。若要寻找答案，就得先踏过这片海。","next":"choice"},
+        {"id":"choice","type":"choice","event_id":"WUK-03","next":"finish"},
+        {"id":"finish","type":"end"}
+      ]
     }
   ]
 }
