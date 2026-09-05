@@ -246,11 +246,16 @@ func _on_combat_finished(winner:String) -> void:
 			status_label.text = "战斗胜利，但找不到遭遇定义。"
 			return
 		# Validate the narrative handoff before mutating inventory, milestones, or journal state.
+		var origin: OriginRouteManager
 		if encounter_type == "origin":
 			if source_chapter_id.is_empty() or source_route_id.is_empty():
 				status_label.text = "个人战斗胜利，但章节来源信息缺失。"
 				return
-			var origin := OriginRouteManager.new()
+			origin = OriginRouteManager.new()
+			var route := origin.get_route(str(narrative.state.starting_character))
+			if str(route.get("route_id", "")) != source_route_id:
+				status_label.text = "个人战斗胜利，但个人路线来源不匹配。"
+				return
 			var chapter := origin.get_current_chapter(narrative, str(narrative.state.starting_character))
 			if str(chapter.get("id", "")) != source_chapter_id:
 				status_label.text = "个人战斗胜利，但当前章节已发生变化。"
@@ -270,7 +275,6 @@ func _on_combat_finished(winner:String) -> void:
 		battle_inventory.restore(applied.get("inventory", {}))
 		if encounter_type == "normal" and not source_stage_id.is_empty(): narrative.state.add_world_rumor(CAVE_PROGRESS_PREFIX + source_stage_id)
 		if encounter_type == "origin":
-			var origin := OriginRouteManager.new()
 			origin.complete_current(narrative, str(narrative.state.starting_character))
 		elif encounter_type == "shared":
 			narrative.state.record_milestone("%s%s" % [SHARED_BATTLE_MILESTONE_PREFIX, encounter_id], narrative.state.current_global_timeline)
