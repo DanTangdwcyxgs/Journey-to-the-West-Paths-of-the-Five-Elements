@@ -15,10 +15,22 @@ static func validate(definition: EventSequenceDefinition) -> Dictionary:
 			errors.append(str(error))
 		return {"valid": false, "errors": errors}
 
-	var namespace_id := str(definition.to_dict().get("namespace", "SHARED")).to_upper()
+	var data := definition.to_dict()
+	var namespace_id := str(data.get("namespace", "SHARED")).to_upper()
 	if namespace_id != "ORIGIN" and namespace_id != "SHARED":
 		errors.append("invalid namespace: %s" % namespace_id)
 		return {"valid": false, "errors": errors}
+
+	var chapter_id := str(data.get("chapter_id", ""))
+	if chapter_id.is_empty():
+		errors.append("sequence missing chapter_id")
+	else:
+		if namespace_id == "SHARED":
+			var shared_chapter := SharedJourneyManager.get_chapter(chapter_id)
+			if shared_chapter.is_empty():
+				errors.append("shared sequence chapter not found: %s" % chapter_id)
+		elif not _origin_chapter_exists(OriginEventManager.new().definitions, chapter_id):
+			errors.append("origin sequence chapter not found: %s" % chapter_id)
 
 	var encounter_manager := EncounterManager.new()
 	var origin_manager := OriginEventManager.new()
@@ -44,15 +56,16 @@ static func validate(definition: EventSequenceDefinition) -> Dictionary:
 			var source_chapter_id := str(node.get("source_chapter_id", ""))
 			if source_chapter_id.is_empty():
 				errors.append("battle node missing source_chapter_id: %s" % node_id)
+			elif source_chapter_id != chapter_id:
+				errors.append("battle source chapter %s does not match sequence chapter %s" % [source_chapter_id, chapter_id])
 			elif namespace_id == "SHARED":
 				var chapter := SharedJourneyManager.get_chapter(source_chapter_id)
 				if chapter.is_empty():
 					errors.append("shared source chapter not found %s at node %s" % [source_chapter_id, node_id])
 				elif str(chapter.get("encounter_id", "")) != encounter_id:
 					errors.append("battle encounter %s does not match chapter %s" % [encounter_id, source_chapter_id])
-			elif namespace_id == "ORIGIN":
-				if not _origin_chapter_exists(origin_routes, source_chapter_id):
-					errors.append("origin source chapter not found %s at node %s" % [source_chapter_id, node_id])
+			elif namespace_id == "ORIGIN" and not _origin_chapter_exists(origin_routes, source_chapter_id):
+				errors.append("origin source chapter not found %s at node %s" % [source_chapter_id, node_id])
 
 	return {"valid": errors.is_empty(), "errors": errors}
 
