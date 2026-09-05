@@ -7,20 +7,20 @@ extends RefCounted
 static func from_data(data: Dictionary) -> EventDefinition:
 	return EventDefinition.new(data)
 
-static func can_present(event: EventDefinition, manager: NarrativeManager) -> bool:
-	if event == null or event.is_empty() or manager == null:
+static func can_present(event: EventDefinition, manager: NarrativeManager, namespace: String) -> bool:
+	if event == null or event.is_empty() or manager == null or not _valid_namespace(namespace):
 		return false
-	return _choice_for(event, manager) == ""
+	return _selected_choice(event, manager, namespace) == ""
 
-static func selected_choice(event: EventDefinition, manager: NarrativeManager) -> String:
-	if event == null or manager == null:
+static func selected_choice(event: EventDefinition, manager: NarrativeManager, namespace: String) -> String:
+	if event == null or manager == null or not _valid_namespace(namespace):
 		return ""
-	return _choice_for(event, manager)
+	return _selected_choice(event, manager, namespace)
 
 static func apply_choice(event: EventDefinition, manager: NarrativeManager, choice_id: String, namespace: String) -> bool:
-	if event == null or event.is_empty() or manager == null or choice_id == "" or namespace == "":
+	if event == null or event.is_empty() or manager == null or choice_id == "" or not _valid_namespace(namespace):
 		return false
-	if _choice_for(event, manager) != "":
+	if _selected_choice(event, manager, namespace) != "":
 		return false
 	var choice := event.get_choice(choice_id)
 	if choice.is_empty():
@@ -28,24 +28,19 @@ static func apply_choice(event: EventDefinition, manager: NarrativeManager, choi
 	_apply_effects(manager, choice.get("effects", {}))
 	if namespace == "ORIGIN":
 		manager.state.record_origin_choice(event.get_id(), choice_id)
-	elif namespace == "SHARED":
-		manager.state.record_shared_choice(event.get_id(), choice_id)
 	else:
-		return false
+		manager.state.record_shared_choice(event.get_id(), choice_id)
 	return true
 
-static func _choice_for(event: EventDefinition, manager: NarrativeManager) -> String:
+static func _valid_namespace(namespace: String) -> bool:
+	return namespace == "ORIGIN" or namespace == "SHARED"
+
+static func _selected_choice(event: EventDefinition, manager: NarrativeManager, namespace: String) -> String:
 	if event.get_id() == "":
 		return ""
-	for prefix in ["ORIGIN", "SHARED"]:
-		var value := ""
-		if prefix == "ORIGIN":
-			value = manager.state.get_origin_choice(event.get_id())
-		else:
-			value = manager.state.get_shared_choice(event.get_id())
-		if value != "":
-			return value
-	return ""
+	if namespace == "ORIGIN":
+		return manager.state.get_origin_choice(event.get_id())
+	return manager.state.get_shared_choice(event.get_id())
 
 static func _apply_effects(manager: NarrativeManager, effects_value: Variant) -> void:
 	if not effects_value is Dictionary:
