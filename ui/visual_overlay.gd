@@ -78,7 +78,6 @@ func _draw() -> void:
 		_draw_journey_stage()
 
 func _draw_main_menu_stage() -> void:
-	# Three-quarter group portrait, deliberately separated so silhouettes read.
 	_draw_sprite("WUKONG", Vector2(size.x * 0.18, size.y * 0.70), 2.35)
 	_draw_sprite("TANG", Vector2(size.x * 0.29, size.y * 0.73), 2.05)
 	_draw_sprite("BAJIE", Vector2(size.x * 0.40, size.y * 0.76), 2.25)
@@ -87,13 +86,45 @@ func _draw_main_menu_stage() -> void:
 	_draw_title_ornament()
 
 func _draw_journey_stage() -> void:
-	# Party uses the road, with readable spacing rather than a row of generic shapes.
-	_draw_sprite("WUKONG", Vector2(size.x * 0.16, size.y * 0.74), 1.75)
-	_draw_sprite("TANG", Vector2(size.x * 0.28, size.y * 0.78), 1.60)
-	_draw_sprite("BAJIE", Vector2(size.x * 0.39, size.y * 0.78), 1.72)
-	_draw_sprite("WUJING", Vector2(size.x * 0.49, size.y * 0.79), 1.68)
-	_draw_sprite("LONGMA", Vector2(size.x * 0.61, size.y * 0.77), 1.58)
-	_draw_pixel_path()
+	var journey := get_tree().current_scene as JourneyScreen
+	var is_origin := journey != null and journey.narrative != null and journey.narrative.state != null and journey.narrative.state.route_progress.get(journey.narrative.state.starting_character, NarrativeState.ROUTE_LOCKED) != NarrativeState.ROUTE_COMPLETE
+	if is_origin:
+		var hero := journey.narrative.state.starting_character
+		_draw_sprite(hero, Vector2(size.x * 0.50, size.y * 0.66), 3.45)
+		_draw_sprite_shadow(Vector2(size.x * 0.50, size.y * 0.83), 74.0)
+		_draw_origin_landmarks(hero)
+	else:
+		_draw_sprite("WUKONG", Vector2(size.x * 0.16, size.y * 0.74), 1.75)
+		_draw_sprite("TANG", Vector2(size.x * 0.28, size.y * 0.78), 1.60)
+		_draw_sprite("BAJIE", Vector2(size.x * 0.39, size.y * 0.78), 1.72)
+		_draw_sprite("WUJING", Vector2(size.x * 0.49, size.y * 0.79), 1.68)
+		_draw_sprite("LONGMA", Vector2(size.x * 0.61, size.y * 0.77), 1.58)
+		_draw_pixel_path()
+
+func _draw_sprite_shadow(center: Vector2, width: float) -> void:
+	draw_rect(Rect2(center - Vector2(width * 0.5, 4.0), Vector2(width, 8.0)), Color(INK, 0.32), true)
+	draw_rect(Rect2(center - Vector2(width * 0.32, 2.0), Vector2(width * 0.64, 4.0)), Color(INK, 0.30), true)
+
+func _draw_origin_landmarks(hero: String) -> void:
+	var ground_y := size.y * 0.82
+	draw_rect(Rect2(size.x * 0.08, ground_y, size.x * 0.84, 3.0), Color(PAPER, 0.18))
+	for x in [0.17, 0.28, 0.72, 0.83]:
+		draw_rect(Rect2(size.x * x, ground_y - 18.0, 5.0, 18.0), Color(INK, 0.24))
+	draw_rect(Rect2(size.x * 0.46, ground_y - 34.0, 70.0, 5.0), Color(GOLD, 0.22))
+	if hero == "WUKONG":
+		draw_rect(Rect2(size.x * 0.08, size.y * 0.28, 86.0, 5.0), Color(PAPER, 0.18))
+	elif hero == "TANG":
+		draw_rect(Rect2(size.x * 0.80, size.y * 0.32, 56.0, 42.0), Color(INK, 0.18))
+		draw_rect(Rect2(size.x * 0.815, size.y * 0.34, 26.0, 3.0), Color(GOLD, 0.26))
+	elif hero == "BAJIE":
+		draw_rect(Rect2(size.x * 0.10, size.y * 0.40, 46.0, 18.0), Color(INK, 0.24))
+		draw_rect(Rect2(size.x * 0.10, size.y * 0.36, 46.0, 4.0), Color(PAPER, 0.18))
+	elif hero == "WUJING":
+		draw_rect(Rect2(size.x * 0.81, size.y * 0.42, 62.0, 20.0), Color(INK, 0.22))
+		draw_rect(Rect2(size.x * 0.82, size.y * 0.39, 42.0, 4.0), Color(PAPER, 0.18))
+	elif hero == "LONGMA":
+		draw_rect(Rect2(size.x * 0.10, size.y * 0.34, 58.0, 34.0), Color(PAPER, 0.12))
+		draw_rect(Rect2(size.x * 0.12, size.y * 0.36, 34.0, 4.0), Color(GOLD, 0.22))
 
 func _draw_battle_stage() -> void:
 	_draw_sprite("WUKONG", Vector2(size.x * 0.31, size.y * 0.70), 2.40)
