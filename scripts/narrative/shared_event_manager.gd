@@ -2,13 +2,13 @@ class_name SharedEventManager
 extends RefCounted
 
 const DATA_PATH := "res://data/narrative/shared_events.json"
-var events: Dictionary = {}
+var definitions: Dictionary = {}
 
 func _init() -> void:
 	_load()
 
 func _load() -> void:
-	events.clear()
+	definitions.clear()
 	var file := FileAccess.open(DATA_PATH, FileAccess.READ)
 	if file == null:
 		return
@@ -18,10 +18,16 @@ func _load() -> void:
 		if raw is Dictionary:
 			for key in raw.keys():
 				if raw[key] is Dictionary:
-					events[str(key)] = raw[key].duplicate(true)
+					var data: Dictionary = raw[key].duplicate(true)
+					if not data.has("id"):
+						data["id"] = str(key)
+					definitions[str(key)] = data
 
 func get_event(event_id: String) -> Dictionary:
-	return events.get(event_id, {}).duplicate(true)
+	return definitions.get(event_id, {}).duplicate(true)
+
+func get_definition(event_id: String) -> EventDefinition:
+	return EventDefinition.new(get_event(event_id))
 
 func has_event(event_id: String) -> bool:
 	return not get_event(event_id).is_empty()
@@ -29,14 +35,8 @@ func has_event(event_id: String) -> bool:
 func apply_choice(manager: NarrativeManager, event_id: String, choice_id: String) -> bool:
 	if manager == null or event_id == "" or choice_id == "":
 		return false
-	var event := get_event(event_id)
-	if event.is_empty():
-		return false
-	for choice in event.get("choices", []):
-		if str(choice.get("id", "")) == choice_id:
-			manager.state.record_shared_choice(event_id, choice_id)
-			return true
-	return false
+	var event := get_definition(event_id)
+	return EventRuntime.apply_choice(event, manager, choice_id, "SHARED")
 
 func get_choice(manager: NarrativeManager, event_id: String) -> String:
 	if manager == null:
