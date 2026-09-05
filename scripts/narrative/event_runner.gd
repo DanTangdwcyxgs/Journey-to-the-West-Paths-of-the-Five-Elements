@@ -67,6 +67,10 @@ func complete_action(result: Dictionary = {}) -> Dictionary:
 		status = "finished"
 		pending_action = {}
 		return {"kind": END, "sequence_id": sequence.get_id()}
+	if kind == REWARD:
+		var applied := RewardService.apply_to_manager(manager, pending_action.get("rewards", []))
+		if applied.is_empty():
+			return _fail("reward application failed")
 
 	var next_id := str(pending_action.get("next", ""))
 	if kind == JUMP:
