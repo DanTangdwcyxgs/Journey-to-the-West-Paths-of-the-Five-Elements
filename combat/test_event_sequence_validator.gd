@@ -11,6 +11,7 @@ static func run_all() -> Dictionary:
 		"SHARED-07-FLOWING-SANDS-SEQUENCE",
 		"SHARED-08-PARTY-FULL-SEQUENCE",
 		"SHARED-09-FULL-PILGRIMAGE-SEQUENCE",
+		"TANG-01-SEQUENCE",
 	]
 	for sequence_id in sequence_ids:
 		var definition := EventSequenceManager.get_definition(sequence_id)
@@ -60,8 +61,9 @@ static func run_all() -> Dictionary:
 
 	return {
 		"passed": true,
-		"shared_sequences_validated": sequence_ids.size(),
+		"production_sequences_validated": sequence_ids.size(),
 		"invalid_sequence_rejected": true,
 		"chapter_cross_reference_rejected": true,
 		"namespace_cross_reference_rejected": true,
+		"route_specific_catalog_validated": true,
 	}
