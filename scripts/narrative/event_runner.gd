@@ -4,6 +4,7 @@ extends RefCounted
 ## UI-independent event sequence state machine.
 ## It never renders. It returns action dictionaries for presentation/systems.
 ## Choice effects use the existing EventRuntime; battle nodes return EncounterHandoff data.
+## Narrative manager stays dynamically typed to avoid global-class dependency cycles.
 
 const DIALOGUE := "dialogue"
 const CHOICE := "choice"
@@ -15,14 +16,14 @@ const JUMP := "jump"
 const END := "end"
 
 var sequence: EventSequenceDefinition
-var manager: NarrativeManager
+var manager: Variant
 var current_node_id: String = ""
 var pending_action: Dictionary = {}
 var status: String = "idle"
 var last_error: String = ""
 var namespace: String = "SHARED"
 
-func _init(definition: EventSequenceDefinition = null, narrative_manager: NarrativeManager = null, event_namespace: String = "SHARED") -> void:
+func _init(definition: EventSequenceDefinition = null, narrative_manager: Variant = null, event_namespace: String = "SHARED") -> void:
 	sequence = definition
 	manager = narrative_manager
 	namespace = event_namespace
