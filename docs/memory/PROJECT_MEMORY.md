@@ -53,6 +53,28 @@
 - 本轮代码已进入 GitHub 默认分支，等 CI 最终结果后让用户进入检查个人序章第一场景。
 - 当前不要继续改共享旅途、黄风岭、战斗或地图屏，先等待用户对这一屏的视觉反馈。
 
+## 2026-09-05 · 用户提供新视觉标准：统一全项目像素 UI
+
+### 新参考标准
+- 用户提供战斗画面参考图，要求全项目统一向该视觉语言靠拢，而不是只改战斗屏。
+- 核心视觉规范：硬朗 2D 像素 UI、45°切角装甲面板、双层描边、青绿色主高亮、金色/橙色战斗高亮、深蓝黑底、细密点阵装饰、顶部行动顺序条、右上目标/HP/弱点/护盾框、底部角色状态与 COMMAND 面板。
+- “像素”不等于黑底+普通字体；构图、信息层级和框体形状必须明显接近示例图的 JRPG 战斗 HUD。
+
+### 本轮代码改动
+- 新增 `ui/pixel_frame.gd`：可复用的 45°切角装甲 `PanelContainer`，支持双层边框、点阵、铆钉式装饰和像素最近邻过滤。
+- 新增 `ui/pixel_ui.gd`：全局 UI Theme 工厂，统一 Button / ItemList 的深色装甲底、青色 hover、金色 pressed、硬边框和紧凑字体规格。
+- 新增 `ui/pixel_hud.gd`：全局 HUD 皮肤层，按照当前场景自动绘制主菜单、剧情、战斗、世界地图、黄风场景的切角装甲框；战斗额外绘制 TURN / ACTION QUEUE、TARGET / HP / WEAK / SHIELD、角色 FRAME STATUS、COMMAND // ACT 和分段式状态条。
+- `ui/visual_overlay.gd` 接入 `PixelHUD`，使全项目自动获得统一 HUD 皮肤，同时保留原有场景背景和角色层。
+
+### 工程状态
+- 全局视觉提交：`064ffbfca63e09590544fbe5d2e0392b2d92c75e`，message=`ui: apply global pixel HUD skin to all screens`。
+- 当前 Godot Runtime #249 正在执行；前置的 Checkout / Setup Godot / Verify Godot 已通过，`Import project and register scripts` 当时仍 in_progress，尚未拿到最终 conclusion。
+- 当前 Web Demo 的上一条 build 已存在；不要把 in_progress / queued 描述成部署成功。
+
+### 当前执行方式
+- 用户明确要求可以直接参照该战斗示例图调整“其他所有画风”。因此本规范视为全项目长期视觉规范，而不是单个战斗页面的临时主题。
+- 下一次模型接手前，优先等待 `064ffb...` 的 Runtime / Web CI 最终结论，再根据用户验收反馈决定是否继续逐屏精修；不要恢复旧式网页表单风格。
+
 ### 后续模型接手注意
 - 不要重新采用“圆头 + 方身体 + 简单线条”的程序人物。
 - 不要把“有 SVG 资源”直接等同于“美术完成”；仍需检查画面构图、缩放、遮挡层级、角色比例、UI 占比和可玩感。
