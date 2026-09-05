@@ -92,7 +92,7 @@ func _draw_main_menu_stage() -> void:
 
 func _draw_journey_stage() -> void:
 	var journey := get_tree().current_scene as JourneyScreen
-	var is_origin := journey != null and journey.narrative != null and journey.narrative.state != null and journey.narrative.state.route_progress.get(journey.narrative.state.starting_character, NarrativeState.ROUTE_LOCKED) != NarrativeState.ROUTE_COMPLETE
+	var is_origin: bool = journey != null and journey.narrative != null and journey.narrative.state != null and journey.narrative.state.route_progress.get(journey.narrative.state.starting_character, NarrativeState.ROUTE_LOCKED) != NarrativeState.ROUTE_COMPLETE
 	if is_origin:
 		var hero := journey.narrative.state.starting_character
 		_draw_sprite(hero, Vector2(size.x * 0.50, size.y * 0.66), 3.45)
