@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "sequences": [
+    {
+      "id": "SHARED-03-EAGLE-SORROW-SEQUENCE",
+      "chapter_id": "SHARED-03-EAGLE-SORROW",
+      "namespace": "SHARED",
+      "start": "arrival",
+      "nodes": [
+        {
+          "id": "arrival",
+          "type": "dialogue",
+          "speaker": "玄奘",
+          "text": "鹰愁涧就在前面。此处山水凶险，诸位且不可大意。",
+          "next": "encounter_choice"
+        },
+        {
+          "id": "encounter_choice",
+          "type": "choice",
+          "event_id": "LONGMA_ENCOUNTER",
+          "next": "battle"
+        },
+        {
+          "id": "battle",
+          "type": "battle",
+          "encounter_type": "shared",
+          "encounter_id": "SHARED_EAGLE_SORROW",
+          "source_chapter_id": "SHARED-03-EAGLE-SORROW",
+          "source_route_id": "SHARED_JOURNEY",
+          "next": "after_battle"
+        },
+        {
+          "id": "after_battle",
+          "type": "dialogue",
+          "speaker": "玄奘",
+          "text": "因缘既已相逢，便同行吧。往后的路，还要彼此照应。",
+          "next": "finish"
+        },
+        {
+          "id": "finish",
+          "type": "end"
+        }
+      ]
+    }
+  ]
+}
