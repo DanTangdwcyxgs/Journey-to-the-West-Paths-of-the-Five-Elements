@@ -508,3 +508,158 @@ The same combat engine must be reusable by:
 - optional trials;
 - boss phases;
 - the final campaign.
+
+---
+
+# 16. Production Runtime Architecture
+
+The project now uses a production-oriented boundary between **content definitions**, **runtime decisions**, **state mutation** and **presentation**.
+
+```text
+Content JSON
+    ↓
+ChapterDefinition / other normalized definitions
+    ↓
+ChapterRuntime / specialized managers
+    ↓
+NarrativeManager + NarrativeState
+    ↓
+Combat / World / Memory systems
+    ↓
+Presentation
+```
+
+The important rule is that presentation should consume runtime state rather than becoming the owner of progression rules.
+
+## 16.1 ChapterDefinition
+
+`ChapterDefinition` is the normalized interface for chapter content. It prevents every UI or manager from reaching directly into raw JSON keys.
+
+Supported contract includes:
+
+- id
+- title
+- chapter type
+- owner character
+- timeline
+- required character / world requirement
+- prerequisites
+- event id
+- encounter id
+- scene ids
+- rewards
+- world effects
+- recruitment events
+- next chapter
+- origin / memory / shared flags
+
+Legacy data keys remain readable during migration.
+
+## 16.2 ChapterRuntime
+
+`ChapterRuntime` currently owns read-only, side-effect-light decisions:
+
+- can a chapter be entered;
+- are chapter prerequisites complete;
+- is the destination an event, battle or plain chapter;
+- which encounter is requested;
+- which chapter follows.
+
+This layer intentionally starts small. Full mutation logic will migrate here gradually only after regression coverage exists.
+
+## 16.3 Narrative State API
+
+Persistent choices and progression facts should be changed through explicit `NarrativeState` methods.
+
+For example:
+
+- origin choices use `record_origin_choice()`;
+- shared choices use `record_shared_choice()`;
+- shared choices are read through `get_shared_choice()`.
+
+Event managers should not invent their own persistent dictionary structures.
+
+## 16.4 Battle Handoff
+
+`EncounterHandoff` is the neutral contract for moving from exploration or narrative content into combat.
+
+`BountyEncounterState` remains the current persisted compatibility implementation so the migration does not break existing world/battle flow.
+
+The long-term goal is:
+
+`World / Chapter Runtime → EncounterHandoff → BattleUI → BattleResolutionService`
+
+## 16.5 Battle Resolution Boundary
+
+Narrative battle victory follows one transaction boundary:
+
+```text
+validate source
+    ↓
+preview rewards
+    ↓
+record battle result
+    ↓
+progress route / shared chapter
+    ↓
+apply recruitment / world effects
+    ↓
+set next state
+    ↓
+save once
+```
+
+Any failure after mutation must restore the previous narrative snapshot.
+
+This prevents partial states such as:
+
+- reward granted but chapter not completed;
+- character recruited but world milestone missing;
+- chapter completed twice;
+- stale battle handoff granting duplicate rewards.
+
+## 16.6 Reward Ownership
+
+Encounter rewards and chapter rewards are deliberately separate.
+
+A recruitment battle grants its encounter reward. A non-combat chapter can grant its chapter reward.
+
+A recruitment chapter should not silently grant the same reward a second time during chapter completion.
+
+---
+
+# 17. Content Production Architecture
+
+The architecture is now prepared for batch content production.
+
+Future chapter production should normally require:
+
+```text
+chapter JSON
++ event JSON
++ encounter JSON (if needed)
++ map / scene references
++ regression test for critical transition
+```
+
+New gameplay rules should be added only when the content genuinely introduces a new reusable mechanic.
+
+The goal is to make adding Chapter 25 primarily a **content task**, not a new architecture task.
+
+See `docs/content_pipeline.md` for the detailed authoring and migration rules.
+
+---
+
+# 18. Migration Strategy
+
+Existing systems should not be rewritten wholesale for aesthetic reasons.
+
+Migration order:
+
+1. normalize existing content with `ChapterDefinition`;
+2. move read-only discovery and prerequisite checks to `ChapterRuntime`;
+3. move duplicated mutations into established narrative services;
+4. connect presentation through the stable runtime contracts;
+5. remove legacy duplicated paths only after regression coverage exists.
+
+This keeps the playable prototype stable while the architecture evolves toward mass content production.
