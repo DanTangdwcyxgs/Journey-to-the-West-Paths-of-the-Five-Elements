@@ -168,7 +168,36 @@ Runtime #82：**success**。
 - 1 / 1 MOVE world-state side effect 通过；
 - 原有 Chapter / Event / Reward / World / Battle / Journey Presentation tests 全部继续通过。
 
-当前稳定基线：`0af166f30cf3bac59a41fce574b93c80e0124a24`（随后仅有文档记录提交）。
+当前稳定基线：`0af166f30cf3bac59a41fce574b93c80e0124a24`（随后仅有文档记录）。
+
+### Round 22 — Sequence Cross-Reference Validation + Wukong Origin Migration
+增强 `EventSequenceValidator`，增加章节级 cross-reference：
+- Sequence 必须存在 `chapter_id`；
+- SHARED / ORIGIN Sequence 必须引用真实章节；
+- Battle `source_chapter_id` 必须与 Sequence `chapter_id` 一致；
+- Shared Battle encounter_id 必须与章节 encounter_id 一致；
+- choice event 与 battle encounter 必须存在于对应 namespace。
+
+新增 Wukong Origin 三条 Sequence：
+- `WUK-01-SEQUENCE`: dialogue → end；
+- `WUK-02-SEQUENCE`: dialogue → battle → after_battle → end；
+- `WUK-03-SEQUENCE`: dialogue → choice → end。
+
+新增 `ui/origin_sequence_journey.gd` 作为兼容桥：
+- 已迁移 Origin chapter 优先使用 EventSequence；
+- 未迁移 chapter 继续旧 Journey path；
+- Origin non-battle END 完成当前 Origin chapter；
+- Origin battle 继续由 `BattleResolutionService` 原子推进，避免重复完成。
+
+发现并修复 `OriginEventManager` 数据兼容问题：`origin_events.json` 的部分事件对象没有显式 `id`，现在 `get_definition()` 用 chapter_id 归一化事件 ID。此前 Runtime #94 / #96 暴露了该问题。
+
+Runtime 验证：
+- #89：cross-reference validation 增强后 success；
+- #94：首次 Wukong Origin runtime regression failure，失败定位到 WUK-03 event identity；
+- #98：修复 event id normalization 后 success；WUK-01/02/03 Runner execution、WUK-02 battle snapshot/restore、WUK-03 choice persistence 全通过；
+- #101：将 Origin bridge 挂入 `journey.tscn` 后 success，完整 Godot Runtime suite 继续通过。
+
+当前 Origin 迁移基线包含：Wukong WUK-01~03 + Journey bridge；其余 Origin chapter 仍为渐进迁移。
 
 ---
 
@@ -212,7 +241,7 @@ Sequence **不得复制 chapter reward**，避免重复经济结算。
 ### P1 — Origin Migration
 Shared-03 → Shared-09 Sequence 迁移完成后，逐角色逐章把 Origin Route 迁移到 EventSequence，必须保持固定世界时间线和经典招募节点。
 
-建议顺序：先选择一个完整起始角色路线做 Vertical Slice，再扩大到其余角色，避免一次性迁移五条路线。
+当前第一条样板：WUKONG `WUK-01 → WUK-02 → WUK-03` 已接入 Journey。下一阶段继续沿同一模式扩到 WUK-04~WUK-15，然后再复制到其他四条路线。
 
 ### P2 — Cleanup / Convergence
 逐步收敛旧 BattleUI 结算职责与 `BountyEncounterState`，但不能提前破坏现有兼容链。
@@ -231,11 +260,13 @@ Shared-03 → Shared-09 Sequence 迁移完成后，逐角色逐章把 Origin Rou
 - `docs/AI_MEMORY.md`
 - `AI_HANDOFF.md`
 - `docs/development_log/README.md`
-- `docs/development_log/2026-09-05-shared-sequence-runtime-regression.md`
+- `docs/development_log/2026-09-05-origin-wukong-sequence-migration.md`
+- `ui/origin_sequence_journey.gd`
 - `ui/journey.gd`
+- `scripts/narrative/event_sequence_validator.gd`
 - `scripts/narrative/event_runner.gd`
 - `scripts/narrative/narrative_event_session.gd`
-- `scripts/narrative/shared_journey_manager.gd`
+- `scripts/world/battle_resolution_service.gd`
 
 任何下一轮修改继续执行：
 `实现 → regression → Godot Runtime → development log → AI_MEMORY Round`。
