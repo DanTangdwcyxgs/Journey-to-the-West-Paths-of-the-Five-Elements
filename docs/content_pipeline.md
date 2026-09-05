@@ -8,7 +8,7 @@ The long-term goal is to make a new chapter, encounter, event, map segment or me
 
 The production chain is:
 
-`Content Data → Definition → Runtime Validation → Event / Battle Handoff → Resolution → Narrative State → Presentation`
+`Content Data → Definition → Runtime Validation → Event Sequence → Event Runner → Event / Battle Handoff → Resolution → Narrative State → Presentation`
 
 Gameplay rules must stay in reusable systems. Individual chapters should describe **what happens**, while runtime systems decide **how the rules execute**.
 
@@ -50,6 +50,25 @@ Defines:
 - optional follow-up event
 
 Event content must not mutate `NarrativeState` directly. Use `EventDefinition` + `EventRuntime` and explicit `NarrativeState` APIs.
+
+### Event sequence
+
+Defines an executable graph of reusable nodes:
+
+- `dialogue`
+- `choice`
+- `wait`
+- `move`
+- `battle`
+- `reward`
+- `jump`
+- `end`
+
+`EventSequenceDefinition` normalizes the sequence and validates node IDs, node types, start node and graph targets before execution.
+
+`EventRunner` owns only execution state. It returns an action request to Presentation / World / Battle systems and can be serialized and restored while waiting on dialogue, choice, movement, reward or battle resolution.
+
+EventRunner must remain UI-independent. A battle node produces `EncounterHandoff` data rather than opening BattleUI itself.
 
 ### Encounter
 
@@ -140,6 +159,23 @@ Current supported generic effects:
 
 Character-specific combat modifiers remain available through the existing origin-event compatibility layer and should not be moved into generic event effects without a concrete schema need.
 
+### EventSequenceDefinition
+
+Provides one normalized graph contract for all executable narrative sequences. It is deliberately data-only and performs structural validation before a runner starts.
+
+### EventRunner
+
+Owns the runtime state machine for a sequence:
+
+- presents the next action;
+- applies choices through `EventRuntime`;
+- converts battle nodes to `EncounterHandoff`;
+- pauses cleanly for external systems;
+- resumes after battle resolution;
+- serializes/restores the current node and pending action.
+
+The runner does **not** perform UI, animation, pathfinding or combat itself.
+
 ### NarrativeManager / NarrativeState
 
 Own canonical persistent facts:
@@ -185,6 +221,10 @@ Preferred example:
 
 `BattleUI → BattleResolutionService → SharedJourneyManager → NarrativeManager / NarrativeState`
 
+For sequence-driven narrative, the equivalent is:
+
+`EventRunner → EncounterHandoff → BattleUI → BattleResolutionService → NarrativeState`
+
 The UI displays the resulting state.
 
 ---
@@ -213,6 +253,10 @@ Reward attached to successfully defeating a battle encounter.
 ### Chapter reward
 
 Reward attached to completing a non-combat chapter.
+
+### Sequence reward node
+
+A reward node emits a reward action for the appropriate service/presentation layer. It must not silently duplicate an encounter reward.
 
 A recruitment battle should not receive the same reward again from the chapter completion step unless that duplication is intentional and explicitly documented.
 
@@ -245,12 +289,13 @@ For a new chapter:
 2. Assign its category and timeline position.
 3. Define prerequisites.
 4. Define event data.
-5. Define encounter(s) if needed.
-6. Define rewards and world effects.
-7. Define recruitment changes if any.
-8. Define next destination.
-9. Add the minimum regression test for its critical state transition.
-10. Only then integrate presentation assets.
+5. Define event sequence nodes when the chapter has multiple beats or interruptions.
+6. Define encounter(s) if needed.
+7. Define rewards and world effects.
+8. Define recruitment changes if any.
+9. Define next destination.
+10. Add the minimum regression test for its critical state transition.
+11. Only then integrate presentation assets.
 
 This ordering prevents art and UI from becoming coupled to unstable narrative logic.
 
@@ -281,8 +326,9 @@ Migrate one responsibility at a time:
 1. wrap old raw data with `ChapterDefinition` / `EventDefinition`;
 2. route read-only discovery through `ChapterRuntime`;
 3. route choice execution through `EventRuntime`;
-4. move common side effects into shared services only when covered by tests;
-5. remove duplicated old logic after the new path is verified.
+4. add `EventSequenceDefinition` / `EventRunner` for multi-beat content;
+5. move common side effects into shared services only when covered by tests;
+6. remove duplicated old logic after the new path is verified.
 
 This keeps the project playable while architecture evolves.
 
