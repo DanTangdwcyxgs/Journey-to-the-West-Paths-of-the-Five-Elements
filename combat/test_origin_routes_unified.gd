@@ -44,20 +44,23 @@ static func run_all() -> Dictionary:
 
 	for character in ROUTES.keys():
 		var route: Dictionary = ROUTES[character]
-		var route_id := str(route.get("route_id", ""))
+		var route_id := str(route.get("route_id"))
 		assert(route_id != "", "%s should declare route id" % character)
 		var manager := NarrativeManager.new()
 		assert(manager.start_new_game(character), "%s route should start" % character)
 		assert(manager.state.starting_character == character, "%s starting character should remain isolated" % character)
 
-		for sequence_id_variant in route.get("sequence_ids", []):
+		var sequence_ids: Array = route["sequence_ids"]
+		var choices: Dictionary = route["choices"]
+		var battles: Dictionary = route["battles"]
+		for sequence_id_variant in sequence_ids:
 			var sequence_id := str(sequence_id_variant)
 			var expected_chapter := sequence_id.replace("-SEQUENCE", "")
 			var definition := EventSequenceManager.get_definition(sequence_id)
 			assert(definition != null, "%s should load" % sequence_id)
 			var definition_dict: Dictionary = definition.to_dict()
-			assert(str(definition_dict.get("namespace", "")) == "ORIGIN", "%s must be Origin namespace" % sequence_id)
-			assert(str(definition_dict.get("chapter_id", "")) == expected_chapter, "%s chapter id must be exact" % sequence_id)
+			assert(str(definition_dict.get("namespace")) == "ORIGIN", "%s must be Origin namespace" % sequence_id)
+			assert(str(definition_dict.get("chapter_id")) == expected_chapter, "%s chapter id must be exact" % sequence_id)
 			var validation := EventSequenceValidator.validate(definition)
 			assert(validation.get("valid", false), "%s -> %s" % [sequence_id, str(validation)])
 
@@ -68,32 +71,32 @@ static func run_all() -> Dictionary:
 			while true:
 				guard += 1
 				assert(guard < 32, "%s exceeded unified action guard" % sequence_id)
-				match str(action.get("kind", "")):
+				match str(action.get("kind")):
 					EventRunner.DIALOGUE, EventRunner.WAIT, EventRunner.MOVE:
 						action = runner.complete_action()
 					EventRunner.CHOICE:
-						assert(route.get("choices", {}).has(sequence_id), "%s choice must be declared in unified catalog" % sequence_id)
+						assert(choices.has(sequence_id), "%s choice must be declared in unified catalog" % sequence_id)
 						var event_definition := origin_events.get_definition(expected_chapter)
 						assert(not event_definition.is_empty(), "%s choice event %s must exist" % [sequence_id, expected_chapter])
-						var expected_choice := str(route.get("choices", {}).get(sequence_id, ""))
+						var expected_choice := str(choices[sequence_id])
 						var found_choice := false
 						for choice_variant in event_definition.get("choices", []):
-							if str(choice_variant.get("id", "")) == expected_choice:
+							if str(choice_variant.get("id")) == expected_choice:
 								found_choice = true
 								break
 						assert(found_choice, "%s choice %s must exist in %s" % [sequence_id, expected_choice, expected_chapter])
 						action = runner.submit_choice(expected_choice)
 						choice_count += 1
 					EventRunner.BATTLE:
-						assert(route.get("battles", {}).has(sequence_id), "%s battle must be declared in unified catalog" % sequence_id)
-						var handoff: Dictionary = action.get("handoff", {})
-						var encounter_id := str(handoff.get("encounter_id", ""))
-						assert(encounter_id == str(route.get("battles", {}).get(sequence_id, "")), "%s battle encounter mismatch" % sequence_id)
-						assert(str(handoff.get("source_chapter_id", "")) == expected_chapter, "%s battle source chapter mismatch" % sequence_id)
-						assert(str(handoff.get("source_route_id", "")) == route_id, "%s battle source route mismatch" % sequence_id)
+						assert(battles.has(sequence_id), "%s battle must be declared in unified catalog" % sequence_id)
+						var handoff: Dictionary = action["handoff"]
+						var encounter_id := str(handoff.get("encounter_id"))
+						assert(encounter_id == str(battles[sequence_id]), "%s battle encounter mismatch" % sequence_id)
+						assert(str(handoff.get("source_chapter_id")) == expected_chapter, "%s battle source chapter mismatch" % sequence_id)
+						assert(str(handoff.get("source_route_id")) == route_id, "%s battle source route mismatch" % sequence_id)
 						var encounter_definition: Dictionary = encounter_manager.get_definition(encounter_id)
 						assert(not encounter_definition.is_empty(), "%s encounter must exist" % encounter_id)
-						assert(str(encounter_definition.get("source", "")) == route_id, "%s encounter source must match route" % encounter_id)
+						assert(str(encounter_definition.get("source")) == route_id, "%s encounter source must match route" % encounter_id)
 						var snapshot := runner.to_dict()
 						var restored := EventRunner.new(definition, manager, "ORIGIN")
 						assert(restored.restore(snapshot), "%s battle snapshot must restore" % sequence_id)
@@ -105,7 +108,7 @@ static func run_all() -> Dictionary:
 						assert(runner.is_finished(), "%s END should finish" % sequence_id)
 						break
 					_:
-						assert(false, "%s returned unsupported action %s" % [sequence_id, str(action.get("kind", ""))])
+						assert(false, "%s returned unsupported action %s" % [sequence_id, str(action.get("kind"))])
 
 			assert(not runner.has_error(), "%s should not error" % sequence_id)
 			sequence_count += 1
