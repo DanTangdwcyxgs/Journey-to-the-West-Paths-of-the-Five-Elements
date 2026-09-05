@@ -7,39 +7,11 @@
       "namespace": "SHARED",
       "start": "arrival",
       "nodes": [
-        {
-          "id": "arrival",
-          "type": "dialogue",
-          "speaker": "玄奘",
-          "text": "鹰愁涧就在前面。此处山水凶险，诸位且不可大意。",
-          "next": "encounter_choice"
-        },
-        {
-          "id": "encounter_choice",
-          "type": "choice",
-          "event_id": "LONGMA_ENCOUNTER",
-          "next": "battle"
-        },
-        {
-          "id": "battle",
-          "type": "battle",
-          "encounter_type": "shared",
-          "encounter_id": "SHARED_EAGLE_SORROW",
-          "source_chapter_id": "SHARED-03-EAGLE-SORROW",
-          "source_route_id": "SHARED_JOURNEY",
-          "next": "after_battle"
-        },
-        {
-          "id": "after_battle",
-          "type": "dialogue",
-          "speaker": "玄奘",
-          "text": "因缘既已相逢，便同行吧。往后的路，还要彼此照应。",
-          "next": "finish"
-        },
-        {
-          "id": "finish",
-          "type": "end"
-        }
+        {"id":"arrival","type":"dialogue","speaker":"玄奘","text":"鹰愁涧就在前面。此处山水凶险，诸位且不可大意。","next":"encounter_choice"},
+        {"id":"encounter_choice","type":"choice","event_id":"LONGMA_ENCOUNTER","next":"battle"},
+        {"id":"battle","type":"battle","encounter_type":"shared","encounter_id":"SHARED_EAGLE_SORROW","source_chapter_id":"SHARED-03-EAGLE-SORROW","source_route_id":"SHARED_JOURNEY","next":"after_battle"},
+        {"id":"after_battle","type":"dialogue","speaker":"玄奘","text":"因缘既已相逢，便同行吧。往后的路，还要彼此照应。","next":"finish"},
+        {"id":"finish","type":"end"}
       ]
     },
     {
@@ -48,50 +20,37 @@
       "namespace": "SHARED",
       "start": "departure",
       "nodes": [
-        {
-          "id": "departure",
-          "type": "dialogue",
-          "speaker": "玄奘",
-          "text": "黑风山的妖气已经逼近。我们先沿北道探看一番，再决定是否继续赶路。",
-          "next": "move_to_north_path"
-        },
-        {
-          "id": "move_to_north_path",
-          "type": "move",
-          "map_id": "WORLD_MAP",
-          "marker_id": "BLACK_WIND_NORTH_PATH",
-          "next": "warning"
-        },
-        {
-          "id": "warning",
-          "type": "dialogue",
-          "speaker": "孙悟空",
-          "text": "俺老孙闻到的妖气就在前头。师父，你们跟紧些，莫叫小妖钻了空子。",
-          "next": "pause"
-        },
-        {
-          "id": "pause",
-          "type": "wait",
-          "seconds": 0.3,
-          "next": "resolve"
-        },
-        {
-          "id": "resolve",
-          "type": "dialogue",
-          "speaker": "玄奘",
-          "text": "先不急着深入。记下此处妖踪，我们向前一步，也为后面的路留一步退处。",
-          "next": "reward"
-        },
-        {
-          "id": "reward",
-          "type": "reward",
-          "rewards": ["HERB"],
-          "next": "finish"
-        },
-        {
-          "id": "finish",
-          "type": "end"
-        }
+        {"id":"departure","type":"dialogue","speaker":"玄奘","text":"黑风山的妖气已经逼近。我们先沿北道探看一番，再决定是否继续赶路。","next":"move_to_north_path"},
+        {"id":"move_to_north_path","type":"move","map_id":"WORLD_MAP","marker_id":"BLACK_WIND_NORTH_PATH","next":"warning"},
+        {"id":"warning","type":"dialogue","speaker":"孙悟空","text":"俺老孙闻到的妖气就在前头。师父，你们跟紧些，莫叫小妖钻了空子。","next":"pause"},
+        {"id":"pause","type":"wait","seconds":0.3,"next":"resolve"},
+        {"id":"resolve","type":"dialogue","speaker":"玄奘","text":"先不急着深入。记下此处妖踪，我们向前一步，也为后面的路留一步退处。","next":"finish"},
+        {"id":"finish","type":"end"}
+      ]
+    },
+    {
+      "id": "SHARED-05-GAOJIAZHUANG-SEQUENCE",
+      "chapter_id": "SHARED-05-GAOJIAZHUANG",
+      "namespace": "SHARED",
+      "start": "arrival",
+      "nodes": [
+        {"id":"arrival","type":"dialogue","speaker":"玄奘","text":"前方就是高老庄。庄中妖患未平，看来这一路又有一桩因果要了结。","next":"encounter_choice"},
+        {"id":"encounter_choice","type":"choice","event_id":"BAJIE_ENCOUNTER","next":"battle"},
+        {"id":"battle","type":"battle","encounter_type":"shared","encounter_id":"SHARED_GAOJIAZHUANG","source_chapter_id":"SHARED-05-GAOJIAZHUANG","source_route_id":"SHARED_JOURNEY","next":"after_battle"},
+        {"id":"after_battle","type":"dialogue","speaker":"孙悟空","text":"好个天蓬，嘴硬归嘴硬，本事倒没丢。师父，这一路若多个人帮忙，未必是坏事。","next":"finish"},
+        {"id":"finish","type":"end"}
+      ]
+    },
+    {
+      "id": "SHARED-06-FOUR-PERSON-JOURNEY-SEQUENCE",
+      "chapter_id": "SHARED-06-FOUR-PERSON-JOURNEY",
+      "namespace": "SHARED",
+      "start": "depart",
+      "nodes": [
+        {"id":"depart","type":"dialogue","speaker":"玄奘","text":"高老庄之后，四人同行的路比从前热闹了许多。不同的性情，也开始慢慢磨成同一个方向。","next":"observe"},
+        {"id":"observe","type":"wait","seconds":0.4,"next":"resolve"},
+        {"id":"resolve","type":"dialogue","speaker":"猪八戒","text":"俺也去取经就是了。先说好，路上若有好吃的，可别全叫猴哥一个人抢了。","next":"finish"},
+        {"id":"finish","type":"end"}
       ]
     }
   ]
