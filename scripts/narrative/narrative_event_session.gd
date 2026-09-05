@@ -96,4 +96,11 @@ static func resume_from_battle_record(record: Dictionary, manager) -> NarrativeE
 	var session := NarrativeEventSession.new()
 	if not session.restore(resume, manager):
 		return null
+	# A battle handoff is persisted while the runner is waiting on the battle
+	# node. Once combat has already reported victory, restore the runner past
+	# that node so the next presentation action is deterministic and cannot
+	# re-enter the completed battle.
+	if session.is_waiting_for_battle():
+		if session.resolve_battle(true).is_empty():
+			return null
 	return session
