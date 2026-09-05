@@ -52,13 +52,12 @@ static func can_enter(chapter_id: String, state: NarrativeState) -> bool:
 		return false
 	return _requirements_met(chapter, state)
 
-static func complete(chapter_id: String, manager: NarrativeManager) -> bool:
+static func complete(chapter_id: String, manager: NarrativeManager, persist: bool = true) -> bool:
 	if manager == null:
 		return false
 	var chapter := get_chapter(chapter_id)
 	if chapter.is_empty() or not can_enter(chapter_id, manager.state):
 		return false
-
 	var snapshot := manager.state.to_dict()
 	var encounter_id := str(chapter.get("encounter_id", ""))
 	if encounter_id != "":
@@ -66,11 +65,7 @@ static func complete(chapter_id: String, manager: NarrativeManager) -> bool:
 		if battle_milestone not in manager.state.completed_milestones:
 			return false
 	else:
-		# Encounter rewards are granted by BattleRewardService when the battle is won.
-		# Non-combat chapters have no battle to do that work, so their data rewards
-		# must be applied here exactly once as part of canonical chapter completion.
 		_apply_chapter_rewards(chapter, manager)
-
 	if not manager.complete_chapter(chapter_id, true):
 		manager.state = NarrativeState.from_dict(snapshot)
 		return false
@@ -81,10 +76,9 @@ static func complete(chapter_id: String, manager: NarrativeManager) -> bool:
 	if not _apply_world_effects(chapter, manager):
 		manager.state = NarrativeState.from_dict(snapshot)
 		return false
-
 	var next_id := str(chapter.get("next", ""))
 	manager.set_shared_chapter(next_id if next_id != "" else chapter_id)
-	if not manager.save():
+	if persist and not manager.save():
 		manager.state = NarrativeState.from_dict(snapshot)
 		return false
 	return true
@@ -110,37 +104,27 @@ static func _apply_chapter_rewards(chapter: Dictionary, manager: NarrativeManage
 
 static func _apply_reward(inventory: InventoryManager, reward_id: String) -> void:
 	match reward_id:
-		"COIN_LOW":
-			inventory.add_currency("COIN", 100)
-		"COIN_MEDIUM":
-			inventory.add_currency("COIN", 300)
-		"COIN_HIGH":
-			inventory.add_currency("COIN", 800)
-		"COIN_LEGENDARY":
-			inventory.add_currency("COIN", 2000)
+		"COIN_LOW": inventory.add_currency("COIN", 100)
+		"COIN_MEDIUM": inventory.add_currency("COIN", 300)
+		"COIN_HIGH": inventory.add_currency("COIN", 800)
+		"COIN_LEGENDARY": inventory.add_currency("COIN", 2000)
 		_:
-			if reward_id != "":
-				inventory.add_item(reward_id, 1)
+			if reward_id != "": inventory.add_item(reward_id, 1)
 
 static func _apply_recruitment_events(chapter: Dictionary, manager: NarrativeManager) -> bool:
 	for event in chapter.get("recruit", []):
-		if not event is Dictionary:
-			continue
+		if not event is Dictionary: continue
 		var character_id := str(event.get("character", ""))
-		if character_id == "":
-			continue
+		if character_id == "": continue
 		var memories: Array[String] = []
-		for memory_id in event.get("memories", []):
-			memories.append(str(memory_id))
-		if not manager.encounter_character(character_id, memories):
-			return false
+		for memory_id in event.get("memories", []): memories.append(str(memory_id))
+		if not manager.encounter_character(character_id, memories): return false
 	return true
 
 static func _apply_world_effects(chapter: Dictionary, manager: NarrativeManager) -> bool:
 	for effect in chapter.get("world_effects", []):
 		var effect_id := str(effect)
-		if effect_id == "" or effect_id in manager.state.journey_log.get("active_world_effects", []):
-			continue
+		if effect_id == "" or effect_id in manager.state.journey_log.get("active_world_effects", []): continue
 		var log := manager.state.get_journey_log()
 		var effects: Array = log.get("active_world_effects", []).duplicate()
 		effects.append(effect_id)
@@ -151,14 +135,9 @@ static func _apply_world_effects(chapter: Dictionary, manager: NarrativeManager)
 static func _requirements_met(chapter: Dictionary, state: NarrativeState) -> bool:
 	var required := str(chapter.get("required", ""))
 	match required:
-		"WUKONG_RECRUITED":
-			return "WUKONG" in state.recruited_characters
-		"BAI_LONGMA_RECRUITED":
-			return "LONGMA" in state.recruited_characters
-		"ZHU_BAJIE_RECRUITED":
-			return "BAJIE" in state.recruited_characters
-		"SHA_WUJING_RECRUITED":
-			return "WUJING" in state.recruited_characters
-		"PARTY_FULL":
-			return state.recruited_characters.size() >= NarrativeState.CHARACTER_IDS.size()
+		"WUKONG_RECRUITED": return "WUKONG" in state.recruited_characters
+		"BAI_LONGMA_RECRUITED": return "LONGMA" in state.recruited_characters
+		"ZHU_BAJIE_RECRUITED": return "BAJIE" in state.recruited_characters
+		"SHA_WUJING_RECRUITED": return "WUJING" in state.recruited_characters
+		"PARTY_FULL": return state.recruited_characters.size() >= NarrativeState.CHARACTER_IDS.size()
 	return true
