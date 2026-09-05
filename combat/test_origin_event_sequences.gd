@@ -33,7 +33,11 @@ static func run_all() -> Dictionary:
 
 	var wuk03 := EventSequenceManager.get_definition("WUK-03-SEQUENCE")
 	assert(wuk03 != null, "WUK-03 sequence should load")
-	assert(OriginEventManager.new().has_event("WUK-03"), "WUK-03 origin event should load")
+	var origin_events := OriginEventManager.new()
+	assert(origin_events.has_event("WUK-03"), "WUK-03 origin event should load")
+	var origin_definition := origin_events.get_definition("WUK-03")
+	print("WUK-03 origin can_present=" + str(EventRuntime.can_present(origin_definition, manager, "ORIGIN")))
+	print("WUK-03 existing choice=" + manager.state.get_origin_choice("WUK-03"))
 	runner = EventRunner.new(wuk03, manager, "ORIGIN")
 	action = runner.start()
 	assert(action.get("kind", "") == EventRunner.DIALOGUE, "WUK-03 start: %s" % str(action))
