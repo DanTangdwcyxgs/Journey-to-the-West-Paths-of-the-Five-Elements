@@ -7,7 +7,7 @@
 ## 0. 永久工作规则
 
 ### 0.1 记忆
-每轮实际仓库操作都必须留下可恢复记录：做了什么、为什么、实际修改、测试、真实 Godot 运行结果、已知问题、下一步、接手点。
+每轮实际仓库操作都必须留下可恢复记录：做了什么、为什么、测试、真实 Godot 运行结果、已知问题、下一步、接手点。
 
 ### 0.2 验证
 静态检查 ≠ Godot Runtime。只有真实 Godot workflow 成功才能写“Godot Runtime 通过”。`queued / in_progress / pending / 无结果` 均不能写通过。
@@ -39,13 +39,13 @@ Memory / Flashback 只能历史回放，不得改写当前世界事实。
 
 核心定位：经典《西游记》叙事 + 像素 HD-2D / 2.5D + 回合制 JRPG。
 
-GitHub 当前仓库 slug：`black-myth-wukong-jrpg`。公开品牌应优先使用 `《西游：五行之路》`，不要把 `Black Myth: Wukong — JRPG Edition` 当作正式品牌，以免产生官方关系误解。
+GitHub 当前仓库 slug：`black-myth-wukong-jrpg`。公开品牌优先使用 `《西游：五行之路》`，不要把 `Black Myth: Wukong — JRPG Edition` 当正式品牌，避免官方关系误解。
 
-项目负责人对外统一署名：**开发者：蛋汤**。
+项目负责人：**开发者：蛋汤**。
 
 投资、发行、商务合作及项目交流：**微信：DanTangdwcyxgs**。
 
-游戏主菜单已提供“投资合作 / 联系开发者”入口，并可复制微信号。
+主菜单已提供“投资合作 / 联系开发者”入口与复制微信号能力。
 
 ---
 
@@ -87,7 +87,7 @@ Victory atomic boundary：预检 → reward preview → state mutation → progr
 建立鹰愁涧、高老庄、流沙河三场共享招募战。
 
 ### Round 06
-建立 `BattleResolutionService`，统一共享战斗的奖励、章节推进、世界效果和保存原子边界。
+建立 `BattleResolutionService`，统一共享战斗奖励、章节推进、世界效果和保存原子边界。
 
 ### Round 07
 建立 `EventDefinition / EventRuntime`，选择数据驱动与状态持久化。
@@ -132,36 +132,50 @@ Victory atomic boundary：预检 → reward preview → state mutation → progr
 修复 Godot 4.5.1 Journey warning-as-error 类型推断。Runtime #75 failure，修复后 #76 success，`RUNTIME_SUITE_PASS tests=11`。
 
 ### Round 21
-新增 `test_shared_event_sequences.gd`，真实执行 Shared-03~09 production Sequence。#81 暴露测试自身 control-flow bug，修复后 #82 success：7/7 Sequence、3/3 battle resume、1/1 move side effect。
+新增 `test_shared_event_sequences.gd`，真实执行 Shared-03~09 production Sequence。#81 暴露测试控制流问题，修复后 #82 success：7/7 Sequence、3/3 battle resume、1/1 move side effect。
 
 ### Round 22
-增强 Sequence cross-reference validation；迁移 Wukong WUK-01~03；新增 `ui/origin_sequence_journey.gd` 兼容桥；修复 `OriginEventManager` 缺失 event id 兼容问题。#94/#96 暴露问题，#98 success，#101 SceneTree bridge success。
+增强 Sequence cross-reference validation；迁移 Wukong WUK-01~03；新增 `ui/origin_sequence_journey.gd` 兼容桥；修复 `OriginEventManager` 缺失 event id 兼容问题。#89 success；#94/#96 定位问题；#98 success；#101 SceneTree bridge success。
 
 ### Round 23
-完整迁移 Wukong `WUK-04~15`，形成 `WUK-01→WUK-15` 全链；5 个 Origin battle 均复用既有 `WUKONG_ORIGIN_*` Encounter；3 个 choice；全路线 regression。#106 是测试控制流误报，修复后 #109 **success**，Godot 4.5.1 headless suite 通过。
+完整迁移 Wukong `WUK-04~15`，形成 `WUK-01→WUK-15` 全链；5 个 Origin battle 复用既有 `WUKONG_ORIGIN_*` Encounter；3 个 choice；全路线 Sequence regression。#106 是测试控制流误报，修复后 #109 success，Godot 4.5.1 headless suite 通过。
 
 ### Round 24
-建立项目负责人署名与投资合作联系方式：
-- `ui/main_menu.gd` 增加 `DEVELOPER_NAME = "蛋汤"`；
+建立项目负责人署名与投资合作入口：
+- `DEVELOPER_NAME = "蛋汤"`；
 - `CONTACT_WECHAT = "DanTangdwcyxgs"`；
-- 主菜单显示“开发者：蛋汤”；
-- 增加“投资合作 / 联系开发者”；
+- 主菜单显示开发者署名；
+- 增加投资合作入口；
 - 联系面板展示微信并支持 `DisplayServer.clipboard_set()`；
 - 新增 `combat/test_main_menu_contact.gd`；
-- runtime suite 扩展至 14 tests；
-- `docs/investor_overview.md` / `docs/project_identity.md` / development log 同步负责人身份。
+- suite 扩展至 14 tests；
+- 投资人资料与项目身份规范同步。
 
-本轮第一次 Runtime #115 failure，失败原因是新回归测试在 SceneTree 外直接弹 `AcceptDialog`。已经改成将 MainMenu 实例挂入 SceneTree 后再验证。
+#115 首次失败：contact regression 在 SceneTree 外弹 `AcceptDialog`；随后改成在 SceneTree 内实例化并直接测试 dialog 构造。#122 对修正后的测试成功。
 
-修正测试提交：`63b7e0b56d34d2ee611078b367604fe2af94740e`。
+### Round 25
+新增 `combat/test_wukong_origin_progression.gd`，把悟空路线从“15 条 Sequence 都能独立执行”提升为“真实章节 cursor 连续推进”回归：
+- `WUK-01 → WUK-15` 必须按 `OriginRouteManager.get_current_chapter()` 顺序逐章前进；
+- battle 节点使用生产 `EncounterManager` 的 rewards / world effects，并通过 `BattleResolutionService.resolve_narrative_victory()` 原子结算；
+- non-battle END 执行与 `OriginSequenceJourneyScreen` 一致的 `complete_origin_chapter()`；
+- WUK-02 后真实执行 Save → 新 NarrativeManager → Load，必须恢复到 WUK-03；
+- 最终验证 WUK-15 完成、WUKONG route `ROUTE_COMPLETE`、active origin chapter 清空、关键选择与 `WUKONG_HEAVEN_REBELLION` 世界效果保持。
 
-`Godot Runtime #118` 对修正后的提交需要以最终 workflow 结果为准；本记忆在写入时仍将其标为待确认。
+该测试已加入 `tests/runtime_suite.gd`，suite 从 14 项增加到 15 项。
+
+第一次 progression regression Runtime 失败原因是测试第 47 行 Variant 类型推断被 Godot 4.5.1 warning-as-error 拒绝；加入显式 `Dictionary` 类型后，静态检查又发现非战斗 END 少了 chapter completion 收口，随后按生产桥接逻辑修正。
+
+最终修正提交：`beda90ccac8204b05d07f4191972fd0cc46074d1`。
+
+当前最终 progression regression 的 Godot workflow 结果仍需以该提交对应最新 check-run 为准；未确认前不能写 Runtime 通过。
 
 ---
 
 ## 4. Wukong Origin 当前状态
 
-Production Sequence 已覆盖 `WUK-01~15`：
+Production Sequence：`WUK-01~15` 全部存在。
+
+Battle：
 - WUK-02：`WUKONG_ORIGIN_WATER_CAVE`
 - WUK-06：`WUKONG_ORIGIN_DRAGON_PALACE`
 - WUK-11：`WUKONG_ORIGIN_HEAVENLY_TROOPS`
@@ -172,7 +186,7 @@ Choices：WUK-03 `SEEK_FREEDOM`；WUK-08 `ACCEPT_TITLE`；WUK-13 `ENDURE`。
 
 `ui/origin_sequence_journey.gd`：已迁移章节使用 EventSequence；未迁移章节继续 legacy；non-battle END 完成当前 Origin chapter；battle 由 `BattleResolutionService` 原子推进。
 
-下一步：做 Wukong 整条路线的 chapter progression / save / SceneTree 端到端检查，确认 15 章从玩家入口切换章节、battle victory 推进、END 保存无断点；然后再开始 Tang Origin。
+当前重点：确认 Wukong progression/save regression 的最终 Runtime；之后增加真实 Journey SceneTree 入口 smoke coverage，再开始 Tang Origin 第一批迁移。
 
 ---
 
@@ -198,7 +212,7 @@ Shared-09：full pilgrimage / COIN_MEDIUM / timeline 170。
 MOVE 视觉/状态反馈；WAIT 过渡；END / chapter completion feedback；保持 Battle → Resume → END 不重复结算；必要时增加 SceneTree regression。
 
 ### P1 — Origin migration
-Wukong WUK-01~15 已完成 Sequence 数据迁移；下一阶段先做 progression / save / SceneTree 端到端，再迁移 Tang / Longma / Bajie / Wujing。
+Wukong WUK-01~15 已完成 Sequence 数据迁移，正在做 progression / save / SceneTree 端到端验收；通过后迁移 Tang / Longma / Bajie / Wujing。
 
 ### P2 — Cleanup
 逐步收敛旧 BattleUI 结算职责与 `BountyEncounterState`，不得提前破坏兼容链。
@@ -210,7 +224,7 @@ Wukong WUK-01~15 已完成 Sequence 数据迁移；下一阶段先做 progressio
 `一个完整角色起始路线 → 五行山 → 鹰愁涧 → 招募 → 对应 Memory`。
 
 ### P5 — Product identity / funding
-已完成开发者署名及投资合作联系方式入口。后续新增邮箱 / 官网 / Discord / 投资材料链接时，应统一更新主菜单和对外投资资料；未经负责人要求，不得自行替换微信号。
+已完成开发者署名与投资合作联系方式入口。后续新增邮箱 / 官网 / Discord / 投资材料链接时，应统一更新主菜单和对外投资资料；未经负责人要求，不得自行替换微信号。
 
 ---
 
@@ -220,10 +234,12 @@ Wukong WUK-01~15 已完成 Sequence 数据迁移；下一阶段先做 progressio
 - `docs/AI_MEMORY.md`
 - `AI_HANDOFF.md`
 - `docs/development_log/README.md`
+- `docs/development_log/2026-09-05-wukong-origin-progression-regression.md`
 - `docs/development_log/2026-09-05-developer-credit-investor-contact.md`
 - `docs/development_log/2026-09-05-wukong-full-origin-sequence-migration.md`
 - `ui/main_menu.gd`
 - `combat/test_main_menu_contact.gd`
+- `combat/test_wukong_origin_progression.gd`
 - `ui/origin_sequence_journey.gd`
 - `ui/journey.gd`
 - `scripts/narrative/event_sequence_validator.gd`
