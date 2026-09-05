@@ -20,7 +20,7 @@
 
 1. `AI_HANDOFF.md`（本文件）
 2. `DEVELOPMENT_RULES.md`
-3. `README.md`
+3. `README.md` / `README.zh-CN.md`
 4. `docs/game_vision.md`
 5. `docs/architecture.md`
 6. `docs/production_rules.md`
@@ -135,9 +135,19 @@ Memory 不得回写并篡改已经确定的当前世界时间线。
 - `SharedJourneyManager`
 - `ChapterDefinition`
 - `ChapterRuntime`
+- `EventDefinition`
+- `EventRuntime`
+- `OriginEventManager`
 - `SharedEventManager`
 - `StartRouteCatalog`
 - `BattleResolutionService`
+
+### World / Handoff
+
+- `EncounterHandoff`
+- `BountyEncounterState`（兼容旧入口）
+- World Map / Travel / Rumor / Bounty
+- Dungeon / Checkpoint
 
 ### Presentation
 
@@ -155,7 +165,11 @@ Presentation 不应自行决定核心剧情、奖励或战斗规则。
 
 ### 剧情章节
 
-`Content Data → ChapterDefinition → ChapterRuntime → Narrative/World/Combat → Presentation`
+`Content Data → ChapterDefinition → ChapterRuntime → EventRuntime / Combat / World → Presentation`
+
+### 事件
+
+`Event Data → EventDefinition → EventRuntime → NarrativeState`
 
 ### 战斗
 
@@ -200,7 +214,10 @@ Presentation 不应自行决定核心剧情、奖励或战斗规则。
 - 招募战奖励去重
 - ChapterDefinition / ChapterRuntime
 - 中立 EncounterHandoff 兼容层
+- EventDefinition / EventRuntime
+- Origin / Shared 事件选择统一执行入口
 - 内容批量生产规范
+- 项目对外中文品牌 / 投资人入口 / AI 接管文档
 
 注意：当前环境没有真实执行 Godot Runtime，因此任何“测试通过”只能表述为代码级回归覆盖，不得冒充运行结果。
 
@@ -211,15 +228,16 @@ Presentation 不应自行决定核心剧情、奖励或战斗规则。
 最高优先级：
 
 1. Godot Runtime 实机验证
-2. 完整 Chapter Event Runtime
-3. Camp / Relationship Prototype
-4. 第一完整 Vertical Slice
-5. 五人完整 Origin Route 内容生产
-6. Shared Journey 大规模内容生产
-7. 战斗 UI / 动画 / 镜头 / VFX 美术化
-8. HD-2D 环境正式美术
-9. 音频与音乐
-10. 最终测试、平衡、发行
+2. 完整 EventSequence / EventRunner
+3. Event → Battle → Event 返回链
+4. Camp / Relationship Prototype
+5. 第一完整 Vertical Slice
+6. 五人完整 Origin Route 内容生产
+7. Shared Journey 大规模内容生产
+8. 战斗 UI / 动画 / 镜头 / VFX 美术化
+9. HD-2D 环境正式美术
+10. 音频与音乐
+11. 最终测试、平衡、发行
 
 ---
 
@@ -227,33 +245,33 @@ Presentation 不应自行决定核心剧情、奖励或战斗规则。
 
 不要跳级。
 
-### Batch 1
+### Batch 1A — Event Runtime（当前）
 
-Full Chapter Event Runtime。
+已经完成 Definition + 单次 Choice Runtime。
 
-让一个章节真正能完整执行：
+下一步补：
 
-`进入 → 对话 → 选择 → 事件 → 战斗 → 奖励 → 下一章`
+`EventSequence → EventRunner → Dialog / Choice / Wait / Move / Battle / Reward / Jump`
 
-### Batch 2
+目标是做到：
 
-Camp / Party / Relationship。
+`进入章节 → 对话 → 选择 → 事件 → 战斗 → 战斗返回 → 后续事件 → 章节结算`
 
-`招募 → 营地 → 角色互动 → 编队 → 装备 → Memory`
+### Batch 1B — Runtime 验证
 
-### Batch 3
+优先建立真实 Godot SceneTree 运行入口，执行核心回归，而不是只保留静态测试文件。
 
-第一完整 Vertical Slice：
+### Batch 2 — Camp / Party / Relationship
+
+`招募 → 营地 → 角色互动 → 编队 → 装备 → Memory → Relationship`
+
+### Batch 3 — 第一完整 Vertical Slice
 
 `五行山 → 鹰愁涧 → 白龙马 → 黑风山 → 黄风岭 → 黄风洞 → 黄风妖王 → 善后`
 
-### Batch 4
+### Batch 4 — 五人 Origin Route 批量生产
 
-五人 Origin Route 批量生产。
-
-### Batch 5
-
-Shared Journey 批量生产。
+### Batch 5 — Shared Journey 批量生产
 
 ---
 
@@ -277,8 +295,6 @@ Shared Journey 批量生产。
 - 是否实际运行 Godot
 - 下一步建议
 - 接手 Agent 应从哪里继续
-
-如果一次更新包含多个独立阶段，可以使用同一日期下不同主题文件。
 
 ---
 
