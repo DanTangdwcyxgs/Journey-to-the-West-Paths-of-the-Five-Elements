@@ -1,19 +1,6 @@
 class_name VisualOverlay
 extends Control
 
-const JOURNEY_SCENE := "res://assets/art/scenes/journey_scenery.svg"
-const BATTLE_SCENE := "res://assets/art/scenes/yellow_wind_battle.svg"
-const MAP_SCENE := "res://assets/art/scenes/journey_map.svg"
-
-const SPRITES := {
-	"WUKONG": "res://assets/art/characters/wukong.svg",
-	"TANG": "res://assets/art/characters/tang.svg",
-	"BAJIE": "res://assets/art/characters/bajie.svg",
-	"WUJING": "res://assets/art/characters/wujing.svg",
-	"LONGMA": "res://assets/art/characters/longma.svg",
-	"YELLOW_WIND": "res://assets/art/characters/yellow_wind.svg",
-}
-
 const INK := Color("15151b")
 const PAPER := Color("d2bd89")
 const GOLD := Color("d5ad57")
@@ -30,8 +17,8 @@ func _ready() -> void:
 	z_index = -100
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-	for key in SPRITES:
-		sprite_textures[key] = load(SPRITES[key])
+	for key in ArtAssetCatalog.CHARACTER_PATHS.keys():
+		sprite_textures[str(key)] = ArtAssetCatalog.character_texture(str(key))
 	pixel_hud = PixelHUD.new()
 	pixel_hud.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	pixel_hud.z_index = 200
@@ -41,7 +28,7 @@ func _ready() -> void:
 
 func _process(_delta: float) -> void:
 	var root := get_tree().current_scene
-	var next_scene := root.scene_file_path if root != null else ""
+	var next_scene: String = root.scene_file_path if root != null else ""
 	if next_scene != scene_name:
 		_apply_scene_visuals()
 		queue_redraw()
@@ -53,18 +40,18 @@ func _apply_scene_visuals() -> void:
 	scene_name = root.scene_file_path
 	background_texture = null
 	if scene_name.ends_with("main_menu.tscn") or scene_name.ends_with("journey.tscn"):
-		background_texture = load(JOURNEY_SCENE)
+		background_texture = ArtAssetCatalog.scene_texture("JOURNEY")
 	elif scene_name.ends_with("battle_ui.tscn"):
-		background_texture = load(BATTLE_SCENE)
+		background_texture = ArtAssetCatalog.scene_texture("BATTLE_YELLOW_WIND")
 	elif scene_name.ends_with("world_map.tscn"):
-		background_texture = load(MAP_SCENE)
+		background_texture = ArtAssetCatalog.scene_texture("WORLD_MAP")
 	elif scene_name.ends_with("yellow_wind_ridge.tscn") or scene_name.ends_with("yellow_wind_cave.tscn"):
-		background_texture = load(BATTLE_SCENE)
+		background_texture = ArtAssetCatalog.scene_texture("BATTLE_YELLOW_WIND")
 	for child in root.get_children():
 		if child is ColorRect:
 			var rect := child as ColorRect
 			if rect.size.x >= 900.0 and rect.size.y >= 500.0:
-				var c := rect.color
+				var c: Color = rect.color
 				c.a = min(c.a, 0.30)
 				rect.color = c
 
@@ -94,7 +81,7 @@ func _draw_journey_stage() -> void:
 	var journey := get_tree().current_scene as JourneyScreen
 	var is_origin: bool = journey != null and journey.narrative != null and journey.narrative.state != null and journey.narrative.state.route_progress.get(journey.narrative.state.starting_character, NarrativeState.ROUTE_LOCKED) != NarrativeState.ROUTE_COMPLETE
 	if is_origin:
-		var hero := journey.narrative.state.starting_character
+		var hero: String = str(journey.narrative.state.starting_character)
 		_draw_sprite(hero, Vector2(size.x * 0.50, size.y * 0.66), 3.45)
 		_draw_sprite_shadow(Vector2(size.x * 0.50, size.y * 0.83), 74.0)
 		_draw_origin_landmarks(hero)
@@ -111,7 +98,7 @@ func _draw_sprite_shadow(center: Vector2, width: float) -> void:
 	draw_rect(Rect2(center - Vector2(width * 0.32, 2.0), Vector2(width * 0.64, 4.0)), Color(INK, 0.30), true)
 
 func _draw_origin_landmarks(hero: String) -> void:
-	var ground_y := size.y * 0.82
+	var ground_y: float = size.y * 0.82
 	draw_rect(Rect2(size.x * 0.08, ground_y, size.x * 0.84, 3.0), Color(PAPER, 0.18))
 	for x in [0.17, 0.28, 0.72, 0.83]:
 		draw_rect(Rect2(size.x * x, ground_y - 18.0, 5.0, 18.0), Color(INK, 0.24))
@@ -147,14 +134,14 @@ func _draw_sprite(kind: String, base: Vector2, scale_factor: float) -> void:
 	var tex := sprite_textures.get(kind) as Texture2D
 	if tex == null:
 		return
-	var target_size := Vector2(tex.get_width(), tex.get_height()) * scale_factor
+	var target_size: Vector2 = Vector2(tex.get_width(), tex.get_height()) * scale_factor
 	var rect := Rect2(base - Vector2(target_size.x * 0.5, target_size.y), target_size)
 	draw_texture_rect(tex, rect, false)
 
 func _draw_pixel_path() -> void:
-	var y := size.y * 0.86
+	var y: float = size.y * 0.86
 	for i in range(12):
-		var x := size.x * (0.08 + float(i) * 0.075)
+		var x: float = size.x * (0.08 + float(i) * 0.075)
 		draw_rect(Rect2(x, y + (i % 2) * 4.0, 22.0, 4.0), Color("c9a65f", 0.36))
 
 func _draw_battle_marks() -> void:
@@ -166,7 +153,7 @@ func _draw_battle_marks() -> void:
 	draw_rect(Rect2(right - Vector2(16, 2), Vector2(32, 4)), Color(RED, 0.60))
 
 func _draw_title_ornament() -> void:
-	var y := size.y * 0.12
+	var y: float = size.y * 0.12
 	draw_rect(Rect2(size.x * 0.05, y, size.x * 0.22, 3), Color(GOLD, 0.55))
 	draw_rect(Rect2(size.x * 0.73, y, size.x * 0.22, 3), Color(GOLD, 0.55))
 	draw_rect(Rect2(size.x * 0.47, y - 4, 12, 12), Color(GOLD, 0.75))
