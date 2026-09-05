@@ -32,7 +32,7 @@ func _init() -> void:
 			"--headless",
 			"--path", ProjectSettings.globalize_path("res://"),
 			"--script", path,
-		]), true, output)
+		]), output, true)
 		if exit_code != 0:
 			failures.append("SceneTree test failed: %s exit=%d output=%s" % [path, exit_code, str(output)])
 		else:
