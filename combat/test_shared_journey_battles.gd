@@ -66,6 +66,8 @@ func _initialize() -> void:
 	_assert(narrative.state.get_inventory().get("currencies", {}).get("COIN", 0) == 300, "full pilgrimage opening should grant COIN_MEDIUM once")
 	_assert("FULL_PILGRIMAGE_BEGINS" in narrative.state.journey_log.get("active_world_effects", []), "full pilgrimage milestone should be active")
 	_assert(narrative.state.current_shared_chapter == "SHARED-09-FULL-PILGRIMAGE", "final shared chapter should remain stable")
+	_assert(not SharedJourneyManager.complete("SHARED-09-FULL-PILGRIMAGE", narrative), "completed final chapter must reject duplicate completion")
+	_assert(narrative.state.get_inventory().get("currencies", {}).get("COIN", 0) == 300, "duplicate completion must not duplicate COIN reward")
 
 	print("ALL SHARED JOURNEY BATTLE TESTS PASSED")
 	quit(0)
