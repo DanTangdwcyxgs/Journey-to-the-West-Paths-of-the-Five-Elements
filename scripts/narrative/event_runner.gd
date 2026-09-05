@@ -204,6 +204,7 @@ func _present_choice(node: Dictionary) -> Dictionary:
 		"title": event.get_title(),
 		"text": event.get_text(),
 		"choices": event.get_choices(),
+		"next_map": node.get("next_map", {}).duplicate(true),
 	}
 	return _wait_with(action)
 
