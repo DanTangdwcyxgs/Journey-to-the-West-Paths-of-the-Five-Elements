@@ -29,6 +29,14 @@ jobs:
           use-dotnet: false
           include-templates: true
 
+      - name: Download CJK font for Web build
+        run: |
+          mkdir -p fonts
+          curl -fL --retry 3 --retry-all-errors \
+            "https://raw.githubusercontent.com/notofonts/noto-cjk/main/Sans/SubsetOTF/SC/NotoSansSC-Regular.otf" \
+            -o fonts/NotoSansSC-Regular.otf
+          test -s fonts/NotoSansSC-Regular.otf
+
       - name: Verify Godot
         run: godot --version
 
