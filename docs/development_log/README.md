@@ -10,6 +10,7 @@
 
 ## 最新记录
 
+- [`2026-09-05 — Developer Credit / Investor Contact Entry`](2026-09-05-developer-credit-investor-contact.md)
 - [`2026-09-05 — Wukong Full Origin EventSequence Migration`](2026-09-05-wukong-full-origin-sequence-migration.md)
 - [`2026-09-05 — Wukong Origin EventSequence Migration`](2026-09-05-origin-wukong-sequence-migration.md)
 - [`2026-09-05 — Sequence Cross-Reference Validation`](2026-09-05-sequence-cross-reference-validation.md)
@@ -44,6 +45,6 @@
 
 ### AI 长期记忆规则
 
-凡是 AI / Agent 对仓库进行实际代码、数据、测试或架构文档修改，都必须同步更新 `docs/AI_MEMORY.md`，增加一条 Round 记录。该记录只保存工作事实、决策理由、验证结果、已知问题和下一步，不依赖聊天历史。
+凡是 AI / Agent 对仓库进行实际代码、数据、测试或架构文档修改，都必须同步更新 `docs/AI_MEMORY.md`，增加一条 Round 记录。该记录只保存工作事实、决策理由、验证结果和下一步，不依赖聊天历史。
 
-这样即使未来由不同 AI、Agent 或开发者接手，也不会依赖聊天历史才能理解项目状态。
+这样即使未来由不同 AI / Agent / 开发者接手，也不会依赖聊天历史才能理解项目状态。
