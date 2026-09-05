@@ -12,23 +12,11 @@
 
 ### 0.1 记忆原则
 
-每一轮有实际项目操作，都必须留下可恢复的记录。记录只写：
-
-- 本轮做了什么；
-- 为什么这么做；
-- 实际修改了什么；
-- 测试 / 真实运行结果；
-- 当前已知问题；
-- 下一步；
-- 给下一位 Agent 的接手点。
-
-不保存无关闲聊，不需要保存用户原话逐字稿。
+每一轮有实际项目操作，都必须留下可恢复的记录。记录只写：本轮做了什么、为什么这么做、实际修改了什么、测试 / 真实运行结果、当前已知问题、下一步、给下一位 Agent 的接手点。不保存无关闲聊，不需要保存用户原话逐字稿。
 
 ### 0.2 绝不能用“看起来应该能跑”替代验证
 
-代码检查、静态推断和真实 Godot Runtime 是三件不同的事情。
-
-只有实际运行结果才能写成“Godot Runtime 通过”。如果 CI 是 `pending`、没有返回检查项，必须如实记录为未确认，不能提前宣布通过。
+代码检查、静态推断和真实 Godot Runtime 是三件不同的事情。只有实际运行结果才能写成“Godot Runtime 通过”。如果 CI 是 `pending`、没有返回检查项，必须如实记录为未确认，不能提前宣布通过。
 
 ### 0.3 当前引擎基准
 
@@ -43,8 +31,6 @@ Runner 负责流程，不负责 UI；NarrativeState 负责世界事实；Service
 ### 0.5 西游时间线不可被玩家顺序改写
 
 玩家可以选择五人任意一人为起点，但世界历史始终只有一条固定时间线。
-
-大方向：
 
 `悟空被镇压 → 唐僧开始取经 → 五行山释放悟空 → 鹰愁涧白龙马 → 高老庄八戒 → 流沙河悟净 → 五人完整西行`
 
@@ -74,55 +60,40 @@ Memory / Flashback 是历史回放，不得回写当前世界事实。
 
 `Event Sequence JSON → EventSequenceManager → EventSequenceDefinition → EventRunner → NarrativeEventSession → action`
 
-标准 action：
-
-`dialogue / choice / wait / move / battle / reward / jump / end`
+标准 action：`dialogue / choice / wait / move / battle / reward / jump / end`
 
 `EventRunner` 不创建 UI，不直接启动 BattleUI，不把库存、世界位置等业务副作用硬编码到 Runner 中。
 
 ## 2.2 Battle Handoff
 
-推荐真实链路：
-
 `Journey → NarrativeEventSession → EventRunner → EncounterHandoff(+event_resume) → BattleUI → BattleResolutionService → NarrativeEventSession.resume → Journey`
 
-Battle 胜利边界：
-
-`预检 → 奖励预览 → 状态变更 → 剧情推进 → 世界效果 → 最终 Save`
-
-失败需要回滚。
+Battle 胜利边界：`预检 → 奖励预览 → 状态变更 → 剧情推进 → 世界效果 → 最终 Save`。失败需要回滚。
 
 ## 2.3 非战斗副作用
-
-已经建立：
 
 - `RewardService`：统一 narrative reward 的实际库存副作用；
 - `WorldActionService`：统一 `move / wait` 的世界动作入口。
 
-因此不要再把奖励或世界修改直接塞回 `EventRunner`。
+不要把奖励或世界修改重新塞回 `EventRunner`。
 
 ## 2.4 Scene Handoff
 
-`BountyEncounterState` 目前仍兼容旧入口，同时承载 EventSession resume context。
-
-后续目标：逐步收敛为更明确的通用 Scene Handoff Service，但没有必要为了这个目标现在就破坏兼容链。
+`BountyEncounterState` 目前仍兼容旧入口，同时承载 EventSession resume context。后续目标是逐步收敛为明确的通用 Scene Handoff Service，但现在不能为此破坏兼容链。
 
 ---
 
-# 3. 历史工作记录（截至本记忆文件建立前）
+# 3. 历史工作记录
 
-> 下面是根据仓库中的 `AI_HANDOFF.md`、development logs 和当前实现状态整理的**项目级工作记忆回填**。不是聊天逐字稿；只保留影响后续开发的动作、理由和结论。
+> 只保留影响后续工程的项目级动作、理由、验证和接手信息，不是聊天逐字稿。
 
 ## Round 01 — 五人起始路线与固定世界时间线
 
 ### 做了什么
-建立了五人可选起点与 Origin / Shared 双结构。
+建立五人可选起点与 Origin / Shared 双结构。
 
 ### 为什么
 玩家需要自由选择第一视角，但西游历史不能因为选择角色而重排。
-
-### 核心结论
-选择角色 ≠ 改写历史。角色被招募的经典节点仍是固定世界事件。
 
 ### 下一步
 围绕固定世界时间线建立章节、招募和 Memory 解锁。
@@ -132,13 +103,13 @@ Battle 胜利边界：
 ## Round 02 — 战斗 Domain 基础
 
 ### 做了什么
-形成 `Combatant / CombatEngine / CombatAction` 及 HP、ATK、DEF、SPD、BP、Weakness、Shield、Break、Status、Formation 等核心规则。
+形成 `Combatant / CombatEngine / CombatAction` 以及 HP、ATK、DEF、SPD、BP、Weakness、Shield、Break、Status、Formation 等核心规则。
 
 ### 为什么
-战斗必须成为稳定的 Domain 层，而不是由 UI 拼规则。
+战斗必须是稳定的 Domain 层，而不是 UI 拼规则。
 
 ### 下一步
-继续补充技能、敌人、Encounter 和数据驱动内容。
+补充技能、敌人、Encounter 和数据驱动内容。
 
 ---
 
@@ -148,10 +119,10 @@ Battle 胜利边界：
 加入五人角色基础差异、3 前排 / 2 后排、队伍保存读取、装备和消耗品等基础能力。
 
 ### 为什么
-JRPG 系统要服务人物，而不是堆系统数量。
+系统应该服务人物，而不是堆系统数量。
 
 ### 下一步
-把这些能力接到西游叙事与实际 Encounter。
+把这些能力接到西游叙事和实际 Encounter。
 
 ---
 
@@ -161,7 +132,7 @@ JRPG 系统要服务人物，而不是堆系统数量。
 建立 World Map / Travel / Rumor / Bounty，以及黄风岭 / 黄风洞灰盒探索链。
 
 ### 为什么
-先建立“西游世界可以被游玩”的基础，再把剧情事件接进去。
+先建立“西游世界可游玩”的基础，再接剧情事件。
 
 ### 下一步
 让世界事件和战斗通过统一入口衔接。
@@ -184,10 +155,10 @@ JRPG 系统要服务人物，而不是堆系统数量。
 ## Round 06 — Shared Chapter 原子结算 / BattleResolution
 
 ### 做了什么
-统一 `BattleResolutionService`，把战斗奖励、章节推进、世界效果和保存纳入一个明确边界，并加入回滚思想。
+统一 `BattleResolutionService`，把战斗奖励、章节推进、世界效果和保存纳入明确边界，并加入回滚思想。
 
 ### 为什么
-避免“奖励发了但章节没推进”“章节推进了但奖励失败”“重复保存/重复结算”等一致性问题。
+避免奖励、章节、世界状态出现部分成功或重复结算。
 
 ### 下一步
 把这个边界作为 Event Sequence 战斗节点的后端结算标准。
@@ -197,10 +168,10 @@ JRPG 系统要服务人物，而不是堆系统数量。
 ## Round 07 — EventDefinition / EventRuntime
 
 ### 做了什么
-建立数据驱动的 EventDefinition / EventRuntime，并统一 Origin / Shared 的事件选择执行入口。
+建立数据驱动 EventDefinition / EventRuntime，并统一 Origin / Shared 事件选择执行入口。
 
 ### 为什么
-事件选择需要持久化，不能依赖 UI 按钮本身保存状态。
+事件选择必须持久化，不能依赖 UI 按钮保存状态。
 
 ### 下一步
 从单事件扩展到多节点 Event Sequence。
@@ -210,10 +181,10 @@ JRPG 系统要服务人物，而不是堆系统数量。
 ## Round 08 — EventSequenceDefinition / 图结构验证
 
 ### 做了什么
-建立 Event Sequence 数据结构和 `EventSequenceDefinition.validate()` 图连接校验。
+建立 Event Sequence 数据结构和图连接校验。
 
 ### 为什么
-剧情流程应该由数据图表达，而不是散落在 Journey UI 里的硬编码 if/else。
+剧情流程应该由数据图表达，而不是散落在 Journey UI 的硬编码 if/else。
 
 ### 下一步
 建立真正执行图的 Runner。
@@ -223,10 +194,10 @@ JRPG 系统要服务人物，而不是堆系统数量。
 ## Round 09 — EventRunner 多节点执行
 
 ### 做了什么
-建立 `EventRunner`，支持 `dialogue / choice / wait / move / battle / reward / jump / end`，并保存 runner snapshot 供恢复。
+建立 `EventRunner`，支持 `dialogue / choice / wait / move / battle / reward / jump / end`，并保存 runner snapshot。
 
 ### 为什么
-把“章节描述什么”和“流程怎么走”拆开，让同一套 Runtime 可运行不同内容。
+拆开“章节描述什么”和“流程怎么走”，让 Runtime 可以运行不同内容。
 
 ### 下一步
 建立独立 Session，处理跨场景和跨战斗恢复。
@@ -236,13 +207,13 @@ JRPG 系统要服务人物，而不是堆系统数量。
 ## Round 10 — NarrativeEventSession / Battle Resume
 
 ### 做了什么
-建立 `NarrativeEventSession`，让 EventRunner 的未完成流程可以通过 `event_resume` 跨 Journey / BattleUI 恢复。
+建立 `NarrativeEventSession`，让未完成 EventRunner 流程通过 `event_resume` 跨 Journey / BattleUI 恢复。
 
 ### 为什么
-战斗不是剧情流程的终点，而是流程中的一个 action；战斗结束必须回到原 Sequence 的下一节点。
+战斗只是剧情中的一个 action，战斗结束必须回到 Sequence 下一节点。
 
 ### 下一步
-加入真实 Godot Runtime 回归，证明链路不是静态代码拼接。
+用真实 Godot Runtime 验证完整链路。
 
 ---
 
@@ -252,26 +223,23 @@ JRPG 系统要服务人物，而不是堆系统数量。
 建立 GitHub Actions Godot headless runtime workflow，使用 **Godot 4.5.1 stable** 验证项目导入、GDScript probe、EventRuntime、EventRunner、EventSession、战斗恢复等能力。
 
 ### 为什么
-项目明确要求不再用“代码看起来正确”代替运行验证。
-
-### 核心结论
-以后只有真实 Godot Runtime / CI 结果才可写“通过”。
+项目明确要求不再使用“代码看起来正确”代替真实运行。
 
 ### 下一步
-把已验证的 Runtime 真正接入 Godot SceneTree / Journey 场景表现。
+把已验证 Runtime 接入真实 Godot SceneTree / Journey 场景表现。
 
 ---
 
 ## Round 12 — EventSequence → EventRunner → Action → Service / Handoff
 
 ### 做了什么
-明确 action 的职责边界：Runner 只请求动作；Reward / World / Battle 通过各自 Service 或 Handoff 执行。
+明确 action 职责边界：Runner 只请求动作；Reward / World / Battle 通过 Service 或 Handoff 执行。
 
 ### 为什么
-防止 Runner 变成一个同时懂库存、世界、UI、战斗的巨大 God Object。
+避免 Runner 变成同时理解库存、世界、UI、战斗的 God Object。
 
 ### 下一步
-继续接真实 Presentation 和 SceneTree。
+继续真实 Presentation / SceneTree 接线。
 
 ---
 
@@ -281,7 +249,7 @@ JRPG 系统要服务人物，而不是堆系统数量。
 建立 `scripts/items/reward_service.gd`，把 narrative `reward` action 的实际库存写入统一到 Service，并加入 `combat/test_reward_service.gd` 回归。
 
 ### 为什么
-奖励副作用必须集中，避免未来每个剧情节点自己写 inventory。
+奖励副作用必须集中，避免每个剧情节点自行写 inventory。
 
 ### 下一步
 同样处理 `move / wait` 的世界副作用。
@@ -294,10 +262,7 @@ JRPG 系统要服务人物，而不是堆系统数量。
 建立 `scripts/world/world_action_service.gd`，统一 `move / wait` 的执行入口，并加入 `combat/test_world_action_service.gd`。
 
 ### 为什么
-世界动作应该和奖励一样拥有清晰 Service 边界，Runner 不直接修改世界内部状态。
-
-### 注意
-当前 `move` 主要记录逻辑地点 / visited node；`wait` 当前验证动作但不推进独立世界时钟。这是已知限制，不应伪装成完整探索表现。
+世界动作应该拥有清晰 Service 边界，Runner 不直接修改世界内部状态。
 
 ### 下一步
 把 WorldAction 接入真实 Presentation / SceneTree。
@@ -307,62 +272,96 @@ JRPG 系统要服务人物，而不是堆系统数量。
 ## Round 15 — Journey Event Presentation / SceneTree 接线
 
 ### 做了什么
-对 `ui/journey.gd` 做第一批真实 Journey 表现接线：
-
-- DialoguePanel / Speaker / Text / Hint / EventMeta；
-- dialogue 逐字显示与点击立即完成；
-- WAIT 的过渡状态与计时；
-- BATTLE 保持 Handoff 边界并启动 BattleUI；
-- 为 presentation 增加回归测试 `combat/test_journey_event_presentation.gd`；
-- 加入 `tests/runtime_suite.gd`。
+第一批真实 Journey 表现接线：DialoguePanel / Speaker / Text / Hint / EventMeta、对白逐字显示、点击立即完成、WAIT 过渡状态、BATTLE Handoff、Journey Presentation regression，并加入 `tests/runtime_suite.gd`。
 
 ### 为什么
-Batch 1B 的重点不是继续堆 Runtime 抽象，而是进入**真实 Godot SceneTree 接线**。这也是此前讨论中最容易被误记的关键点：这里的下一步核心不是再次抽象 EventRunner，而是让已经验证的流程进入真实场景节点生命周期。
+Batch 1B 的重点已经明确进入**真实 Godot SceneTree 接线**，不是继续堆 Runtime 抽象。
 
 ### 下一步
-让更多 Shared Journey 章节使用同一套 Journey Event Presentation，并逐条迁移数据。
+让更多 Shared Journey 使用同一套 Presentation，并逐条迁移数据。
 
 ---
 
 ## Round 16 — Shared-04 EventSequence 接线
 
 ### 做了什么
-新增：
-
-`SHARED-04-EARLY-DEMON-TALES-SEQUENCE`
-
-当前数据流程为：
-
-`departure dialogue → move(BLACK_WIND_NORTH_PATH) → warning dialogue → wait → resolve dialogue → reward(HERB) → end`
-
-并在 `combat/test_event_sequence_validator.gd` 中加入 Shared-04 sequence 校验。
+新增 `SHARED-04-EARLY-DEMON-TALES-SEQUENCE`，把黑风山早期妖患接入统一事件图，并增加 validator regression。
 
 ### 为什么
-证明 Shared Journey 不再需要为单个章节写专用 UI 分支，而可以按 `<chapter_id>-SEQUENCE` 读取数据。
+验证 Shared Journey 不需要为单个章节写专用 UI 分支，可以按 `<chapter_id>-SEQUENCE` 数据驱动运行。
 
-### 重要架构边界
-Shared 无战斗章节应在 sequence 完成时提交章节；带战斗的章节由 `BattleResolutionService` 完成原子章节提交，Sequence 返回后不能再次完成同一章节，否则会重复推进。
+### 关键边界
+无战斗 Shared 章节应在 sequence END 时提交章节；带战斗章节由 `BattleResolutionService` 原子提交，Sequence 返回后不能再次完成同一章节。
 
 ### 已知问题
-Shared-04 当前 sequence 内存在 reward，而章节数据本身也存在奖励定义；正式收敛前必须避免双重发奖。MOVE 目前仍是逻辑 world action，没有路径动画。
+Shared-04 曾同时拥有 sequence reward 与 chapter reward，会产生双重发奖风险；MOVE 仍没有路径动画。
 
 ---
 
-## Round 17 — AI 持久记忆系统（本轮）
+## Round 17 — AI 持久记忆系统
 
 ### 做了什么
-建立本文件 `docs/AI_MEMORY.md`，把历史项目级上下文、架构边界、真实验证要求和后续 Agent 接手方式沉淀到仓库。
-
-同时把“以后每轮有实际操作都要记下来”正式设为项目工作规则。
+建立 `docs/AI_MEMORY.md`，把历史项目级上下文、架构边界、真实验证要求和后续 Agent 接手方式沉淀到仓库。
 
 ### 为什么
-聊天上下文不能作为唯一项目记忆。任何新的 AI / Agent 都应该能够只读仓库，就恢复：做到了哪里、为什么这么做、下一步是什么。
+聊天上下文不能作为唯一工程状态来源。
 
 ### 下一步
-从本轮开始，每一个有实际代码 / 数据 / 测试 / 架构变更的工作轮次，都在本文件新增一条 `Round XX`，并同步 `docs/development_log/`。
+每轮实际代码 / 数据 / 测试 / 架构变更都追加 Round，并同步 development log。
+
+---
+
+## Round 18 — Shared-05 / Shared-06 EventSequence Migration
+
+### 做了什么
+继续 Batch B，把高老庄招募战与四人西行迁移到统一 EventSequence。
+
+新增：
+
+- `SHARED-05-GAOJIAZHUANG-SEQUENCE`
+- `SHARED-06-FOUR-PERSON-JOURNEY-SEQUENCE`
+
+Shared-05：
+
+`arrival dialogue → BAJIE_ENCOUNTER choice → SHARED_GAOJIAZHUANG battle → after-battle dialogue → end`
+
+Shared-06：
+
+`depart dialogue → wait → resolve dialogue → end`
+
+同时移除 Shared-04 sequence 中重复的 `reward(HERB)`，因为 `shared_chapters.json` 已经把 HERB 定义为章节奖励，无战斗 chapter 在 END 完成时会由 `SharedJourneyManager` 发放。这样避免同一个章节迁移后发两次奖励。
+
+### 为什么
+
+这一轮不是增加新的抽象，而是继续验证同一条真实运行链能连续覆盖：战斗招募 → BattleUI resume → 原子章节结算，以及无战斗章节 → END 完成 → 章节奖励。奖励唯一来源必须在迁移时明确，否则内容迁移会产生隐藏经济错误。
+
+### 实际修改
+
+- `data/narrative/event_sequences.json`
+- `combat/test_event_sequence_validator.gd`
+- `docs/development_log/2026-09-05-shared05-shared06-migration.md`
+
+### 验证
+
+- `EventSequenceValidator`：已在回归中加入 Shared-05 / Shared-06。
+- Godot Runtime：**未确认通过**。
+- 最新测试提交 combined status：`statuses: []`，没有返回 workflow run；因此不能写“Godot Runtime 通过”。
+
+### 已知问题
+
+- MOVE 仍为逻辑 world action，没有角色路径动画；
+- WAIT 不推进独立世界时钟；
+- `BountyEncounterState` 仍是兼容 Scene Handoff 层；
+- Shared-07 / Shared-08 / Shared-09 尚未迁移；
+- Journey Event UI 仍是基础 presentation 壳，镜头与角色演出尚未完成。
+
+### 下一步
+
+继续 `SHARED-07-FLOWING-SANDS → SHARED-08-PARTY-FULL → SHARED-09-FULL-PILGRIMAGE`，每条保持“数据 → Runtime → Presentation → 回归 → 真实 Godot Runtime 结果 → memory/log”。
 
 ### 接手点
-下一位 Agent：先读本文件 → `AI_HANDOFF.md` → `docs/development_log/README.md` → 最新 development log → 当前任务代码 / 数据 → 再开始修改。
+
+下一位 Agent 先读：`docs/AI_MEMORY.md → docs/development_log/2026-09-05-shared05-shared06-migration.md → data/narrative/event_sequences.json → data/narrative/shared_chapters.json → ui/journey.gd → BattleResolutionService`。
 
 ---
 
@@ -387,7 +386,7 @@ Shared-04 当前 sequence 内存在 reward，而章节数据本身也存在奖�
 - WorldActionService；
 - Journey 第一批 Event Presentation；
 - Shared-03 第一条真实共享 Event Sequence；
-- Shared-04 第一条新增共享迁移内容；
+- Shared-04 / Shared-05 / Shared-06 共享迁移内容；
 - Godot 4.5.1 headless runtime validation 基础设施。
 
 ## 当前优先顺序
@@ -398,11 +397,11 @@ Shared-04 当前 sequence 内存在 reward，而章节数据本身也存在奖�
 
 ### P1 — Shared Journey Migration
 
-按顺序逐条迁移：
+已完成：`SHARED-04 → SHARED-05 → SHARED-06`。
 
-`SHARED-04 → SHARED-05 → SHARED-06 → SHARED-07 → SHARED-08 → SHARED-09`
+下一步：`SHARED-07 → SHARED-08 → SHARED-09`。
 
-每迁移一条：数据 → Runtime → Presentation → 回归 → development log。
+每迁移一条：数据 → Runtime → Presentation → 回归 → development log → AI_MEMORY → 真实 Godot Runtime 状态。
 
 ### P2 — Origin Migration
 
@@ -418,15 +417,11 @@ Shared-04 当前 sequence 内存在 reward，而章节数据本身也存在奖�
 
 ### P5 — Vertical Slice
 
-目标 Vertical Slice：
-
-`一个完整角色起始路线 → 五行山 → 鹰愁涧 → 招募后 Memory`
+目标 Vertical Slice：`一个完整角色起始路线 → 五行山 → 鹰愁涧 → 招募后 Memory`。
 
 ---
 
 # 5. 每次以后必须写入的 Round 模板
-
-复制以下模板作为新的一轮：
 
 ```text
 ## Round XX — YYYY-MM-DD — <本轮主题>
