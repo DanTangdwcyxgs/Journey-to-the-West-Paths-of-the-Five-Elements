@@ -64,7 +64,17 @@ Defines an executable graph of reusable nodes:
 - `jump`
 - `end`
 
-`EventSequenceDefinition` normalizes the sequence and validates node IDs, node types, start node and graph targets before execution.
+`EventSequenceDefinition` validates node IDs, node types, start node and graph targets.
+
+`EventSequenceValidator` then validates cross-references into real content:
+
+- choice → Event;
+- battle → Encounter;
+- battle → source Chapter;
+- shared battle encounter must match the chapter's canonical encounter ID;
+- namespace must be `ORIGIN` or `SHARED`.
+
+`EventSequenceManager` rejects invalid sequences instead of placing them into the runtime catalog and exposes load errors for CI/content tooling.
 
 `EventRunner` owns only execution state. It returns an action request to Presentation / World / Battle systems and can be serialized and restored while waiting on dialogue, choice, movement, reward or battle resolution.
 
@@ -163,6 +173,14 @@ Character-specific combat modifiers remain available through the existing origin
 
 Provides one normalized graph contract for all executable narrative sequences. It is deliberately data-only and performs structural validation before a runner starts.
 
+### EventSequenceValidator
+
+Performs content cross-reference validation after structural validation. It should be used by content import / CI, not hidden inside UI code.
+
+### EventSequenceManager
+
+Loads valid sequence content into the runtime catalog. Invalid entries are rejected and recorded in `get_load_errors()` so future editor tooling and CI can report all bad content together.
+
 ### EventRunner
 
 Owns the runtime state machine for a sequence:
@@ -175,6 +193,10 @@ Owns the runtime state machine for a sequence:
 - serializes/restores the current node and pending action.
 
 The runner does **not** perform UI, animation, pathfinding or combat itself.
+
+### NarrativeEventSession
+
+Owns a single in-progress event experience across scene boundaries. It combines `EventRunner` with serializable resume context and produces a Battle handoff without knowing which UI scene will present it.
 
 ### NarrativeManager / NarrativeState
 
@@ -203,7 +225,7 @@ Failures must restore the pre-resolution snapshot.
 
 ### EncounterHandoff
 
-Provides a neutral runtime contract for moving from exploration/narrative scenes into battle. `BountyEncounterState` remains the compatibility persistence implementation for now.
+Provides a neutral runtime contract for moving from exploration/narrative scenes into battle. `BountyEncounterState` remains the compatibility persistence implementation for now and can carry `event_resume` for active event sessions.
 
 ---
 
@@ -219,134 +241,75 @@ Bad example:
 
 Preferred example:
 
-`BattleUI → BattleResolutionService → SharedJourneyManager → NarrativeManager / NarrativeState`
-
-For sequence-driven narrative, the equivalent is:
-
-`EventRunner → EncounterHandoff → BattleUI → BattleResolutionService → NarrativeState`
-
-The UI displays the resulting state.
+- EventRunner asks for a battle;
+- BattleUI executes combat;
+- BattleResolutionService atomically commits result + chapter progression;
+- EventSession resumes presentation from its stored context;
+- NarrativeState remains the only authority for world facts.
 
 ---
 
-## 6. Production Rule: Event Choice Ownership
+## 6. Current Production Sample
 
-Events may present choices and calculate their configured effects, but persistent choice storage belongs to `NarrativeState` through explicit APIs.
+The first production-style executable sequence is:
 
-Current namespaces:
+`SHARED-03-EAGLE-SORROW-SEQUENCE`
 
-- origin: `record_origin_choice(chapter_id, choice_id)`
-- shared event: `record_shared_choice(event_id, choice_id)`
+Data file:
 
-Future relationship / world / quest namespaces should follow the same explicit pattern.
+`data/narrative/event_sequences.json`
 
----
+Flow:
 
-## 7. Production Rule: Reward Ownership
+`Arrival Dialogue → LONGMA_ENCOUNTER Choice → SHARED_EAGLE_SORROW Battle → After Battle Dialogue → END`
 
-Use this separation:
-
-### Encounter reward
-
-Reward attached to successfully defeating a battle encounter.
-
-### Chapter reward
-
-Reward attached to completing a non-combat chapter.
-
-### Sequence reward node
-
-A reward node emits a reward action for the appropriate service/presentation layer. It must not silently duplicate an encounter reward.
-
-A recruitment battle should not receive the same reward again from the chapter completion step unless that duplication is intentional and explicitly documented.
+This is deliberately small. It exists to prove the production contract before expanding into the full Shared Journey and five Origin Routes.
 
 ---
 
-## 8. Production Rule: Narrative Transaction
+## 7. Authoring Workflow
 
-Any operation that can partially mutate multiple persistent systems must use a transaction boundary.
+For a new executable scene:
 
-Minimum transaction shape:
+1. Add or reuse Event definitions.
+2. Add a sequence graph in `event_sequences.json`.
+3. Run structural + cross-reference validation.
+4. Confirm canonical `source_chapter_id` and encounter IDs.
+5. Run EventRunner / EventSession regression.
+6. Only then connect new presentation assets.
 
-1. Validate source and current state.
-2. Snapshot persistent state.
-3. Apply reward preview.
-4. Apply journal / milestone / progression changes.
-5. Apply recruitment and world effects.
-6. Set next state.
-7. Save exactly once.
-8. Restore snapshot on failure.
-
-This rule is mandatory for future multi-system chapter resolution.
+Content authors should not add new manager classes for ordinary chapters.
 
 ---
 
-## 9. Chapter Authoring Workflow
+## 8. Current Quality Gate
 
-For a new chapter:
+A sequence is not considered production-ready unless:
 
-1. Define its canonical narrative purpose.
-2. Assign its category and timeline position.
-3. Define prerequisites.
-4. Define event data.
-5. Define event sequence nodes when the chapter has multiple beats or interruptions.
-6. Define encounter(s) if needed.
-7. Define rewards and world effects.
-8. Define recruitment changes if any.
-9. Define next destination.
-10. Add the minimum regression test for its critical state transition.
-11. Only then integrate presentation assets.
+- structural validation passes;
+- all referenced events exist in the declared namespace;
+- all battle encounters exist;
+- source chapters exist;
+- canonical encounter IDs match chapter data;
+- runtime regression passes;
+- Godot headless CI passes.
 
-This ordering prevents art and UI from becoming coupled to unstable narrative logic.
+Current limitation: the quality gate does not yet validate every presentation asset or map marker referenced by `move` nodes.
 
 ---
 
-## 10. Vertical Slice Workflow
+## 9. Migration Policy
 
-A vertical slice should be produced end-to-end rather than implementing isolated systems.
+Old chapter/event code remains temporarily usable while content migrates.
 
-Target flow:
+Migration should be incremental:
 
-`World node → NPC / rumor → exploration → event → normal encounter → camp / preparation → dungeon → recruitment or boss → resolution → aftermath → next destination`
+`legacy content → Definition/Runtime compatibility → EventSequence → Presentation`
 
-The first complete slice is intended to use the existing:
-
-`Five Elements Mountain → Eagle Sorrow → White Dragon → Black Wind / Yellow Wind travel → Yellow Wind Ridge → Yellow Wind Cave → Yellow Wind Demon`
-
-This slice becomes the reference implementation for future chapter production.
+Do not rewrite all existing chapters in one commit. Migrate one real playable path, validate it, then continue.
 
 ---
 
-## 11. Migration Policy
+## 10. Core Principle
 
-Do not rewrite existing working systems solely for elegance.
-
-Migrate one responsibility at a time:
-
-1. wrap old raw data with `ChapterDefinition` / `EventDefinition`;
-2. route read-only discovery through `ChapterRuntime`;
-3. route choice execution through `EventRuntime`;
-4. add `EventSequenceDefinition` / `EventRunner` for multi-beat content;
-5. move common side effects into shared services only when covered by tests;
-6. remove duplicated old logic after the new path is verified.
-
-This keeps the project playable while architecture evolves.
-
----
-
-## 12. Quality Gate Before Marking a Feature Complete
-
-A feature is not considered complete solely because its script exists.
-
-The preferred gate is:
-
-- data exists;
-- runtime path is connected;
-- state transition is persistent;
-- invalid/stale input is rejected;
-- duplicate resolution is safe;
-- at least one regression test exists;
-- the feature is reflected in project documentation;
-- Godot runtime verification is explicitly recorded when actually executed.
-
-Never claim runtime success when only static/code inspection was performed.
+**章节描述发生什么，Runtime 决定怎么执行，NarrativeState 保存事实，Presentation 只负责表现。**
