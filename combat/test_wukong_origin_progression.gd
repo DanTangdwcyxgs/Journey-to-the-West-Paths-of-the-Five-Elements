@@ -28,6 +28,12 @@ static func run_all() -> Dictionary:
 		assert(definition != null, "%s sequence should load" % chapter_id)
 		assert(definition.validate().get("valid", false), "%s sequence should validate" % chapter_id)
 
+		var has_battle := false
+		for node in definition.get_nodes():
+			if str(node.get("type", node.get("kind", ""))).to_lower() == EventRunner.BATTLE:
+				has_battle = true
+				break
+
 		var runner := EventRunner.new(definition, manager, "ORIGIN")
 		var action: Dictionary = runner.start()
 		assert(not action.is_empty(), "%s should start" % chapter_id)
@@ -60,7 +66,7 @@ static func run_all() -> Dictionary:
 						str(handoff.get("source_stage_id", "")),
 						chapter_id,
 						str(handoff.get("source_route_id", "")),
-						encounter_definition.get("name", encounter_id),
+						str(encounter_definition.get("name", encounter_id)),
 						rewards,
 						effects,
 						encounter_manager
@@ -72,6 +78,10 @@ static func run_all() -> Dictionary:
 					break
 				_:
 					assert(false, "%s returned unsupported action %s" % [chapter_id, kind])
+
+		if not has_battle:
+			var completed := manager.complete_origin_chapter("WUKONG")
+			assert(str(completed.get("id", "")) == chapter_id, "%s END should complete the current non-battle origin chapter" % chapter_id)
 
 		assert(str(manager.state.completed_chapters[manager.state.completed_chapters.size() - 1]) == chapter_id, "%s should be the latest completed origin chapter" % chapter_id)
 		last_completed = chapter_id
