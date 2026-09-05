@@ -1,14 +1,6 @@
 class_name CharacterPortrait
 extends Control
 
-const SPRITES := {
-	"WUKONG": "res://assets/art/characters/wukong.svg",
-	"TANG": "res://assets/art/characters/tang.svg",
-	"BAJIE": "res://assets/art/characters/bajie.svg",
-	"WUJING": "res://assets/art/characters/wujing.svg",
-	"LONGMA": "res://assets/art/characters/longma.svg",
-}
-
 const FRAME := Color("1b1920")
 const GOLD := Color("d5ad57")
 
@@ -26,12 +18,12 @@ func set_character(id: String) -> void:
 	queue_redraw()
 
 func _reload_sprite() -> void:
-	sprite = load(SPRITES.get(character_id, SPRITES["WUKONG"])) as Texture2D
+	sprite = ArtAssetCatalog.character_texture(character_id)
 	queue_redraw()
 
 func _draw() -> void:
-	var inset := 8.0
-	# Pixel-art card: square corners, stepped ornament, no vector faces.
+	var inset: float = 8.0
+	# Pixel-art card: hard corners, stepped ornaments, no vector-face construction.
 	draw_rect(Rect2(inset, inset, size.x - inset * 2.0, size.y - inset * 2.0), Color(FRAME, 0.92), true)
 	draw_rect(Rect2(inset, inset, size.x - inset * 2.0, size.y - inset * 2.0), Color(GOLD, 0.72), false, 2.0)
 	for x in [inset + 10.0, size.x - inset - 14.0]:
