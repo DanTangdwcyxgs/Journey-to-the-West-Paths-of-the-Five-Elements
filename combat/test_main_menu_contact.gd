@@ -15,13 +15,13 @@ func _initialize() -> void:
 	_assert(contact != null, "investor contact button should be visible")
 	_assert(contact.tooltip_text.find("DanTangdwcyxgs") >= 0, "contact tooltip should contain WeChat id")
 
-	instance.call("_show_contact_dialog")
-	var dialog := instance.find_child("AcceptDialog", true, false) as AcceptDialog
-	_assert(dialog != null, "contact click should create a dialog")
+	var dialog := instance.call("_create_contact_dialog") as AcceptDialog
+	_assert(dialog != null, "contact dialog should be created")
 	_assert(dialog.title == "投资合作 / 联系开发者", "contact dialog title should be correct")
 	_assert(dialog.dialog_text.find("蛋汤") >= 0, "contact dialog should show developer name")
 	_assert(dialog.dialog_text.find("DanTangdwcyxgs") >= 0, "contact dialog should show WeChat id")
 	_assert(dialog.ok_button_text == "复制微信号", "contact dialog should offer clipboard action")
+	dialog.queue_free()
 
 	instance.queue_free()
 	print("ALL MAIN MENU CONTACT TESTS PASSED")
