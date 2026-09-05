@@ -10,6 +10,7 @@
 
 ## 最新记录
 
+- [`2026-09-05 — Wukong Origin EventSequence Migration`](2026-09-05-origin-wukong-sequence-migration.md)
 - [`2026-09-05 — Sequence Cross-Reference Validation`](2026-09-05-sequence-cross-reference-validation.md)
 - [`2026-09-05 — Shared Sequence Runtime Regression`](2026-09-05-shared-sequence-runtime-regression.md)
 - [`2026-09-05 — Godot Runtime Journey Parse Fix`](2026-09-05-godot-runtime-journey-parse-fix.md)
