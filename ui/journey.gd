@@ -46,9 +46,9 @@ func _process(delta: float) -> void:
 	if not dialogue_revealing:
 		return
 	dialogue_speed_accumulator += delta * DIALOGUE_CHARS_PER_SECOND
-	var target := min(dialogue_full_text.length(), dialogue_visible_characters + int(dialogue_speed_accumulator))
+	var target: int = min(dialogue_full_text.length(), dialogue_visible_characters + int(dialogue_speed_accumulator))
 	if target > dialogue_visible_characters:
-		var added := target - dialogue_visible_characters
+		var added: int = target - dialogue_visible_characters
 		dialogue_visible_characters = target
 		dialogue_speed_accumulator -= float(added)
 		if dialogue_text_label != null:
@@ -259,7 +259,7 @@ func _start_event_transition(action: Dictionary) -> void:
 		return
 	event_transition_pending = true
 	primary_button.disabled = true
-	var seconds := max(float(action.get("seconds", 0.0)), EVENT_TRANSITION_DELAY)
+	var seconds: float = max(float(action.get("seconds", 0.0)), EVENT_TRANSITION_DELAY)
 	phase_label.text = "等待 · %.1f 秒" % seconds
 	dialogue_hint_label.text = "场景过渡中…"
 	await get_tree().create_timer(seconds).timeout
@@ -579,31 +579,29 @@ func _render_route_or_shared() -> void:
 				primary_button.disabled = true
 				_render_choices(event)
 			else:
-				primary_button.text = "进入个人战斗" if not str(chapter.get("encounter_id", "")).is_empty() else "完成本章"
+				primary_button.text = "进入战斗" if not str(chapter.get("encounter_id", "")).is_empty() else "完成本章"
 				primary_button.disabled = false
+
+func _render_choices(event: Dictionary) -> void:
+	_clear_choices()
+	for choice in event.get("choices", []):
+		var button := Button.new()
+		button.custom_minimum_size = Vector2(0, 48)
+		button.text = str(choice.get("label", ""))
+		button.pressed.connect(_apply_choice.bind(str(choice.get("id", ""))))
+		choice_box.add_child(button)
+
+func _render_shared_choices(event: Dictionary) -> void:
+	_clear_choices()
+	for choice in event.get("choices", []):
+		var button := Button.new()
+		button.custom_minimum_size = Vector2(0, 48)
+		button.text = str(choice.get("label", ""))
+		button.pressed.connect(_apply_shared_choice.bind(str(choice.get("id", ""))))
+		choice_box.add_child(button)
 
 func _clear_choices() -> void:
 	if choice_box == null:
 		return
 	for child in choice_box.get_children():
 		child.queue_free()
-
-func _render_choices(event: Dictionary) -> void:
-	_clear_choices()
-	for choice in event.get("choices", []):
-		var choice_id := str(choice.get("id", ""))
-		var button := Button.new()
-		button.custom_minimum_size = Vector2(0, 48)
-		button.text = str(choice.get("label", choice_id))
-		button.pressed.connect(_apply_choice.bind(choice_id))
-		choice_box.add_child(button)
-
-func _render_shared_choices(event: Dictionary) -> void:
-	_clear_choices()
-	for choice in event.get("choices", []):
-		var choice_id := str(choice.get("id", ""))
-		var button := Button.new()
-		button.custom_minimum_size = Vector2(0, 48)
-		button.text = str(choice.get("label", choice_id))
-		button.pressed.connect(_apply_shared_choice.bind(choice_id))
-		choice_box.add_child(button)
