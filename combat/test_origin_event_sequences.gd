@@ -1,63 +1,106 @@
 extends RefCounted
 
 ## Runtime regression for the complete Wukong Origin Route sequence migration.
-static func _run_sequence(manager: NarrativeManager, sequence_id: String, choice_id: String = "") -> Dictionary:
-	var definition := EventSequenceManager.get_definition(sequence_id)
-	assert(definition != null, "%s definition should load" % sequence_id)
-	var runner := EventRunner.new(definition, manager, "ORIGIN")
-	var action := runner.start()
-	assert(not action.is_empty(), "%s should return a start action" % sequence_id)
+const WUKONG_SEQUENCE_IDS := [
+	"WUK-01-SEQUENCE",
+	"WUK-02-SEQUENCE",
+	"WUK-03-SEQUENCE",
+	"WUK-04-SEQUENCE",
+	"WUK-05-SEQUENCE",
+	"WUK-06-SEQUENCE",
+	"WUK-07-SEQUENCE",
+	"WUK-08-SEQUENCE",
+	"WUK-09-SEQUENCE",
+	"WUK-10-SEQUENCE",
+	"WUK-11-SEQUENCE",
+	"WUK-12-SEQUENCE",
+	"WUK-13-SEQUENCE",
+	"WUK-14-SEQUENCE",
+	"WUK-15-SEQUENCE",
+]
 
-	var steps := 0
-	while not runner.is_finished():
-		steps += 1
-		assert(steps < 32, "%s exceeded safe action step count" % sequence_id)
-		var kind := str(action.get("kind", ""))
-		if kind == EventRunner.BATTLE:
-			var handoff := action.get("handoff", {})
-			assert(not handoff.is_empty(), "%s battle should provide a handoff" % sequence_id)
-			var encounter_id := str(handoff.get("encounter_id", ""))
-			assert(not encounter_id.is_empty(), "%s battle encounter id should exist" % sequence_id)
-			action = runner.resolve_battle(true)
-		elif kind == EventRunner.CHOICE:
-			assert(not choice_id.is_empty(), "%s requires an explicit choice" % sequence_id)
-			action = runner.submit_choice(choice_id)
-		else:
-			action = runner.complete_action()
+const CHOICE_IDS := {
+	"WUK-03-SEQUENCE": "SEEK_FREEDOM",
+	"WUK-08-SEQUENCE": "ACCEPT_TITLE",
+	"WUK-13-SEQUENCE": "ENDURE",
+}
 
-	assert(runner.is_finished(), "%s should finish" % sequence_id)
-	return {
-		"sequence_id": sequence_id,
-		"steps": steps,
-	}
+const EXPECTED_BATTLES := {
+	"WUK-02-SEQUENCE": "WUKONG_ORIGIN_WATER_CAVE",
+	"WUK-06-SEQUENCE": "WUKONG_ORIGIN_DRAGON_PALACE",
+	"WUK-11-SEQUENCE": "WUKONG_ORIGIN_HEAVENLY_TROOPS",
+	"WUK-12-SEQUENCE": "WUKONG_ORIGIN_ERLANG_SHEN",
+	"WUK-14-SEQUENCE": "WUKONG_ORIGIN_HEAVEN_PALACE",
+}
 
 static func run_all() -> Dictionary:
+	var completed_sequences := 0
+	var battle_handoffs := 0
+	var choice_sequences := 0
+
 	var manager := NarrativeManager.new()
-	assert(manager.start_new_game("WUKONG"), "Wukong start should initialize")
+	assert(manager.start_new_game("WUKONG"))
 
 	var origin_events := OriginEventManager.new()
 	var wuk03_definition := origin_events.get_definition("WUK-03")
 	assert(not wuk03_definition.is_empty(), "WUK-03 definition should not be empty")
 	assert(EventRuntime.can_present(wuk03_definition, manager, "ORIGIN"), "WUK-03 should be presentable")
 
-	var results: Array[Dictionary] = []
-	results.append(_run_sequence(manager, "WUK-01-SEQUENCE"))
-	results.append(_run_sequence(manager, "WUK-02-SEQUENCE"))
-	results.append(_run_sequence(manager, "WUK-03-SEQUENCE", "SEEK_FREEDOM"))
-	results.append(_run_sequence(manager, "WUK-04-SEQUENCE"))
-	results.append(_run_sequence(manager, "WUK-05-SEQUENCE"))
-	results.append(_run_sequence(manager, "WUK-06-SEQUENCE"))
-	results.append(_run_sequence(manager, "WUK-07-SEQUENCE"))
-	results.append(_run_sequence(manager, "WUK-08-SEQUENCE", "ACCEPT_TITLE"))
-	results.append(_run_sequence(manager, "WUK-09-SEQUENCE"))
-	results.append(_run_sequence(manager, "WUK-10-SEQUENCE"))
-	results.append(_run_sequence(manager, "WUK-11-SEQUENCE"))
-	results.append(_run_sequence(manager, "WUK-12-SEQUENCE"))
-	results.append(_run_sequence(manager, "WUK-13-SEQUENCE", "ENDURE"))
-	results.append(_run_sequence(manager, "WUK-14-SEQUENCE"))
-	results.append(_run_sequence(manager, "WUK-15-SEQUENCE"))
+	for sequence_id in WUKONG_SEQUENCE_IDS:
+		var definition := EventSequenceManager.get_definition(sequence_id)
+		assert(definition != null, "%s definition should load" % sequence_id)
+		assert(not definition.is_empty(), "%s definition should not be empty" % sequence_id)
+		assert(definition.validate().get("valid", false), "%s definition should validate" % sequence_id)
 
-	assert(results.size() == 15, "All Wukong origin sequences should execute")
+		var runner := EventRunner.new(definition, manager, "ORIGIN")
+		var action := runner.start()
+		assert(not action.is_empty(), "%s should return a start action" % sequence_id)
+		assert(not runner.has_error(), "%s start should not error" % sequence_id)
+
+		var guard := 0
+		while true:
+			guard += 1
+			assert(guard < 32, "%s exceeded safe action step count" % sequence_id)
+			assert(not action.is_empty(), "%s returned an empty action" % sequence_id)
+
+			var kind := str(action.get("kind", ""))
+			match kind:
+				EventRunner.DIALOGUE:
+					action = runner.complete_action()
+				EventRunner.WAIT:
+					assert(float(action.get("seconds", -1.0)) >= 0.0, "%s WAIT should have non-negative seconds" % sequence_id)
+					action = runner.complete_action()
+				EventRunner.MOVE:
+					action = runner.complete_action()
+				EventRunner.CHOICE:
+					assert(CHOICE_IDS.has(sequence_id), "%s choice id should be declared" % sequence_id)
+					action = runner.submit_choice(str(CHOICE_IDS[sequence_id]))
+					choice_sequences += 1
+				EventRunner.BATTLE:
+					assert(EXPECTED_BATTLES.has(sequence_id), "%s battle should be declared" % sequence_id)
+					var expected_encounter := str(EXPECTED_BATTLES[sequence_id])
+					assert(str(action.get("handoff", {}).get("encounter_id", "")) == expected_encounter, "%s battle handoff mismatch" % sequence_id)
+					var saved := runner.to_dict()
+					var resumed := EventRunner.new(definition, manager, "ORIGIN")
+					assert(resumed.restore(saved), "%s battle snapshot should restore" % sequence_id)
+					assert(resumed.get_action().get("kind", "") == EventRunner.BATTLE, "%s restored action should remain BATTLE" % sequence_id)
+					action = resumed.resolve_battle(true)
+					assert(not action.is_empty(), "%s battle victory should resume sequence" % sequence_id)
+					runner = resumed
+					battle_handoffs += 1
+				EventRunner.END:
+					assert(runner.is_finished(), "%s END should mark runner finished" % sequence_id)
+					break
+				_:
+					assert(false, "%s returned unsupported action: %s" % [sequence_id, kind])
+
+			assert(not runner.has_error(), "%s should not error during execution" % sequence_id)
+
+		completed_sequences += 1
+
+	assert(completed_sequences == WUKONG_SEQUENCE_IDS.size())
+	assert(battle_handoffs == 5)
+	assert(choice_sequences == 3)
 	assert(int(manager.state.relationship_values.get("WUKONG_FREEDOM", 0)) == 2)
 	assert(manager.state.get_origin_choice("WUK-03") == "SEEK_FREEDOM")
 	assert(manager.state.get_origin_choice("WUK-08") == "ACCEPT_TITLE")
@@ -65,8 +108,9 @@ static func run_all() -> Dictionary:
 
 	return {
 		"passed": true,
-		"sequences_executed": results.size(),
-		"battle_sequences_verified": 5,
-		"choice_sequences_verified": 3,
+		"executed_sequences": completed_sequences,
+		"expected_sequences": WUKONG_SEQUENCE_IDS.size(),
+		"battle_handoffs_verified": battle_handoffs,
+		"choice_sequences_verified": choice_sequences,
 		"complete_wukong_route_verified": true,
 	}
