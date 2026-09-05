@@ -2,7 +2,7 @@
 
 ## 0. 你正在接手什么
 
-这是一个 Godot 4 开发的中文像素 HD-2D 回合制 JRPG 项目。
+这是一个 Godot 4 开发的中文像素 HD-2D 回合制 JRPG。
 
 **游戏名：西游：五行之路（Journey to the West: Five Elements Road）**
 
@@ -252,6 +252,8 @@ Runner 输出的 `battle` 只生成 `EncounterHandoff` 数据，不直接启动 
 - 当前 CI 已连续验证 EventRunner、EventSession、Shared Battle、BattleResolution 等核心回归
 - 内容批量生产规范
 - 项目对外中文品牌 / 投资人入口 / AI 接管文档
+- 五条 Origin Route 均已有独立 EventSequence 数据链：Wukong / Tang / Longma / Bajie / Wujing
+- Wujing Origin 8 章：2 个 choice、2 个 production battle、Save/Load checkpoint regression
 
 ---
 
@@ -261,7 +263,7 @@ Runner 输出的 `battle` 只生成 `EncounterHandoff` 数据，不直接启动 
 
 1. 将第一条真实 Event Sequence 的视觉表现继续完善（对白框、镜头、角色移动反馈）
 2. 将其余 Shared Journey 招募章节逐步迁移到 EventSequence 数据格式
-3. 将 Origin Route 的事件链逐步迁移到 EventSequence
+3. 五条 Origin Route 已完成首轮 EventSequence 迁移，下一步做统一 cross-reference / route isolation / SceneTree bridge / Shared timeline handoff 回归
 4. 统一非战斗 `reward` 节点的实际发奖服务，避免未来出现奖励逻辑分散
 5. 统一 `move / wait` 的世界系统执行入口
 6. 清理 `BattleUI` 中仍存在的旧 origin/shared 兼容结算职责，并逐步统一到 Handoff + Resolution
@@ -318,7 +320,9 @@ Runner 输出的 `battle` 只生成 `EncounterHandoff` 数据，不直接启动 
 - EventRunner graph / choice / battle resume / END：通过
 - NarrativeEventSession handoff / resume：已加入 suite
 
-最近一次成功 CI 运行：**Godot Runtime #34**，head commit `51ea65c53e34e1916cd6f7b6d092e668c93836ee`。
+最近一轮已知成功 CI：Godot Runtime #156，head commit `44433ae8fb1296744283e397e26360e52cb38710`。
+
+当前 Wujing 批次对应的 `Godot Runtime #162` 已触发，正在等待最终结果；在结论出来之前，不把本批次称为“Godot Runtime 已通过”。
 
 不要把“代码看起来正确”写成“Godot Runtime 已通过”；必须以实际 CI 结果为准。
 
@@ -340,7 +344,7 @@ Runner 输出的 `battle` 只生成 `EncounterHandoff` 数据，不直接启动 
 
 ### Batch C — Origin Migration
 
-按角色分别迁移五条 Origin Route，不改变既有世界时间线与招募节点。
+五条 Origin Route 的首轮 EventSequence 迁移已经完成。下一步优先做统一五路线质量验证：跨数据引用、namespace、battle source、路线隔离、Save/Resume、SceneTree bridge，以及 Origin → Shared handoff。
 
 ### Batch D — Reward / World Execution
 
@@ -385,3 +389,29 @@ Runner 输出的 `battle` 只生成 `EncounterHandoff` 数据，不直接启动 
 ## 13. 一句话原则
 
 **章节描述发生什么，Runtime 决定怎么执行，NarrativeState 保存事实，Presentation 只负责表现。**
+
+---
+
+## 14. 2026-09-05 当前批次接管快照
+
+### 已完成
+
+- Wujing / 沙悟净 Origin Route 的 `WUJING-01` → `WUJING-08` 已全部迁移到 `data/narrative/event_sequences_origin.json`。
+- `WUJING-02` 使用生产 choice event `WUJING-02`。
+- `WUJING-03` 使用生产 encounter `WUJING_ORIGIN_FLOWING_SANDS`。
+- `WUJING-06` 使用生产 choice event `WUJING-06`。
+- `WUJING-07` 使用生产 encounter `WUJING_ORIGIN_BODHISATTVA`。
+- 新增 `combat/test_wujing_origin_event_sequences.gd` 与 `combat/test_wujing_origin_progression.gd`。
+- `tests/runtime_suite.gd` 已接入 Wujing 两项回归。
+- `docs/development_log/2026-09-05-wujing-origin-sequence-migration.md` 已记录本批次。
+
+### 当前验证
+
+- Godot Runtime #162 已由 `tests/runtime_suite.gd` 变更触发。
+- 截至本快照，Runner 的 Import/Register 阶段正在执行；后续必须读取最终 workflow conclusion。
+
+### 下一落点
+
+- 若 #162 通过：立刻进入五路线统一 regression，不再新增第六条独立 Origin Route。
+- 统一检查 Wukong / Tang / Longma / Bajie / Wujing 五条 Route 的 sequence catalog、choice/battle cross-reference、route isolation、Save/Resume、Origin → Shared handoff。
+- 随后把 Shared Journey 迁移作为下一大内容批次。
