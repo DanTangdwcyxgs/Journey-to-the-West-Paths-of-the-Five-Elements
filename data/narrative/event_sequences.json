@@ -120,6 +120,143 @@
         {"id":"choice","type":"choice","event_id":"WUK-03","next":"finish"},
         {"id":"finish","type":"end"}
       ]
+    },
+    {
+      "id": "WUK-04-SEQUENCE",
+      "chapter_id": "WUK-04",
+      "namespace": "ORIGIN",
+      "start": "arrival",
+      "nodes": [
+        {"id":"arrival","type":"dialogue","speaker":"孙悟空","text":"菩提祖师门前，万般术法都只是门槛。师父肯教我变化之术，却先要我学会收住炫耀之心。","next":"lesson"},
+        {"id":"lesson","type":"wait","seconds":0.25,"next":"resolve"},
+        {"id":"resolve","type":"dialogue","speaker":"旁白","text":"七十二变入门，真正的考验却从来不是变成什么，而是知道何时不该显露。","next":"finish"},
+        {"id":"finish","type":"end"}
+      ]
+    },
+    {
+      "id": "WUK-05-SEQUENCE",
+      "chapter_id": "WUK-05",
+      "namespace": "ORIGIN",
+      "start": "return",
+      "nodes": [
+        {"id":"return","type":"dialogue","speaker":"孙悟空","text":"本事学会了，山还是那座山，猴群却已经在等我回来。若我只会炫技，又凭什么做它们的大王？","next":"resolve"},
+        {"id":"resolve","type":"dialogue","speaker":"孙悟空","text":"往后这身本领，先用来护住花果山，再谈什么威风名号。","next":"finish"},
+        {"id":"finish","type":"end"}
+      ]
+    },
+    {
+      "id": "WUK-06-SEQUENCE",
+      "chapter_id": "WUK-06",
+      "namespace": "ORIGIN",
+      "start": "palace",
+      "nodes": [
+        {"id":"palace","type":"dialogue","speaker":"孙悟空","text":"东海龙宫的宝贝多得叫人眼花，可若连一件称手兵器都没有，拿什么守住自己的路？","next":"battle"},
+        {"id":"battle","type":"battle","encounter_type":"origin","encounter_id":"WUKONG_ORIGIN_DRAGON_PALACE","source_chapter_id":"WUK-06","source_route_id":"WUKONG_ORIGIN","next":"after_battle"},
+        {"id":"after_battle","type":"dialogue","speaker":"孙悟空","text":"金箍棒既肯认我，我便也认这根棒子。兵器不是炫耀的本钱，是一路走下去的倚仗。","next":"finish"},
+        {"id":"finish","type":"end"}
+      ]
+    },
+    {
+      "id": "WUK-07-SEQUENCE",
+      "chapter_id": "WUK-07",
+      "namespace": "ORIGIN",
+      "start": "underworld",
+      "nodes": [
+        {"id":"underworld","type":"dialogue","speaker":"孙悟空","text":"生死簿上写着我的寿数，可我偏不信。既然命数能写在纸上，便也能被我自己撕掉。","next":"resolve"},
+        {"id":"resolve","type":"dialogue","speaker":"旁白","text":"他划去名字，也第一次真正把‘命’当成可以反抗的东西。","next":"finish"},
+        {"id":"finish","type":"end"}
+      ]
+    },
+    {
+      "id": "WUK-08-SEQUENCE",
+      "chapter_id": "WUK-08",
+      "namespace": "ORIGIN",
+      "start": "heaven",
+      "nodes": [
+        {"id":"heaven","type":"dialogue","speaker":"孙悟空","text":"天庭给了我弼马温的官，却也把我关进了另一座看不见的笼子。","next":"choice"},
+        {"id":"choice","type":"choice","event_id":"WUK-08","next":"finish"},
+        {"id":"finish","type":"end"}
+      ]
+    },
+    {
+      "id": "WUK-09-SEQUENCE",
+      "chapter_id": "WUK-09",
+      "namespace": "ORIGIN",
+      "start": "banner",
+      "nodes": [
+        {"id":"banner","type":"dialogue","speaker":"孙悟空","text":"既然天庭不认我这个弼马温，那我就自己立个名号。齐天大圣，不是求人给的，是我自己要的。","next":"resolve"},
+        {"id":"resolve","type":"dialogue","speaker":"旁白","text":"花果山立起旗号。名号越大，真正要承担的代价也越近。","next":"finish"},
+        {"id":"finish","type":"end"}
+      ]
+    },
+    {
+      "id": "WUK-10-SEQUENCE",
+      "chapter_id": "WUK-10",
+      "namespace": "ORIGIN",
+      "start": "peach",
+      "nodes": [
+        {"id":"peach","type":"dialogue","speaker":"孙悟空","text":"蟠桃不是因为好吃才让人惦记，而是因为有人规定我不能吃。既然如此，我偏要看看这条禁令到底值几斤几两。","next":"resolve"},
+        {"id":"resolve","type":"dialogue","speaker":"旁白","text":"一口蟠桃下肚，放纵也第一次从山场走进了天庭禁地。","next":"finish"},
+        {"id":"finish","type":"end"}
+      ]
+    },
+    {
+      "id": "WUK-11-SEQUENCE",
+      "chapter_id": "WUK-11",
+      "namespace": "ORIGIN",
+      "start": "army",
+      "nodes": [
+        {"id":"army","type":"dialogue","speaker":"孙悟空","text":"天兵天将铺满天路。好，今日便让我看看天庭究竟准备拿多少人来挡我。","next":"battle"},
+        {"id":"battle","type":"battle","encounter_type":"origin","encounter_id":"WUKONG_ORIGIN_HEAVENLY_TROOPS","source_chapter_id":"WUK-11","source_route_id":"WUKONG_ORIGIN","next":"after_battle"},
+        {"id":"after_battle","type":"dialogue","speaker":"孙悟空","text":"人多不等于理对。可这一次，我也终于知道，天上的秩序不是几棒子就能打散的。","next":"finish"},
+        {"id":"finish","type":"end"}
+      ]
+    },
+    {
+      "id": "WUK-12-SEQUENCE",
+      "chapter_id": "WUK-12",
+      "namespace": "ORIGIN",
+      "start": "duel",
+      "nodes": [
+        {"id":"duel","type":"dialogue","speaker":"孙悟空","text":"这人能跟住我的变化？有意思。若只靠蛮力赢不了，那就看看谁更懂得下一步。","next":"battle"},
+        {"id":"battle","type":"battle","encounter_type":"origin","encounter_id":"WUKONG_ORIGIN_ERLANG_SHEN","source_chapter_id":"WUK-12","source_route_id":"WUKONG_ORIGIN","next":"after_battle"},
+        {"id":"after_battle","type":"dialogue","speaker":"旁白","text":"二郎神的锋芒让悟空第一次明白，变化不只是躲开规则，也可能意味着更快看懂规则。","next":"finish"},
+        {"id":"finish","type":"end"}
+      ]
+    },
+    {
+      "id": "WUK-13-SEQUENCE",
+      "chapter_id": "WUK-13",
+      "namespace": "ORIGIN",
+      "start": "furnace",
+      "nodes": [
+        {"id":"furnace","type":"dialogue","speaker":"孙悟空","text":"八卦炉里没有退路。既然他们要拿火炼我，我就看看这火究竟能留下什么。","next":"choice"},
+        {"id":"choice","type":"choice","event_id":"WUK-13","next":"finish"},
+        {"id":"finish","type":"end"}
+      ]
+    },
+    {
+      "id": "WUK-14-SEQUENCE",
+      "chapter_id": "WUK-14",
+      "namespace": "ORIGIN",
+      "start": "palace",
+      "nodes": [
+        {"id":"palace","type":"dialogue","speaker":"孙悟空","text":"走到这一步，已经不是一个官位、一口蟠桃的事了。天宫不退，我也不退。","next":"battle"},
+        {"id":"battle","type":"battle","encounter_type":"origin","encounter_id":"WUKONG_ORIGIN_HEAVEN_PALACE","source_chapter_id":"WUK-14","source_route_id":"WUKONG_ORIGIN","next":"after_battle"},
+        {"id":"after_battle","type":"dialogue","speaker":"旁白","text":"反抗终于撞上更高一层的秩序。大圣输了这场仗，却没有因此承认自己错在不该反抗。","next":"finish"},
+        {"id":"finish","type":"end"}
+      ]
+    },
+    {
+      "id": "WUK-15-SEQUENCE",
+      "chapter_id": "WUK-15",
+      "namespace": "ORIGIN",
+      "start": "mountain",
+      "nodes": [
+        {"id":"mountain","type":"dialogue","speaker":"孙悟空","text":"五行山压得住手脚，却压不住心。日子一天天过去，我开始听见山外越来越近的脚步声。","next":"resolve"},
+        {"id":"resolve","type":"dialogue","speaker":"旁白","text":"那不是终点。取经人的命运正在靠近，五行山下的岁月也终于有了新的方向。","next":"finish"},
+        {"id":"finish","type":"end"}
+      ]
     }
   ]
 }
