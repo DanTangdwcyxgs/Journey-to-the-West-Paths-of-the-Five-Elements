@@ -1,8 +1,7 @@
 extends RefCounted
 
-## Code-level regression coverage for the UI-independent event runner.
-## This script is intentionally executable by a future Godot test harness;
-## no Godot runtime execution is claimed by this change.
+## Runtime regression coverage for the UI-independent event runner.
+## The Godot Runtime workflow executes this through tests/runtime_suite.gd.
 
 static func run_all() -> Dictionary:
 	var manager := NarrativeManager.new()
@@ -54,10 +53,8 @@ static func run_all() -> Dictionary:
 	assert(resumed.get_action().get("kind", "") == EventRunner.BATTLE)
 
 	action = resumed.resolve_battle(true)
-	print("EVENT_RUNNER_DEBUG after resolve_battle: ", action)
 	assert(action.get("kind", "") == EventRunner.REWARD)
 	action = resumed.complete_action()
-	print("EVENT_RUNNER_DEBUG after reward complete: ", action)
 	assert(action.get("kind", "") == EventRunner.END)
 	assert(resumed.is_finished())
 
