@@ -245,12 +245,7 @@ func _on_combat_finished(winner:String) -> void:
 		if definition.is_empty():
 			status_label.text = "战斗胜利，但找不到遭遇定义。"
 			return
-		var applied := BattleRewardService.apply_victory(narrative, encounter_id, str(definition.get("name", encounter_id)), definition.get("rewards", []), definition.get("world_effects", []))
-		if applied.is_empty():
-			status_label.text = "战斗胜利，但奖励写入失败。"
-			return
-		battle_inventory.restore(applied.get("inventory", {}))
-		if encounter_type == "normal" and not source_stage_id.is_empty(): narrative.state.add_world_rumor(CAVE_PROGRESS_PREFIX + source_stage_id)
+		# Validate the narrative handoff before mutating inventory, milestones, or journal state.
 		if encounter_type == "origin":
 			if source_chapter_id.is_empty() or source_route_id.is_empty():
 				status_label.text = "个人战斗胜利，但章节来源信息缺失。"
@@ -260,7 +255,6 @@ func _on_combat_finished(winner:String) -> void:
 			if str(chapter.get("id", "")) != source_chapter_id:
 				status_label.text = "个人战斗胜利，但当前章节已发生变化。"
 				return
-			origin.complete_current(narrative, str(narrative.state.starting_character))
 		elif encounter_type == "shared":
 			if source_chapter_id.is_empty() or source_route_id != "SHARED_JOURNEY":
 				status_label.text = "共享战斗胜利，但章节来源信息缺失。"
@@ -269,6 +263,16 @@ func _on_combat_finished(winner:String) -> void:
 			if shared_chapter.is_empty() or not SharedJourneyManager.can_enter(source_chapter_id, narrative.state):
 				status_label.text = "共享战斗胜利，但当前章节状态已经变化。"
 				return
+		var applied := BattleRewardService.apply_victory(narrative, encounter_id, str(definition.get("name", encounter_id)), definition.get("rewards", []), definition.get("world_effects", []))
+		if applied.is_empty():
+			status_label.text = "战斗胜利，但奖励写入失败。"
+			return
+		battle_inventory.restore(applied.get("inventory", {}))
+		if encounter_type == "normal" and not source_stage_id.is_empty(): narrative.state.add_world_rumor(CAVE_PROGRESS_PREFIX + source_stage_id)
+		if encounter_type == "origin":
+			var origin := OriginRouteManager.new()
+			origin.complete_current(narrative, str(narrative.state.starting_character))
+		elif encounter_type == "shared":
 			narrative.state.record_milestone("%s%s" % [SHARED_BATTLE_MILESTONE_PREFIX, encounter_id], narrative.state.current_global_timeline)
 			if not SharedJourneyManager.complete(source_chapter_id, narrative):
 				status_label.text = "共享战斗胜利，但主线推进失败。"
