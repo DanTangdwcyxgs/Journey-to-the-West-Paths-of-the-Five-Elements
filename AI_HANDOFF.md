@@ -137,6 +137,8 @@ Memory 不得回写并篡改已经确定的当前世界时间线。
 - `ChapterRuntime`
 - `EventDefinition`
 - `EventRuntime`
+- `EventSequenceDefinition`
+- `EventRunner`
 - `OriginEventManager`
 - `SharedEventManager`
 - `StartRouteCatalog`
@@ -161,19 +163,38 @@ Presentation 不应自行决定核心剧情、奖励或战斗规则。
 
 ---
 
-## 6. 当前最重要的运行链
+## 6. 当前核心运行链
 
 ### 剧情章节
 
-`Content Data → ChapterDefinition → ChapterRuntime → EventRuntime / Combat / World → Presentation`
+`Content Data → ChapterDefinition → ChapterRuntime → EventSequence/EventRunner → EventRuntime / Combat / World → Presentation`
 
-### 事件
+### 单次事件选择
 
 `Event Data → EventDefinition → EventRuntime → NarrativeState`
 
+### 多段事件
+
+`Event Sequence Data → EventSequenceDefinition → EventRunner → action request`
+
+Runner 输出的 action 类型目前为：
+
+- `dialogue`
+- `choice`
+- `wait`
+- `move`
+- `battle`
+- `reward`
+- `jump`
+- `end`
+
+其中 `battle` 只生成 `EncounterHandoff` 数据，不直接启动 BattleUI；Presentation / Battle 系统负责接管。
+
+Runner 支持将 `current_node_id + pending_action + status` 序列化，再恢复到同一个序列，保证战斗等外部中断不会强制把事件逻辑和 UI 绑定在一起。
+
 ### 战斗
 
-`Chapter/World → EncounterHandoff → BattleUI → CombatEngine → BattleResolutionService → NarrativeState`
+`Chapter/World/EventRunner → EncounterHandoff → BattleUI → CombatEngine → BattleResolutionService → NarrativeState`
 
 ### 战斗结果原则
 
@@ -216,6 +237,8 @@ Presentation 不应自行决定核心剧情、奖励或战斗规则。
 - 中立 EncounterHandoff 兼容层
 - EventDefinition / EventRuntime
 - Origin / Shared 事件选择统一执行入口
+- EventSequenceDefinition 图结构验证
+- EventRunner 多节点执行与状态恢复骨架
 - 内容批量生产规范
 - 项目对外中文品牌 / 投资人入口 / AI 接管文档
 
@@ -228,8 +251,8 @@ Presentation 不应自行决定核心剧情、奖励或战斗规则。
 最高优先级：
 
 1. Godot Runtime 实机验证
-2. 完整 EventSequence / EventRunner
-3. Event → Battle → Event 返回链
+2. 将 EventRunner 接入真实 Journey / Chapter / Event UI
+3. 完整 Event → Battle → Event 返回链（实际调用 BattleResolutionService）
 4. Camp / Relationship Prototype
 5. 第一完整 Vertical Slice
 6. 五人完整 Origin Route 内容生产
@@ -241,25 +264,30 @@ Presentation 不应自行决定核心剧情、奖励或战斗规则。
 
 ---
 
-## 9. 下一阶段推荐顺序
+## 9. 当前阶段推荐顺序
 
-不要跳级。
+### Batch 1A — Event Runtime
 
-### Batch 1A — Event Runtime（当前）
+Definition + 单次 Choice Runtime 已完成。
 
-已经完成 Definition + 单次 Choice Runtime。
+本批已补齐：
 
-下一步补：
+`EventSequenceDefinition → EventRunner → Dialog / Choice / Wait / Move / Battle / Reward / Jump / End`
 
-`EventSequence → EventRunner → Dialog / Choice / Wait / Move / Battle / Reward / Jump`
+并提供：
 
-目标是做到：
+- 图结构验证
+- 选择持久化复用 `EventRuntime`
+- Battle → `EncounterHandoff`
+- battle 外部中断后的 runner restore
 
-`进入章节 → 对话 → 选择 → 事件 → 战斗 → 战斗返回 → 后续事件 → 章节结算`
+### Batch 1B — Runtime 验证与真实接线（下一步）
 
-### Batch 1B — Runtime 验证
+建立真实 Godot SceneTree 运行入口，至少跑通：
 
-优先建立真实 Godot SceneTree 运行入口，执行核心回归，而不是只保留静态测试文件。
+`对话 → 选择 → 战斗 → 战斗结算 → 回到事件 → 后续对话 → 结束`
+
+这一阶段不能继续只增加抽象层；必须开始把现有 Runtime 接到真实场景。
 
 ### Batch 2 — Camp / Party / Relationship
 
