@@ -3,25 +3,20 @@ extends RefCounted
 ## Runtime regression for executable narrative content cross-references.
 
 static func run_all() -> Dictionary:
-	var valid := EventSequenceManager.get_definition("SHARED-03-EAGLE-SORROW-SEQUENCE")
-	assert(valid != null)
-	var result := EventSequenceValidator.validate(valid)
-	assert(result.get("valid", false), str(result))
-
-	var shared_04 := EventSequenceManager.get_definition("SHARED-04-EARLY-DEMON-TALES-SEQUENCE")
-	assert(shared_04 != null)
-	var shared_04_result := EventSequenceValidator.validate(shared_04)
-	assert(shared_04_result.get("valid", false), str(shared_04_result))
-
-	var shared_05 := EventSequenceManager.get_definition("SHARED-05-GAOJIAZHUANG-SEQUENCE")
-	assert(shared_05 != null)
-	var shared_05_result := EventSequenceValidator.validate(shared_05)
-	assert(shared_05_result.get("valid", false), str(shared_05_result))
-
-	var shared_06 := EventSequenceManager.get_definition("SHARED-06-FOUR-PERSON-JOURNEY-SEQUENCE")
-	assert(shared_06 != null)
-	var shared_06_result := EventSequenceValidator.validate(shared_06)
-	assert(shared_06_result.get("valid", false), str(shared_06_result))
+	var sequence_ids := [
+		"SHARED-03-EAGLE-SORROW-SEQUENCE",
+		"SHARED-04-EARLY-DEMON-TALES-SEQUENCE",
+		"SHARED-05-GAOJIAZHUANG-SEQUENCE",
+		"SHARED-06-FOUR-PERSON-JOURNEY-SEQUENCE",
+		"SHARED-07-FLOWING-SANDS-SEQUENCE",
+		"SHARED-08-PARTY-FULL-SEQUENCE",
+		"SHARED-09-FULL-PILGRIMAGE-SEQUENCE",
+	]
+	for sequence_id in sequence_ids:
+		var definition := EventSequenceManager.get_definition(sequence_id)
+		assert(definition != null, sequence_id)
+		var validation := EventSequenceValidator.validate(definition)
+		assert(validation.get("valid", false), "%s -> %s" % [sequence_id, str(validation)])
 
 	var invalid := EventSequenceDefinition.new({
 		"id": "TEST-EVENT-SEQUENCE-INVALID-REF",
@@ -39,9 +34,6 @@ static func run_all() -> Dictionary:
 
 	return {
 		"passed": true,
-		"valid_sequence_cross_refs": true,
-		"shared_04_sequence_validated": true,
-		"shared_05_sequence_validated": true,
-		"shared_06_sequence_validated": true,
+		"shared_sequences_validated": sequence_ids.size(),
 		"invalid_sequence_rejected": true,
 	}
