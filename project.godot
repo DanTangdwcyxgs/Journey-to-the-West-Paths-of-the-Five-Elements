@@ -3,8 +3,8 @@ config/name="Black Myth: Wukong — JRPG Edition"
 run/main_scene="res://ui/main_menu.tscn"
 
 [autoload]
-VisualOverlay="*res://ui/visual_overlay.gd"
-SoundManager="*res://ui/sound_manager.gd"
+VisualBackdrop="*res://ui/visual_overlay.gd"
+GameSfx="*res://ui/sound_manager.gd"
 
 [display]
 window/size/viewport_width=1280
