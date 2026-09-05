@@ -17,6 +17,7 @@ const TEST_SCRIPTS := [
 	"res://combat/test_shared_journey_battles.gd",
 	"res://combat/test_battle_resolution_service.gd",
 	"res://combat/test_journey_event_presentation.gd",
+	"res://combat/test_main_menu_contact.gd",
 ]
 
 func _init() -> void:
