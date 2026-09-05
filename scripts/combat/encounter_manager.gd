@@ -1,60 +1,83 @@
 class_name EncounterManager
 extends RefCounted
 
-const NORMAL_PATH := "res://data/combat/encounters.json"
-const SHARED_PATH := "res://data/combat/shared_encounters.json"
-const AI_PATH := "res://data/combat/encounter_ai.json"
+const DATA_PATH := "res://data/combat/encounters.json"
+const SHARED_DATA_PATH := "res://data/combat/shared_encounters.json"
+const AI_PROFILE_PATH := "res://data/combat/enemy_ai_profiles.json"
 
 var definitions: Dictionary = {}
 var ai_profiles: Dictionary = {}
 
 func _init() -> void:
-	_load_definitions(NORMAL_PATH)
-	_load_definitions(SHARED_PATH)
+	_load_definitions()
+	_load_shared_definitions()
 	_load_ai_profiles()
 
-func _load_definitions(path: String) -> void:
-	var file := FileAccess.open(path, FileAccess.READ)
+func _load_definitions() -> void:
+	definitions.clear()
+	var file := FileAccess.open(DATA_PATH, FileAccess.READ)
 	if file == null:
 		return
-	var parsed: Variant = JSON.parse_string(file.get_as_text())
-	if parsed is not Dictionary:
+	var parsed = JSON.parse_string(file.get_as_text())
+	if not parsed is Dictionary:
 		return
-	var raw: Variant = parsed.get("encounters", {})
-	if raw is not Dictionary:
+	for encounter in parsed.get("encounters", []):
+		if encounter is Dictionary and encounter.has("id"):
+			definitions[str(encounter.get("id"))] = encounter.duplicate(true)
+
+func _load_shared_definitions() -> void:
+	var file := FileAccess.open(SHARED_DATA_PATH, FileAccess.READ)
+	if file == null:
 		return
-	for key in raw.keys():
-		if raw[key] is Dictionary:
-			var data: Dictionary = raw[key].duplicate(true)
-			if not data.has("id"):
-				data["id"] = str(key)
-			definitions[str(key)] = data
+	var parsed = JSON.parse_string(file.get_as_text())
+	if not parsed is Dictionary:
+		return
+	for encounter in parsed.get("encounters", []):
+		if encounter is Dictionary and encounter.has("id"):
+			definitions[str(encounter.get("id"))] = encounter.duplicate(true)
 
 func _load_ai_profiles() -> void:
-	var file := FileAccess.open(AI_PATH, FileAccess.READ)
+	ai_profiles.clear()
+	var file := FileAccess.open(AI_PROFILE_PATH, FileAccess.READ)
 	if file == null:
 		return
-	var parsed: Variant = JSON.parse_string(file.get_as_text())
-	if parsed is Dictionary:
-		var raw: Variant = parsed.get("profiles", {})
-		if raw is Dictionary:
-			ai_profiles = raw.duplicate(true)
+	var parsed = JSON.parse_string(file.get_as_text())
+	if not parsed is Dictionary:
+		return
+	var profiles = parsed.get("profiles", {})
+	if profiles is Dictionary:
+		for enemy_id in profiles.keys():
+			var value = profiles[enemy_id]
+			if value is Dictionary:
+				ai_profiles[str(enemy_id).to_lower()] = value.duplicate(true)
+			else:
+				ai_profiles[str(enemy_id).to_lower()] = {"target_profile": str(value), "skill_effects": {}}
 
 func get_definition(encounter_id: String) -> Dictionary:
 	return definitions.get(encounter_id, {}).duplicate(true)
 
-func has_encounter(encounter_id: String) -> bool:
-	return not get_definition(encounter_id).is_empty()
-
 func build_enemies(encounter_id: String) -> Array[Combatant]:
-	var definition := get_definition(encounter_id)
 	var result: Array[Combatant] = []
-	if definition.is_empty():
-		return result
+	var definition := get_definition(encounter_id)
 	for enemy in definition.get("enemies", []):
 		if not enemy is Dictionary:
 			continue
-		var unit := Combatant.from_definition(enemy)
+		var raw_weaknesses: Dictionary = enemy.get("weaknesses", {})
+		var weaknesses: Dictionary = {}
+		for key in raw_weaknesses.keys():
+			weaknesses[str(key).to_lower()] = bool(raw_weaknesses[key])
+		var unit := Combatant.new(
+			str(enemy.get("id", "enemy")).to_lower(),
+			str(enemy.get("display_name", enemy.get("id", "妖怪"))),
+			int(enemy.get("max_hp", 1)),
+			int(enemy.get("attack", 1)),
+			int(enemy.get("defense", 1)),
+			int(enemy.get("speed", 1)),
+			int(enemy.get("shield", 0)),
+			weaknesses,
+			"front"
+		)
+		unit.combat_modifiers = enemy.get("combat_modifiers", {}).duplicate(true)
 		var profile_key := unit.id.to_lower()
 		var profile: Dictionary = ai_profiles.get(profile_key, {})
 		if not unit.combat_modifiers.has("target_profile") and profile.has("target_profile"):
@@ -73,7 +96,7 @@ func choose_ai_action(enemy: Combatant, allies: Array[Combatant], turn_number: i
 	var preferred := _preferred_skill_id(enemy, turn_number)
 	if preferred != "":
 		var chosen: Variant = _find_skill(skills, preferred)
-		if chosen != null and chosen is Dictionary:
+		if chosen != null:
 			return _action_from_definition(enemy, chosen)
 	return _action_from_definition(enemy, skills[0])
 
