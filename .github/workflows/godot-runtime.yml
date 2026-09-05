@@ -25,5 +25,8 @@ jobs:
       - name: Import project and register scripts
         run: godot --headless --path . --editor --quit
 
+      - name: Check EventRuntime directly
+        run: godot --headless --path . --check-only --script res://scripts/narrative/event_runtime.gd
+
       - name: Run headless runtime suite
         run: godot --headless --path . --script res://tests/runtime_suite.gd
