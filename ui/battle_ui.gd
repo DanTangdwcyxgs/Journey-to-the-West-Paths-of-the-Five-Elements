@@ -148,7 +148,7 @@ func _add_skill_button(skill: Dictionary) -> void:
 
 func _add_item_buttons() -> void:
 	for item_id in battle_inventory.items.keys():
-		var item := item_catalog.get(str(item_id), {}); if item.is_empty(): continue
+		var item: Dictionary = item_catalog.get(str(item_id), {}); if item.is_empty(): continue
 		var button := Button.new(); button.text = "%s ×%d · %s" % [str(item.get("name",item_id)),int(battle_inventory.items.get(str(item_id),0)),str(item.get("description",""))]; button.disabled = int(battle_inventory.items.get(str(item_id),0)) <= 0; button.pressed.connect(_use_item.bind(str(item_id))); item_box.add_child(button)
 
 func _clear_skills() -> void:
