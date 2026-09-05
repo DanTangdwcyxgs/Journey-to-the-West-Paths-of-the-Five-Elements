@@ -33,6 +33,11 @@ var dialogue_revealing := false
 var dialogue_speed_accumulator := 0.0
 var event_transition_pending := false
 
+const GOLD := Color("d5ad57")
+const PAPER := Color("ead9aa")
+const MUTED := Color("a79d89")
+const PANEL := Color(0.035, 0.032, 0.040, 0.84)
+
 func _ready() -> void:
 	if not narrative.load():
 		get_tree().change_scene_to_file("res://ui/main_menu.tscn")
@@ -57,136 +62,156 @@ func _process(delta: float) -> void:
 		dialogue_revealing = false
 		dialogue_speed_accumulator = 0.0
 		if dialogue_hint_label != null:
-			dialogue_hint_label.text = "按继续阅读"
+			dialogue_hint_label.text = "SPACE / ENTER · 继续"
+
+func _panel(parent: Node, min_size := Vector2.ZERO) -> PanelContainer:
+	var panel := PanelContainer.new()
+	if min_size != Vector2.ZERO:
+		panel.custom_minimum_size = min_size
+	var style := StyleBoxFlat.new()
+	style.bg_color = PANEL
+	style.border_color = Color(GOLD, 0.34)
+	style.set_border_width_all(1)
+	style.corner_radius_top_left = 3
+	style.corner_radius_top_right = 3
+	style.corner_radius_bottom_left = 3
+	style.corner_radius_bottom_right = 3
+	style.content_margin_left = 14
+	style.content_margin_right = 14
+	style.content_margin_top = 12
+	style.content_margin_bottom = 12
+	panel.add_theme_stylebox_override("panel", style)
+	parent.add_child(panel)
+	return panel
+
+func _label(text: String, size: int, color := PAPER) -> Label:
+	var node := Label.new()
+	node.text = text
+	node.add_theme_font_size_override("font_size", size)
+	node.modulate = color
+	return node
 
 func _build_ui() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	var background := ColorRect.new()
-	background.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	background.color = Color("0d0d12")
-	add_child(background)
+	var shade := ColorRect.new()
+	shade.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	shade.color = Color(0.02, 0.018, 0.025, 0.18)
+	shade.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(shade)
+
 	var margin := MarginContainer.new()
 	margin.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	margin.add_theme_constant_override("margin_left", 48)
-	margin.add_theme_constant_override("margin_right", 48)
-	margin.add_theme_constant_override("margin_top", 36)
-	margin.add_theme_constant_override("margin_bottom", 36)
+	margin.add_theme_constant_override("margin_left", 34)
+	margin.add_theme_constant_override("margin_right", 34)
+	margin.add_theme_constant_override("margin_top", 28)
+	margin.add_theme_constant_override("margin_bottom", 24)
 	add_child(margin)
+
 	var root := VBoxContainer.new()
-	root.add_theme_constant_override("separation", 14)
+	root.add_theme_constant_override("separation", 10)
 	margin.add_child(root)
-	title_label = Label.new()
-	title_label.add_theme_font_size_override("font_size", 30)
-	root.add_child(title_label)
-	phase_label = Label.new()
-	phase_label.add_theme_font_size_override("font_size", 16)
-	root.add_child(phase_label)
-	var body := HBoxContainer.new()
-	body.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	body.add_theme_constant_override("separation", 18)
-	root.add_child(body)
-	var left := VBoxContainer.new()
-	left.custom_minimum_size = Vector2(520, 0)
-	left.add_theme_constant_override("separation", 10)
-	body.add_child(left)
-	chapter_label = Label.new()
-	chapter_label.add_theme_font_size_override("font_size", 24)
-	chapter_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	left.add_child(chapter_label)
-	description_label = Label.new()
-	description_label.custom_minimum_size = Vector2(0, 92)
-	description_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	left.add_child(description_label)
-	dialogue_panel = PanelContainer.new()
+
+	var header := HBoxContainer.new()
+	root.add_child(header)
+	var header_left := VBoxContainer.new()
+	header_left.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	header.add_child(header_left)
+	title_label = _label("西游", 28)
+	header_left.add_child(title_label)
+	phase_label = _label("", 13, MUTED)
+	header_left.add_child(phase_label)
+	chapter_label = _label("", 20)
+	chapter_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	header.add_child(chapter_label)
+
+	var spacer := Control.new()
+	spacer.custom_minimum_size = Vector2(0, 250)
+	spacer.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	root.add_child(spacer)
+
+	var dialogue_wrap := MarginContainer.new()
+	dialogue_wrap.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	dialogue_wrap.add_theme_constant_override("margin_left", 150)
+	dialogue_wrap.add_theme_constant_override("margin_right", 150)
+	dialogue_wrap.add_theme_constant_override("margin_bottom", 0)
+	root.add_child(dialogue_wrap)
+
+	dialogue_panel = _panel(dialogue_wrap, Vector2(0, 238))
 	dialogue_panel.name = "DialoguePanel"
-	dialogue_panel.custom_minimum_size = Vector2(0, 214)
-	var dialogue_style := StyleBoxFlat.new()
-	dialogue_style.bg_color = Color("171923")
-	dialogue_style.border_color = Color("51466f")
-	dialogue_style.set_border_width_all(1)
-	dialogue_style.corner_radius_top_left = 10
-	dialogue_style.corner_radius_top_right = 10
-	dialogue_style.corner_radius_bottom_left = 10
-	dialogue_style.corner_radius_bottom_right = 10
-	dialogue_style.content_margin_left = 18
-	dialogue_style.content_margin_right = 18
-	dialogue_style.content_margin_top = 14
-	dialogue_style.content_margin_bottom = 12
-	dialogue_panel.add_theme_stylebox_override("panel", dialogue_style)
-	left.add_child(dialogue_panel)
 	var dialogue_root := VBoxContainer.new()
 	dialogue_root.add_theme_constant_override("separation", 8)
 	dialogue_panel.add_child(dialogue_root)
-	speaker_label = Label.new()
+
+	speaker_label = _label("", 18, Color("f0c66a"))
 	speaker_label.name = "Speaker"
-	speaker_label.add_theme_font_size_override("font_size", 18)
 	dialogue_root.add_child(speaker_label)
-	dialogue_text_label = Label.new()
+
+	dialogue_text_label = _label("", 20)
 	dialogue_text_label.name = "Text"
-	dialogue_text_label.custom_minimum_size = Vector2(0, 118)
+	dialogue_text_label.custom_minimum_size = Vector2(0, 105)
 	dialogue_text_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	dialogue_text_label.vertical_alignment = VERTICAL_ALIGNMENT_TOP
-	dialogue_text_label.add_theme_font_size_override("font_size", 19)
 	dialogue_root.add_child(dialogue_text_label)
-	dialogue_hint_label = Label.new()
-	dialogue_hint_label.name = "Hint"
-	dialogue_hint_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	dialogue_hint_label.text = ""
-	dialogue_root.add_child(dialogue_hint_label)
-	event_meta_label = Label.new()
-	event_meta_label.name = "EventMeta"
-	event_meta_label.add_theme_font_size_override("font_size", 12)
-	event_meta_label.modulate = Color("9da0b4")
-	dialogue_root.add_child(event_meta_label)
-	primary_button = Button.new()
-	primary_button.custom_minimum_size = Vector2(0, 54)
-	primary_button.pressed.connect(_advance_primary)
-	left.add_child(primary_button)
+
 	choice_box = VBoxContainer.new()
 	choice_box.name = "EventChoices"
-	choice_box.add_theme_constant_override("separation", 8)
-	left.add_child(choice_box)
+	choice_box.add_theme_constant_override("separation", 6)
+	dialogue_root.add_child(choice_box)
+
+	var action_row := HBoxContainer.new()
+	action_row.alignment = BoxContainer.ALIGNMENT_END
+	action_row.add_theme_constant_override("separation", 8)
+	dialogue_root.add_child(action_row)
+
 	memory_button = Button.new()
-	memory_button.text = "播放已解锁回忆"
-	memory_button.custom_minimum_size = Vector2(0, 46)
+	memory_button.text = "回忆"
+	memory_button.custom_minimum_size = Vector2(90, 36)
 	memory_button.pressed.connect(_play_selected_memory)
-	left.add_child(memory_button)
+	action_row.add_child(memory_button)
+
 	party_button = Button.new()
-	party_button.text = "队伍编成"
-	party_button.custom_minimum_size = Vector2(0, 46)
+	party_button.text = "队伍"
+	party_button.custom_minimum_size = Vector2(90, 36)
 	party_button.pressed.connect(_open_party)
-	left.add_child(party_button)
+	action_row.add_child(party_button)
+
 	world_button = Button.new()
-	world_button.text = "进入世界地图"
-	world_button.custom_minimum_size = Vector2(0, 46)
+	world_button.text = "地图"
+	world_button.custom_minimum_size = Vector2(90, 36)
 	world_button.pressed.connect(_open_world_map)
-	left.add_child(world_button)
+	action_row.add_child(world_button)
+
+	primary_button = Button.new()
+	primary_button.text = "继续"
+	primary_button.custom_minimum_size = Vector2(150, 40)
+	primary_button.pressed.connect(_advance_primary)
+	action_row.add_child(primary_button)
+
+	dialogue_hint_label = _label("", 12, MUTED)
+	dialogue_hint_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	dialogue_root.add_child(dialogue_hint_label)
+
+	event_meta_label = _label("", 11, Color("777163"))
+	event_meta_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	dialogue_root.add_child(event_meta_label)
+
 	var utility := HBoxContainer.new()
 	utility.add_theme_constant_override("separation", 8)
-	left.add_child(utility)
+	root.add_child(utility)
 	save_button = Button.new()
 	save_button.text = "保存"
+	save_button.custom_minimum_size = Vector2(76, 30)
 	save_button.pressed.connect(_save)
 	utility.add_child(save_button)
 	var back := Button.new()
-	back.text = "返回主菜单"
+	back.text = "返回"
+	back.custom_minimum_size = Vector2(76, 30)
 	back.pressed.connect(_back_to_menu)
 	utility.add_child(back)
-	var right := VBoxContainer.new()
-	right.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	right.add_theme_constant_override("separation", 8)
-	body.add_child(right)
-	var list_title := Label.new()
-	list_title.text = "路线与共享西游"
-	list_title.add_theme_font_size_override("font_size", 18)
-	right.add_child(list_title)
-	list = ItemList.new()
-	list.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	right.add_child(list)
-	var rule := Label.new()
-	rule.text = "世界时间线只向前；个人故事是历史回放。招募角色后，其回忆立即开放；五人集齐只开启完整队伍层。世界地图中的探索不会重写主线，只记录地点、情报与世界影响。"
-	rule.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	right.add_child(rule)
+	var route_status := _label("个人序章 → 共享西游", 12, MUTED)
+	route_status.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	route_status.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	utility.add_child(route_status)
 
 func _restore_event_session() -> void:
 	var record := BountyEncounterState.get_active_record()
@@ -217,7 +242,7 @@ func _advance_primary() -> void:
 	var chapter_id := str(chapter.get("id", ""))
 	var event := origin_events.get_event(chapter_id)
 	if not event.is_empty() and narrative.state.get_origin_choice(chapter_id) == "":
-		phase_label.text = "先做出选择，再继续本章。"
+		phase_label.text = "请选择你的行动。"
 		return
 	var encounter_id := str(chapter.get("encounter_id", ""))
 	if not encounter_id.is_empty():
@@ -260,8 +285,8 @@ func _start_event_transition(action: Dictionary) -> void:
 	event_transition_pending = true
 	primary_button.disabled = true
 	var seconds: float = max(float(action.get("seconds", 0.0)), EVENT_TRANSITION_DELAY)
-	phase_label.text = "等待 · %.1f 秒" % seconds
-	dialogue_hint_label.text = "场景过渡中…"
+	phase_label.text = "场景过渡 · %.1f 秒" % seconds
+	dialogue_hint_label.text = "场景变化中…"
 	await get_tree().create_timer(seconds).timeout
 	event_transition_pending = false
 	if event_session == null:
@@ -310,7 +335,7 @@ func _apply_choice(choice_id: String) -> void:
 	var chapter_id := str(chapter.get("id", ""))
 	if origin_events.apply_choice(narrative, chapter_id, choice_id):
 		narrative.save()
-		phase_label.text = "已记录你的选择。"
+		phase_label.text = "已记录选择。"
 		_refresh()
 
 func _finish_origin() -> void:
@@ -362,7 +387,7 @@ func _advance_shared() -> void:
 			recruited_names.append(CHARACTER_NAMES.get(id, id))
 	_refresh()
 	if not recruited_names.is_empty():
-		phase_label.text = "完成 %s · 新加入：%s · 对应个人回忆已开放。" % [str(chapter.get("title", chapter_id)), "、".join(recruited_names)]
+		phase_label.text = "完成 %s · 新加入：%s" % [str(chapter.get("title", chapter_id)), "、".join(recruited_names)]
 
 func _apply_shared_choice(choice_id: String) -> void:
 	var chapter_id := narrative.state.current_shared_chapter
@@ -407,7 +432,7 @@ func _open_world_map() -> void:
 func _save() -> void:
 	narrative.state.set_party_formation(party.to_dict())
 	if narrative.save():
-		phase_label.text = "已保存。世界时间不会因回忆播放而改变。"
+		phase_label.text = "已保存。"
 	else:
 		phase_label.text = "保存失败。"
 
@@ -444,52 +469,44 @@ func _refresh() -> void:
 		_render_event_action(event_session.get_action())
 	else:
 		_render_route_or_shared()
+	_refresh_sidebar()
+
+func _refresh_sidebar() -> void:
+	if list == null:
+		return
 	list.clear()
 	for chapter in _current_route():
 		var id := str(chapter.get("id", ""))
 		var chapter_title := str(chapter.get("title", ""))
-		var battle_mark := " ⚔" if not str(chapter.get("encounter_id", "")).is_empty() else ""
 		var marker := "✓" if id in narrative.state.completed_chapters else "·"
-		var choice_mark := " ◆" if narrative.state.get_origin_choice(id) != "" else ""
-		list.add_item("路线 %s  %s %s%s%s" % [marker, id, chapter_title, battle_mark, choice_mark])
+		list.add_item("%s  %s" % [marker, chapter_title])
 	for memory_id in narrative.state.available_memory_chapters:
-		list.add_item("回忆: %s [可回忆]" % memory_id)
-	for memory_id in narrative.state.played_memory_chapters:
-		list.add_item("回忆: %s [已看]" % memory_id)
-	for shared_id in narrative.state.completed_shared_chapters:
-		list.add_item("主线 ✓ %s" % shared_id)
-	if not narrative.state.current_shared_chapter.is_empty():
-		list.add_item("主线 → %s" % narrative.state.current_shared_chapter)
+		list.add_item("回忆 · %s" % memory_id)
 
 func _render_event_action(action: Dictionary) -> void:
 	if action.is_empty():
 		chapter_label.text = "剧情运行失败"
-		description_label.text = event_session.runner.get_error() if event_session != null else "未知错误"
-		primary_button.text = "返回"
+		_set_dialogue("", event_session.runner.get_error() if event_session != null else "未知错误", false)
 		primary_button.disabled = true
-		_set_dialogue("", "")
 		return
 	var kind := str(action.get("kind", ""))
-	chapter_label.text = "事件 · %s" % str(action.get("node_id", ""))
+	chapter_label.text = str(action.get("node_id", ""))
 	event_meta_label.text = "序列 %s · 节点 %s" % [str(action.get("sequence_id", "")), str(action.get("node_id", ""))]
 	match kind:
 		EventRunner.DIALOGUE:
 			phase_label.text = "剧情对话"
-			description_label.text = ""
 			_set_dialogue(str(action.get("speaker", "")), str(action.get("text", "")))
 			primary_button.text = "继续"
 			primary_button.disabled = false
 		EventRunner.CHOICE:
-			phase_label.text = "请选择剧情立场"
-			description_label.text = ""
+			phase_label.text = "选择"
 			_set_dialogue("", "%s\n\n%s" % [str(action.get("title", "")), str(action.get("text", ""))], false)
 			primary_button.text = "请选择"
 			primary_button.disabled = true
 			_render_event_choices(action)
 		EventRunner.BATTLE:
-			phase_label.text = "战斗准备"
-			description_label.text = ""
-			_set_dialogue("系统", "即将进入战斗。战斗完成后会回到本事件继续。", false)
+			phase_label.text = "战斗"
+			_set_dialogue("", "战斗即将开始。完成后会回到这一段剧情。", false)
 			primary_button.text = "进入战斗"
 			primary_button.disabled = false
 		EventRunner.END:
@@ -498,7 +515,7 @@ func _render_event_action(action: Dictionary) -> void:
 			primary_button.text = "完成"
 			primary_button.disabled = false
 		_:
-			phase_label.text = "事件进行中"
+			phase_label.text = "剧情进行中"
 			_set_dialogue("", str(action), false)
 			primary_button.text = "继续"
 			primary_button.disabled = false
@@ -512,58 +529,54 @@ func _set_dialogue(speaker: String, text: String, typewriter := true) -> void:
 	dialogue_speed_accumulator = 0.0
 	dialogue_revealing = typewriter and not text.is_empty()
 	dialogue_text_label.text = "" if dialogue_revealing else text
-	if dialogue_revealing:
-		dialogue_hint_label.text = "正在阅读… · 再按一次可立即显示"
-	else:
-		dialogue_hint_label.text = ""
+	dialogue_hint_label.text = "正在阅读… · 再按一次显示全文" if dialogue_revealing else ""
 
 func _reveal_dialogue_immediately() -> void:
 	dialogue_visible_characters = dialogue_full_text.length()
 	dialogue_text_label.text = dialogue_full_text
 	dialogue_revealing = false
 	dialogue_speed_accumulator = 0.0
-	dialogue_hint_label.text = "按继续阅读"
+	dialogue_hint_label.text = "SPACE / ENTER · 继续"
 
 func _render_event_choices(action: Dictionary) -> void:
 	for choice in action.get("choices", []):
 		var choice_id := str(choice.get("id", ""))
 		var button := Button.new()
-		button.custom_minimum_size = Vector2(0, 48)
+		button.custom_minimum_size = Vector2(0, 42)
 		button.text = str(choice.get("label", choice_id))
 		button.pressed.connect(_submit_event_choice.bind(choice_id))
 		choice_box.add_child(button)
 
 func _render_route_or_shared() -> void:
 	if narrative.state.route_progress.get(narrative.state.starting_character, NarrativeState.ROUTE_LOCKED) == NarrativeState.ROUTE_COMPLETE:
-		phase_label.text = "共享旅程 · T%04d · %s · 队伍 %d/5" % [narrative.state.current_global_timeline, narrative.state.current_shared_chapter, party.roster.size()]
+		phase_label.text = "共享旅途 · 队伍 %d/5" % party.roster.size()
 		var chapter := SharedJourneyManager.get_chapter(narrative.state.current_shared_chapter)
 		if chapter.is_empty():
 			chapter_label.text = "共享旅程已完成"
-			description_label.text = "当前共享章节链已经走完。"
+			_set_dialogue("", "当前共享章节链已经走完。", false)
 			primary_button.text = "已完成"
 			primary_button.disabled = true
 		else:
 			chapter_label.text = "%s · %s" % [chapter.get("id", ""), chapter.get("title", "")]
-			description_label.text = "固定西游时间线 T%04d。完成该章会推进到下一段共享旅程；若命中招募节点，会同时开放对应角色历史。" % int(chapter.get("timeline", 0))
 			var event_id := str(chapter.get("event", ""))
 			var event := shared_events.get_event(event_id if event_id != "" else str(chapter.get("id", "")))
 			var chosen := shared_events.get_choice(narrative, event_id if event_id != "" else str(chapter.get("id", "")))
-			if not event.is_empty():
-				description_label.text += "\n\n" + str(event.get("text", ""))
 			if not event.is_empty() and chosen == "":
-				primary_button.text = "请选择剧情立场"
+				_set_dialogue("", "%s\n\n%s" % [str(event.get("title", "选择")), str(event.get("text", ""))], false)
+				primary_button.text = "请选择"
 				primary_button.disabled = true
 				_render_shared_choices(event)
 			else:
-				primary_button.text = "进入共享战斗" if not str(chapter.get("encounter_id", "")).is_empty() else "完成共享章节"
+				_set_dialogue("旁白", str(chapter.get("summary", "")), false)
+				primary_button.text = "进入共享战斗" if not str(chapter.get("encounter_id", "")).is_empty() else "继续"
 				primary_button.disabled = false
 	else:
 		var chapters := _current_route()
 		var index := origin.get_current_index(narrative, narrative.state.starting_character)
 		if index >= chapters.size():
 			chapter_label.text = "路线汇合"
-			description_label.text = "个人历史结束。下一步会将起始角色接回固定西游主线。"
-			primary_button.text = "完成路线并回到主线"
+			_set_dialogue("旁白", "个人历史结束。下一步会将起始角色接回固定西游主线。", false)
+			primary_button.text = "进入共享主线"
 			primary_button.disabled = false
 		else:
 			var chapter: Dictionary = chapters[index]
@@ -571,22 +584,21 @@ func _render_route_or_shared() -> void:
 			var event := origin_events.get_event(chapter_id)
 			var chosen := narrative.state.get_origin_choice(chapter_id)
 			chapter_label.text = "%s · %s" % [chapter.get("id", ""), chapter.get("title", "")]
-			description_label.text = str(chapter.get("summary", ""))
-			if not event.is_empty():
-				description_label.text += "\n\n" + str(event.get("text", ""))
 			if not event.is_empty() and chosen == "":
+				_set_dialogue("旁白", "%s\n\n%s" % [str(chapter.get("summary", "")), str(event.get("text", ""))], false)
 				primary_button.text = "请选择立场"
 				primary_button.disabled = true
 				_render_choices(event)
 			else:
-				primary_button.text = "进入战斗" if not str(chapter.get("encounter_id", "")).is_empty() else "完成本章"
+				_set_dialogue("旁白", str(chapter.get("summary", "")), false)
+				primary_button.text = "进入战斗" if not str(chapter.get("encounter_id", "")).is_empty() else "继续"
 				primary_button.disabled = false
 
 func _render_choices(event: Dictionary) -> void:
 	_clear_choices()
 	for choice in event.get("choices", []):
 		var button := Button.new()
-		button.custom_minimum_size = Vector2(0, 48)
+		button.custom_minimum_size = Vector2(0, 42)
 		button.text = str(choice.get("label", ""))
 		button.pressed.connect(_apply_choice.bind(str(choice.get("id", ""))))
 		choice_box.add_child(button)
@@ -595,7 +607,7 @@ func _render_shared_choices(event: Dictionary) -> void:
 	_clear_choices()
 	for choice in event.get("choices", []):
 		var button := Button.new()
-		button.custom_minimum_size = Vector2(0, 48)
+		button.custom_minimum_size = Vector2(0, 42)
 		button.text = str(choice.get("label", ""))
 		button.pressed.connect(_apply_shared_choice.bind(str(choice.get("id", ""))))
 		choice_box.add_child(button)
