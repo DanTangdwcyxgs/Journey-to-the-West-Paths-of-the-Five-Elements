@@ -90,6 +90,7 @@ Implemented and connected:
 - shared encounter definitions for Eagle Sorrow, Gaojiazhuang and Flowing Sands
 - shared encounter CombatEngine regression coverage for weakness targeting, AI turns, defeat resolution and deterministic ally victory
 - atomic shared-chapter mutation with rollback coverage for late recruitment/world-effect failures
+- unified narrative battle-resolution service with preflight validation, reward preview, progression rollback and a single final save boundary
 
 ## Current World Foundation
 
@@ -147,6 +148,8 @@ Implemented and connected:
 - [x] Shared journey narrative event layer
 - [x] Shared encounter CombatEngine regression coverage
 - [x] Shared chapter atomic rollback coverage
+- [x] Unified narrative battle-resolution service foundation
+- [ ] Wire unified battle-resolution service into BattleUI
 - [ ] Minimal battle UI polish
 
 ### Phase 2 — Playable Vertical Slice
