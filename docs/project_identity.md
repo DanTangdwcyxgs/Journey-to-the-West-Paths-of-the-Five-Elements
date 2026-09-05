@@ -33,15 +33,15 @@
 
 ## GitHub Repository Slug
 
-当前仓库 slug 仍为：
+当前仓库正式 slug：
 
-`black-myth-wukong-jrpg`
+`Journey-to-the-West-Paths-of-the-Five-Elements`
 
-目标更适合中文项目品牌的英文 slug：
+GitHub 完整仓库名：
 
-`journey-west-five-elements`
+`DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements`
 
-由于当前 GitHub connector 没有提供 Repository Rename 写接口，本次不会伪造已经完成仓库改名。需要在 GitHub Repository Settings 中执行 rename 后，再统一检查外部链接、README、CI 和脚本引用。
+此前仓库使用过 `black-myth-wukong-jrpg`，现已完成改名。后续文档、CI、Agent 交接和对外资料统一以新仓库名为准。
 
 ## 项目负责人身份
 
