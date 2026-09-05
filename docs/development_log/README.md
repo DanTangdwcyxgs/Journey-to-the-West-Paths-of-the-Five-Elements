@@ -10,6 +10,7 @@
 
 ## 最新记录
 
+- [`2026-09-05 — Shared-05 / Shared-06 EventSequence Migration`](2026-09-05-shared05-shared06-migration.md)
 - [`2026-09-05 — AI Persistent Memory`](2026-09-05-ai-persistent-memory.md)
 - [`2026-09-05 — Event UI / Shared-04 Migration`](2026-09-05-event-ui-shared04.md)
 - [`2026-09-05 — Reward / World Action Services`](2026-09-05-runtime-action-services.md)
