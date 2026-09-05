@@ -59,6 +59,7 @@ static func complete(chapter_id: String, manager: NarrativeManager) -> bool:
 	if chapter.is_empty() or not can_enter(chapter_id, manager.state):
 		return false
 
+	var snapshot := manager.state.to_dict()
 	var encounter_id := str(chapter.get("encounter_id", ""))
 	if encounter_id != "":
 		var battle_milestone := "%s%s" % [SHARED_BATTLE_MILESTONE_PREFIX, encounter_id]
@@ -70,14 +71,22 @@ static func complete(chapter_id: String, manager: NarrativeManager) -> bool:
 		# must be applied here exactly once as part of canonical chapter completion.
 		_apply_chapter_rewards(chapter, manager)
 
-	manager.complete_chapter(chapter_id, true)
+	if not manager.complete_chapter(chapter_id, true):
+		manager.state = NarrativeState.from_dict(snapshot)
+		return false
 	manager.advance_world_milestone(str(chapter.get("id", "")), int(chapter.get("timeline", 0)))
-	_apply_recruitment_events(chapter, manager)
-	_apply_world_effects(chapter, manager)
+	if not _apply_recruitment_events(chapter, manager):
+		manager.state = NarrativeState.from_dict(snapshot)
+		return false
+	if not _apply_world_effects(chapter, manager):
+		manager.state = NarrativeState.from_dict(snapshot)
+		return false
 
 	var next_id := str(chapter.get("next", ""))
 	manager.set_shared_chapter(next_id if next_id != "" else chapter_id)
-	manager.save()
+	if not manager.save():
+		manager.state = NarrativeState.from_dict(snapshot)
+		return false
 	return true
 
 static func next_for_state(state: NarrativeState) -> Dictionary:
@@ -113,7 +122,7 @@ static func _apply_reward(inventory: InventoryManager, reward_id: String) -> voi
 			if reward_id != "":
 				inventory.add_item(reward_id, 1)
 
-static func _apply_recruitment_events(chapter: Dictionary, manager: NarrativeManager) -> void:
+static func _apply_recruitment_events(chapter: Dictionary, manager: NarrativeManager) -> bool:
 	for event in chapter.get("recruit", []):
 		if not event is Dictionary:
 			continue
@@ -123,9 +132,11 @@ static func _apply_recruitment_events(chapter: Dictionary, manager: NarrativeMan
 		var memories: Array[String] = []
 		for memory_id in event.get("memories", []):
 			memories.append(str(memory_id))
-		manager.encounter_character(character_id, memories)
+		if not manager.encounter_character(character_id, memories):
+			return false
+	return true
 
-static func _apply_world_effects(chapter: Dictionary, manager: NarrativeManager) -> void:
+static func _apply_world_effects(chapter: Dictionary, manager: NarrativeManager) -> bool:
 	for effect in chapter.get("world_effects", []):
 		var effect_id := str(effect)
 		if effect_id == "" or effect_id in manager.state.journey_log.get("active_world_effects", []):
@@ -135,6 +146,7 @@ static func _apply_world_effects(chapter: Dictionary, manager: NarrativeManager)
 		effects.append(effect_id)
 		log["active_world_effects"] = effects
 		manager.state.set_journey_log(log)
+	return true
 
 static func _requirements_met(chapter: Dictionary, state: NarrativeState) -> bool:
 	var required := str(chapter.get("required", ""))
