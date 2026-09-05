@@ -59,11 +59,41 @@ static func run_all() -> Dictionary:
 	assert(not namespace_result.get("valid", true))
 	assert("origin sequence chapter not found" in str(namespace_result.get("errors", [])))
 
+	var origin_route_mismatch := EventSequenceDefinition.new({
+		"id": "TEST-EVENT-SEQUENCE-ORIGIN-ROUTE-MISMATCH",
+		"chapter_id": "WUJING-03",
+		"namespace": "ORIGIN",
+		"start": "battle",
+		"nodes": [
+			{"id":"battle", "type":"battle", "encounter_id":"WUJING_ORIGIN_FLOWING_SANDS", "source_chapter_id":"WUJING-03", "source_route_id":"BAJIE_ORIGIN", "next":"end"},
+			{"id":"end", "type":"end"}
+		]
+	})
+	var origin_route_result := EventSequenceValidator.validate(origin_route_mismatch)
+	assert(not origin_route_result.get("valid", true))
+	assert("does not match chapter route" in str(origin_route_result.get("errors", [])))
+
+	var origin_missing_route := EventSequenceDefinition.new({
+		"id": "TEST-EVENT-SEQUENCE-ORIGIN-MISSING-ROUTE",
+		"chapter_id": "WUJING-03",
+		"namespace": "ORIGIN",
+		"start": "battle",
+		"nodes": [
+			{"id":"battle", "type":"battle", "encounter_id":"WUJING_ORIGIN_FLOWING_SANDS", "source_chapter_id":"WUJING-03", "next":"end"},
+			{"id":"end", "type":"end"}
+		]
+	})
+	var origin_missing_route_result := EventSequenceValidator.validate(origin_missing_route)
+	assert(not origin_missing_route_result.get("valid", true))
+	assert("missing source_route_id" in str(origin_missing_route_result.get("errors", [])))
+
 	return {
 		"passed": true,
 		"production_sequences_validated": sequence_ids.size(),
 		"invalid_sequence_rejected": true,
 		"chapter_cross_reference_rejected": true,
 		"namespace_cross_reference_rejected": true,
+		"origin_route_cross_reference_rejected": true,
+		"origin_route_presence_rejected": true,
 		"route_specific_catalog_validated": true,
 	}
