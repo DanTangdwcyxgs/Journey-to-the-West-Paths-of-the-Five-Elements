@@ -71,6 +71,13 @@ func complete_action(result: Dictionary = {}) -> Dictionary:
 		var applied := RewardService.apply_to_manager(manager, pending_action.get("rewards", []))
 		if applied.is_empty():
 			return _fail("reward application failed")
+	if kind == MOVE:
+		var moved := WorldActionService.apply_move(manager, pending_action)
+		if moved.is_empty():
+			return _fail("world move application failed")
+	if kind == WAIT:
+		if WorldActionService.complete_wait(pending_action).is_empty():
+			return _fail("wait action invalid")
 
 	var next_id := str(pending_action.get("next", ""))
 	if kind == JUMP:
