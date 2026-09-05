@@ -2,7 +2,7 @@ class_name ChapterRuntime
 extends RefCounted
 
 ## Shared chapter execution contract.
-## This first version is intentionally side-effect free: it standardizes discovery,
+## This first version is intentionally conservative: it standardizes discovery,
 ## validation and routing before full scene/event execution is migrated here.
 
 static func from_data(data: Dictionary) -> ChapterDefinition:
@@ -11,9 +11,11 @@ static func from_data(data: Dictionary) -> ChapterDefinition:
 static func can_enter(chapter: ChapterDefinition, state: NarrativeState) -> bool:
 	if chapter == null or chapter.is_empty() or state == null:
 		return false
-	if chapter.get_id() in state.completed_shared_chapters:
+	if chapter.get_id() in state.completed_shared_chapters or chapter.get_id() in state.completed_chapters:
 		return false
 	if not _requirements_met(chapter, state):
+		return false
+	if not _prerequisites_met(chapter, state):
 		return false
 	return true
 
@@ -41,6 +43,15 @@ static func destination(chapter: ChapterDefinition) -> Dictionary:
 		"kind": "chapter",
 		"chapter_id": chapter.get_id(),
 	}
+
+static func _prerequisites_met(chapter: ChapterDefinition, state: NarrativeState) -> bool:
+	for prerequisite in chapter.get_prerequisites():
+		var prerequisite_id := str(prerequisite)
+		if prerequisite_id.is_empty():
+			continue
+		if prerequisite_id not in state.completed_chapters and prerequisite_id not in state.completed_shared_chapters:
+			return false
+	return true
 
 static func _requirements_met(chapter: ChapterDefinition, state: NarrativeState) -> bool:
 	var required := chapter.get_required()
