@@ -10,7 +10,6 @@ const CASES := [
 		"choice_id": "SAVE_THE_DRAGON",
 		"expected_recruit": "LONGMA",
 		"next_chapter": "SHARED-04-EARLY-DEMON-TALES",
-		"milestone": "SHARED_BATTLE_SHARED_EAGLE_SORROW",
 	},
 	{
 		"chapter_id": "SHARED-05-GAOJIAZHUANG",
@@ -19,7 +18,6 @@ const CASES := [
 		"choice_id": "OFFER_REDEMPTION",
 		"expected_recruit": "BAJIE",
 		"next_chapter": "SHARED-06-FOUR-PERSON-JOURNEY",
-		"milestone": "SHARED_BATTLE_SHARED_GAOJIAZHUANG",
 	},
 	{
 		"chapter_id": "SHARED-07-FLOWING-SANDS",
@@ -28,7 +26,6 @@ const CASES := [
 		"choice_id": "ACCEPT_WUJING",
 		"expected_recruit": "WUJING",
 		"next_chapter": "SHARED-08-PARTY-FULL",
-		"milestone": "SHARED_BATTLE_SHARED_FLOWING_SANDS",
 	},
 ]
 
@@ -97,9 +94,9 @@ func _run_bridge(narrative: NarrativeManager, spec: Dictionary) -> bool:
 
 	var battle_scene := load("res://ui/battle_ui.tscn") as PackedScene
 	_assert(battle_scene != null, "battle UI scene should load for %s" % chapter_id)
-	var battle_ui = battle_scene.instantiate()
-	add_child(battle_ui)
-	_assert(battle_ui is BattleUI, "battle UI should instantiate for %s" % chapter_id)
+	var battle_ui: BattleUI = battle_scene.instantiate() as BattleUI
+	get_root().add_child(battle_ui)
+	_assert(battle_ui != null, "battle UI should instantiate for %s" % chapter_id)
 	battle_ui.call_deferred("_on_combat_finished", "allies")
 	await process_frame
 	await process_frame
@@ -114,12 +111,12 @@ func _run_bridge(narrative: NarrativeManager, spec: Dictionary) -> bool:
 	_assert(not active_after.get("event_resume", {}).is_empty(), "%s event resume payload should survive victory" % chapter_id)
 	_assert(str(active_after.get("encounter_id", "")) == encounter_id, "%s resumed record should retain encounter id" % chapter_id)
 
-	var journey := load("res://ui/journey.tscn").instantiate()
-	add_child(journey)
+	var journey: JourneyScreen = load("res://ui/journey.tscn").instantiate() as JourneyScreen
+	get_root().add_child(journey)
 	journey.narrative = narrative
 	journey.call("_restore_event_session")
 	_assert(journey.event_session != null, "%s JourneyScreen should restore EventSession" % chapter_id)
-	var resumed := journey.event_session.get_action()
+	var resumed: Dictionary = journey.event_session.get_action()
 	_assert(str(resumed.get("kind", "")) == EventRunner.DIALOGUE, "%s battle victory should resume into after-battle dialogue" % chapter_id)
 	_assert("" != str(resumed.get("text", "")), "%s after-battle dialogue should contain story text" % chapter_id)
 	_assert(narrative.state.current_shared_chapter == str(spec["next_chapter"]), "%s BattleResolutionService should advance the shared chapter" % chapter_id)
