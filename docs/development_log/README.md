@@ -8,6 +8,7 @@
 
 ## 最新记录
 
+- [`2026-09-05 — Event UI / Shared-04 Migration`](2026-09-05-event-ui-shared04.md)
 - [`2026-09-05 — Reward / World Action Services`](2026-09-05-runtime-action-services.md)
 - [`2026-09-05 — EventSession 跨战斗恢复`](2026-09-05-event-session-runtime.md)
 - [`2026-09-05 — Godot Headless Runtime Validation`](2026-09-05-runtime-validation.md)
