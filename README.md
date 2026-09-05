@@ -1,194 +1,354 @@
-# Black Myth: Wukong — JRPG Edition
+# 《西游：五行之路》
 
-> 东方神话 × 像素 HD-2D × 回合制 JRPG × 五人独立主线汇流
+> 五个角色，五条人生起点，一条固定西游历史。
 
-A pixel-art HD-2D turn-based JRPG that follows the recognizable narrative rhythm of **Journey to the West**, especially the classic television-style progression, while using modern JRPG systems and presentation.
+**《西游：五行之路》**是一款以经典《西游记》为叙事核心的像素 HD-2D 回合制 JRPG。
 
-## Core Vision
+英文工作名：**Journey to the West: Five Elements Road**
 
-The project is **a playable Journey to the West story first, and an original fantasy JRPG second**.
+项目希望做的不是“西游角色套一个普通 RPG”，而是：
 
-The main narrative should remain highly recognizable as Journey to the West. Iconic characters, recruitment points, major locations, relationships and major pilgrimage episodes form the canonical story spine.
+> **让玩家真正陪唐僧、悟空、八戒、悟净和白龙马走完一遍西游。**
 
-The game language is modern HD-2D JRPG:
+---
 
-- pixel-art characters;
-- dimensional environments;
-- cinematic lighting and weather;
-- turn-based party combat;
-- Weakness / Break;
-- BP / Boost;
-- character-specific combat mechanics;
-- strong JRPG menus and battle feedback.
+## 30 秒看懂这个项目
 
-See [Game Vision & Canon](docs/game_vision.md), [Global Timeline](docs/global_timeline.md), [Story Structure & Chapter Pacing](docs/story_structure.md), [Memory Campaign Rules](docs/memory_campaign.md), [Combat Formation](docs/combat_formation.md), [Production Rules](docs/production_rules.md), and [Content Production Pipeline](docs/content_pipeline.md).
+玩家可以从五个人中的任意一个开始：
 
-## Core Narrative Loop
+**孙悟空 / 唐三藏 / 猪八戒 / 沙悟净 / 白龙马**
 
-The defining narrative loop is:
+每个人都有自己的前史和人物故事。
 
-`Choose a hero → experience that hero's origin → reach a canonical encounter → recruit/meet another character → immediately unlock that character's personal story → return to the current shared journey → meet the next character → repeat → full party → ensemble journey.`
+但玩家选择的是**第一视角**，不是改变西游历史。
 
-**Personal-story unlock is tied to recruitment/encounter progression. It does not wait for the five-person party to be complete.**
+因此游戏的核心结构是：
 
-## Exploration Loop
+```text
+选择一个角色
+      ↓
+体验他的个人历史
+      ↓
+抵达经典西游节点
+      ↓
+进入共同世界时间线
+      ↓
+逐步招募其他角色
+      ↓
+开放个人 Memory / 人物故事
+      ↓
+五人组成完整队伍
+      ↓
+一起继续西行
+      ↓
+走完完整西游
+```
 
-After the shared journey reaches a valid world node, the player can enter the world map, travel between connected locations, hear local rumors and convert those rumors into persistent bounty intelligence. Exploration records visited nodes, heard rumors and discovered bounties without rewinding or rewriting the main chronology.
+这让游戏拥有“五个入口”的重玩价值，同时保持**一条世界历史、一套真正的西游主线**。
 
-The current exploration spine is:
+---
 
-`五行山 → 鹰愁涧 → 黑风山北道 → 高老庄 → 流沙河 → 龙骨秘境`
+# 游戏怎么玩？
 
-The world map is data-driven through `data/world/world_map.json` and `data/world/rumors.json`; runtime state is persisted in the narrative save.
+核心循环不是简单的“跑地图 → 打怪 → 下一关”。
 
-A discovered Yellow Wind bounty now continues into a real battle-scene handoff: **hear rumor → discover bounty → travel to target area → accept → battle → resolve rewards + journal + world effects**. The encounter handoff itself is transient so abandoned battles do not corrupt the canonical narrative save.
+游戏会反复经历：
 
-The preparation loop now adds **camp records, shop supply, persistent equipment profiles, and battle consumables**. Equipment choices are written into `NarrativeState`; combat reads the saved profiles before creating the encounter.
+```text
+剧情
+ ↓
+探索
+ ↓
+NPC / 传闻 / 地标
+ ↓
+选择与事件
+ ↓
+普通遭遇
+ ↓
+地下城 / 区域探索
+ ↓
+Boss / 经典妖怪
+ ↓
+奖励与世界变化
+ ↓
+营地 / 队伍 / 关系
+ ↓
+装备 / 技能 / Memory
+ ↓
+前往下一个西游目的地
+```
 
-The first dedicated **Yellow Wind Ridge → Yellow Wind Cave → Yellow Wind Demon** path is now represented as a data-driven exploration slice with a four-stage ridge and a four-room cave greybox.
+玩家既要考虑战斗，也要理解人物、经营队伍和推进旅途。
 
-## Gameplay Pillars
+---
 
-- **5-character party:** Tang Sanzang, Sun Wukong, Zhu Bajie, Sha Wujing, Bai Longma
-- **Formation:** 3 front / 2 back tactical formation with swapping and persistence
-- **Recruited-roster battles:** combat construction respects the saved recruited party instead of forcing all five protagonists into every encounter
-- **Back-row protection:** back-row units take reduced normal single-target damage
-- **Break / Weakness:** exploit enemy weaknesses to break their shield
-- **BP Boost:** accumulate BP and spend it to strengthen actions
-- **Speed-based turns:** dynamic initiative affected by speed changes
-- **Data-driven skills:** character skill definitions live in `data/combat/skills.json` and are executed by `SkillRuntime`
-- **Character-specific mechanics:** every protagonist changes how encounters are approached
-- **Bai Longma transformation:** four temporary combat forms driven by Dragon Shift resource
-- **81 Trials:** major stories, personal quests, elite encounters and optional events
-- **World exploration:** connected map nodes, rumors, bounty discovery and persistent journey information
-- **Preparation / supplies:** shops, camp records, equipment profiles and combat consumables
+# 五个角色，五种玩法
 
-## Current Combat Foundation
+| 角色 | 核心主题 | 主要玩法 |
+|---|---|---|
+| 孙悟空 | 自由 vs 束缚 | 高爆发、破盾、变招、机动 |
+| 唐三藏 | 信仰 vs 现实 | 治疗、保护、净化、判断 |
+| 猪八戒 | 欲望 vs 责任 | 高生命、防御、怒气、蓄力 |
+| 沙悟净 | 罪责 vs 救赎 | 防御、控制、持续作战 |
+| 白龙马 | 身份 vs 使命 | 速度、元素、形态与战术切换 |
 
-Implemented and connected:
+五个人不是五个 Skin，而是五种不同的角色理解和战斗方法。
 
+---
+
+# 西游世界的核心规则
+
+### 玩家顺序自由
+
+五个角色都可以作为新游戏起点。
+
+### 世界顺序固定
+
+西游历史只有一条，不因为玩家选择八戒开局就让世界直接跳到高老庄，也不会产生五个平行宇宙。
+
+### 招募是故事事件
+
+角色在经典西游节点真正进入取经队伍，而不是因为等级或抽卡加入。
+
+大方向：
+
+```text
+悟空被镇压
+↓
+唐僧开始取经
+↓
+五行山释放悟空
+↓
+白龙马加入
+↓
+高老庄收八戒
+↓
+流沙河收悟净
+↓
+五人完整西行
+```
+
+### 个人故事不会消失
+
+角色加入队伍后，他过去的故事会继续通过 Memory / Character Perspective 形式开放。
+
+Memory 不会篡改当前世界时间线。
+
+---
+
+# 战斗系统
+
+战斗采用现代 HD-2D JRPG 的设计语言，同时让西游人物自己的性格成为玩法的一部分。
+
+## Weakness / Shield / Break
+
+敌人拥有不同弱点和 Shield。针对弱点攻击可以更有效地削减 Shield；Shield 归零以后进入 Break，形成集中爆发窗口。
+
+## BP / Boost
+
+每回合积累 BP。玩家可以保存 BP，把它投入关键技能，在最需要的时候爆发。
+
+## 3 前排 / 2 后排
+
+队形真正参与战斗规则。前排承担更多压力；后排获得一定保护，并形成不同战术。
+
+## 角色专属机制
+
+悟空、唐僧、八戒、悟净、龙马拥有不同资源和战斗方向；龙马还拥有临时形态变化系统。
+
+---
+
+# 旅途与世界探索
+
+项目已经建立数据驱动的世界地图、旅行、传闻和悬赏基础。
+
+当前探索骨干：
+
+```text
+五行山
+ ↓
+鹰愁涧
+ ↓
+黑风山北道
+ ↓
+高老庄
+ ↓
+流沙河
+ ↓
+龙骨秘境
+```
+
+玩家可以探索地图、听到地方传闻、发现悬赏、进入普通遭遇和 Boss 战，并持续记录旅途结果。
+
+---
+
+# 第一条完整 Vertical Slice
+
+当前第一条完整产品样板：
+
+```text
+五行山
+→ 鹰愁涧
+→ 白龙马加入
+→ 黑风山
+→ 黄风岭
+→ 黄风洞
+→ 黄风妖王
+→ 善后
+```
+
+它将同时验证：
+
+- 剧情
+- 探索
+- 地图
+- 普通战斗
+- 招募
+- 队伍
+- 装备
+- 营地
+- Boss
+- 奖励
+- 保存 / 读取
+- 世界状态
+
+目标不是只做一个漂亮 Demo，而是建立以后可以批量复制的“西游章节生产模板”。
+
+---
+
+# 81 难怎么做？
+
+不会做成 81 个大型副本。
+
+长期规划：
+
+- 约 12–15 个大型主线试炼；
+- 约 20–25 个中型故事；
+- 其余由支线、精英、特殊事件、环境挑战和小型剧情组成。
+
+保留西游“一路都有劫难”的感觉，同时避免重复刷关。
+
+---
+
+# 当前技术基础
+
+已经建立并持续接入：
+
+- 五角色独立 Origin Route 架构
+- 固定全球时间线
+- Origin / Shared 双层叙事
+- 招募与个人故事解锁
+- Memory 数据基础
+- 3 前 / 2 后 Formation
 - HP / ATK / DEF / SPD / BP
-- weakness tags
-- shield points
-- Broken state
-- increased damage while Broken
-- BP generation and spending
-- speed-based turn ordering
-- narrative party formation → combatant construction
-- front/back row modifiers
-- back-row damage protection
-- data-driven skill catalog
-- damage / heal / barrier / slow / taunt / self-buff skill effects
-- persistent battle results, inventory rewards and journey log
-- persistent equipment/loadout configuration
-- battle consumable usage and inventory deduction
-- readable temporary combat status presentation for Break, barrier, taunt and speed changes
-- saved loadout modifiers applied inside combat formulas
-- functional Bai Longma form shift with temporary stat changes and expiry
-- recruited-party-aware battle construction
-- Yellow Wind bounty battle handoff and automatic victory reward resolution
-- shared encounter definitions for Eagle Sorrow, Gaojiazhuang and Flowing Sands
-- shared encounter CombatEngine regression coverage for weakness targeting, AI turns, defeat resolution and deterministic ally victory
-- atomic shared-chapter mutation with rollback coverage for late recruitment/world-effect failures
-- unified narrative battle-resolution service with preflight validation, reward preview, progression rollback and a single final save boundary
-- narrative origin/shared BattleUI victories routed through the unified atomic resolution boundary
-- encounter-chapter reward deduplication: recruit battles use encounter rewards, while non-combat chapters retain chapter rewards
-- normalized chapter definitions and reusable chapter-runtime routing/prerequisite checks
-- neutral encounter handoff contract prepared for migration away from bounty-specific naming
+- Weakness / Shield / Break
+- Speed / Slow / Taunt
+- Data-driven Skills / Encounters
+- 五人专属机制基础
+- 龙马临时变身
+- Inventory / Consumables
+- Equipment / Loadout
+- World Map / Travel / Rumor / Bounty
+- 黄风岭 / 黄风洞探索原型
+- 鹰愁涧 / 高老庄 / 流沙河共享招募战
+- Encounter AI 战斗逻辑
+- 原子化共享章节推进与回滚
+- Unified Battle Resolution
+- ChapterDefinition / ChapterRuntime
+- EventDefinition / EventRuntime
+- 中立 Encounter Handoff
+- 批量内容生产规范
+- AI / Agent 接管文档与 Development Log
 
-## Current World Foundation
+---
 
-Implemented and connected:
+# 当前开发阶段
 
-- data-driven world map nodes and connections
-- timeline / milestone travel gates
-- persistent current location and visited nodes
-- local rumor discovery
-- persistent bounty intelligence from rumors
-- world-map UI linked from the journey screen
-- discovered bounty challenge button for the first integrated bounty encounter
-- transient world-map → battle encounter handoff
-- Yellow Wind Ridge four-stage exploration slice
-- Yellow Wind Cave four-room greybox slice
-- persistent cave room checkpoints in `NarrativeState`
-- cave → normal encounter battle source-stage handoff
-- cave → bounty battle source-stage handoff
-- post-victory return into the Yellow Wind Ridge flow
-- camp / supply / preparation entry points
-- unified origin-route lifecycle API with deterministic chapter unlock/progress reporting
-- data-driven shared-journey chapter spine with recruitment, rewards and world-effect metadata
-- data-driven shared-journey narrative events with persisted choices
-- journey-screen integration for shared event choices before chapter completion
-- regression checks for travel, rumor discovery, bounty handoff, combat status, Longma transformation, normal encounter construction, recruited roster handling, origin route lifecycle, shared journey chronology, and shared event choices
+项目已经从“纯技术原型”进入：
 
-## Architecture Preparation for Batch Production
+> **技术基础逐渐稳定，开发重点开始转向真正可玩内容和 Vertical Slice。**
 
-The project now has a normalized production contract for future chapter-heavy development:
+当前正式生产顺序：
 
-- `ChapterDefinition` normalizes chapter data and keeps raw JSON keys out of most callers.
-- `ChapterRuntime` owns common entry/prerequisite and destination decisions.
-- `NarrativeState` exposes explicit choice APIs instead of event managers inventing persistence layouts.
-- `EncounterHandoff` defines a neutral battle transfer contract while `BountyEncounterState` remains the current compatibility implementation.
-- `BattleResolutionService` remains the atomic narrative battle commit boundary.
-- `docs/content_pipeline.md` defines authoring, ownership, migration and quality gates for future mass content production.
+```text
+Full Chapter Event Runtime
+↓
+Camp / Relationship
+↓
+第一完整 Vertical Slice
+↓
+五条 Origin Route 批量生产
+↓
+Shared Journey 批量生产
+↓
+HD-2D / 动画 / VFX / 音频
+↓
+完整西游
+```
 
-The migration is intentionally incremental: existing working systems are wrapped first, then responsibilities move only after regression coverage exists.
+其中 EventDefinition / EventRuntime 已经作为第一批事件运行基础部署；下一步继续完善 EventSequence / EventRunner，让“对话 → 选择 → 战斗 → 返回剧情 → 下一事件”成为通用运行链。
 
-## Roadmap
+---
 
-### Phase 1 — Foundation
+# 为什么值得长期投入
 
-- [x] Repository bootstrap
-- [x] Combatant model
-- [x] Weakness / shield / Break rules
-- [x] BP system
-- [x] Speed-based turn ordering
-- [x] Regression tests
-- [x] Narrative architecture
-- [x] Five-character route structure
-- [x] Global timeline and production canon
-- [x] Progressive character-story unlock rules
-- [x] Party formation persistence
-- [x] Shared recruitment events
-- [x] Formation-aware combatant construction
-- [x] Basic front/back combat effect
-- [x] Data-driven skill definitions
-- [x] Skill runtime effects
-- [x] Persistent inventory / rewards / journey log
-- [x] Persistent equipment/loadout configuration
-- [x] Battle consumables
-- [x] World map / travel / rumor discovery layer
-- [x] First bounty encounter handoff
-- [x] Combat status presentation
-- [x] Narrative data model implementation
-- [x] Shared journey chapter data model
-- [x] Shared journey narrative event layer
-- [x] Shared encounter CombatEngine regression coverage
-- [x] Shared chapter atomic rollback coverage
-- [x] Unified narrative battle-resolution service foundation
-- [x] Wire unified battle-resolution service into BattleUI
-- [x] Production-oriented chapter definition/runtime contract
-- [x] Neutral encounter handoff contract
-- [x] Batch content production workflow
-- [ ] Full runtime validation in Godot
-- [ ] Minimal battle UI polish
+## 1. 文化认知基础强
 
-### Phase 2 — Playable Vertical Slice
+西游拥有成熟的人物、地点、冲突和故事记忆点。
 
-- [ ] Five playable characters
-- [x] Five origin chapter prototypes
-- [x] Front/back formation swap
-- [x] Bai Longma transformation states
-- [x] Basic skills/resources foundation
-- [x] Canonical recruitment event flow
-- [x] Progressive personal-story unlock flow
-- [x] Shared journey narrative event flow
-- [x] World exploration prototype
-- [x] Battle consumable loop
-- [x] First complete battle: Yellow Wind Demon path
-- [x] First dungeon greybox
-- [x] Persistent dungeon checkpoints
-- [ ] Full chapter event runtime
-- [ ] Camp relationship prototype
-- [ ] Visual combat polish
-- [ ] Fully authored five-character playable route content
+## 2. 五主角结构天然支持长期内容
+
+同一条世界线可以继续扩展：
+
+- 个人 Memory
+- 营地事件
+- 人物关系
+- 组合技能
+- 新章节
+- 支线故事
+
+## 3. 可以从 Vertical Slice 逐步放大
+
+项目不是一开始就承担完整 81 难的全部制作成本，而是先验证一条完整产品样板，再规模化生产。
+
+## 4. 内容逐渐数据驱动
+
+目标是让新增章节、敌人、技能、事件、奖励和世界节点主要成为内容生产，而不是重复开发基础程序。
+
+---
+
+# 给投资人 / 合作方
+
+- [项目投资人与合作方概览](docs/investor_overview.md)
+- [投资人快速 Pitch](docs/investor_pitch.md)
+- [项目身份与命名](docs/project_identity.md)
+
+---
+
+# 给开发者 / AI Agent
+
+接手项目必须先读：
+
+1. [`AI_HANDOFF.md`](AI_HANDOFF.md)
+2. [`DEVELOPMENT_RULES.md`](DEVELOPMENT_RULES.md)
+3. [`docs/content_pipeline.md`](docs/content_pipeline.md)
+4. `docs/development_log/` 最新记录
+5. [`docs/game_vision.md`](docs/game_vision.md)
+6. [`docs/architecture.md`](docs/architecture.md)
+
+**不要直接看到 TODO 就写代码。**
+
+先确认功能属于哪一层，搜索已有 Definition / Runtime / Manager / Service，并确认不会破坏固定西游时间线、奖励唯一性、存档一致性和章节原子性。
+
+每一次重要更新都必须留下 Development Log，并明确：改了什么、为什么改、测试是否实际运行、还剩什么，以及下一位 Agent 从哪里开始。
+
+---
+
+# 最终愿景
+
+最终希望玩家通关后记住的不是“我打了多少个 Boss”，而是：
+
+> **我曾经和这五个人一起走过这条路。**
+
+五段人生，最终汇成一场西游。
+
