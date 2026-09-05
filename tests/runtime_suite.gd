@@ -23,6 +23,7 @@ const TEST_SCRIPTS := [
 	"res://combat/test_origin_routes_unified.gd",
 	"res://combat/test_origin_shared_handoff.gd",
 	"res://combat/test_shared_opening_journey_bridge.gd",
+	"res://combat/test_shared_battle_journey_bridge.gd",
 	"res://combat/test_reward_service.gd",
 	"res://combat/test_world_action_service.gd",
 	"res://combat/test_shared_encounter_combat.gd",
