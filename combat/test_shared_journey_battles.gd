@@ -11,6 +11,20 @@ func _initialize() -> void:
 		for enemy in enemies:
 			_assert(not enemy.weaknesses.is_empty(), "%s should expose weakness data" % enemy.id)
 
+	# Atomicity regression: if a late chapter mutation fails, rewards/progression
+	# applied earlier in the same chapter resolution must roll back together.
+	var rollback_narrative := NarrativeManager.new()
+	_assert(rollback_narrative.start_new_game("WUKONG"), "rollback test route should start")
+	rollback_narrative.encounter_character("TANG")
+	rollback_narrative.encounter_character("WUKONG")
+	rollback_narrative.encounter_character("LONGMA")
+	rollback_narrative.state.set_inventory({"currencies": {"COIN": 7}, "items": {}})
+	rollback_narrative.set_shared_chapter("SHARED-03-EAGLE-SORROW")
+	rollback_narrative.state.record_milestone("SHARED_BATTLE_SHARED_EAGLE_SORROW", rollback_narrative.state.current_global_timeline)
+	var rollback_snapshot := rollback_narrative.state.to_dict()
+	_assert(not SharedJourneyManager.complete("SHARED-03-EAGLE-SORROW", rollback_narrative), "duplicate recruitment must fail shared chapter atomically")
+	_assert(rollback_narrative.state.to_dict() == rollback_snapshot, "failed shared completion must restore the entire narrative snapshot")
+
 	var narrative := NarrativeManager.new()
 	_assert(narrative.start_new_game("WUKONG"), "Wukong route should start")
 	narrative.state.set_inventory({"currencies": {"COIN": 0}, "items": {}})
