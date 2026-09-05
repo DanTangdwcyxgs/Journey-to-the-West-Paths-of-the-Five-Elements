@@ -54,7 +54,9 @@ static func run_all() -> Dictionary:
 
 	action = resumed.resolve_battle(true)
 	assert(action.get("kind", "") == EventRunner.REWARD)
+	assert(int(manager.state.get_inventory().get("currencies", {}).get("COIN", 0)) == 0)
 	action = resumed.complete_action()
+	assert(int(manager.state.get_inventory().get("currencies", {}).get("COIN", 0)) == 100)
 	assert(action.get("kind", "") == EventRunner.END)
 	assert(resumed.is_finished())
 
@@ -67,4 +69,6 @@ static func run_all() -> Dictionary:
 		"supports_graph_validation": true,
 		"supports_battle_resume": true,
 		"supports_choice_persistence": true,
+		"supports_reward_execution": true,
+		"reward_amount_verified": 100,
 	}
