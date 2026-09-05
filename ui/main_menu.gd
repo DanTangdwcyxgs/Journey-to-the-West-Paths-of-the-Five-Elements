@@ -10,19 +10,19 @@ const CHARACTER_NAMES := {
 }
 
 const CHARACTER_DESCRIPTIONS := {
-	"TANG": "取经之路的起点。信念、慈悲与戒律的故事。",
-	"WUKONG": "石猴、齐天大圣与五行山。自由与束缚的故事。",
-	"BAJIE": "天蓬元帅堕落凡间。欲望、选择与责任的故事。",
-	"WUJING": "卷帘大将与流沙河。罪责、沉默与救赎的故事。",
-	"LONGMA": "龙族血脉与白马之身。身份、荣誉与使命的故事。",
+	"TANG": "取经之路的起点。信念、慈悲与戒律。",
+	"WUKONG": "石猴、齐天大圣与五行山。自由与束缚。",
+	"BAJIE": "天蓬元帅堕入凡间。欲望、选择与责任。",
+	"WUJING": "卷帘大将与流沙河。罪责、沉默与救赎。",
+	"LONGMA": "西海龙脉化身白马。身份、荣誉与使命。",
 }
 
 const CHARACTER_STORIES := {
-	"WUKONG": "花果山的石猴从水帘洞出发，求的是一个\"不受拘束\"。他学会七十二变，也夺过定海神针；真正让他无法回避的，却是天地秩序与自己的桀骜。五行山下的五百年，是这段西游路真正的前夜。",
-	"TANG": "他不是最强的人，却决定踏上最漫长的路。玄奘以取经为愿，在长安接下西行使命；从这一刻起，慈悲不是软弱，而是一条必须承担代价的道路。",
-	"BAJIE": "曾经的天蓬元帅跌入凡间，带着一身本领，也带着割舍不掉的欲念。高老庄之前，他一直在逃避\"自己到底想成为什么人\"；这一趟西游，会逼他重新作答。",
-	"WUJING": "卷帘大将失手打碎琉璃盏，被贬流沙河。岁月让他沉默，也让他明白：赎罪不是等待宽恕，而是重新选择一次该走的路。",
-	"LONGMA": "西海龙宫的血脉给了他骄傲，也给了他枷锁。一次意外让他失去原本的身份；当他成为白马、踏上取经队伍时，\"使命\"第一次比\"出身\"更重要。",
+	"WUKONG": "花果山的石猴从水帘洞出发，求的是一个“不受拘束”。真正让他无法回避的，是天地秩序与自己的桀骜。",
+	"TANG": "他不是最强的人，却决定踏上最漫长的路。慈悲不是软弱，而是一条必须承担代价的道路。",
+	"BAJIE": "曾经的天蓬元帅跌入凡间。带着一身本领，也带着割舍不掉的欲念。",
+	"WUJING": "卷帘大将失手打碎琉璃盏。流沙河的岁月，让赎罪成为一次次重新选择。",
+	"LONGMA": "西海龙宫的血脉给了他骄傲，也给了他枷锁。使命最终比出身更重要。",
 }
 
 const ROUTE_LENGTHS := {
@@ -33,112 +33,136 @@ const ROUTE_LENGTHS := {
 	"LONGMA": "6章",
 }
 
-const DEVELOPER_NAME := "蛋汤"
-const CONTACT_WECHAT := "DanTangdwcyxgs"
+const GOLD := Color("d5ad57")
+const PAPER := Color("ead9aa")
+const INK := Color("111018")
+const PANEL := Color(0.045, 0.042, 0.055, 0.82)
+
+const CHARACTER_ORDER := ["WUKONG", "TANG", "BAJIE", "WUJING", "LONGMA"]
 
 var narrative := NarrativeManager.new()
 var selected_character := "WUKONG"
 var selected_label: Label
 var story_label: Label
-var route_label: Label
-var status_label: Label
 var current_label: Label
-var memory_list: ItemList
 var continue_button: Button
 var portrait: CharacterPortrait
+var character_buttons: Dictionary = {}
 
 func _ready() -> void:
 	_build_ui()
 	_refresh_ui()
 
+func _panel(parent: Node, min_size := Vector2.ZERO) -> PanelContainer:
+	var panel := PanelContainer.new()
+	if min_size != Vector2.ZERO:
+		panel.custom_minimum_size = min_size
+	var style := StyleBoxFlat.new()
+	style.bg_color = PANEL
+	style.border_color = Color(GOLD, 0.42)
+	style.set_border_width_all(2)
+	style.corner_radius_top_left = 2
+	style.corner_radius_top_right = 2
+	style.corner_radius_bottom_left = 2
+	style.corner_radius_bottom_right = 2
+	panel.add_theme_stylebox_override("panel", style)
+	parent.add_child(panel)
+	return panel
+
+func _label(text: String, size: int, color := PAPER) -> Label:
+	var node := Label.new()
+	node.text = text
+	node.add_theme_font_size_override("font_size", size)
+	node.modulate = color
+	return node
+
 func _build_ui() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	var background := ColorRect.new()
-	background.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	background.color = Color("111018")
-	add_child(background)
 
-	var margin := MarginContainer.new()
-	margin.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	margin.add_theme_constant_override("margin_left", 56)
-	margin.add_theme_constant_override("margin_right", 56)
-	margin.add_theme_constant_override("margin_top", 34)
-	margin.add_theme_constant_override("margin_bottom", 34)
-	add_child(margin)
+	var shade := ColorRect.new()
+	shade.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	shade.color = Color(0.03, 0.025, 0.04, 0.12)
+	shade.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(shade)
+
+	var root_margin := MarginContainer.new()
+	root_margin.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	root_margin.add_theme_constant_override("margin_left", 42)
+	root_margin.add_theme_constant_override("margin_right", 42)
+	root_margin.add_theme_constant_override("margin_top", 34)
+	root_margin.add_theme_constant_override("margin_bottom", 30)
+	add_child(root_margin)
 
 	var root := VBoxContainer.new()
 	root.add_theme_constant_override("separation", 12)
-	margin.add_child(root)
+	root_margin.add_child(root)
 
-	var title := Label.new()
-	title.text = "西游：五行之路"
-	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", 36)
-	root.add_child(title)
-
-	var subtitle := Label.new()
-	subtitle.text = "低资源 2D JRPG · 八方旅人式多主角入口 · 回合制冒险"
-	subtitle.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	subtitle.add_theme_font_size_override("font_size", 16)
-	root.add_child(subtitle)
+	var title_row := HBoxContainer.new()
+	root.add_child(title_row)
+	var title_stack := VBoxContainer.new()
+	title_stack.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	title_row.add_child(title_stack)
+	var title := _label("西游：五行之路", 42)
+	title.modulate = Color(1.0, 0.89, 0.64)
+	title_stack.add_child(title)
+	var subtitle := _label("THE PILGRIMAGE OF THE FIVE ELEMENTS", 13, Color("a9966c"))
+	title_stack.add_child(subtitle)
+	var rule := ColorRect.new()
+	rule.custom_minimum_size = Vector2(360, 2)
+	rule.color = Color(GOLD, 0.6)
+	title_stack.add_child(rule)
+	var chapter := _label("五行路 · 第一卷 · 从一个人的故事开始", 15, Color("c4b486"))
+	chapter.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	title_row.add_child(chapter)
 
 	var body := HBoxContainer.new()
 	body.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	body.add_theme_constant_override("separation", 16)
+	body.add_theme_constant_override("separation", 18)
 	root.add_child(body)
 
-	var left := VBoxContainer.new()
-	left.custom_minimum_size = Vector2(430, 0)
-	left.add_theme_constant_override("separation", 8)
-	body.add_child(left)
+	var left := _panel(body, Vector2(330, 0))
+	var left_box := VBoxContainer.new()
+	left_box.add_theme_constant_override("separation", 9)
+	left.add_child(left_box)
+	left_box.add_child(_label("选择主角", 22))
+	left_box.add_child(_label("五条序章，最终汇入同一条西游时间线", 13, Color("958b7a")))
 
-	var start_title := Label.new()
-	start_title.text = "第一章 · 选择你的主角"
-	start_title.add_theme_font_size_override("font_size", 20)
-	left.add_child(start_title)
-
-	var grid := GridContainer.new()
-	grid.columns = 2
-	grid.add_theme_constant_override("h_separation", 8)
-	grid.add_theme_constant_override("v_separation", 8)
-	left.add_child(grid)
-	for character_id in ["TANG", "WUKONG", "BAJIE", "WUJING", "LONGMA"]:
+	var selector := VBoxContainer.new()
+	selector.add_theme_constant_override("separation", 5)
+	left_box.add_child(selector)
+	for id in CHARACTER_ORDER:
 		var button := Button.new()
-		button.text = CHARACTER_NAMES[character_id]
-		button.custom_minimum_size = Vector2(205, 52)
-		button.tooltip_text = CHARACTER_DESCRIPTIONS[character_id]
-		button.pressed.connect(_select_character.bind(character_id))
-		grid.add_child(button)
+		button.text = "◆  " + CHARACTER_NAMES[id]
+		button.custom_minimum_size = Vector2(0, 46)
+		button.alignment = HORIZONTAL_ALIGNMENT_LEFT
+		button.pressed.connect(_select_character.bind(id))
+		selector.add_child(button)
+		character_buttons[id] = button
 
-	selected_label = Label.new()
+	var sep := ColorRect.new()
+	sep.custom_minimum_size = Vector2(0, 1)
+	sep.color = Color("4d463b")
+	left_box.add_child(sep)
+
+	selected_label = _label("", 17)
 	selected_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	selected_label.custom_minimum_size = Vector2(0, 56)
-	selected_label.add_theme_font_size_override("font_size", 16)
-	left.add_child(selected_label)
-
-	story_label = Label.new()
+	left_box.add_child(selected_label)
+	story_label = _label("", 14, Color("c3b798"))
 	story_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	story_label.custom_minimum_size = Vector2(0, 154)
-	story_label.add_theme_font_size_override("font_size", 15)
-	left.add_child(story_label)
-
-	route_label = Label.new()
-	route_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	route_label.add_theme_font_size_override("font_size", 13)
-	left.add_child(route_label)
+	story_label.custom_minimum_size = Vector2(0, 118)
+	left_box.add_child(story_label)
 
 	var actions := HBoxContainer.new()
-	actions.add_theme_constant_override("separation", 8)
-	left.add_child(actions)
+	actions.add_theme_constant_override("separation", 7)
+	left_box.add_child(actions)
 	var start_button := Button.new()
-	start_button.text = "进入个人序章"
+	start_button.text = "开始序章"
 	start_button.custom_minimum_size = Vector2(0, 48)
 	start_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	start_button.pressed.connect(_start_new_game)
 	actions.add_child(start_button)
-
 	continue_button = Button.new()
-	continue_button.text = "读取存档"
+	continue_button.text = "继续"
 	continue_button.custom_minimum_size = Vector2(0, 48)
 	continue_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	continue_button.pressed.connect(_load_game)
@@ -146,73 +170,52 @@ func _build_ui() -> void:
 
 	var battle_button := Button.new()
 	battle_button.text = "测试战斗"
-	battle_button.custom_minimum_size = Vector2(0, 40)
+	battle_button.custom_minimum_size = Vector2(0, 38)
 	battle_button.pressed.connect(_open_battle_ui)
-	left.add_child(battle_button)
-
-	status_label = Label.new()
-	status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	left.add_child(status_label)
+	left_box.add_child(battle_button)
 
 	var center := VBoxContainer.new()
-	center.custom_minimum_size = Vector2(300, 0)
 	center.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	center.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	center.add_theme_constant_override("separation", 6)
 	body.add_child(center)
+	var scene_hint := _label("花果山 · 西行之路", 15, Color("d1ba7e"))
+	scene_hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	center.add_child(scene_hint)
+	var scene_frame := _panel(center, Vector2(0, 0))
+	scene_frame.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	var empty := Control.new()
+	empty.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scene_frame.add_child(empty)
+	var frame_hint := _label("", 13, Color("9e927b"))
+	frame_hint.text = "选择角色 · 进入序章 · 五人将在此相遇"
+	frame_hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	frame_hint.vertical_alignment = VERTICAL_ALIGNMENT_BOTTOM
+	empty.add_child(frame_hint)
 
+	var right := _panel(body, Vector2(300, 0))
+	var right_box := VBoxContainer.new()
+	right_box.add_theme_constant_override("separation", 9)
+	right.add_child(right_box)
 	portrait = CharacterPortrait.new()
-	portrait.custom_minimum_size = Vector2(300, 360)
-	portrait.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	center.add_child(portrait)
-	var portrait_hint := Label.new()
-	portrait_hint.text = "角色图采用少量颜色、程序绘制和可替换资源槽；后期可直接换成像素立绘。"
-	portrait_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	portrait_hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	portrait_hint.add_theme_font_size_override("font_size", 12)
-	center.add_child(portrait_hint)
-
-	var right := VBoxContainer.new()
-	right.custom_minimum_size = Vector2(360, 0)
-	right.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	right.add_theme_constant_override("separation", 7)
-	body.add_child(right)
-
-	var journey_title := Label.new()
-	journey_title.text = "当前西游状态"
-	journey_title.add_theme_font_size_override("font_size", 20)
-	right.add_child(journey_title)
-	current_label = Label.new()
+	portrait.custom_minimum_size = Vector2(260, 250)
+	right_box.add_child(portrait)
+	var identity := _label("人物序章", 14, Color("a99569"))
+	right_box.add_child(identity)
+	current_label = _label("", 14, Color("c6b995"))
 	current_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	current_label.custom_minimum_size = Vector2(0, 96)
-	right.add_child(current_label)
-
-	var memory_title := Label.new()
-	memory_title.text = "已解锁人物回忆"
-	memory_title.add_theme_font_size_override("font_size", 18)
-	right.add_child(memory_title)
-	memory_list = ItemList.new()
-	memory_list.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	right.add_child(memory_list)
-
-	var hint := Label.new()
-	hint.text = "设计原则：主线时间线固定；角色个人序章负责选择与视角；招募后立即开启该角色回忆。"
-	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	right.add_child(hint)
+	current_label.custom_minimum_size = Vector2(0, 110)
+	right_box.add_child(current_label)
 
 	var footer := HBoxContainer.new()
-	footer.alignment = BoxContainer.ALIGNMENT_CENTER
-	footer.add_theme_constant_override("separation", 12)
+	footer.add_theme_constant_override("separation", 16)
 	root.add_child(footer)
-	var credit := Label.new()
-	credit.text = "开发者：%s" % DEVELOPER_NAME
-	credit.add_theme_font_size_override("font_size", 13)
-	footer.add_child(credit)
-	var contact_button := Button.new()
-	contact_button.text = "投资合作 / 联系开发者"
-	contact_button.custom_minimum_size = Vector2(190, 34)
-	contact_button.tooltip_text = "联系开发者：%s" % CONTACT_WECHAT
-	contact_button.pressed.connect(_show_contact_dialog)
-	footer.add_child(contact_button)
+	var footer_left := _label("↑↓ / 鼠标选择主角   Enter 开始   Esc 返回", 12, Color("8f866f"))
+	footer_left.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	footer.add_child(footer_left)
+	var footer_right := _label("蛋汤 · Journey to the West", 12, Color("8f866f"))
+	footer_right.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	footer.add_child(footer_right)
 
 func _select_character(character_id: String) -> void:
 	selected_character = character_id
@@ -220,68 +223,37 @@ func _select_character(character_id: String) -> void:
 		portrait.set_character(character_id)
 	_refresh_ui()
 
+func _refresh_ui() -> void:
+	if continue_button == null:
+		return
+	selected_label.text = "%s · %s\n%s" % [CHARACTER_NAMES[selected_character], ROUTE_LENGTHS[selected_character], CHARACTER_DESCRIPTIONS[selected_character]]
+	story_label.text = CHARACTER_STORIES[selected_character]
+	continue_button.disabled = not NarrativeSave.has_save()
+	for id in character_buttons:
+		var button: Button = character_buttons[id]
+		button.modulate = Color("f1d27d") if id == selected_character else Color("c5b99e")
+	if narrative.state.starting_character == "":
+		current_label.text = "尚未开始旅程。\n\n选择一位主角，他的个人序章将成为你第一次踏上西游的视角。"
+	else:
+		current_label.text = "当前存档\n起始主角：%s\n世界时间：T%04d\n共享章节：%s\n已招募：%s" % [
+			CHARACTER_NAMES.get(narrative.state.starting_character, narrative.state.starting_character),
+			narrative.state.current_global_timeline,
+			narrative.state.current_shared_chapter if narrative.state.current_shared_chapter != "" else "尚未汇合",
+			_join_character_names(narrative.state.recruited_characters),
+		]
+
 func _start_new_game() -> void:
 	if not narrative.start_new_game(selected_character):
-		status_label.text = "无法开始：无效角色。"
 		return
-	if not narrative.save():
-		status_label.text = "新旅程已创建，但存档写入失败。"
-		return
-	get_tree().change_scene_to_file("res://ui/journey.tscn")
+	if narrative.save():
+		get_tree().change_scene_to_file("res://ui/journey.tscn")
 
 func _load_game() -> void:
-	if not narrative.load():
-		status_label.text = "没有可读取的西游存档。"
-		return
-	get_tree().change_scene_to_file("res://ui/journey.tscn")
+	if narrative.load():
+		get_tree().change_scene_to_file("res://ui/journey.tscn")
 
 func _open_battle_ui() -> void:
 	get_tree().change_scene_to_file("res://ui/battle_ui.tscn")
-
-func _show_contact_dialog() -> void:
-	var dialog := _create_contact_dialog()
-	add_child(dialog)
-	dialog.popup_centered(Vector2i(560, 300))
-
-func _create_contact_dialog() -> AcceptDialog:
-	var dialog := AcceptDialog.new()
-	dialog.title = "投资合作 / 联系开发者"
-	dialog.dialog_text = "开发者：%s\n\n微信：%s\n\n感谢关注《西游：五行之路》。如有投资、发行、商务合作或项目交流，可通过微信联系。" % [DEVELOPER_NAME, CONTACT_WECHAT]
-	dialog.ok_button_text = "复制微信号"
-	dialog.confirmed.connect(_copy_contact_to_clipboard.bind(dialog))
-	return dialog
-
-func _copy_contact_to_clipboard(dialog: AcceptDialog) -> void:
-	DisplayServer.clipboard_set(CONTACT_WECHAT)
-	status_label.text = "微信号已复制：%s" % CONTACT_WECHAT
-	dialog.queue_free()
-
-func _refresh_ui() -> void:
-	if status_label == null:
-		return
-	selected_label.text = "%s · %s\n%s" % [CHARACTER_NAMES[selected_character], ROUTE_LENGTHS[selected_character], CHARACTER_DESCRIPTIONS[selected_character]]
-	story_label.text = "人物序章\n" + CHARACTER_STORIES[selected_character]
-	route_label.text = "序章长度：%s · 完成后进入固定世界时间线；个人路线只改变进入西游的视角。" % ROUTE_LENGTHS[selected_character]
-	continue_button.disabled = not NarrativeSave.has_save()
-	if narrative.state.starting_character == "":
-		current_label.text = "尚未开始旅程。\n选择任意一人，先体验他的个人序章，再与共享西游主线汇合。"
-	else:
-		current_label.text = "起始主角：%s\n世界时间：T%04d\n当前共享章节：%s\n当前个人路线：%s / %s\n已招募：%s" % [
-			CHARACTER_NAMES.get(narrative.state.starting_character, narrative.state.starting_character),
-			narrative.state.current_global_timeline,
-			narrative.state.current_shared_chapter if narrative.state.current_shared_chapter != "" else "尚未进入共享章节",
-			narrative.state.current_origin_route if narrative.state.current_origin_route != "" else "已汇合",
-			narrative.state.current_origin_chapter if narrative.state.current_origin_chapter != "" else "—",
-			_join_character_names(narrative.state.recruited_characters),
-		]
-	memory_list.clear()
-	if narrative.state.available_memory_chapters.is_empty() and narrative.state.played_memory_chapters.is_empty():
-		memory_list.add_item("暂无回忆。遇见新伙伴后会立即出现。")
-	else:
-		for memory_id in narrative.state.available_memory_chapters:
-			memory_list.add_item("▶ %s" % memory_id)
-		for memory_id in narrative.state.played_memory_chapters:
-			memory_list.add_item("✓ %s" % memory_id)
 
 func _join_character_names(ids: Array[String]) -> String:
 	if ids.is_empty():
