@@ -20,7 +20,7 @@ static func run_all() -> Dictionary:
 	var last_completed := ""
 
 	for chapter_id in CHAPTER_IDS:
-		var current := manager.origin_routes.get_current_chapter(manager, "WUKONG")
+		var current: Dictionary = manager.origin_routes.get_current_chapter(manager, "WUKONG")
 		assert(str(current.get("id", "")) == chapter_id, "%s should be the current chapter before execution" % chapter_id)
 
 		var sequence_id := "%s-SEQUENCE" % chapter_id
@@ -29,7 +29,7 @@ static func run_all() -> Dictionary:
 		assert(definition.validate().get("valid", false), "%s sequence should validate" % chapter_id)
 
 		var runner := EventRunner.new(definition, manager, "ORIGIN")
-		var action := runner.start()
+		var action: Dictionary = runner.start()
 		assert(not action.is_empty(), "%s should start" % chapter_id)
 
 		var guard := 0
@@ -44,11 +44,11 @@ static func run_all() -> Dictionary:
 					assert(CHOICE_IDS.has(chapter_id), "%s choice must have an explicit regression value" % chapter_id)
 					action = runner.submit_choice(str(CHOICE_IDS[chapter_id]))
 				EventRunner.BATTLE:
-					var handoff := action.get("handoff", {})
+					var handoff: Dictionary = action.get("handoff", {})
 					var encounter_id := str(handoff.get("encounter_id", ""))
 					assert(encounter_id != "", "%s battle handoff needs encounter id" % chapter_id)
 					assert(str(handoff.get("source_chapter_id", "")) == chapter_id, "%s battle source chapter must match current chapter" % chapter_id)
-					var encounter_definition := encounter_manager.get_definition(encounter_id)
+					var encounter_definition: Dictionary = encounter_manager.get_definition(encounter_id)
 					assert(not encounter_definition.is_empty(), "%s encounter definition should load" % encounter_id)
 					var rewards: Array = encounter_definition.get("rewards", []).duplicate(true)
 					var effects: Array = encounter_definition.get("world_effects", []).duplicate(true)
