@@ -21,7 +21,7 @@ The game language is modern HD-2D JRPG:
 - character-specific combat mechanics;
 - strong JRPG menus and battle feedback.
 
-See [Game Vision & Canon](docs/game_vision.md), [Global Timeline](docs/global_timeline.md), [Story Structure & Chapter Pacing](docs/story_structure.md), [Memory Campaign Rules](docs/memory_campaign.md), [Combat Formation](docs/combat_formation.md), and [Production Rules](docs/production_rules.md).
+See [Game Vision & Canon](docs/game_vision.md), [Global Timeline](docs/global_timeline.md), [Story Structure & Chapter Pacing](docs/story_structure.md), [Memory Campaign Rules](docs/memory_campaign.md), [Combat Formation](docs/combat_formation.md), [Production Rules](docs/production_rules.md), and [Content Production Pipeline](docs/content_pipeline.md).
 
 ## Core Narrative Loop
 
@@ -93,6 +93,8 @@ Implemented and connected:
 - unified narrative battle-resolution service with preflight validation, reward preview, progression rollback and a single final save boundary
 - narrative origin/shared BattleUI victories routed through the unified atomic resolution boundary
 - encounter-chapter reward deduplication: recruit battles use encounter rewards, while non-combat chapters retain chapter rewards
+- normalized chapter definitions and reusable chapter-runtime routing/prerequisite checks
+- neutral encounter handoff contract prepared for migration away from bounty-specific naming
 
 ## Current World Foundation
 
@@ -118,6 +120,19 @@ Implemented and connected:
 - data-driven shared-journey narrative events with persisted choices
 - journey-screen integration for shared event choices before chapter completion
 - regression checks for travel, rumor discovery, bounty handoff, combat status, Longma transformation, normal encounter construction, recruited roster handling, origin route lifecycle, shared journey chronology, and shared event choices
+
+## Architecture Preparation for Batch Production
+
+The project now has a normalized production contract for future chapter-heavy development:
+
+- `ChapterDefinition` normalizes chapter data and keeps raw JSON keys out of most callers.
+- `ChapterRuntime` owns common entry/prerequisite and destination decisions.
+- `NarrativeState` exposes explicit choice APIs instead of event managers inventing persistence layouts.
+- `EncounterHandoff` defines a neutral battle transfer contract while `BountyEncounterState` remains the current compatibility implementation.
+- `BattleResolutionService` remains the atomic narrative battle commit boundary.
+- `docs/content_pipeline.md` defines authoring, ownership, migration and quality gates for future mass content production.
+
+The migration is intentionally incremental: existing working systems are wrapped first, then responsibilities move only after regression coverage exists.
 
 ## Roadmap
 
@@ -152,6 +167,10 @@ Implemented and connected:
 - [x] Shared chapter atomic rollback coverage
 - [x] Unified narrative battle-resolution service foundation
 - [x] Wire unified battle-resolution service into BattleUI
+- [x] Production-oriented chapter definition/runtime contract
+- [x] Neutral encounter handoff contract
+- [x] Batch content production workflow
+- [ ] Full runtime validation in Godot
 - [ ] Minimal battle UI polish
 
 ### Phase 2 — Playable Vertical Slice
@@ -169,5 +188,7 @@ Implemented and connected:
 - [x] First complete battle: Yellow Wind Demon path
 - [x] First dungeon greybox
 - [x] Persistent dungeon checkpoints
+- [ ] Full chapter event runtime
+- [ ] Camp relationship prototype
 - [ ] Visual combat polish
 - [ ] Fully authored five-character playable route content
