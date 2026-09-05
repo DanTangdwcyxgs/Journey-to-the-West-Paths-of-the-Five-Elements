@@ -2,6 +2,30 @@
   "schema_version": 1,
   "sequences": [
     {
+      "id": "SHARED-01-FIVE-ELEMENTS-SEQUENCE",
+      "chapter_id": "SHARED-01-FIVE-ELEMENTS",
+      "namespace": "SHARED",
+      "start": "meeting",
+      "nodes": [
+        {"id":"meeting","type":"dialogue","speaker":"玄奘","text":"五行山下，我终于见到了被镇压的孙悟空。若这条西行路真要开始，总得有人先愿意相信他。","next":"choice"},
+        {"id":"choice","type":"choice","event_id":"SHARED-01-FIVE-ELEMENTS","next":"resolve"},
+        {"id":"resolve","type":"dialogue","speaker":"孙悟空","text":"你敢打开这山，我便敢走出这山。往后的路，咱们师徒一起担。","next":"finish"},
+        {"id":"finish","type":"end"}
+      ]
+    },
+    {
+      "id": "SHARED-02-EARLY-PILGRIMAGE-SEQUENCE",
+      "chapter_id": "SHARED-02-EARLY-PILGRIMAGE",
+      "namespace": "SHARED",
+      "start": "departure",
+      "nodes": [
+        {"id":"departure","type":"dialogue","speaker":"玄奘","text":"离开五行山后，真正的取经路才刚开始。前路未明，但既已许下誓愿，便不能只因为艰难而停步。","next":"choice"},
+        {"id":"choice","type":"choice","event_id":"SHARED-02-EARLY-PILGRIMAGE","next":"continue"},
+        {"id":"continue","type":"dialogue","speaker":"孙悟空","text":"走吧。俺老孙先护着师父赶路。等真正遇上妖怪，再看这一路要打多少架。","next":"finish"},
+        {"id":"finish","type":"end"}
+      ]
+    },
+    {
       "id": "SHARED-03-EAGLE-SORROW-SEQUENCE",
       "chapter_id": "SHARED-03-EAGLE-SORROW",
       "namespace": "SHARED",
