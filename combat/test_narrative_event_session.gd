@@ -34,12 +34,13 @@ static func run_all() -> Dictionary:
 
 	var resumed := NarrativeEventSession.resume_from_battle_record(handoff, manager)
 	assert(resumed != null)
-	assert(resumed.is_waiting_for_battle())
-	assert(resumed.resolve_battle(true).get("kind", "") == EventRunner.END)
+	assert(not resumed.is_waiting_for_battle())
+	assert(resumed.get_action().get("kind", "") == EventRunner.END)
 	assert(resumed.runner.is_finished())
 
 	return {
 		"passed": true,
 		"supports_battle_resume_context": true,
+		"auto_resolves_completed_battle_handoff": true,
 		"supports_ui_independent_session": true,
 	}
