@@ -25,6 +25,9 @@ jobs:
       - name: Import project and register scripts
         run: godot --headless --path . --editor --quit
 
+      - name: Check signature parser probe
+        run: godot --headless --path . --check-only --script res://tests/gdscript_signature_probe.gd
+
       - name: Check EventRuntime directly
         run: godot --headless --path . --check-only --script res://scripts/narrative/event_runtime.gd
 
