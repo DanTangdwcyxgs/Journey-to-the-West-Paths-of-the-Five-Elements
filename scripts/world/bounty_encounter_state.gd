@@ -4,6 +4,7 @@ extends RefCounted
 ## Lightweight handoff between exploration/narrative scenes and battle scenes.
 ## The canonical narrative save remains NarrativeState.
 const PATH := "user://active_bounty.json"
+const RESUME_PATH := "user://pending_event_resume.json"
 
 static func start(bounty_id: String, source_stage_id: String = "") -> bool:
 	return start_encounter("bounty", bounty_id, source_stage_id)
@@ -37,17 +38,38 @@ static func start_shared_encounter(encounter_id: String, chapter_id: String, ext
 	return start_encounter("shared", encounter_id, "", chapter_id, "SHARED_JOURNEY", extra)
 
 static func get_active() -> String:
-	return str(get_active_record().get("encounter_id", get_active_record().get("bounty_id", "")))
+	var record := get_active_record()
+	return str(record.get("encounter_id", record.get("bounty_id", "")))
 
 static func get_active_record() -> Dictionary:
-	if not FileAccess.file_exists(PATH):
+	if FileAccess.file_exists(PATH):
+		var file := FileAccess.open(PATH, FileAccess.READ)
+		if file != null:
+			var data = JSON.parse_string(file.get_as_text())
+			if data is Dictionary:
+				return data
+	if not FileAccess.file_exists(RESUME_PATH):
 		return {}
-	var file := FileAccess.open(PATH, FileAccess.READ)
-	if file == null:
+	var resume_file := FileAccess.open(RESUME_PATH, FileAccess.READ)
+	if resume_file == null:
 		return {}
-	var data = JSON.parse_string(file.get_as_text())
-	return data if data is Dictionary else {}
+	var resume_data = JSON.parse_string(resume_file.get_as_text())
+	resume_file.close()
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(RESUME_PATH))
+	return resume_data if resume_data is Dictionary else {}
 
 static func clear() -> void:
+	# Narrative event battles need their serialized continuation to survive the
+	# battle scene's normal cleanup. Ordinary encounters still clear normally.
+	if FileAccess.file_exists(PATH):
+		var file := FileAccess.open(PATH, FileAccess.READ)
+		if file != null:
+			var data = JSON.parse_string(file.get_as_text())
+			if data is Dictionary and data.has("event_resume"):
+				var resume_file := FileAccess.open(RESUME_PATH, FileAccess.WRITE)
+				if resume_file != null:
+					resume_file.store_string(JSON.stringify(data))
+					resume_file.close()
+		DirAccess.remove_absolute(ProjectSettings.globalize_path(PATH))
 	if FileAccess.file_exists(PATH):
 		DirAccess.remove_absolute(ProjectSettings.globalize_path(PATH))
