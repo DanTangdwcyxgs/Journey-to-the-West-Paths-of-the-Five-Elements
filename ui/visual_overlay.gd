@@ -22,6 +22,7 @@ const RED := Color("8f3f39")
 var scene_name := ""
 var background_texture: Texture2D
 var sprite_textures: Dictionary = {}
+var pixel_hud: PixelHUD
 
 func _ready() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -31,6 +32,10 @@ func _ready() -> void:
 	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	for key in SPRITES:
 		sprite_textures[key] = load(SPRITES[key])
+	pixel_hud = PixelHUD.new()
+	pixel_hud.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	pixel_hud.z_index = 200
+	add_child(pixel_hud)
 	_apply_scene_visuals()
 	queue_redraw()
 
