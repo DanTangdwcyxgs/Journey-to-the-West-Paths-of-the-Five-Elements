@@ -239,10 +239,11 @@ Runner 支持将 `current_node_id + pending_action + status` 序列化，再恢�
 - Origin / Shared 事件选择统一执行入口
 - EventSequenceDefinition 图结构验证
 - EventRunner 多节点执行与状态恢复骨架
+- Godot headless runtime CI 入口
 - 内容批量生产规范
 - 项目对外中文品牌 / 投资人入口 / AI 接管文档
 
-注意：当前环境没有真实执行 Godot Runtime，因此任何“测试通过”只能表述为代码级回归覆盖，不得冒充运行结果。
+注意：Godot Runtime 现在已有真实 CI 执行入口，但最新一轮仍在验证中，不能把正在执行或失败的 run 描述为通过。
 
 ---
 
@@ -250,17 +251,19 @@ Runner 支持将 `current_node_id + pending_action + status` 序列化，再恢�
 
 最高优先级：
 
-1. Godot Runtime 实机验证
+1. 让 `EventRuntime` / 全项目 headless runtime suite 达到稳定绿色
 2. 将 EventRunner 接入真实 Journey / Chapter / Event UI
 3. 完整 Event → Battle → Event 返回链（实际调用 BattleResolutionService）
-4. Camp / Relationship Prototype
-5. 第一完整 Vertical Slice
-6. 五人完整 Origin Route 内容生产
-7. Shared Journey 大规模内容生产
-8. 战斗 UI / 动画 / 镜头 / VFX 美术化
-9. HD-2D 环境正式美术
-10. 音频与音乐
-11. 最终测试、平衡、发行
+4. 清理 `BattleUI` 中重复的 origin/shared 战斗胜利结算职责
+5. 为 `EncounterHandoff` 增加 EventRunner resume context，并迁移旧 `BountyEncounterState` 兼容入口
+6. Camp / Relationship Prototype
+7. 第一完整 Vertical Slice
+8. 五人完整 Origin Route 内容生产
+9. Shared Journey 大规模内容生产
+10. 战斗 UI / 动画 / 镜头 / VFX 美术化
+11. HD-2D 环境正式美术
+12. 音频与音乐
+13. 最终测试、平衡、发行
 
 ---
 
@@ -281,13 +284,13 @@ Definition + 单次 Choice Runtime 已完成。
 - Battle → `EncounterHandoff`
 - battle 外部中断后的 runner restore
 
-### Batch 1B — Runtime 验证与真实接线（下一步）
+### Batch 1B — Runtime 验证与真实接线（当前）
 
-建立真实 Godot SceneTree 运行入口，至少跑通：
+已建立 Godot 4.5.1 headless CI pipeline：
 
-`对话 → 选择 → 战斗 → 战斗结算 → 回到事件 → 后续对话 → 结束`
+`project import → signature probe → EventRuntime check-only → runtime suite`
 
-这一阶段不能继续只增加抽象层；必须开始把现有 Runtime 接到真实场景。
+当前优先解决 Godot 实跑发现的真实脚本解析 / 类型问题，再接真实 UI 场景。不得因为 CI 出错而退回“只做静态代码检查”。
 
 ### Batch 2 — Camp / Party / Relationship
 
