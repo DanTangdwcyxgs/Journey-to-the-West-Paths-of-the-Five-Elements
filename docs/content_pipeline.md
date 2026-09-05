@@ -43,12 +43,13 @@ Defines:
 Defines:
 
 - `event_id`
+- `title`
 - dialogue / presentation content
 - choices
 - choice effects
 - optional follow-up event
 
-Event content must not mutate `NarrativeState` directly. Use the narrative API.
+Event content must not mutate `NarrativeState` directly. Use `EventDefinition` + `EventRuntime` and explicit `NarrativeState` APIs.
 
 ### Encounter
 
@@ -109,11 +110,35 @@ Normalizes content dictionaries into a stable interface so UI and managers do no
 Provides common chapter discovery and routing decisions:
 
 - can the chapter be entered;
+- are its prerequisites satisfied;
 - is it an event, battle or plain chapter destination;
 - what encounter is requested;
 - what chapter comes next.
 
 The current implementation is intentionally conservative and mostly side-effect free. More execution responsibilities should migrate here gradually, after regression coverage exists.
+
+### EventDefinition
+
+Normalizes event data and choice definitions. It keeps presentation-oriented event data out of state mutation code.
+
+### EventRuntime
+
+Owns reusable choice execution:
+
+- validates the event and namespace;
+- rejects repeated choices;
+- validates that the selected choice exists;
+- applies supported persistent effects;
+- records the choice through `NarrativeState`.
+
+Current supported generic effects:
+
+- `relationship_values`
+- `milestones`
+- `world_rumors`
+- `memory_chapters`
+
+Character-specific combat modifiers remain available through the existing origin-event compatibility layer and should not be moved into generic event effects without a concrete schema need.
 
 ### NarrativeManager / NarrativeState
 
@@ -168,12 +193,10 @@ The UI displays the resulting state.
 
 Events may present choices and calculate their configured effects, but persistent choice storage belongs to `NarrativeState` through explicit APIs.
 
-This prevents every event manager from inventing its own dictionary structure.
+Current namespaces:
 
-Current namespaces include:
-
-- origin: `<chapter_id>`
-- shared event: `SHARED:<event_id>`
+- origin: `record_origin_choice(chapter_id, choice_id)`
+- shared event: `record_shared_choice(event_id, choice_id)`
 
 Future relationship / world / quest namespaces should follow the same explicit pattern.
 
@@ -255,10 +278,11 @@ Do not rewrite existing working systems solely for elegance.
 
 Migrate one responsibility at a time:
 
-1. wrap old raw data with `ChapterDefinition`;
+1. wrap old raw data with `ChapterDefinition` / `EventDefinition`;
 2. route read-only discovery through `ChapterRuntime`;
-3. move common side effects into shared services only when covered by tests;
-4. remove duplicated old logic after the new path is verified.
+3. route choice execution through `EventRuntime`;
+4. move common side effects into shared services only when covered by tests;
+5. remove duplicated old logic after the new path is verified.
 
 This keeps the project playable while architecture evolves.
 
