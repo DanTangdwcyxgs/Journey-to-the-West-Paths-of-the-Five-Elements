@@ -138,7 +138,9 @@ Memory 不得回写并篡改已经确定的当前世界时间线。
 - `EventDefinition`
 - `EventRuntime`
 - `EventSequenceDefinition`
+- `EventSequenceManager`
 - `EventRunner`
+- `NarrativeEventSession`
 - `OriginEventManager`
 - `SharedEventManager`
 - `StartRouteCatalog`
@@ -147,7 +149,7 @@ Memory 不得回写并篡改已经确定的当前世界时间线。
 ### World / Handoff
 
 - `EncounterHandoff`
-- `BountyEncounterState`（兼容旧入口）
+- `BountyEncounterState`（兼容旧入口，并承载 EventSession resume context）
 - World Map / Travel / Rumor / Bounty
 - Dungeon / Checkpoint
 
@@ -175,9 +177,9 @@ Presentation 不应自行决定核心剧情、奖励或战斗规则。
 
 ### 多段事件
 
-`Event Sequence Data → EventSequenceDefinition → EventRunner → action request`
+`Event Sequence JSON → EventSequenceManager → EventSequenceDefinition → EventRunner → NarrativeEventSession → action request`
 
-Runner 输出的 action 类型目前为：
+当前标准 action：
 
 - `dialogue`
 - `choice`
@@ -188,13 +190,15 @@ Runner 输出的 action 类型目前为：
 - `jump`
 - `end`
 
-其中 `battle` 只生成 `EncounterHandoff` 数据，不直接启动 BattleUI；Presentation / Battle 系统负责接管。
+Runner 输出的 `battle` 只生成 `EncounterHandoff` 数据，不直接启动 BattleUI。
 
-Runner 支持将 `current_node_id + pending_action + status` 序列化，再恢复到同一个序列，保证战斗等外部中断不会强制把事件逻辑和 UI 绑定在一起。
+### 事件与战斗的真实桥接
 
-### 战斗
+当前已建立并通过 Godot Runtime CI 验证的推荐链：
 
-`Chapter/World/EventRunner → EncounterHandoff → BattleUI → CombatEngine → BattleResolutionService → NarrativeState`
+`Journey → NarrativeEventSession → EventRunner → EncounterHandoff(+event_resume) → BattleUI → BattleResolutionService → NarrativeEventSession.resume → Journey`
+
+`BountyEncounterState` 目前仍是场景间兼容持久化实现，但其内容已经可以承载 `event_resume`，因此事件会话可以跨场景恢复；后续再把该兼容层逐步替换为更明确的通用 Scene Handoff Service。
 
 ### 战斗结果原则
 
@@ -238,12 +242,16 @@ Runner 支持将 `current_node_id + pending_action + status` 序列化，再恢�
 - EventDefinition / EventRuntime
 - Origin / Shared 事件选择统一执行入口
 - EventSequenceDefinition 图结构验证
-- EventRunner 多节点执行与状态恢复骨架
-- Godot headless runtime CI 入口
+- EventRunner 多节点执行与状态恢复
+- NarrativeEventSession 事件会话编排与战斗恢复上下文
+- EventSequenceManager 数据驱动序列加载
+- 首条真实共享剧情序列：`SHARED-03-EAGLE-SORROW-SEQUENCE`
+- Journey UI 接入该序列
+- Narrative BattleUI 可保存并恢复 EventSession 上下文
+- Godot 4.5.1 headless runtime CI
+- 当前 CI 已连续验证 EventRunner、EventSession、Shared Battle、BattleResolution 等核心回归
 - 内容批量生产规范
 - 项目对外中文品牌 / 投资人入口 / AI 接管文档
-
-注意：Godot Runtime 现在已有真实 CI 执行入口，但最新一轮仍在验证中，不能把正在执行或失败的 run 描述为通过。
 
 ---
 
@@ -251,99 +259,129 @@ Runner 支持将 `current_node_id + pending_action + status` 序列化，再恢�
 
 最高优先级：
 
-1. 让 `EventRuntime` / 全项目 headless runtime suite 达到稳定绿色
-2. 将 EventRunner 接入真实 Journey / Chapter / Event UI
-3. 完整 Event → Battle → Event 返回链（实际调用 BattleResolutionService）
-4. 清理 `BattleUI` 中重复的 origin/shared 战斗胜利结算职责
-5. 为 `EncounterHandoff` 增加 EventRunner resume context，并迁移旧 `BountyEncounterState` 兼容入口
-6. Camp / Relationship Prototype
-7. 第一完整 Vertical Slice
-8. 五人完整 Origin Route 内容生产
-9. Shared Journey 大规模内容生产
-10. 战斗 UI / 动画 / 镜头 / VFX 美术化
-11. HD-2D 环境正式美术
-12. 音频与音乐
-13. 最终测试、平衡、发行
+1. 将第一条真实 Event Sequence 的视觉表现继续完善（对白框、镜头、角色移动反馈）
+2. 将其余 Shared Journey 招募章节逐步迁移到 EventSequence 数据格式
+3. 将 Origin Route 的事件链逐步迁移到 EventSequence
+4. 统一非战斗 `reward` 节点的实际发奖服务，避免未来出现奖励逻辑分散
+5. 统一 `move / wait` 的世界系统执行入口
+6. 清理 `BattleUI` 中仍存在的旧 origin/shared 兼容结算职责，并逐步统一到 Handoff + Resolution
+7. 将 `BountyEncounterState` 逐步收敛为通用 Scene Handoff Service
+8. Camp / Relationship Prototype
+9. 第一完整 Vertical Slice
 
 ---
 
-## 9. 当前阶段推荐顺序
+## 9. 当前已知架构注意事项
 
-### Batch 1A — Event Runtime
+### EventRunner
 
-Definition + 单次 Choice Runtime 已完成。
+- UI 无关；不要在 Runner 内创建 Control / Scene / BattleUI。
+- Battle 节点只生成 Handoff。
+- `END` 节点是终态；`runner.is_finished()` 在呈现 END 时必须为 true。
+- `choice` 使用 EventRuntime 持久化，不允许重复执行同一 namespace 下相同 event choice。
 
-本批已补齐：
+### Reward
 
-`EventSequenceDefinition → EventRunner → Dialog / Choice / Wait / Move / Battle / Reward / Jump / End`
+- 当前 `reward` node 只产生 action，不直接修改库存。
+- 战斗奖励由 `BattleResolutionService` 原子处理。
+- 后续必须新增通用 `RewardService` 或明确的非战斗奖励服务，再让 reward node 委托它；不要在 EventRunner 里写库存副作用。
 
-并提供：
+### Save / Resume
 
-- 图结构验证
-- 选择持久化复用 `EventRuntime`
-- Battle → `EncounterHandoff`
-- battle 外部中断后的 runner restore
+- EventSession 的 runner snapshot 可以跨 BattleUI / Journey scene。
+- 当前 resume context 放在 `user://active_bounty.json` 兼容层；不要把 UI scene 引用序列化进去。
+- NarrativeState 仍是世界事实的权威源，session 只是未完成表现流程。
 
-### Batch 1B — Runtime 验证与真实接线（当前）
+### Sequence Content Quality Gate
 
-已建立 Godot 4.5.1 headless CI pipeline：
+当前 `EventSequenceDefinition.validate()` 已检查结构和图连接，但还没有完全检查：
 
-`project import → signature probe → EventRuntime check-only → runtime suite`
+- choice node 对应的 event 是否存在；
+- battle node 对应的 encounter 是否存在；
+- source_chapter_id 是否与 chapter data 一致；
+- namespace 是否与章节类型一致。
 
-当前优先解决 Godot 实跑发现的真实脚本解析 / 类型问题，再接真实 UI 场景。不得因为 CI 出错而退回“只做静态代码检查”。
-
-### Batch 2 — Camp / Party / Relationship
-
-`招募 → 营地 → 角色互动 → 编队 → 装备 → Memory → Relationship`
-
-### Batch 3 — 第一完整 Vertical Slice
-
-`五行山 → 鹰愁涧 → 白龙马 → 黑风山 → 黄风岭 → 黄风洞 → 黄风妖王 → 善后`
-
-### Batch 4 — 五人 Origin Route 批量生产
-
-### Batch 5 — Shared Journey 批量生产
+后续应把这些升级为内容 CI 的 cross-reference validation，而不是靠 UI 运行时发现。
 
 ---
 
-## 10. 每次修改必须留下交接记录
+## 10. Godot Runtime 验证状态
 
-任何有意义的代码、数据、架构、剧情或设计更新，都必须同时在：
+最近一次已完成的关键验证：
 
-`docs/development_log/YYYY-MM-DD-<topic>.md`
+- Godot：4.5.1 stable
+- 项目脚本导入：通过
+- GDScript signature parser probe：通过
+- EventRuntime direct check：通过
+- EventRunner direct check：通过
+- headless runtime suite：通过
+- EventRunner graph / choice / battle resume / END：通过
+- NarrativeEventSession handoff / resume：已加入 suite
 
-留下记录。
+最近一次成功 CI 运行：**Godot Runtime #34**，head commit `51ea65c53e34e1916cd6f7b6d092e668c93836ee`。
 
-记录至少包含：
-
-- 本次目标
-- 修改了什么
-- 为什么这样修改
-- 影响了哪些系统
-- 新增/修改了哪些文件
-- 已知未完成项
-- 测试覆盖
-- 是否实际运行 Godot
-- 下一步建议
-- 接手 Agent 应从哪里继续
+不要把“代码看起来正确”写成“Godot Runtime 已通过”；必须以实际 CI 结果为准。
 
 ---
 
-## 11. 更新完成后的固定动作
+## 11. 下一位 Agent 的推荐工作顺序
 
-每次完成工作后：
+### Batch A — Event UI / Presentation
 
-1. 修改代码 / 数据
-2. 添加或更新回归测试
-3. 更新相关设计文档
-4. 写一份 development log
-5. 更新 `AI_HANDOFF.md`（如果当前状态、入口或优先级发生变化）
-6. 更新 README（如果对外可见能力发生变化）
-7. 提交清晰的 commit message
-8. 检查工作区是否还有未处理的关键逻辑问题
+让一个 EventSequence 在 Journey 中拥有稳定的对白显示、选择显示、等待、移动反馈，并保持 Runner UI-independent。
+
+### Batch B — Shared Journey Migration
+
+优先迁移：
+
+`SHARED-04 → SHARED-05 → SHARED-06 → SHARED-07 → SHARED-08 → SHARED-09`
+
+不要一次重写所有旧章节；每迁移一条就加入回归。
+
+### Batch C — Origin Migration
+
+按角色分别迁移五条 Origin Route，不改变既有世界时间线与招募节点。
+
+### Batch D — Reward / World Execution
+
+建立通用 RewardService、WorldActionService，让 `reward / move / wait` 不再停留在“action dictionary only”。
+
+### Batch E — Camp / Relationship
+
+再进入角色关系、营地和长线成长。
+
+### Batch F — Vertical Slice
+
+以一个完整角色起始路线 + 五行山 + 鹰愁涧 + 招募后回忆为第一个可展示 Vertical Slice。
 
 ---
 
-## 12. 给未来 Agent 的一句话
+## 12. 每次提交都必须留下什么
 
-**不要把这个项目当成“一个需要继续补代码的 Godot Demo”，要把它当成“已经建立基础工程、现在开始批量生产一款西游 JRPG”的长期项目。先理解世界时间线和架构边界，再动手。**
+每个有意义的实现批次至少更新：
+
+- 代码 / 数据
+- 对应回归测试
+- 必要架构文档
+- `docs/development_log/` 最新开发日志
+- `AI_HANDOFF.md`（若当前状态 / 优先级 / 架构发生变化）
+- README（若公共能力变化）
+
+日志必须写清：
+
+- Goal
+- What changed
+- Why
+- Systems affected
+- Files
+- Tests
+- Godot Runtime status
+- Known issues
+- Next step
+- Handoff point
+
+---
+
+## 13. 一句话原则
+
+**章节描述发生什么，Runtime 决定怎么执行，NarrativeState 保存事实，Presentation 只负责表现。**
