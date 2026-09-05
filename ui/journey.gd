@@ -2,6 +2,8 @@ class_name JourneyScreen
 extends Control
 
 const CHARACTER_NAMES := {"TANG":"唐三藏", "WUKONG":"孙悟空", "BAJIE":"猪八戒", "WUJING":"沙悟净", "LONGMA":"白龙马"}
+const DIALOGUE_CHARS_PER_SECOND := 42.0
+const EVENT_TRANSITION_DELAY := 0.28
 
 var narrative := NarrativeManager.new()
 var origin := OriginRouteManager.new()
@@ -13,6 +15,11 @@ var title_label: Label
 var phase_label: Label
 var chapter_label: Label
 var description_label: Label
+var dialogue_panel: PanelContainer
+var speaker_label: Label
+var dialogue_text_label: Label
+var dialogue_hint_label: Label
+var event_meta_label: Label
 var list: ItemList
 var primary_button: Button
 var choice_box: VBoxContainer
@@ -20,6 +27,11 @@ var memory_button: Button
 var party_button: Button
 var world_button: Button
 var save_button: Button
+var dialogue_full_text := ""
+var dialogue_visible_characters := 0
+var dialogue_revealing := false
+var dialogue_speed_accumulator := 0.0
+var event_transition_pending := false
 
 func _ready() -> void:
 	if not narrative.load():
@@ -29,6 +41,22 @@ func _ready() -> void:
 	_restore_event_session()
 	_build_ui()
 	_refresh()
+
+func _process(delta: float) -> void:
+	if not dialogue_revealing:
+		return
+	dialogue_speed_accumulator += delta * DIALOGUE_CHARS_PER_SECOND
+	var target := min(dialogue_full_text.length(), dialogue_visible_characters + int(dialogue_speed_accumulator))
+	if target > dialogue_visible_characters:
+		dialogue_visible_characters = target
+		dialogue_speed_accumulator -= float(target - dialogue_visible_characters + (dialogue_visible_characters - target))
+		if dialogue_text_label != null:
+			dialogue_text_label.text = dialogue_full_text.left(dialogue_visible_characters)
+	if dialogue_visible_characters >= dialogue_full_text.length():
+		dialogue_revealing = false
+		dialogue_speed_accumulator = 0.0
+		if dialogue_hint_label != null:
+			dialogue_hint_label.text = "按继续阅读"
 
 func _build_ui() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -65,14 +93,56 @@ func _build_ui() -> void:
 	chapter_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	left.add_child(chapter_label)
 	description_label = Label.new()
-	description_label.custom_minimum_size = Vector2(0, 180)
+	description_label.custom_minimum_size = Vector2(0, 92)
 	description_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	left.add_child(description_label)
+	_dialogue_panel = PanelContainer.new()
+	dialogue_panel.name = "DialoguePanel"
+	dialogue_panel.custom_minimum_size = Vector2(0, 214)
+	var dialogue_style := StyleBoxFlat.new()
+	dialogue_style.bg_color = Color("171923")
+	dialogue_style.border_color = Color("51466f")
+	dialogue_style.set_border_width_all(1)
+	dialogue_style.corner_radius_top_left = 10
+	dialogue_style.corner_radius_top_right = 10
+	dialogue_style.corner_radius_bottom_left = 10
+	dialogue_style.corner_radius_bottom_right = 10
+	dialogue_style.content_margin_left = 18
+	dialogue_style.content_margin_right = 18
+	dialogue_style.content_margin_top = 14
+	dialogue_style.content_margin_bottom = 12
+	dialogue_panel.add_theme_stylebox_override("panel", dialogue_style)
+	left.add_child(dialogue_panel)
+	var dialogue_root := VBoxContainer.new()
+	dialogue_root.add_theme_constant_override("separation", 8)
+	dialogue_panel.add_child(dialogue_root)
+	speaker_label = Label.new()
+	speaker_label.name = "Speaker"
+	speaker_label.add_theme_font_size_override("font_size", 18)
+	dialogue_root.add_child(speaker_label)
+	dialogue_text_label = Label.new()
+	dialogue_text_label.name = "Text"
+	dialogue_text_label.custom_minimum_size = Vector2(0, 118)
+	dialogue_text_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	dialogue_text_label.vertical_alignment = VERTICAL_ALIGNMENT_TOP
+	dialogue_text_label.add_theme_font_size_override("font_size", 19)
+	dialogue_root.add_child(dialogue_text_label)
+	dialogue_hint_label = Label.new()
+	dialogue_hint_label.name = "Hint"
+	dialogue_hint_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	dialogue_hint_label.text = ""
+	dialogue_root.add_child(dialogue_hint_label)
+	event_meta_label = Label.new()
+	event_meta_label.name = "EventMeta"
+	event_meta_label.add_theme_font_size_override("font_size", 12)
+	event_meta_label.modulate = Color("9da0b4")
+	dialogue_root.add_child(event_meta_label)
 	primary_button = Button.new()
 	primary_button.custom_minimum_size = Vector2(0, 54)
 	primary_button.pressed.connect(_advance_primary)
 	left.add_child(primary_button)
 	choice_box = VBoxContainer.new()
+	choice_box.name = "EventChoices"
 	choice_box.add_theme_constant_override("separation", 8)
 	left.add_child(choice_box)
 	memory_button = Button.new()
@@ -165,13 +235,39 @@ func _advance_event_session() -> void:
 		return
 	var action := event_session.get_action()
 	match str(action.get("kind", "")):
-		EventRunner.DIALOGUE, EventRunner.WAIT, EventRunner.MOVE, EventRunner.REWARD, EventRunner.JUMP:
+		EventRunner.DIALOGUE:
+			if dialogue_revealing:
+				_reveal_dialogue_immediately()
+				return
 			var next := event_session.complete_action()
 			_handle_event_action(next)
+		EventRunner.WAIT:
+			_start_event_transition(action)
+		EventRunner.MOVE, EventRunner.REWARD, EventRunner.JUMP:
+			var next := event_session.complete_action()
+			_handle_event_action(next)
+		EventRunner.BATTLE:
+			_handle_event_action(action)
 		EventRunner.END:
 			_finish_event_session()
 		_:
 			phase_label.text = "当前剧情需要选择或完成战斗。"
+
+func _start_event_transition(action: Dictionary) -> void:
+	if event_transition_pending:
+		return
+	event_transition_pending = true
+	primary_button.disabled = true
+	var seconds := max(float(action.get("seconds", 0.0)), EVENT_TRANSITION_DELAY)
+	if action.get("kind", "") == EventRunner.WAIT:
+		phase_label.text = "等待 · %.1f 秒" % seconds
+		dialogue_hint_label.text = "场景过渡中…"
+	await get_tree().create_timer(seconds).timeout
+	event_transition_pending = false
+	if event_session == null:
+		return
+	var next := event_session.complete_action()
+	_handle_event_action(next)
 
 func _handle_event_action(action: Dictionary) -> void:
 	if action.is_empty():
@@ -357,36 +453,62 @@ func _render_event_action(action: Dictionary) -> void:
 		description_label.text = event_session.runner.get_error() if event_session != null else "未知错误"
 		primary_button.text = "返回"
 		primary_button.disabled = true
+		_set_dialogue("", "")
 		return
 	var kind := str(action.get("kind", ""))
 	chapter_label.text = "事件 · %s" % str(action.get("node_id", ""))
+	event_meta_label.text = "序列 %s · 节点 %s" % [str(action.get("sequence_id", "")), str(action.get("node_id", ""))]
 	match kind:
 		EventRunner.DIALOGUE:
 			phase_label.text = "剧情对话"
-			description_label.text = "%s：%s" % [str(action.get("speaker", "")), str(action.get("text", ""))]
+			description_label.text = ""
+			_set_dialogue(str(action.get("speaker", "")), str(action.get("text", "")))
 			primary_button.text = "继续"
 			primary_button.disabled = false
 		EventRunner.CHOICE:
 			phase_label.text = "请选择剧情立场"
-			description_label.text = "%s\n\n%s" % [str(action.get("title", "")), str(action.get("text", ""))]
+			description_label.text = ""
+			_set_dialogue("", "%s\n\n%s" % [str(action.get("title", "")), str(action.get("text", ""))], false)
 			primary_button.text = "请选择"
 			primary_button.disabled = true
 			_render_event_choices(action)
 		EventRunner.BATTLE:
 			phase_label.text = "战斗准备"
-			description_label.text = "即将进入战斗。战斗完成后会回到本事件继续。"
+			description_label.text = ""
+			_set_dialogue("系统", "即将进入战斗。战斗完成后会回到本事件继续。", false)
 			primary_button.text = "进入战斗"
 			primary_button.disabled = false
 		EventRunner.END:
 			phase_label.text = "事件完成"
-			description_label.text = "这一段故事已经完整走完。"
+			_set_dialogue("", "这一段故事已经完整走完。", false)
 			primary_button.text = "完成"
 			primary_button.disabled = false
 		_:
 			phase_label.text = "事件进行中"
-			description_label.text = str(action)
+			_set_dialogue("", str(action), false)
 			primary_button.text = "继续"
 			primary_button.disabled = false
+
+func _set_dialogue(speaker: String, text: String, typewriter := true) -> void:
+	if speaker_label == null or dialogue_text_label == null:
+		return
+	speaker_label.text = speaker
+	dialogue_full_text = text
+	dialogue_visible_characters = 0
+	dialogue_speed_accumulator = 0.0
+	dialogue_revealing = typewriter and not text.is_empty()
+	dialogue_text_label.text = "" if dialogue_revealing else text
+	if dialogue_revealing:
+		dialogue_hint_label.text = "正在阅读… · 再按一次可立即显示"
+	else:
+		dialogue_hint_label.text = ""
+
+func _reveal_dialogue_immediately() -> void:
+	dialogue_visible_characters = dialogue_full_text.length()
+	dialogue_text_label.text = dialogue_full_text
+	dialogue_revealing = false
+	dialogue_speed_accumulator = 0.0
+	dialogue_hint_label.text = "按继续阅读"
 
 func _render_event_choices(action: Dictionary) -> void:
 	for choice in action.get("choices", []):
