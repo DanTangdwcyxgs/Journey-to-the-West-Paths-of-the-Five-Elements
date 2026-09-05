@@ -46,7 +46,7 @@ static func run_all() -> Dictionary:
 		var runner := EventRunner.new(definition, manager, "SHARED")
 		var action := runner.start()
 		assert(not action.is_empty())
-		assert(runner.has_error() == false)
+		assert(not runner.has_error())
 
 		var guard := 0
 		while not runner.is_finished():
@@ -86,10 +86,14 @@ static func run_all() -> Dictionary:
 				_:
 					assert(false)
 
-			assert(runner.has_error() == false)
-			assert(runner.is_finished())
-			completed_sequences += 1
+			assert(not runner.has_error())
 
+		assert(runner.is_finished())
+		completed_sequences += 1
+
+	assert(completed_sequences == SHARED_SEQUENCE_IDS.size())
+	assert(battle_handoffs == 3)
+	assert(world_moves == 1)
 	return {
 		"passed": true,
 		"executed_sequences": completed_sequences,
