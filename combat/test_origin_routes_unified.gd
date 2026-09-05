@@ -73,16 +73,15 @@ static func run_all() -> Dictionary:
 						action = runner.complete_action()
 					EventRunner.CHOICE:
 						assert(route.get("choices", {}).has(sequence_id), "%s choice must be declared in unified catalog" % sequence_id)
-						var event_id := str(definition_dict.get("nodes", [])[runner.get_current_node_index()].get("event_id", expected_chapter))
-						var event_definition := origin_events.get_definition(event_id)
-						assert(not event_definition.is_empty(), "%s choice event %s must exist" % [sequence_id, event_id])
+						var event_definition := origin_events.get_definition(expected_chapter)
+						assert(not event_definition.is_empty(), "%s choice event %s must exist" % [sequence_id, expected_chapter])
 						var expected_choice := str(route.get("choices", {}).get(sequence_id, ""))
 						var found_choice := false
 						for choice_variant in event_definition.get("choices", []):
 							if str(choice_variant.get("id", "")) == expected_choice:
 								found_choice = true
 								break
-						assert(found_choice, "%s choice %s must exist in %s" % [sequence_id, expected_choice, event_id])
+						assert(found_choice, "%s choice %s must exist in %s" % [sequence_id, expected_choice, expected_chapter])
 						action = runner.submit_choice(expected_choice)
 						choice_count += 1
 					EventRunner.BATTLE:
