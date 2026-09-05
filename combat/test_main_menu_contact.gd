@@ -6,8 +6,8 @@ func _initialize() -> void:
 	_assert(scene != null, "main menu scene should load")
 	var instance := scene.instantiate()
 	_assert(instance is MainMenu, "main menu should instantiate MainMenu")
+	root.add_child(instance)
 
-	instance.call("_build_ui")
 	var credit := _find_label_with_text(instance, "开发者：蛋汤")
 	_assert(credit != null, "developer credit should be visible")
 
@@ -27,15 +27,15 @@ func _initialize() -> void:
 	print("ALL MAIN MENU CONTACT TESTS PASSED")
 	quit(0)
 
-func _find_button_with_text(root: Node, text: String) -> Button:
-	for child in root.find_children("", "Button", true, false):
+func _find_button_with_text(root_node: Node, text: String) -> Button:
+	for child in root_node.find_children("", "Button", true, false):
 		var button := child as Button
 		if button != null and button.text == text:
 			return button
 	return null
 
-func _find_label_with_text(root: Node, text: String) -> Label:
-	for child in root.find_children("", "Label", true, false):
+func _find_label_with_text(root_node: Node, text: String) -> Label:
+	for child in root_node.find_children("", "Label", true, false):
 		var label := child as Label
 		if label != null and label.text == text:
 			return label
