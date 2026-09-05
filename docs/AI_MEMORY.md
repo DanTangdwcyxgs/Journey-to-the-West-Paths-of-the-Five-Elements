@@ -6,293 +6,224 @@
 
 ## 0. 永久工作规则
 
-### 0.1 记忆原则
-每轮实际仓库操作都必须留下可恢复记录：做了什么、为什么、实际修改、测试/真实运行结果、已知问题、下一步、接手点。
+### 0.1 记忆
+每轮实际仓库操作都必须留下可恢复记录：做了什么、为什么、实际修改、测试、真实 Godot 运行结果、已知问题、下一步、接手点。
 
-### 0.2 验证原则
-静态检查 ≠ Godot Runtime。只有真实 Godot workflow 成功才能写“Godot Runtime 通过”。`pending`、`statuses: []` 或无 workflow result 均只能写未确认。
+### 0.2 验证
+静态检查 ≠ Godot Runtime。只有真实 Godot workflow 成功才能写“Godot Runtime 通过”。`queued / in_progress / pending / 无结果` 均不能写通过。
 
-### 0.3 引擎基准
-**Godot 4.5.1 stable**。
+### 0.3 引擎
+Godot `4.5.1 stable`。
 
-### 0.4 架构原则
+### 0.4 架构
 `Content Data → ChapterDefinition → ChapterRuntime → EventSequence/EventRunner → EventRuntime / Combat / World → Presentation`
 
-Runner 只负责流程，不负责 UI 和业务副作用；NarrativeState 保存世界事实；Service 承担库存/世界/战斗等副作用；Presentation 负责演出。
+Runner 只负责流程；Service 负责业务副作用；Presentation 负责演出。
 
 ### 0.5 固定西游时间线
-玩家可以从五人任意角色视角开始，但世界历史不能被玩家顺序重排：
 `悟空被镇压 → 唐僧开始取经 → 五行山释放悟空 → 鹰愁涧白龙马 → 高老庄八戒 → 流沙河悟净 → 五人完整西行`
 
-Memory / Flashback 只能历史回放，不得回写当前世界事实。
+Memory / Flashback 只能历史回放，不得改写当前世界事实。
 
 ### 0.6 渐进迁移
-旧入口可保留为兼容层；新能力优先接入统一架构，不为“重构干净”一次性重写全部章节。
+旧入口允许作为兼容层；新能力优先进入统一架构，不做无必要的大重构。
 
 ### 0.7 每轮流程
-`实现 → 回归测试 → 真实 Godot Runtime（适用时）→ development log → AI_MEMORY Round → 必要时更新 AI_HANDOFF`
+`实现 → regression → 真实 Godot Runtime → development log → AI_MEMORY → 必要时更新 AI_HANDOFF`
 
 ---
 
-## 1. 项目定位
+## 1. 项目身份
 
-游戏：`西游：五行之路（Journey to the West: Five Elements Road）`
+项目：`西游：五行之路（Journey to the West: Five Elements Road）`
 
-核心原则：**可玩的《西游记》故事第一，原创 JRPG 第二。**
+核心定位：经典《西游记》叙事 + 像素 HD-2D / 2.5D + 回合制 JRPG。
 
-技术方向：Godot 4 + 像素角色 + HD-2D / 2.5D 环境 + 回合制 JRPG。
+GitHub 当前仓库 slug：`black-myth-wukong-jrpg`。公开品牌应优先使用 `《西游：五行之路》`，不要把 `Black Myth: Wukong — JRPG Edition` 当作正式品牌，以免产生官方关系误解。
 
-结构：五条 Origin Route → 经典招募节点 → Shared Journey。
+项目负责人对外统一署名：**开发者：蛋汤**。
+
+投资、发行、商务合作及项目交流：**微信：DanTangdwcyxgs**。
+
+游戏主菜单已提供“投资合作 / 联系开发者”入口，并可复制微信号。
 
 ---
 
-## 2. 当前稳定核心链路
+## 2. 稳定核心链路
 
-### 2.1 Event Sequence
-`Event Sequence JSON → EventSequenceManager → EventSequenceDefinition → EventRunner → NarrativeEventSession → action`
+### Event Sequence
+`EventSequence JSON → EventSequenceManager → EventSequenceDefinition → EventRunner → NarrativeEventSession → action`
 
-支持 action：`dialogue / choice / wait / move / battle / reward / jump / end`。
+支持：`dialogue / choice / wait / move / battle / reward / jump / end`。
 
-### 2.2 Battle Handoff
+### Battle Handoff
 `Journey → NarrativeEventSession → EventRunner → EncounterHandoff(+event_resume) → BattleUI → BattleResolutionService → NarrativeEventSession.resume → Journey`
 
-战斗胜利边界：预检 → 奖励预览 → 状态变更 → 剧情推进 → 世界效果 → 最终 Save；失败需回滚。
+Victory atomic boundary：预检 → reward preview → state mutation → progression → world effects → Save；失败 rollback。
 
-### 2.3 非战斗副作用
-- `RewardService`：统一 narrative reward 库存副作用；
-- `WorldActionService`：统一 `move / wait`；
-- `EventRunner` 不直接实现上述业务。
+### Noncombat
+`RewardService` / `WorldActionService` 负责副作用，Runner 不直接实现库存/世界业务。
 
-### 2.4 Scene Handoff
-`BountyEncounterState` 当前仍承担兼容 handoff 与 EventSession resume context。未来可逐步收敛成通用 Scene Handoff Service，但目前不要为此破坏兼容链。
+### Scene Handoff
+`BountyEncounterState` 仍是兼容层；暂不提前收敛成新的通用服务。
 
 ---
 
-## 3. 历史工作事实
+## 3. 历史工作轮次
 
-### Round 01 — 五人起始路线与固定时间线
-建立五人可选起点、Origin / Shared 双结构和固定世界时间线。
+### Round 01
+建立五人 Origin / Shared 双结构与固定世界时间线。
 
-### Round 02 — Combat Domain
-建立 `Combatant / CombatEngine / CombatAction`，含 HP、ATK、DEF、SPD、BP、Weakness、Shield、Break、Status、Formation。
+### Round 02
+建立 Combat Domain：HP / ATK / DEF / SPD / BP / Weakness / Shield / Break / Status / Formation。
 
-### Round 03 — 五人机制与队伍
-加入五人基础差异、队伍保存读取、装备和消耗品，形成 3 前排 / 2 后排基础。
+### Round 03
+加入五人专属基础机制、队伍、装备、消耗品与 3 前 / 2 后阵型。
 
-### Round 04 — World / Rumor / Bounty
+### Round 04
 建立 World Map / Travel / Rumor / Bounty 与黄风岭 / 黄风洞灰盒探索。
 
-### Round 05 — 三场共享招募战
-建立鹰愁涧、高老庄、流沙河三场共享招募战及 Encounter AI、招募与 Shared chapter 基础。
+### Round 05
+建立鹰愁涧、高老庄、流沙河三场共享招募战。
 
-### Round 06 — Shared 原子结算
-统一 `BattleResolutionService`，使战斗奖励、章节推进、世界效果和保存处于原子边界。
+### Round 06
+建立 `BattleResolutionService`，统一共享战斗的奖励、章节推进、世界效果和保存原子边界。
 
-### Round 07 — EventDefinition / EventRuntime
-事件选择数据驱动，选择状态持久化，统一 Origin / Shared 选择执行入口。
+### Round 07
+建立 `EventDefinition / EventRuntime`，选择数据驱动与状态持久化。
 
-### Round 08 — EventSequenceDefinition / Validator
-建立多节点 Sequence 数据结构和 graph/cross-reference 校验。
+### Round 08
+建立 `EventSequenceDefinition / Validator` 与 graph 校验。
 
-### Round 09 — EventRunner
-建立 UI-independent Runner，支持 dialogue/choice/wait/move/battle/reward/jump/end 与 snapshot。
+### Round 09
+建立 UI-independent `EventRunner` 与 snapshot。
 
-### Round 10 — NarrativeEventSession
-建立跨 Journey / BattleUI 的 `event_resume`，战斗成为剧情中的 action。
+### Round 10
+建立 `NarrativeEventSession`，支持跨 Journey / BattleUI 的 `event_resume`。
 
-### Round 11 — Godot Runtime Infrastructure
-建立 GitHub Actions Godot 4.5.1 headless runtime workflow，覆盖项目导入、脚本 probe、核心 Runtime 和战斗恢复。
+### Round 11
+建立 GitHub Actions Godot 4.5.1 headless runtime workflow。
 
-### Round 12 — Action → Service / Handoff
-明确 Runner 只请求动作，Reward / World / Battle 由 Service 或 Handoff 执行。
+### Round 12
+明确 Action → Service / Handoff 边界。
 
-### Round 13 — RewardService
-建立统一 narrative reward service 与 regression test。
+### Round 13
+建立 `RewardService`。
 
-### Round 14 — WorldActionService
-建立统一 `move / wait` service 与 regression test。当前 `move` 记录逻辑地点/visited node；`wait` 不推进独立世界时钟。
+### Round 14
+建立 `WorldActionService`。
 
-### Round 15 — Journey Presentation / SceneTree
-`ui/journey.gd` 增加真实 SceneTree UI：DialoguePanel / Speaker / Text / Hint / EventMeta、逐字显示、点击立即显示、WAIT 过渡、BATTLE handoff、Choice UI；新增 Journey presentation runtime test。
+### Round 15
+`ui/journey.gd` 增加真实 SceneTree presentation：DialoguePanel / Speaker / Text / Hint / EventMeta、逐字、WAIT、BATTLE、Choice；加入 Journey presentation regression。
 
-### Round 16 — Shared-04 EventSequence
-加入 `SHARED-04-EARLY-DEMON-TALES-SEQUENCE`。发现 sequence reward 与 chapter reward 会双发，已移除 sequence reward，chapter reward 成为唯一来源。
+### Round 16
+迁移 `SHARED-04-EARLY-DEMON-TALES-SEQUENCE`，移除 sequence reward，避免 chapter reward 双发。
 
-### Round 17 — AI 持久记忆系统
-建立本文件与 development log 体系，要求每个实际仓库工作轮次同步记录。
+### Round 17
+建立 AI 持久记忆 / development log 体系。
 
-### Round 18 — Shared-05 / Shared-06 Migration
-加入：
-- `SHARED-05-GAOJIAZHUANG-SEQUENCE`: arrival → choice → battle → after_battle → end；
-- `SHARED-06-FOUR-PERSON-JOURNEY-SEQUENCE`: depart → wait → resolve → end。
+### Round 18
+迁移 Shared-05 / Shared-06。
 
-### Round 19 — Shared-07 / Shared-08 / Shared-09 Migration
-加入：
-- `SHARED-07-FLOWING-SANDS-SEQUENCE`: river → choice → battle → after_battle → end；
-- `SHARED-08-PARTY-FULL-SEQUENCE`: gather → choice → oath → end；
-- `SHARED-09-FULL-PILGRIMAGE-SEQUENCE`: departure → end。
+### Round 19
+迁移 Shared-07 / Shared-08 / Shared-09；Shared-03~09 主体 Sequence 完成。
 
-Shared-03 至 Shared-09 主体 Sequence 数据迁移完成。
+### Round 20
+修复 Godot 4.5.1 Journey warning-as-error 类型推断。Runtime #75 failure，修复后 #76 success，`RUNTIME_SUITE_PASS tests=11`。
 
-### Round 20 — Godot 4.5.1 Journey Parse Fix
-Godot Runtime #75 首次真正执行 Shared-03 至 Shared-09 相关回归时，`ui/journey.gd` 出现三处 warning-as-error Variant 类型推断问题：
-- `_process()` `target` → `int`；
-- `_process()` `added` → `int`；
-- `_start_event_transition()` `seconds` → `float`。
+### Round 21
+新增 `test_shared_event_sequences.gd`，真实执行 Shared-03~09 production Sequence。#81 暴露测试自身 control-flow bug，修复后 #82 success：7/7 Sequence、3/3 battle resume、1/1 move side effect。
 
-修复提交：`641aac770c063eebf00f477df8443a32f60d0938`。
+### Round 22
+增强 Sequence cross-reference validation；迁移 Wukong WUK-01~03；新增 `ui/origin_sequence_journey.gd` 兼容桥；修复 `OriginEventManager` 缺失 event id 兼容问题。#94/#96 暴露问题，#98 success，#101 SceneTree bridge success。
 
-实际 Runtime #75：failure；Godot 4.5.1、项目导入、signature probe、EventRuntime、EventRunner 及前 10 个 suite 测试通过，失败集中在 Journey presentation compile。
+### Round 23
+完整迁移 Wukong `WUK-04~15`，形成 `WUK-01→WUK-15` 全链；5 个 Origin battle 均复用既有 `WUKONG_ORIGIN_*` Encounter；3 个 choice；全路线 regression。#106 是测试控制流误报，修复后 #109 **success**，Godot 4.5.1 headless suite 通过。
 
-随后 Runtime #76 对修复后的代码真实通过，`RUNTIME_SUITE_PASS tests=11`。
+### Round 24
+建立项目负责人署名与投资合作联系方式：
+- `ui/main_menu.gd` 增加 `DEVELOPER_NAME = "蛋汤"`；
+- `CONTACT_WECHAT = "DanTangdwcyxgs"`；
+- 主菜单显示“开发者：蛋汤”；
+- 增加“投资合作 / 联系开发者”；
+- 联系面板展示微信并支持 `DisplayServer.clipboard_set()`；
+- 新增 `combat/test_main_menu_contact.gd`；
+- runtime suite 扩展至 14 tests；
+- `docs/investor_overview.md` / `docs/project_identity.md` / development log 同步负责人身份。
 
-### Round 21 — Shared Production Sequence Runtime Regression
-新增 `combat/test_shared_event_sequences.gd`，直接读取生产 `data/narrative/event_sequences.json`，把 Shared-03 至 Shared-09 七条生产 Sequence 真正送入 `EventSequenceManager → EventRunner` 执行。
+本轮第一次 Runtime #115 failure，失败原因是新回归测试在 SceneTree 外直接弹 `AcceptDialog`。已经改成将 MainMenu 实例挂入 SceneTree 后再验证。
 
-覆盖：
-- Dialogue / Choice / Wait / Move / Battle / End 实际推进；
-- 3 条 Battle Sequence 的 encounter id 校验；
-- Battle runner snapshot → restore → victory resume；
-- Shared-04 的 MOVE 写入 `BLACK_WIND_NORTH_PATH` world state；
-- 7 / 7 Sequence 进入 finished。
+修正测试提交：`63b7e0b56d34d2ee611078b367604fe2af94740e`。
 
-首次实现触发 Runtime #81：新测试自己的 control-flow bug，在 action loop 内过早断言 `runner.is_finished()`；不是生产代码失败。修正后重新运行。
-
-Runtime #82：**success**。
-
-真实结果：
-- Godot `4.5.1.stable.official.f62fdbde1`；
-- `RUNTIME_SUITE_PASS tests=12`；
-- 7 / 7 production Shared Sequence 执行通过；
-- 3 / 3 battle handoff + snapshot/restore/resume 通过；
-- 1 / 1 MOVE world-state side effect 通过；
-- 原有 Chapter / Event / Reward / World / Battle / Journey Presentation tests 全部继续通过。
-
-当前稳定基线：`0af166f30cf3bac59a41fce574b93c80e0124a24`（随后仅有文档记录）。
-
-### Round 22 — Sequence Cross-Reference Validation + Wukong Origin Migration
-增强 `EventSequenceValidator`，增加章节级 cross-reference：
-- Sequence 必须存在 `chapter_id`；
-- SHARED / ORIGIN Sequence 必须引用真实章节；
-- Battle `source_chapter_id` 必须与 Sequence `chapter_id` 一致；
-- Shared Battle encounter_id 必须与章节 encounter_id 一致；
-- choice event 与 battle encounter 必须存在于对应 namespace。
-
-新增 Wukong Origin 三条 Sequence：
-- `WUK-01-SEQUENCE`: dialogue → end；
-- `WUK-02-SEQUENCE`: dialogue → battle → after_battle → end；
-- `WUK-03-SEQUENCE`: dialogue → choice → end。
-
-新增 `ui/origin_sequence_journey.gd` 作为兼容桥：
-- 已迁移 Origin chapter 优先使用 EventSequence；
-- 未迁移 chapter 继续旧 Journey path；
-- Origin non-battle END 完成当前 Origin chapter；
-- Origin battle 继续由 `BattleResolutionService` 原子推进，避免重复完成。
-
-发现并修复 `OriginEventManager` 数据兼容问题：`origin_events.json` 的部分事件对象没有显式 `id`，现在 `get_definition()` 用 chapter_id 归一化事件 ID。此前 Runtime #94 / #96 暴露了该问题。
-
-Runtime 验证：
-- #89：cross-reference validation 增强后 success；
-- #94：首次 Wukong Origin runtime regression failure，失败定位到 WUK-03 event identity；
-- #98：修复 event id normalization 后 success；WUK-01/02/03 Runner execution、WUK-02 battle snapshot/restore、WUK-03 choice persistence 全通过；
-- #101：将 Origin bridge 挂入 `journey.tscn` 后 success，完整 Godot Runtime suite 继续通过。
-
-当前 Origin 迁移基线包含：Wukong WUK-01~03 + Journey bridge；其余 Origin chapter 仍为渐进迁移。
-
-### Round 23 — Wukong Full Origin Route Sequence Migration
-将悟空 Origin Route 的 `WUK-04` 至 `WUK-15` 全部加入生产 `EventSequence`，使 `WUK-01 → WUK-15` 成为一条完整个人历史链。
-
-新增 Sequence：
-- WUK-04 菩提门下：dialogue → wait → dialogue → end；
-- WUK-05 大圣初醒：dialogue → dialogue → end；
-- WUK-06 龙宫取宝：dialogue → battle → after_battle → end；
-- WUK-07 地府改命：dialogue → dialogue → end；
-- WUK-08 弼马温：dialogue → choice → end；
-- WUK-09 齐天大圣：dialogue → dialogue → end；
-- WUK-10 偷食蟠桃：dialogue → dialogue → end；
-- WUK-11 天兵天将：dialogue → battle → after_battle → end；
-- WUK-12 二郎神：dialogue → battle → after_battle → end；
-- WUK-13 炼丹炉：dialogue → choice → end；
-- WUK-14 大闹天宫：dialogue → battle → after_battle → end；
-- WUK-15 五行山：dialogue → dialogue → end。
-
-5 个 Origin battle sequence 直接复用现有 `WUKONG_ORIGIN_*` encounter，不复制 Combat 数据。
-
-`combat/test_origin_event_sequences.gd` 从原先仅验证 WUK-01~03 扩展为覆盖全部 15 条 production Sequence：
-- 所有 definition graph validate；
-- 5 个 battle handoff + snapshot/restore/victory resume；
-- 3 个 choice sequence 与持久化；
-- 全部 15 条进入 END。
-
-首次全路线回归 Runtime #106 失败，失败范围集中在新 regression 的 action-loop 写法；项目导入、脚本注册、signature probe、EventRuntime、EventRunner 均通过。随后测试改成与已验证 Shared regression 一致的显式 END 节点控制流，避免把测试本身的时序误判为生产失败。
-
-本轮开发日志：`docs/development_log/2026-09-05-wukong-full-origin-sequence-migration.md`。
-
-当前最新状态：生产数据与 regression 已更新；最终是否通过 Godot Runtime 必须以这次修正提交之后最新 workflow 的真实结果为准，未确认前不得写“本轮 Runtime 通过”。
+`Godot Runtime #118` 对修正后的提交需要以最终 workflow 结果为准；本记忆在写入时仍将其标为待确认。
 
 ---
 
-## 4. Shared Journey 当前数据边界
+## 4. Wukong Origin 当前状态
 
-`data/narrative/shared_chapters.json` 为章节事实来源：
-- Shared-03 Longma recruitment / `SHARED_EAGLE_SORROW` / timeline 110；
-- Shared-04 reward HERB / timeline 120；
-- Shared-05 Bajie recruitment / `SHARED_GAOJIAZHUANG` / timeline 130；
-- Shared-06 reward HERB / timeline 140；
-- Shared-07 Wujing recruitment / `SHARED_FLOWING_SANDS` / timeline 150；
-- Shared-08 party convergence / reward HERB / timeline 160；
-- Shared-09 final pilgrimage / reward COIN_MEDIUM / timeline 170。
+Production Sequence 已覆盖 `WUK-01~15`：
+- WUK-02：`WUKONG_ORIGIN_WATER_CAVE`
+- WUK-06：`WUKONG_ORIGIN_DRAGON_PALACE`
+- WUK-11：`WUKONG_ORIGIN_HEAVENLY_TROOPS`
+- WUK-12：`WUKONG_ORIGIN_ERLANG_SHEN`
+- WUK-14：`WUKONG_ORIGIN_HEAVEN_PALACE`
 
-Sequence **不得复制 chapter reward**，避免重复经济结算。
+Choices：WUK-03 `SEEK_FREEDOM`；WUK-08 `ACCEPT_TITLE`；WUK-13 `ENDURE`。
 
-`SharedJourneyManager.complete()` 是 canonical shared progression：
-- combat chapter 必须先存在 `SHARED_BATTLE_<encounter_id>` milestone；
-- non-combat chapter 由 chapter definition 发 reward；
-- complete chapter、推进 timeline、apply recruit/world effects、设置 next chapter、可选 save；
-- 后续失败必须 rollback。
+`ui/origin_sequence_journey.gd`：已迁移章节使用 EventSequence；未迁移章节继续 legacy；non-battle END 完成当前 Origin chapter；battle 由 `BattleResolutionService` 原子推进。
 
-`JourneyScreen._finish_event_session()` 当前规则：
-- non-battle sequence 且 current shared chapter 仍等于 sequence chapter → 在 END 完成章节；
-- battle sequence → 跳过重复 completion，因为 `BattleResolutionService` 已经完成 source chapter。
+下一步：做 Wukong 整条路线的 chapter progression / save / SceneTree 端到端检查，确认 15 章从玩家入口切换章节、battle victory 推进、END 保存无断点；然后再开始 Tang Origin。
 
 ---
 
-## 5. 当前任务地图
+## 5. Shared Journey 当前边界
 
-### P0 — Journey SceneTree 完整化
-下一步优先：
-1. 强化 MOVE 的视觉/状态反馈；
-2. 强化 WAIT 的过渡表现；
-3. END / chapter completion feedback；
-4. 保持 Battle → BattleUI → Resume → END 边界不重复结算；
-5. 必要时增加对应 SceneTree regression。
+`shared_chapters.json` 是 Shared chapter 事实来源；Sequence 不得复制 chapter reward。
 
-已知限制：MOVE 仍无角色路径动画；WAIT 不推进独立世界时钟；Battle handoff 仍经 `BountyEncounterState`。
+Shared-03：Longma recruitment / Eagle Sorrow / timeline 110。
+Shared-04：HERB / timeline 120。
+Shared-05：Bajie recruitment / Gaojiazhuang / timeline 130。
+Shared-06：HERB / timeline 140。
+Shared-07：Wujing recruitment / Flowing Sands / timeline 150。
+Shared-08：party full / HERB / timeline 160。
+Shared-09：full pilgrimage / COIN_MEDIUM / timeline 170。
 
-### P1 — Origin Migration
-Shared-03 → Shared-09 Sequence 迁移完成后，逐角色逐章把 Origin Route 迁移到 EventSequence，必须保持固定世界时间线和经典招募节点。
+`SharedJourneyManager.complete()` 是 canonical shared progression；battle chapter 必须存在 `SHARED_BATTLE_<encounter_id>` milestone。
 
-Wukong `WUK-01 → WUK-15` 已全部进入 Sequence 数据层，并继续使用 Origin bridge。下一阶段优先做悟空整条路线的 **chapter progression / save / SceneTree 端到端检查**，确认 15 章从玩家入口切换章节、战斗胜利推进章节、END 保存之间没有断点；通过后再开始 Tang Origin。
+---
 
-### P2 — Cleanup / Convergence
-逐步收敛旧 BattleUI 结算职责与 `BountyEncounterState`，但不能提前破坏现有兼容链。
+## 6. 当前产品任务地图
+
+### P0 — Journey presentation
+MOVE 视觉/状态反馈；WAIT 过渡；END / chapter completion feedback；保持 Battle → Resume → END 不重复结算；必要时增加 SceneTree regression。
+
+### P1 — Origin migration
+Wukong WUK-01~15 已完成 Sequence 数据迁移；下一阶段先做 progression / save / SceneTree 端到端，再迁移 Tang / Longma / Bajie / Wujing。
+
+### P2 — Cleanup
+逐步收敛旧 BattleUI 结算职责与 `BountyEncounterState`，不得提前破坏兼容链。
 
 ### P3 — Camp / Relationship
-叙事主链稳定后进入 Camp / Relationship prototype。
+主叙事链稳定后开始。
 
 ### P4 — Vertical Slice
-目标：`一个完整角色起始路线 → 五行山 → 鹰愁涧 → 招募 → 对应 Memory`。
+`一个完整角色起始路线 → 五行山 → 鹰愁涧 → 招募 → 对应 Memory`。
+
+### P5 — Product identity / funding
+已完成开发者署名及投资合作联系方式入口。后续新增邮箱 / 官网 / Discord / 投资材料链接时，应统一更新主菜单和对外投资资料；未经负责人要求，不得自行替换微信号。
 
 ---
 
-## 6. 接手点
+## 7. 接手点
 
-当前应从主分支最新提交开始检查，优先阅读：
+优先阅读：
 - `docs/AI_MEMORY.md`
 - `AI_HANDOFF.md`
 - `docs/development_log/README.md`
+- `docs/development_log/2026-09-05-developer-credit-investor-contact.md`
 - `docs/development_log/2026-09-05-wukong-full-origin-sequence-migration.md`
-- `docs/development_log/2026-09-05-origin-wukong-sequence-migration.md`
+- `ui/main_menu.gd`
+- `combat/test_main_menu_contact.gd`
 - `ui/origin_sequence_journey.gd`
 - `ui/journey.gd`
 - `scripts/narrative/event_sequence_validator.gd`
@@ -300,5 +231,5 @@ Wukong `WUK-01 → WUK-15` 已全部进入 Sequence 数据层，并继续使用 
 - `scripts/narrative/narrative_event_session.gd`
 - `scripts/world/battle_resolution_service.gd`
 
-任何下一轮修改继续执行：
-`实现 → regression → Godot Runtime → development log → AI_MEMORY Round`。
+任何下一轮继续：
+`实现 → regression → Godot Runtime → development log → AI_MEMORY`。
