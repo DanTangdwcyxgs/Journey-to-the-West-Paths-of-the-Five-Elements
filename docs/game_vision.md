@@ -176,6 +176,12 @@ The visual target is:
 - atmospheric fog, rain, sand and fire;
 - dynamic day/night or story-specific lighting where useful.
 
+### World Construction Aesthetic
+
+The world should deliberately feel **constructed from readable blocks and shapes** rather than photorealistic surfaces. This does not mean copying voxel aesthetics from another game. It means using modular, almost toy-like spatial forms, strong silhouettes, simplified planes and carefully placed lights so that the player can read the world at a glance.
+
+The goal is a world that can trigger a childhood memory of holding a handheld console outside at dusk: small enough to feel intimate, layered enough to invite exploration, and warm enough to make the player want to stay.
+
 ### Battle
 
 - clean JRPG command interface;
@@ -238,7 +244,25 @@ That repetition is part of the identity of the pilgrimage.
 
 ---
 
-## 13. End-State Fantasy
+## 13. Emotional North Star
+
+The deepest design goal is not nostalgia for nostalgia's sake. It is the feeling of **returning to a simple, glowing memory**.
+
+Pixel art and turn-based combat are long-standing personal preferences behind the project. The game should use those forms deliberately because they create a specific emotional space: a block-built world that feels tactile and readable, a handheld-style rhythm that gives the player time to think, and evening lighting that can make an ordinary journey feel magical.
+
+The intended emotional image is:
+
+> **像素与回合制，是我一直以来的偏爱。**
+>
+> **我想在方块构筑的世界里，重现儿时傍晚在公园握着掌机、发着光的夏夜。**
+>
+> **愿这份游戏，能为你寻回一段沉睡的时光。**
+
+This is the project's emotional north star. When choosing between a technically impressive feature and a quieter feature that strengthens this feeling, the quieter feature may be the better choice.
+
+---
+
+## 14. End-State Fantasy
 
 The final game should create the feeling that the player has lived through the complete pilgrimage with these five characters.
 
@@ -250,12 +274,20 @@ A player who started as Bajie should eventually understand why the pig demon bec
 
 The ending should therefore feel like the completion of **five character stories and one shared Journey**.
 
+The strongest desired aftertaste is not simply accomplishment. It is a quiet sense that the player has **recovered a piece of time that felt lost**—the warmth of an evening, the glow of a handheld screen, the anticipation of one more turn, one more screen, one more step down the road.
+
 ---
 
-## 14. Canon Rule for Development
+## 15. Canon Rule for Development
 
 Before adding any major feature, ask:
 
 **Does this make the game feel more like an interactive Journey to the West JRPG, or does it pull the game toward being a generic fantasy JRPG?**
 
 If the latter, the feature requires explicit justification before implementation.
+
+A second question now applies to major presentation and experience decisions:
+
+**Does this strengthen the feeling of that glowing childhood summer evening, or does it merely add spectacle?**
+
+The answer does not need to be nostalgic in every scene. The point is to preserve a consistent emotional destination beneath the action, comedy, danger and strategy.
