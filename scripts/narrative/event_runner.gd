@@ -16,14 +16,14 @@ const JUMP := "jump"
 const END := "end"
 
 var sequence: EventSequenceDefinition
-var manager: Variant
+var manager
 var current_node_id: String = ""
 var pending_action: Dictionary = {}
 var status: String = "idle"
 var last_error: String = ""
 var namespace: String = "SHARED"
 
-func _init(definition: EventSequenceDefinition = null, narrative_manager: Variant = null, event_namespace: String = "SHARED") -> void:
+func _init(definition: EventSequenceDefinition = null, narrative_manager = null, event_namespace: String = "SHARED") -> void:
 	sequence = definition
 	manager = narrative_manager
 	namespace = event_namespace
