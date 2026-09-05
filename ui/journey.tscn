@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://ui/journey.gd" id="1_journey"]
+[ext_resource type="Script" path="res://ui/origin_sequence_journey.gd" id="2_origin_journey"]
 
 [node name="Journey" type="Control"]
 layout_mode = 3
@@ -9,4 +10,4 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_journey")
+script = ExtResource("2_origin_journey")
