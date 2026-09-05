@@ -128,6 +128,16 @@ func record_origin_choice(chapter_id: String, choice_id: String) -> void:
 func get_origin_choice(chapter_id: String) -> String:
 	return str(origin_choices.get(chapter_id, ""))
 
+func record_shared_choice(event_id: String, choice_id: String) -> void:
+	if event_id == "" or choice_id == "":
+		return
+	origin_choices["SHARED:%s" % event_id] = choice_id
+
+func get_shared_choice(event_id: String) -> String:
+	if event_id == "":
+		return ""
+	return str(origin_choices.get("SHARED:%s" % event_id, ""))
+
 func set_current_shared_chapter(chapter_id: String) -> void:
 	current_shared_chapter = chapter_id
 
