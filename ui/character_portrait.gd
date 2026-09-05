@@ -39,9 +39,9 @@ func _draw() -> void:
 		draw_rect(Rect2(x - 5.0, inset + 15.0, 14.0, 4.0), GOLD)
 	if sprite == null:
 		return
-	var available := Vector2(size.x - 26.0, size.y - 30.0)
-	var source := Vector2(sprite.get_width(), sprite.get_height())
-	var factor := min(available.x / source.x, available.y / source.y)
-	var target := source * factor
-	var rect := Rect2(Vector2((size.x - target.x) * 0.5, (size.y - target.y) * 0.5 + 4.0), target)
+	var available: Vector2 = Vector2(size.x - 26.0, size.y - 30.0)
+	var source: Vector2 = Vector2(sprite.get_width(), sprite.get_height())
+	var factor: float = min(available.x / source.x, available.y / source.y)
+	var target: Vector2 = source * factor
+	var rect: Rect2 = Rect2(Vector2((size.x - target.x) * 0.5, (size.y - target.y) * 0.5 + 4.0), target)
 	draw_texture_rect(sprite, rect, false)
