@@ -1,0 +1,93 @@
+{
+  "schema_version": 1,
+  "description": "Origin Route EventSequences separated from the shared production sequence catalog.",
+  "sequences": [
+    {
+      "id": "TANG-01-SEQUENCE",
+      "chapter_id": "TANG-01",
+      "namespace": "ORIGIN",
+      "start": "birth",
+      "nodes": [
+        {"id":"birth","type":"dialogue","speaker":"旁白","text":"少年玄奘在寺院里第一次接触到经卷。比起答案，他更早学会了追问答案的意义。","next":"finish"},
+        {"id":"finish","type":"end"}
+      ]
+    },
+    {
+      "id": "TANG-02-SEQUENCE",
+      "chapter_id": "TANG-02",
+      "namespace": "ORIGIN",
+      "start": "vow",
+      "nodes": [
+        {"id":"vow","type":"dialogue","speaker":"玄奘","text":"出家不是离开众人，而是从此把自己的选择当成一生的责任。","next":"finish"},
+        {"id":"finish","type":"end"}
+      ]
+    },
+    {
+      "id": "TANG-03-SEQUENCE",
+      "chapter_id": "TANG-03",
+      "namespace": "ORIGIN",
+      "start": "teacher",
+      "nodes": [
+        {"id":"teacher","type":"dialogue","speaker":"玄奘","text":"声名越来越大，我反而更常看见教义与现实之间的裂缝。若经文不能落到众生身上，背得再熟也只是纸上的道理。","next":"finish"},
+        {"id":"finish","type":"end"}
+      ]
+    },
+    {
+      "id": "TANG-04-SEQUENCE",
+      "chapter_id": "TANG-04",
+      "namespace": "ORIGIN",
+      "start": "edict",
+      "nodes": [
+        {"id":"edict","type":"dialogue","speaker":"玄奘","text":"长安的诏命到了。西行从此不只是我一个人的修行，也成了必须面对的众生之事。","next":"choice"},
+        {"id":"choice","type":"choice","event_id":"TANG-04","next":"finish"},
+        {"id":"finish","type":"end"}
+      ]
+    },
+    {
+      "id": "TANG-05-SEQUENCE",
+      "chapter_id": "TANG-05",
+      "namespace": "ORIGIN",
+      "start": "departure",
+      "nodes": [
+        {"id":"departure","type":"dialogue","speaker":"玄奘","text":"城门就在身后。真正踏上路以后，取经不再是一句愿望，而是每一天都要重新确认的选择。","next":"resolve"},
+        {"id":"resolve","type":"dialogue","speaker":"旁白","text":"他回望长安最后一眼，然后继续向西。","next":"finish"},
+        {"id":"finish","type":"end"}
+      ]
+    },
+    {
+      "id": "TANG-06-SEQUENCE",
+      "chapter_id": "TANG-06",
+      "namespace": "ORIGIN",
+      "start": "ridge",
+      "nodes": [
+        {"id":"ridge","type":"dialogue","speaker":"玄奘","text":"双叉岭的风里尽是妖气。若连眼前的人都护不住，又谈什么遥远的真经？","next":"battle"},
+        {"id":"battle","type":"battle","encounter_type":"origin","encounter_id":"TANG_ORIGIN_DOUBLE_RIDGE","source_chapter_id":"TANG-06","source_route_id":"TANG_ORIGIN","next":"after_battle"},
+        {"id":"after_battle","type":"dialogue","speaker":"玄奘","text":"我明白了。慈悲不是不畏惧，而是明知会受伤，也愿意护住别人。","next":"finish"},
+        {"id":"finish","type":"end"}
+      ]
+    },
+    {
+      "id": "TANG-07-SEQUENCE",
+      "chapter_id": "TANG-07",
+      "namespace": "ORIGIN",
+      "start": "night",
+      "nodes": [
+        {"id":"night","type":"dialogue","speaker":"玄奘","text":"鹰愁涧就在前方。河声越近，孤身西行的危险也越真实。","next":"choice"},
+        {"id":"choice","type":"choice","event_id":"TANG-07","next":"finish"},
+        {"id":"finish","type":"end"}
+      ]
+    },
+    {
+      "id": "TANG-08-SEQUENCE",
+      "chapter_id": "TANG-08",
+      "namespace": "ORIGIN",
+      "start": "mountain",
+      "nodes": [
+        {"id":"mountain","type":"dialogue","speaker":"玄奘","text":"五行山下有人在呼喊。或许前方的人与你想象不同，但取经路上，总要先学会面对未知。","next":"battle"},
+        {"id":"battle","type":"battle","encounter_type":"origin","encounter_id":"TANG_ORIGIN_FIVE_ELEMENTS","source_chapter_id":"TANG-08","source_route_id":"TANG_ORIGIN","next":"after_battle"},
+        {"id":"after_battle","type":"dialogue","speaker":"玄奘","text":"山下这个人，也许会成为同行者。既然命运让我们相遇，我愿意先听听他的故事。","next":"finish"},
+        {"id":"finish","type":"end"}
+      ]
+    }
+  ]
+}
