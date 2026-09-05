@@ -172,13 +172,17 @@ func _open_battle_ui() -> void:
 	get_tree().change_scene_to_file("res://ui/battle_ui.tscn")
 
 func _show_contact_dialog() -> void:
+	var dialog := _create_contact_dialog()
+	add_child(dialog)
+	dialog.popup_centered(Vector2i(560, 300))
+
+func _create_contact_dialog() -> AcceptDialog:
 	var dialog := AcceptDialog.new()
 	dialog.title = "投资合作 / 联系开发者"
 	dialog.dialog_text = "开发者：%s\n\n微信：%s\n\n感谢关注《西游：五行之路》。如有投资、发行、商务合作或项目交流，可通过微信联系。" % [DEVELOPER_NAME, CONTACT_WECHAT]
 	dialog.ok_button_text = "复制微信号"
 	dialog.confirmed.connect(_copy_contact_to_clipboard.bind(dialog))
-	add_child(dialog)
-	dialog.popup_centered(Vector2i(560, 300))
+	return dialog
 
 func _copy_contact_to_clipboard(dialog: AcceptDialog) -> void:
 	DisplayServer.clipboard_set(CONTACT_WECHAT)
