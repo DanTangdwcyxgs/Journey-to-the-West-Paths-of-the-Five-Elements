@@ -1,0 +1,26 @@
+name: Godot Runtime
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  runtime:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Godot
+        uses: chickensoft-games/setup-godot@v2
+        with:
+          version: 4.5.1
+          use-dotnet: false
+
+      - name: Verify Godot
+        run: godot --version
+
+      - name: Run headless runtime suite
+        run: godot --headless --path . --script res://tests/runtime_suite.gd
