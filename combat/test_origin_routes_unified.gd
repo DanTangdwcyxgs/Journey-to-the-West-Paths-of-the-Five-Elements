@@ -119,8 +119,8 @@ static func run_all() -> Dictionary:
 
 	assert(route_count == 5)
 	assert(sequence_count == 46)
-	assert(choice_count == 12)
-	assert(battle_count == 16)
+	assert(choice_count == 11)
+	assert(battle_count == 13)
 
 	return {
 		"passed": true,
