@@ -8,30 +8,33 @@ const PATH := "user://active_bounty.json"
 static func start(bounty_id: String, source_stage_id: String = "") -> bool:
 	return start_encounter("bounty", bounty_id, source_stage_id)
 
-static func start_encounter(encounter_type: String, encounter_id: String, source_stage_id: String = "", source_chapter_id: String = "", source_route_id: String = "") -> bool:
+static func start_encounter(encounter_type: String, encounter_id: String, source_stage_id: String = "", source_chapter_id: String = "", source_route_id: String = "", extra: Dictionary = {}) -> bool:
 	if encounter_id == "":
 		return false
-	var file := FileAccess.open(PATH, FileAccess.WRITE)
-	if file == null:
-		return false
-	file.store_string(JSON.stringify({
+	var payload := {
 		"encounter_type": encounter_type,
 		"encounter_id": encounter_id,
 		"bounty_id": encounter_id if encounter_type == "bounty" else "",
 		"source_stage_id": source_stage_id,
 		"source_chapter_id": source_chapter_id,
 		"source_route_id": source_route_id,
-	}))
+	}
+	for key in extra.keys():
+		payload[str(key)] = extra[key]
+	var file := FileAccess.open(PATH, FileAccess.WRITE)
+	if file == null:
+		return false
+	file.store_string(JSON.stringify(payload))
 	return true
 
-static func start_narrative_encounter(encounter_id: String, chapter_id: String, route_id: String) -> bool:
+static func start_narrative_encounter(encounter_id: String, chapter_id: String, route_id: String, extra: Dictionary = {}) -> bool:
 	if route_id == "SHARED_JOURNEY":
 		var shared_chapter_id := chapter_id.trim_prefix("shared:")
-		return start_shared_encounter(encounter_id, shared_chapter_id)
-	return start_encounter("origin", encounter_id, "", chapter_id, route_id)
+		return start_shared_encounter(encounter_id, shared_chapter_id, extra)
+	return start_encounter("origin", encounter_id, "", chapter_id, route_id, extra)
 
-static func start_shared_encounter(encounter_id: String, chapter_id: String) -> bool:
-	return start_encounter("shared", encounter_id, "", chapter_id, "SHARED_JOURNEY")
+static func start_shared_encounter(encounter_id: String, chapter_id: String, extra: Dictionary = {}) -> bool:
+	return start_encounter("shared", encounter_id, "", chapter_id, "SHARED_JOURNEY", extra)
 
 static func get_active() -> String:
 	return str(get_active_record().get("encounter_id", get_active_record().get("bounty_id", "")))
