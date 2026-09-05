@@ -184,8 +184,8 @@ func _present_current_node() -> Dictionary:
 				"target": str(node.get("target", node.get("next", ""))),
 			})
 		END:
-			pending_action = {"kind": END, "node_id": current_node_id}
-			status = "waiting"
+			pending_action = {"kind": END, "node_id": current_node_id, "sequence_id": sequence.get_id()}
+			status = "finished"
 			return pending_action.duplicate(true)
 		_:
 			return _fail("unsupported node type: %s" % kind)
