@@ -8,6 +8,7 @@ var origin := OriginRouteManager.new()
 var origin_events := OriginEventManager.new()
 var shared_events := SharedEventManager.new()
 var party := PartyManager.new()
+var event_session: NarrativeEventSession
 var title_label: Label
 var phase_label: Label
 var chapter_label: Label
@@ -25,6 +26,7 @@ func _ready() -> void:
 		get_tree().change_scene_to_file("res://ui/main_menu.tscn")
 		return
 	party.initialize_from_saved_state(narrative.state.recruited_characters, narrative.state.get_party_formation())
+	_restore_event_session()
 	_build_ui()
 	_refresh()
 
@@ -115,10 +117,21 @@ func _build_ui() -> void:
 	rule.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	right.add_child(rule)
 
+func _restore_event_session() -> void:
+	var record := BountyEncounterState.get_active_record()
+	if not record.has("event_resume"):
+		return
+	event_session = NarrativeEventSession.resume_from_battle_record(record, narrative)
+	if event_session == null:
+		phase_label = Label.new()
+
 func _current_route() -> Array:
 	return origin.get_chapters(narrative.state.starting_character)
 
 func _advance_primary() -> void:
+	if event_session != null:
+		_advance_event_session()
+		return
 	var start := narrative.state.starting_character
 	var route := origin.get_route(start)
 	if route.is_empty():
@@ -149,6 +162,52 @@ func _advance_primary() -> void:
 	narrative.save()
 	_refresh()
 
+func _advance_event_session() -> void:
+	if event_session == null:
+		return
+	var action := event_session.get_action()
+	match str(action.get("kind", "")):
+		EventRunner.DIALOGUE, EventRunner.WAIT, EventRunner.MOVE, EventRunner.REWARD, EventRunner.JUMP:
+			var next := event_session.complete_action()
+			_handle_event_action(next)
+		EventRunner.END:
+			_finish_event_session()
+		_:
+			phase_label.text = "当前剧情需要选择或完成战斗。"
+
+func _handle_event_action(action: Dictionary) -> void:
+	if action.is_empty():
+		phase_label.text = "剧情运行失败：%s" % event_session.runner.get_error()
+		return
+	if action.get("kind", "") == EventRunner.BATTLE:
+		var record := event_session.start_battle_handoff()
+		if record.is_empty():
+			phase_label.text = "战斗接管失败。"
+			return
+		if BountyEncounterState.start_encounter(
+			str(record.get("encounter_type", "shared")),
+			str(record.get("encounter_id", "")),
+			str(record.get("source_stage_id", "")),
+			str(record.get("source_chapter_id", "")),
+			str(record.get("source_route_id", "SHARED_JOURNEY")),
+			{"event_resume": record.get("event_resume", {})}
+		):
+			get_tree().change_scene_to_file("res://ui/battle_ui.tscn")
+		return
+	_refresh()
+
+func _submit_event_choice(choice_id: String) -> void:
+	if event_session == null:
+		return
+	var action := event_session.submit_choice(choice_id)
+	if action.is_empty():
+		phase_label.text = "选择无法执行：%s" % event_session.runner.get_error()
+		return
+	if narrative.save():
+		_handle_event_action(action)
+	else:
+		phase_label.text = "选择已执行，但保存失败。"
+
 func _apply_choice(choice_id: String) -> void:
 	var start := narrative.state.starting_character
 	var chapter := origin.get_current_chapter(narrative, start)
@@ -171,6 +230,14 @@ func _finish_origin() -> void:
 
 func _advance_shared() -> void:
 	var chapter_id := narrative.state.current_shared_chapter
+	if chapter_id == "SHARED-03-EAGLE-SORROW" and EventSequenceManager.has_sequence("SHARED-03-EAGLE-SORROW-SEQUENCE"):
+		if event_session == null:
+			event_session = NarrativeEventSession.new(EventSequenceManager.get_definition("SHARED-03-EAGLE-SORROW-SEQUENCE"), narrative, "SHARED")
+			_handle_event_action(event_session.start())
+		else:
+			_advance_event_session()
+		return
+
 	var chapter := SharedJourneyManager.get_chapter(chapter_id)
 	if chapter.is_empty():
 		phase_label.text = "共享旅程已完成。"
@@ -252,13 +319,88 @@ func _save() -> void:
 func _back_to_menu() -> void:
 	get_tree().change_scene_to_file("res://ui/main_menu.tscn")
 
+func _finish_event_session() -> void:
+	event_session = null
+	BountyEncounterState.clear()
+	narrative.save()
+	phase_label.text = "本段剧情完成。"
+	_refresh()
+
 func _refresh() -> void:
 	if title_label == null:
 		return
 	var start := narrative.state.starting_character
 	title_label.text = "西游 · %s" % CHARACTER_NAMES.get(start, start)
 	_clear_choices()
-	if narrative.state.route_progress.get(start, NarrativeState.ROUTE_LOCKED) == NarrativeState.ROUTE_COMPLETE:
+	if event_session != null:
+		_render_event_action(event_session.get_action())
+	else:
+		_render_route_or_shared()
+	list.clear()
+	for chapter in _current_route():
+		var id := str(chapter.get("id", ""))
+		var chapter_title := str(chapter.get("title", ""))
+		var battle_mark := " ⚔" if not str(chapter.get("encounter_id", "")).is_empty() else ""
+		var marker := "✓" if id in narrative.state.completed_chapters else "·"
+		var choice_mark := " ◆" if narrative.state.get_origin_choice(id) != "" else ""
+		list.add_item("路线 %s  %s %s%s%s" % [marker, id, chapter_title, battle_mark, choice_mark])
+	for memory_id in narrative.state.available_memory_chapters:
+		list.add_item("回忆: %s [可回忆]" % memory_id)
+	for memory_id in narrative.state.played_memory_chapters:
+		list.add_item("回忆: %s [已看]" % memory_id)
+	for shared_id in narrative.state.completed_shared_chapters:
+		list.add_item("主线 ✓ %s" % shared_id)
+	if not narrative.state.current_shared_chapter.is_empty():
+		list.add_item("主线 → %s" % narrative.state.current_shared_chapter)
+
+func _render_event_action(action: Dictionary) -> void:
+	if action.is_empty():
+		chapter_label.text = "剧情运行失败"
+		description_label.text = event_session.runner.get_error() if event_session != null else "未知错误"
+		primary_button.text = "返回"
+		primary_button.disabled = true
+		return
+	var kind := str(action.get("kind", ""))
+	chapter_label.text = "事件 · %s" % str(action.get("node_id", ""))
+	match kind:
+		EventRunner.DIALOGUE:
+			phase_label.text = "剧情对话"
+			description_label.text = "%s：%s" % [str(action.get("speaker", "")), str(action.get("text", ""))]
+			primary_button.text = "继续"
+			primary_button.disabled = false
+		EventRunner.CHOICE:
+			phase_label.text = "请选择剧情立场"
+			description_label.text = "%s\n\n%s" % [str(action.get("title", "")), str(action.get("text", ""))]
+			primary_button.text = "请选择"
+			primary_button.disabled = true
+			_render_event_choices(action)
+		EventRunner.BATTLE:
+			phase_label.text = "战斗准备"
+			description_label.text = "即将进入战斗。战斗完成后会回到本事件继续。"
+			primary_button.text = "进入战斗"
+			primary_button.disabled = false
+		EventRunner.END:
+			phase_label.text = "事件完成"
+			description_label.text = "这一段故事已经完整走完。"
+			primary_button.text = "完成"
+			primary_button.disabled = false
+		_:
+			phase_label.text = "事件进行中"
+			description_label.text = str(action)
+			primary_button.text = "继续"
+			primary_button.disabled = false
+
+func _render_event_choices(action: Dictionary) -> void:
+	for choice in action.get("choices", []):
+		var choice_id := str(choice.get("id", ""))
+		var button := Button.new()
+		button.custom_minimum_size = Vector2(0, 48)
+		button.text = str(choice.get("label", choice_id))
+		button.pressed.connect(_submit_event_choice.bind(choice_id))
+		choice_box.add_child(button)
+
+func _render_route_or_shared() -> void:
+	if narrative.state.route_progress.get(narrative.state.starting_character, NarrativeState.ROUTE_LOCKED) == NarrativeState.ROUTE_COMPLETE:
 		phase_label.text = "共享旅程 · T%04d · %s · 队伍 %d/5" % [narrative.state.current_global_timeline, narrative.state.current_shared_chapter, party.roster.size()]
 		var chapter := SharedJourneyManager.get_chapter(narrative.state.current_shared_chapter)
 		if chapter.is_empty():
@@ -283,7 +425,7 @@ func _refresh() -> void:
 				primary_button.disabled = false
 	else:
 		var chapters := _current_route()
-		var index := origin.get_current_index(narrative, start)
+		var index := origin.get_current_index(narrative, narrative.state.starting_character)
 		if index >= chapters.size():
 			chapter_label.text = "路线汇合"
 			description_label.text = "个人历史结束。下一步会将起始角色接回固定西游主线。"
@@ -305,22 +447,6 @@ func _refresh() -> void:
 			else:
 				primary_button.text = "进入个人战斗" if not str(chapter.get("encounter_id", "")).is_empty() else "完成本章"
 				primary_button.disabled = false
-	list.clear()
-	for chapter in _current_route():
-		var id := str(chapter.get("id", ""))
-		var chapter_title := str(chapter.get("title", ""))
-		var battle_mark := " ⚔" if not str(chapter.get("encounter_id", "")).is_empty() else ""
-		var marker := "✓" if id in narrative.state.completed_chapters else "·"
-		var choice_mark := " ◆" if narrative.state.get_origin_choice(id) != "" else ""
-		list.add_item("路线 %s  %s %s%s%s" % [marker, id, chapter_title, battle_mark, choice_mark])
-	for memory_id in narrative.state.available_memory_chapters:
-		list.add_item("回忆: %s [可回忆]" % memory_id)
-	for memory_id in narrative.state.played_memory_chapters:
-		list.add_item("回忆: %s [已看]" % memory_id)
-	for shared_id in narrative.state.completed_shared_chapters:
-		list.add_item("主线 ✓ %s" % shared_id)
-	if not narrative.state.current_shared_chapter.is_empty():
-		list.add_item("主线 → %s" % narrative.state.current_shared_chapter)
 
 func _clear_choices() -> void:
 	if choice_box == null:
