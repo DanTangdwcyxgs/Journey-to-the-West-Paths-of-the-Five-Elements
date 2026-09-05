@@ -48,8 +48,9 @@ func _process(delta: float) -> void:
 	dialogue_speed_accumulator += delta * DIALOGUE_CHARS_PER_SECOND
 	var target := min(dialogue_full_text.length(), dialogue_visible_characters + int(dialogue_speed_accumulator))
 	if target > dialogue_visible_characters:
+		var added := target - dialogue_visible_characters
 		dialogue_visible_characters = target
-		dialogue_speed_accumulator -= float(target - dialogue_visible_characters + (dialogue_visible_characters - target))
+		dialogue_speed_accumulator -= float(added)
 		if dialogue_text_label != null:
 			dialogue_text_label.text = dialogue_full_text.left(dialogue_visible_characters)
 	if dialogue_visible_characters >= dialogue_full_text.length():
@@ -96,7 +97,7 @@ func _build_ui() -> void:
 	description_label.custom_minimum_size = Vector2(0, 92)
 	description_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	left.add_child(description_label)
-	_dialogue_panel = PanelContainer.new()
+	dialogue_panel = PanelContainer.new()
 	dialogue_panel.name = "DialoguePanel"
 	dialogue_panel.custom_minimum_size = Vector2(0, 214)
 	var dialogue_style := StyleBoxFlat.new()
