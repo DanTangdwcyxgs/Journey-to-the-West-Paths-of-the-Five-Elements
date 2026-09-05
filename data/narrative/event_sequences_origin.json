@@ -88,6 +88,72 @@
         {"id":"after_battle","type":"dialogue","speaker":"玄奘","text":"山下这个人，也许会成为同行者。既然命运让我们相遇，我愿意先听听他的故事。","next":"finish"},
         {"id":"finish","type":"end"}
       ]
+    },
+    {
+      "id": "LONGMA-01-SEQUENCE",
+      "chapter_id": "LONGMA-01",
+      "namespace": "ORIGIN",
+      "start": "palace",
+      "nodes": [
+        {"id":"palace","type":"dialogue","speaker":"旁白","text":"西海龙宫深处，龙族少年从小被教导记住血脉与职责。可越是懂得自己是谁，越会想问自己要成为什么。","next":"finish"},
+        {"id":"finish","type":"end"}
+      ]
+    },
+    {
+      "id": "LONGMA-02-SEQUENCE",
+      "chapter_id": "LONGMA-02",
+      "namespace": "ORIGIN",
+      "start": "trial",
+      "nodes": [
+        {"id":"trial","type":"dialogue","speaker":"白龙","text":"罪责落到身上之后，龙族血脉不再像荣耀，更像一块不能逃开的石头。","next":"choice"},
+        {"id":"choice","type":"choice","event_id":"LONGMA-02","next":"battle"},
+        {"id":"battle","type":"battle","encounter_type":"origin","encounter_id":"LONGMA_ORIGIN_SEA_CLIFF","source_chapter_id":"LONGMA-02","source_route_id":"LONGMA_ORIGIN","next":"after_battle"},
+        {"id":"after_battle","type":"dialogue","speaker":"白龙","text":"至少这一次，我没有把责任推给别人。真正的担当，或许就是从这里开始。","next":"finish"},
+        {"id":"finish","type":"end"}
+      ]
+    },
+    {
+      "id": "LONGMA-03-SEQUENCE",
+      "chapter_id": "LONGMA-03",
+      "namespace": "ORIGIN",
+      "start": "ravine",
+      "nodes": [
+        {"id":"ravine","type":"dialogue","speaker":"旁白","text":"鹰愁涧的水声把旧日的龙宫隔在身后。陌生河谷里，一个取经人的脚步正在靠近新的命运。","next":"finish"},
+        {"id":"finish","type":"end"}
+      ]
+    },
+    {
+      "id": "LONGMA-04-SEQUENCE",
+      "chapter_id": "LONGMA-04",
+      "namespace": "ORIGIN",
+      "start": "oath",
+      "nodes": [
+        {"id":"oath","type":"dialogue","speaker":"白龙","text":"护送如果只是服刑，我永远只是被驱赶的坐骑。可若是我主动守护一个人，这条路就会有另一种意义。","next":"choice"},
+        {"id":"choice","type":"choice","event_id":"LONGMA-04","next":"finish"},
+        {"id":"finish","type":"end"}
+      ]
+    },
+    {
+      "id": "LONGMA-05-SEQUENCE",
+      "chapter_id": "LONGMA-05",
+      "namespace": "ORIGIN",
+      "start": "approach",
+      "nodes": [
+        {"id":"approach","type":"dialogue","speaker":"白龙","text":"取经人的气息已经进了河谷。若我要守护这条路，就不能等别人来告诉我该怎么做。","next":"battle"},
+        {"id":"battle","type":"battle","encounter_type":"origin","encounter_id":"LONGMA_ORIGIN_YINGCHOU","source_chapter_id":"LONGMA-05","source_route_id":"LONGMA_ORIGIN","next":"after_battle"},
+        {"id":"after_battle","type":"dialogue","speaker":"白龙","text":"今日我守住的不是一条河，而是一个还没来得及认识我的人。","next":"finish"},
+        {"id":"finish","type":"end"}
+      ]
+    },
+    {
+      "id": "LONGMA-06-SEQUENCE",
+      "chapter_id": "LONGMA-06",
+      "namespace": "ORIGIN",
+      "start": "change",
+      "nodes": [
+        {"id":"change","type":"dialogue","speaker":"白龙","text":"龙身留在过去，白马踏上西行路。身份可以改变，真正愿意承担的使命却要一直带在身上。","next":"finish"},
+        {"id":"finish","type":"end"}
+      ]
     }
   ]
 }
