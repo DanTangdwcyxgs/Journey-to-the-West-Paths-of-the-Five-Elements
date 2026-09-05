@@ -87,6 +87,8 @@ Implemented and connected:
 - functional Bai Longma form shift with temporary stat changes and expiry
 - recruited-party-aware battle construction
 - Yellow Wind bounty battle handoff and automatic victory reward resolution
+- shared encounter definitions for Eagle Sorrow, Gaojiazhuang and Flowing Sands
+- shared encounter CombatEngine regression coverage for weakness targeting, AI turns, defeat resolution and deterministic ally victory
 
 ## Current World Foundation
 
@@ -142,6 +144,7 @@ Implemented and connected:
 - [x] Narrative data model implementation
 - [x] Shared journey chapter data model
 - [x] Shared journey narrative event layer
+- [x] Shared encounter CombatEngine regression coverage
 - [ ] Minimal battle UI polish
 
 ### Phase 2 — Playable Vertical Slice
