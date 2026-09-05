@@ -365,6 +365,76 @@ Shared-06：
 
 ---
 
+## Round 19 — Shared-07 / Shared-08 / Shared-09 EventSequence Migration
+
+### 做了什么
+完成 Batch B 第一轮 Shared Journey 数据迁移的收尾：流沙河招募战、五人归队过场、完整西行起点全部进入统一 EventSequence。
+
+新增：
+
+- `SHARED-07-FLOWING-SANDS-SEQUENCE`
+- `SHARED-08-PARTY-FULL-SEQUENCE`
+- `SHARED-09-FULL-PILGRIMAGE-SEQUENCE`
+
+Shared-07：
+
+`river dialogue → WUJING_ENCOUNTER choice → SHARED_FLOWING_SANDS battle → after-battle dialogue → end`
+
+Shared-08：
+
+`gather dialogue → PARTY_FULL choice → oath dialogue → end`
+
+Shared-09：
+
+`departure dialogue → end`
+
+同时继续保持章节奖励唯一来源：序列本身不复制 `shared_chapters.json` 中的 chapter reward。
+
+### 为什么
+
+这一轮的重点不是再增加 Runtime 抽象，而是证明同一套数据驱动执行链可以连续覆盖整个 Shared 招募阶段：
+
+`SHARED-04 → SHARED-05 → SHARED-06 → SHARED-07 → SHARED-08 → SHARED-09`
+
+其中既包含 Battle Handoff / Resume，又包含无战斗 END completion。这样 Shared Journey 的内容层已经统一到同一个入口，后续可以把精力转向真实 Runtime 回归和 Presentation 完整化，而不是为每一章维护独立 UI 流程。
+
+### 实际修改
+
+- `data/narrative/event_sequences.json`
+- `combat/test_event_sequence_validator.gd`
+- `docs/development_log/2026-09-05-shared07-shared09-migration.md`
+- `docs/development_log/README.md`
+
+### 验证
+
+- `EventSequenceValidator`：已扩展为一次覆盖 Shared-03 至 Shared-09 七条 sequence，并继续验证故意错误 cross-reference 的拒绝。
+- GitHub commit combined status：最新测试提交检查时 `statuses: []`，未返回 workflow run；**不能声明 Godot Runtime 通过**。
+- 本地环境没有 Godot 可执行文件，因此没有本地 headless 替代结果。
+
+### 已知问题
+
+- MOVE 仍主要是逻辑 world action，没有角色路径动画；
+- WAIT 不推进独立世界时钟；
+- `BountyEncounterState` 仍是兼容 Scene Handoff 层；
+- Journey Event UI 仍是基础 presentation 壳，镜头、角色演出、音频尚未完成；
+- Origin Route 仍未迁移到 EventSequence。
+
+### 下一步
+
+下一阶段先做真实 Godot 4.5.1 Runtime 回归，重点覆盖：
+
+1. Shared-03 / 05 / 07 的 Battle → BattleUI → Resume → END；
+2. Shared-04 / 06 / 08 / 09 的 non-battle END → chapter completion / reward；
+3. Journey SceneTree 中 MOVE / WAIT / END 的实际表现。
+
+之后进入 Origin Migration，而不是继续扩张 Runtime 抽象。
+
+### 接手点
+
+下一位 Agent 先读：`docs/AI_MEMORY.md → docs/development_log/2026-09-05-shared07-shared09-migration.md → data/narrative/event_sequences.json → data/narrative/shared_chapters.json → ui/journey.gd → scripts/narrative/battle_resolution_service.gd → combat/test_event_sequence_validator.gd`。
+
+---
+
 # 4. 当前任务地图
 
 ## 已完成主干
@@ -386,36 +456,28 @@ Shared-06：
 - WorldActionService；
 - Journey 第一批 Event Presentation；
 - Shared-03 第一条真实共享 Event Sequence；
-- Shared-04 / Shared-05 / Shared-06 共享迁移内容；
+- Shared-04 / Shared-05 / Shared-06 / Shared-07 / Shared-08 / Shared-09 共享迁移内容；
 - Godot 4.5.1 headless runtime validation 基础设施。
 
 ## 当前优先顺序
 
-### P0 — 真实 SceneTree / Presentation 完整化
+### P0 — 真实 Godot Runtime / SceneTree 完整化
 
-继续让 EventSequence 在 Journey 中表现为真实的对白、选择、等待、移动反馈，并逐步增加镜头 / 角色反馈，但不能让 Presentation 接管核心剧情规则。
+先用真实 Godot 4.5.1 headless / CI 回归证明 Shared-03 至 Shared-09 的执行链，再继续增加 Presentation 的 MOVE / WAIT / END / Battle transition 反馈。绝不把静态检查当 Runtime 通过。
 
-### P1 — Shared Journey Migration
+### P1 — Origin Migration
 
-已完成：`SHARED-04 → SHARED-05 → SHARED-06`。
+Shared Journey 迁移主体已完成，下一阶段按角色逐步把 Origin Route 事件迁移到 EventSequence，不改变固定全球时间线与经典招募节点。
 
-下一步：`SHARED-07 → SHARED-08 → SHARED-09`。
-
-每迁移一条：数据 → Runtime → Presentation → 回归 → development log → AI_MEMORY → 真实 Godot Runtime 状态。
-
-### P2 — Origin Migration
-
-五条 Origin Route 分角色逐步迁移，不能破坏固定全球时间线。
-
-### P3 — Cleanup / Convergence
+### P2 — Cleanup / Convergence
 
 清理旧 BattleUI 结算职责，逐步把 `BountyEncounterState` 收敛成通用 Scene Handoff Service，并提高 Sequence cross-reference validation。
 
-### P4 — Camp / Relationship
+### P3 — Camp / Relationship
 
-等叙事链稳定后进入 Camp / Relationship Prototype。
+等叙事链和第一 Vertical Slice 稳定后进入 Camp / Relationship Prototype。
 
-### P5 — Vertical Slice
+### P4 — Vertical Slice
 
 目标 Vertical Slice：`一个完整角色起始路线 → 五行山 → 鹰愁涧 → 招募后 Memory`。
 
