@@ -13,19 +13,6 @@ const CHOICE_IDS := {
 	"WUK-13": "ENDURE",
 }
 
-const BATTLE_REWARDS := {
-	"WUKONG_ORIGIN_WATER_CAVE": ["COIN_LOW", "HERB"],
-	"WUKONG_ORIGIN_DRAGON_PALACE": ["COIN_LOW", "HERB"],
-	"WUKONG_ORIGIN_HEAVENLY_TROOPS": ["COIN_MEDIUM", "HERB"],
-	"WUKONG_ORIGIN_ERLANG_SHEN": ["COIN_MEDIUM", "HERB"],
-	"WUKONG_ORIGIN_HEAVEN_PALACE": ["COIN_MEDIUM", "HERB"],
-}
-
-const BATTLE_EFFECTS := {
-	"WUKONG_ORIGIN_ERLANG_SHEN": ["WUKONG_MET_ERLANG_SHEN"],
-	"WUKONG_ORIGIN_HEAVEN_PALACE": ["WUKONG_HEAVEN_REBELLION"],
-}
-
 static func run_all() -> Dictionary:
 	var manager := NarrativeManager.new()
 	assert(manager.start_new_game("WUKONG"), "Wukong route should start")
@@ -38,8 +25,8 @@ static func run_all() -> Dictionary:
 
 		var sequence_id := "%s-SEQUENCE" % chapter_id
 		var definition := EventSequenceManager.get_definition(sequence_id)
-		assert(definition != null, "%s sequence should load" % sequence_id)
-		assert(definition.validate().get("valid", false), "%s sequence should validate" % sequence_id)
+		assert(definition != null, "%s sequence should load" % chapter_id)
+		assert(definition.validate().get("valid", false), "%s sequence should validate" % chapter_id)
 
 		var runner := EventRunner.new(definition, manager, "ORIGIN")
 		var action := runner.start()
@@ -61,9 +48,11 @@ static func run_all() -> Dictionary:
 					var encounter_id := str(handoff.get("encounter_id", ""))
 					assert(encounter_id != "", "%s battle handoff needs encounter id" % chapter_id)
 					assert(str(handoff.get("source_chapter_id", "")) == chapter_id, "%s battle source chapter must match current chapter" % chapter_id)
-					var rewards: Array = BATTLE_REWARDS.get(encounter_id, [])
-					assert(not rewards.is_empty(), "%s battle rewards must be declared" % encounter_id)
-					var effects: Array = BATTLE_EFFECTS.get(encounter_id, [])
+					var encounter_definition := encounter_manager.get_definition(encounter_id)
+					assert(not encounter_definition.is_empty(), "%s encounter definition should load" % encounter_id)
+					var rewards: Array = encounter_definition.get("rewards", []).duplicate(true)
+					var effects: Array = encounter_definition.get("world_effects", []).duplicate(true)
+					assert(not rewards.is_empty(), "%s battle should have production rewards" % encounter_id)
 					var resolved := BattleResolutionService.resolve_narrative_victory(
 						manager,
 						"origin",
@@ -71,7 +60,7 @@ static func run_all() -> Dictionary:
 						str(handoff.get("source_stage_id", "")),
 						chapter_id,
 						str(handoff.get("source_route_id", "")),
-						str(encounter_id),
+						encounter_definition.get("name", encounter_id),
 						rewards,
 						effects,
 						encounter_manager
