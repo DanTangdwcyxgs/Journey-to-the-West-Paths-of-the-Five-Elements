@@ -46,7 +46,7 @@
 - 保留原有叙事、选项、战斗接管、共享主线、存档和队伍逻辑。
 - `ui/visual_overlay.gd` 同步调整：进入个人序章时不再把五人横排在画面中，而是突出当前起始角色的大像素立绘，并加入地面阴影和少量场景地标；进入共享旅途后才恢复五人队伍构图。
 - 新提交：`b24c93787848bf6bb148e96de75eff908b7ace9b`（`ui: rebuild opening journey scene as jrpg dialogue screen`）。
-- 新提交：`c766f5e49e02e5d5f5f9c261dcc01741c612c49f`（`ui: make journey origin scene character-focused`）。
+- 新提交：`c766f5e49e02e5d5f9c261dcc01741c612c49f`（`ui: make journey origin scene character-focused`）。
 
 ### 当前验收状态
 - Web Demo run #45 已针对 `c766f5e...` 自动触发，目前状态为 queued，尚未得到最终 conclusion；因此不能宣称 Web 已部署完成。
@@ -75,7 +75,7 @@
 - Web Demo #57：Build Web Demo 的导入、runtime suite、Web export、landing page、GitHub Pages、artifact upload 全部 SUCCESS；Deploy Web Demo 最终状态需要以该 run 的最终结论为准。
 
 ### 当前稳定基线
-- 当前核心代码基线：`8669c69737e7937a36167966a2b1d3abff3ebee9`。
+- 当前核心代码基线（本批次结束时）：`8669c69737e7937a36167966a2b1d3abff3ebee9`。
 - 全项目长期视觉规范已改为“参考图式硬朗 2D 像素 JRPG HUD”；后续所有新页面、新面板、新敌人状态框都必须沿用这一规范。
 - 允许各页面在信息结构上不同，但框体几何、描边语言、色彩层级、像素密度、状态条风格必须统一。
 
@@ -101,22 +101,37 @@
 
 ### 本轮新增
 - 新增 `scripts/presentation/art_asset_catalog.gd`：统一登记角色与场景资源，提供 `character_texture()` / `scene_texture()` 等访问接口。
-- `ui/visual_overlay.gd` 已改为通过 `ArtAssetCatalog` 读取资源，不再把具体文件路径散落在场景表现代码里。
+- `ArtAssetCatalog` 当前支持最终 PNG/WebP 优先、现有 SVG fallback；缺少最终美术时仍能运行。
+- `ui/character_portrait.gd` 已实际接入 `ArtAssetCatalog`，因此肖像可以直接通过新增最终图片替换。
+- `ui/visual_overlay.gd` 当前仍保留自己的路径表；尚未完全迁移到 `ArtAssetCatalog`，后续再单独收口，避免在本批次制造大范围风险。
 - 新增 `docs/visual_reference/AI_ASSET_PIPELINE.md`：明确 AI 美术资源的尺寸、透明背景、轮廓、像素化、角色识别点、场景留白、HUD 禁区和换图流程。
+- 新增 `docs/visual_reference/AI_ASSET_DELIVERY_SPEC.md`：进一步定义 Gemini Banana / 其他图像模型的角色、场景、VFX、动画素材交付格式、命名和质量门槛。
 - 新增 `combat/test_art_asset_catalog.gd`，并加入 `tests/runtime_suite.gd`，用于在换图后自动检查所有登记资源是否仍可加载。
 
-### 当前原则
-- 游戏逻辑与美术彻底解耦：Domain / Narrative / World / Save / Presentation Layout 是代码职责；角色图、场景图、特效图由资源生产工具负责。
-- 当前 SVG 仍是可运行占位资源，不代表最终美术完成度。
-- Gemini Banana 生成的 PNG/WebP 可以在不修改剧情和战斗代码的情况下替换；必要时只需要更新 `ArtAssetCatalog` 的资源路径或文件。
+### 本批次技术方案
+- 采用“玩法程序先行 + AI 美术后置替换”的生产策略。
+- Domain / Narrative / World / Save / Presentation Layout 是程序职责。
+- 角色图、场景图、怪物图、道具图、VFX、动画帧属于可替换 Presentation Assets。
+- 程序通过 Asset Catalog 接受最终美术；AI 出图不应直接改变剧情、战斗和存档逻辑。
+- 最终目标是先得到一套可玩的游戏，再逐批把占位 SVG 替换成高质量 PNG/WebP。
 
-### 接下来推荐
-- 优先继续清理非图片技术债：RewardService、WorldActionService、Scene Handoff、Save/Resume、Camp/Relationship、Vertical Slice。
-- 美术随后按 `AI_ASSET_PIPELINE.md` 分批替换。
-- 每次重要工程批次仍需实际跑 Godot Runtime / Web CI，并更新本文件。
+### 下一步技术优先级
+1. 继续清理非图片技术债，并把已有服务真正收口到统一入口。
+2. 完善 Event UI / Presentation：对白、选择、等待、移动反馈、战斗返回。
+3. 完善第一条完整 Vertical Slice：五行山 → 鹰愁涧 → 白龙马加入 → 黑风山 → 黄风岭 → 黄风洞 → 黄风妖王 → 善后。
+4. 完善 Camp / Relationship 等长期系统。
+5. 在上述代码接口稳定后，再批量替换最终 AI 美术资源。
+
+### 当前 CI 状态
+- 最近一轮代码修改之后 GitHub Actions 已自动触发新的 Runtime / Web 流程；未拿到最终 conclusion 前，不宣称最新批次已经验证或部署完成。
+
+### 当前稳定工作原则
+- 一屏一验收仍然适用于视觉页面；工程基础系统可以连续开发，但不得借工程改动绕过用户视觉验收。
+- 每个工作会话都必须继续更新本文件，记录实际 commit、测试结果、当前阻塞和后续接手位置。
 
 ### 后续模型接手注意
 - 不要重新采用“圆头 + 方身体 + 简单线条”的程序人物。
 - 不要把“有 SVG 资源”直接等同于“美术完成”；仍需检查画面构图、缩放、遮挡层级、角色比例、UI 占比和可玩感。
 - 用户希望程序持续直接修改 GitHub 仓库、测试并提交，不要反复询问已经明确的目标。
-- 每个工作会话都必须把实际改动、测试、当前 commit、未完成事项和下一步写入本文件。
+- 用户可以使用 Gemini Banana 等工具生成最终美术；程序必须保持对图片资源的解耦。
+- 用户强调每一次工作和方案都要写入 GitHub 的记忆文件，确保后续工作模型可以无缝接手。
