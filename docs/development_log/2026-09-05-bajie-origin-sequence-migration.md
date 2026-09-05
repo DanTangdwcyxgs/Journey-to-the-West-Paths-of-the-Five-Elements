@@ -55,7 +55,9 @@
 
 ## Godot Runtime
 
-本批最后一次提交触发的 Godot Runtime workflow 当前仍在执行，不能提前声明通过。此前 head `91412a892a3093d2aded4f1e540c71e69692bc36` 的 Godot Runtime #152 已成功；本批新增内容必须以新的 workflow 结果为准。
+Godot Runtime #156 已完成并 **success**。本批新增的 Bajie Sequence、progression regression、runtime suite 集成均通过；workflow 的 Import、signature parser、EventRuntime、EventRunner、headless runtime suite 全部成功。
+
+此前 head `91412a892a3093d2aded4f1e540c71e69692bc36` 的 Godot Runtime #152 也已成功。
 
 ## Known issues
 
@@ -65,7 +67,7 @@
 
 ## Next step
 
-先确认本批 Godot Runtime 全绿；若通过，继续迁移 `WUJING-01` 到 `WUJING-08`，并在完成五条 Origin migration 后统一检查五路线的 cross-reference、SceneTree bridge 与共享时间线 handoff。
+继续迁移 `WUJING-01` 到 `WUJING-08`，这是最后一条尚未进入统一 route-specific EventSequence 的完整 Origin 路线。完成后统一检查五路线的 cross-reference、SceneTree bridge 与共享时间线 handoff。
 
 ## Handoff point
 
