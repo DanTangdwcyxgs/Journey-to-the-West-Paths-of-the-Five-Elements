@@ -98,7 +98,7 @@ func _refresh() -> void:
 
 func _render_stage(stage_id: String) -> void:
 	for child in action_box.get_children(): child.queue_free()
-	var stage := ridge.get_stage(stage_id)
+	var stage: Dictionary = ridge.get_stage(stage_id)
 	if stage.is_empty():
 		detail_label.text = "黄风岭的道路已经走完。"
 		return
