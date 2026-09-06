@@ -26,4 +26,6 @@ func _build_ui() -> void:
 func _rest() -> void:
 	var result := CampService.rest(narrative)
 	if result.get("ok", false):
-		status.text = "队伍已完成休整：%d 名当前队员。\n世界时间仍为 T%04d。" % [int(result.get("members_restored", 0)), narrative.state.current_global_timeline]
+		status.text = "队伍已完成休整：%d 名当前队员。\n世界时间仍为 T%04d。" % [int(result.get("members_present", 0)), narrative.state.current_global_timeline]
+	else:
+		status.text = "休整记录失败。"
