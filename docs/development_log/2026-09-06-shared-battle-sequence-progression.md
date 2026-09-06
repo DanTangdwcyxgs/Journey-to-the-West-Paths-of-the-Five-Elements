@@ -1,10 +1,10 @@
 # 2026-09-06 · Shared Battle Sequence Progression
 
 ## Session intent
-Continue the JRPG Vertical Slice from the verified baseline, record every change in a fresh session document, and fix the next gameplay-critical progression gap before adding more content.
+Continue the JRPG Vertical Slice from the verified baseline, record every change in a fresh session document, and fix the next gameplay-critical defect without introducing speculative changes.
 
 ## Verified starting point
-- Latest relevant code head: `259ac91dc94d937dcf32a31039d2eaa9d15e7019`.
+- Latest code head before this session: `259ac91dc94d937dcf32a31039d2eaa9d15e7019`.
 - Godot Runtime #273 for `47a3d3d2c06e428100090f21ce52f0b98009b749`: SUCCESS.
 - Web Demo #76 for `259ac91dc94d937dcf32a31039d2eaa9d15e7019`: SUCCESS.
 - Repository tree confirms the project already contains the event-sequence runtime, shared journey manager, shared chapter data, battle bridge, camp/inventory services, and the visual asset catalog.
@@ -18,33 +18,55 @@ Reviewed:
 - `scripts/narrative/event_sequence_manager.gd`
 - `scripts/narrative/shared_journey_manager.gd`
 - `scripts/narrative/narrative_manager.gd`
+- `scripts/world/battle_resolution_service.gd`
+- `scripts/items/camp_service.gd`
+- `ui/camp.gd`
 - `data/narrative/shared_chapters.json`
 - `data/narrative/event_sequences.json`
 - `combat/test_shared_event_sequences.gd`
 - `combat/test_journey_event_presentation.gd`
+- `tests/runtime_suite.gd`
 
-## Finding
-`JourneyScreen._finish_event_session()` only called `SharedJourneyManager.complete()` when the finished sequence contained **no battle**. That condition was incorrect.
+## Investigation result: shared battle progression
+An apparent concern was found in `JourneyScreen._finish_event_session()`, which only performs shared-chapter completion for sequences without battle nodes.
 
-The canonical shared progression service already knows how to complete both combat and non-combat chapters. For combat chapters it requires the corresponding `SHARED_BATTLE_<encounter_id>` milestone, and then applies chapter completion, recruitment, world effects and the next chapter. Therefore the presentation layer should not suppress chapter completion merely because the sequence contained a battle.
+After tracing the actual battle path through `BattleResolutionService`, this was confirmed to be intentional and currently correct: when a shared battle is won, `BattleResolutionService.resolve_narrative_victory()` records the `SHARED_BATTLE_<encounter_id>` milestone and immediately calls `SharedJourneyManager.complete(source_chapter_id, manager, false)`. The battle-containing event sequence therefore does not need to complete the chapter a second time at the UI END node.
 
-This specifically affected the production sequences for:
-- `SHARED-03-EAGLE-SORROW-SEQUENCE`
-- `SHARED-05-GAOJIAZHUANG-SEQUENCE`
-- `SHARED-07-FLOWING-SANDS-SEQUENCE`
+Conclusion: **do not change the shared battle completion condition**. No speculative fix was committed here.
 
-## Change to make
-1. Change Journey sequence completion policy from "shared + no battle" to "shared + matching current shared chapter".
-2. Keep origin sequences out of shared chapter completion.
-3. Add an integration regression in the Journey presentation test that executes a real shared battle sequence through battle resolution and then invokes `_finish_event_session()`.
-4. Assert the shared chapter advances and the recruitment side effect is applied.
-5. Run Godot Runtime and Web Demo again.
+## Actual defect found
+`CampService.rest()` returns the count under `members_present`, but `ui/camp.gd` displayed `result["members_restored"]`. Successful camp rest therefore rendered an incorrect `0` member status despite the service returning the correct party count.
+
+The camp service also explicitly defines rest as a journey-log operation that does not advance chronology; the current prototype does not persist combat HP between scenes. The fix therefore stays within the existing contract instead of inventing a new HP persistence system.
+
+## Implementation
+### 1. Camp UI contract fix
+Updated `ui/camp.gd` to display `members_present` and added a failure status when the service returns an unsuccessful result.
+
+### 2. Regression coverage
+Added `combat/test_camp_service.gd` to verify:
+- rest succeeds;
+- the returned party count is correct;
+- global timeline does not advance;
+- a CAMP journey-log entry is recorded;
+- the recorded party count matches the active formation.
+
+### 3. Runtime registration
+Added `test_camp_service.gd` to `tests/runtime_suite.gd`, increasing the suite by one test.
+
+## Commits
+- `d2536919a910d21d6561140d6cbfcf0f4313a002` — session log created.
+- `2e9ed038bd35417d954842079cf0f114d3592a66` — align camp UI with rest service contract.
+- `e9fed4ac49f158d8d63e9b7d84d6077549acd08b` — add CampService regression test.
+- `25d46178e7e8e074693189abcd25e0fc33a67876` — register camp regression in runtime suite.
+
+## Verification status
+New head: `25d46178e7e8e074693189abcd25e0fc33a67876`.
+
+GitHub Actions has been triggered by the latest runtime-suite change. Final results for this head will be recorded below after the runs complete.
 
 ## Scope guard
-No visual screen or AI art is being changed. This is a gameplay progression fix and remains compatible with the one-screen visual acceptance rule.
+No visual screen redesign and no AI-art production work were introduced. This remains a gameplay/service contract fix and preserves the program-first, art-later architecture.
 
-## Status at session start
-- Investigation: complete.
-- Implementation: pending.
-- Regression: pending.
-- CI: pending.
+## Next development target
+After CI verification, continue the Vertical Slice into the next player-visible gameplay loop rather than adding more isolated infrastructure: ensure the battle → reward → party state → camp/rest → next journey transition is cohesive and demonstrable end-to-end.
