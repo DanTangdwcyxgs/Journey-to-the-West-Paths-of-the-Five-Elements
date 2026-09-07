@@ -13,14 +13,14 @@ static func run_all() -> Dictionary:
 		"back_row": ["WUKONG"],
 	})
 
-	var before_timeline := manager.state.current_global_timeline
-	var before_entries := manager.state.get_journey_log().get("entries", []).size()
-	var result := CampService.rest(manager)
+	var before_timeline: int = manager.state.current_global_timeline
+	var before_entries: int = manager.state.get_journey_log().get("entries", []).size()
+	var result: Dictionary = CampService.rest(manager)
 
 	assert(result.get("ok", false))
 	assert(int(result.get("members_present", -1)) == 2)
 	assert(manager.state.current_global_timeline == before_timeline)
-	var entries := manager.state.get_journey_log().get("entries", [])
+	var entries: Array = manager.state.get_journey_log().get("entries", [])
 	assert(entries.size() == before_entries + 1)
 	var last_entry: Dictionary = entries.back()
 	assert(str(last_entry.get("type", "")) == "CAMP")
