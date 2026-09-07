@@ -17,13 +17,22 @@ Reviewed the battle/reward boundary and confirmed:
 - The current CampService contract remains intentionally lightweight: camp records a journey-log entry and preserves chronology; combat HP is transient in the prototype.
 
 ## Implementation
-1. Corrected the camp regression test's GDScript typing so Variant-returning values are explicitly typed.
-2. Keep the gameplay contract unchanged; this is a CI/test correctness fix, not a speculative system rewrite.
-3. Re-run the runtime suite through GitHub Actions after the fix.
+1. Corrected `combat/test_camp_service.gd` so values returned as Variant are explicitly typed. This directly addresses the Runtime #279 parse failure.
+2. Added `combat/test_battle_party_camp_loop.gd`, an end-to-end service regression covering: shared battle victory → reward persistence → Longma recruitment → shared chapter advancement → three-person party formation → camp record without timeline advancement.
+3. Registered the new regression in `tests/runtime_suite.gd`.
+4. No gameplay contract or visual screen was changed; the work strengthens the verified service boundary before moving into the next player-facing loop.
+
+## Commits
+- `738611c16472219203f4d37c1130e19f2405b04f` — create this session log.
+- `80776cdb431e681840b9b347836ca4fd71493019` — fix camp regression Variant typing.
+- `d0b4e8226baecc2c6c9c6bdf019ca6b60976fbd3` — add battle → party → camp end-to-end regression.
+- `8105074fff14c8a0831d85d10fc734a396666fa5` — correct new regression's `set_shared_chapter` typing/return contract.
+- `d11d8062736925fd6c15022188492a4dc33c247f` — register the end-to-end regression in the runtime suite.
+
+## Verification
+- Runtime #279 (previous head): FAILED specifically because `test_camp_service.gd` could not parse under warning-as-error rules; all earlier listed tests passed before that failure.
+- Web Demo #83 was triggered for `80776cdb431e681840b9b347836ca4fd71493019` and was still in progress when checked.
+- The latest head is `d11d8062736925fd6c15022188492a4dc33c247f`; its new Actions run had not appeared in the API yet at the time of this log update, so it is **pending verification**. Do not claim green CI yet.
 
 ## Next target after green CI
 If the corrected suite is green, inspect whether the player-facing battle victory state communicates reward and next-step transition cleanly. Do not redesign a visual screen in this engineering pass; preserve the one-screen-at-a-time visual acceptance rule.
-
-## Verification
-- Previous Runtime #279: FAILED because `test_camp_service.gd` had Variant type-inference parse errors.
-- New verification run will be recorded below after completion.
