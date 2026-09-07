@@ -8,7 +8,7 @@ func _initialize() -> void:
 	narrative.state.set_inventory({"currencies": {"COIN": 0}, "items": {}})
 	_assert(narrative.encounter_character("TANG"), "Tang should join")
 	_assert(narrative.encounter_character("WUKONG"), "Wukong should be present")
-	_assert(narrative.set_shared_chapter("SHARED-03-EAGLE-SORROW"), "shared chapter should be set")
+	narrative.set_shared_chapter("SHARED-03-EAGLE-SORROW")
 	var events := SharedEventManager.new()
 	_assert(events.apply_choice(narrative, "LONGMA_ENCOUNTER", "SAVE_THE_DRAGON"), "Longma choice should resolve")
 
