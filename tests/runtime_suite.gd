@@ -118,6 +118,7 @@ func _init() -> void:
 			continue
 
 		var in_quarantine: bool = QUARANTINE.has(path)
+		print("RUN   %s" % path)
 		var result := _run_file(path)
 		total_checks += int(result.get("checks", 0))
 		var ok: bool = bool(result.get("ok", false))
@@ -208,6 +209,9 @@ func _run_isolated(path: String, checks: int, scr) -> Dictionary:
 
 	var args := PackedStringArray([
 		"--headless",
+		# 兜底：子进程最多跑 300 次主循环迭代后自行退出。
+		# 遗留测试里有些文件既不 quit() 也没有退出路径，没有它就会把 CI 挂到超时。
+		"--quit-after", "300",
 		"--path", ProjectSettings.globalize_path("res://"),
 		"--script", path if is_main_loop_script else CASE_RUNNER,
 	])
@@ -227,9 +231,14 @@ func _run_isolated(path: String, checks: int, scr) -> Dictionary:
 		text += str(chunk)
 
 	var ok := exit_code == 0
-	if ok and not is_main_loop_script:
-		# 断言式测试失败时 Godot 不一定返回非零退出码，靠 case_runner 的标记判断
-		ok = text.find("CASE_RUNNER_RESULT ok=1") != -1
+	if ok:
+		# 只看退出码不够：若子进程被 --quit-after 强制结束（测试挂死或提前退出），
+		# 退出码同样可能是 0。因此 SceneTree 测试要求输出里有 PASSED（仓库既有约定），
+		# 其它测试要求 case_runner 打印的机器可读标记。
+		if is_main_loop_script:
+			ok = text.find("PASSED") != -1
+		else:
+			ok = text.find("CASE_RUNNER_RESULT ok=1") != -1
 	if ok:
 		for marker in ERROR_MARKERS:
 			if text.find(str(marker)) != -1:
