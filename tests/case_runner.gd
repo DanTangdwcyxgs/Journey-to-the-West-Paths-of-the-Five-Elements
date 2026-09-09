@@ -39,28 +39,37 @@ func _initialize() -> void:
 	_target = _find_target()
 	if _target.is_empty():
 		_detail = "未收到目标测试路径（命令行参数解析失败）"
+		_finish()
 		return
 	var scr = load(_target)
 	if scr == null:
 		_detail = "目标脚本加载失败：" + _target
+		_finish()
 		return
 	var outcome: Array = _invoke(scr)
 	_ok = bool(outcome[0])
 	_detail = str(outcome[1])
-	_finished = true
+	_finish()
 
 
 func _process(_delta: float) -> bool:
 	_frames += 1
-	# 兜底：即使 _initialize 因运行时错误中断（此时 _finished 仍为 false），
-	# 也要在 MAX_FRAMES 帧内退出，绝不能让子进程挂死把 CI 拖到超时。
-	if not _finished and _frames < MAX_FRAMES:
-		return false
+	# 兜底：如果 _initialize 因运行时错误中途中断（此时 _finish 没被调用），
+	# 也要在 MAX_FRAMES 帧内退出，不能让子进程挂死把 CI 拖到超时。
+	if _finished or _frames >= MAX_FRAMES:
+		_finish()
+		return true
+	return false
+
+
+func _finish() -> void:
+	if _finished:
+		return
+	_finished = true
 	print("CASE_RUNNER_RESULT ok=%d target=%s source=%s detail=%s" % [
 		1 if _ok else 0, _target, _target_source, _detail,
 	])
 	quit(0 if _ok else 1)
-	return true
 
 
 func _find_target() -> String:
