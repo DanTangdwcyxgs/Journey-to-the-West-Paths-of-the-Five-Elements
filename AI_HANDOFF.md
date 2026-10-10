@@ -320,9 +320,7 @@ Runner 输出的 `battle` 只生成 `EncounterHandoff` 数据，不直接启动 
 - EventRunner graph / choice / battle resume / END：通过
 - NarrativeEventSession handoff / resume：已加入 suite
 
-最近一轮已知成功 CI：Godot Runtime #156，head commit `44433ae8fb1296744283e397e26360e52cb38710`。
-
-当前 Wujing 批次对应的 `Godot Runtime #162` 已触发，正在等待最终结果；在结论出来之前，不把本批次称为“Godot Runtime 已通过”。
+历史 CI 编号 #156 / #162 属于早期快照，不代表当前 main 的状态。较新的 `docs/development_log/2026-09-07-battle-reward-party-loop.md` 记录了 Runtime #279 的旧 head 失败及修复后的待验证状态；开始新工作时必须针对最新提交 SHA 检查 Actions，不能把历史成功记录当作当前通过证明。
 
 不要把“代码看起来正确”写成“Godot Runtime 已通过”；必须以实际 CI 结果为准。
 
@@ -415,3 +413,19 @@ Runner 输出的 `battle` 只生成 `EncounterHandoff` 数据，不直接启动 
 - 若 #162 通过：立刻进入五路线统一 regression，不再新增第六条独立 Origin Route。
 - 统一检查 Wukong / Tang / Longma / Bajie / Wujing 五条 Route 的 sequence catalog、choice/battle cross-reference、route isolation、Save/Resume、Origin → Shared handoff。
 - 随后把 Shared Journey 迁移作为下一大内容批次。
+
+
+## 15. 2026-10-10 Battle Victory Feedback Snapshot
+
+### Current batch
+- Battle victory feedback now has a dedicated presentation lock so a post-combat refresh cannot replace the result summary.
+- The summary surfaces outcome, rewards, and a next-step instruction; the return button label now reflects the next destination.
+- `NarrativeBattleUI` distinguishes successful EventSession battle resume from a general return to the Origin / Shared route.
+- `combat/test_shared_battle_journey_bridge.gd` asserts these behaviors across Eagle Sorrow, Gaojiazhuang, and Flowing Sands.
+
+### Validation gate
+- The implementation commit triggers the Godot Runtime workflow.
+- Until the workflow result is checked for the exact commit SHA, runtime status is **pending**. Static review does not count as a Godot Runtime pass.
+
+### Next handoff
+After confirming the current Runtime result, continue with one Journey presentation improvement at a time, starting with MOVE / WAIT feedback. Do not add core narrative rules to Presentation or move side effects into EventRunner.

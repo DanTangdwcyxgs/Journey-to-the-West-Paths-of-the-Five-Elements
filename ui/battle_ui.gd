@@ -23,6 +23,7 @@ var skill_box: VBoxContainer
 var item_box: VBoxContainer
 var party_list: ItemList
 var log_box: RichTextLabel
+var return_button: Button
 var encounter_type := "bounty"
 var encounter_id := ""
 var source_stage_id := ""
@@ -30,6 +31,7 @@ var source_chapter_id := ""
 var source_route_id := ""
 var bounty_manager := BountyManager.new()
 var encounter_resolved := false
+var battle_result_locked := false
 var item_catalog: Dictionary = {}
 var battle_inventory := InventoryManager.new()
 var loadout := LoadoutManager.new()
@@ -115,10 +117,10 @@ func _build_ui() -> void:
 	var bottom := HBoxContainer.new(); root.add_child(bottom)
 	var boost := Button.new(); boost.text = "Boost ×"; boost.pressed.connect(_boost_selected); bottom.add_child(boost)
 	var end := Button.new(); end.text = "结束回合"; end.pressed.connect(_end_turn); bottom.add_child(end)
-	var exit := Button.new(); exit.text = "返回"; exit.pressed.connect(_return_from_battle); bottom.add_child(exit)
+	return_button = Button.new(); return_button.text = "返回"; return_button.pressed.connect(_return_from_battle); bottom.add_child(return_button)
 
 func _refresh() -> void:
-	if current_actor == null: return
+	if current_actor == null or battle_result_locked: return
 	var encounter_title := "普通遭遇：%s" % encounter_id
 	if encounter_type == "origin": encounter_title = "个人战斗：%s" % encounter_id
 	elif encounter_type == "shared": encounter_title = "共享主线：%s" % encounter_id
@@ -233,6 +235,7 @@ func _on_combat_log(message:String) -> void:
 
 func _on_combat_finished(winner:String) -> void:
 	if encounter_resolved: return
+	battle_result_locked = true
 	var narrative := NarrativeManager.new()
 	if winner != "allies":
 		status_label.text = "战斗失败。可以返回重新准备。"
@@ -284,9 +287,11 @@ func _on_combat_finished(winner:String) -> void:
 		narrative.save()
 		BountyEncounterState.clear()
 		encounter_resolved = true
-		if encounter_type == "origin": status_label.text = "个人章节完成：%s · 获得 %s" % [str(definition.get("name", encounter_id)),_format_rewards(applied.get("granted", []))]
-		elif encounter_type == "shared": status_label.text = "共享章节完成：%s · 获得 %s" % [str(definition.get("name", encounter_id)),_format_rewards(applied.get("granted", []))]
-		else: status_label.text = "遭遇胜利：%s · 获得 %s" % [str(definition.get("name", encounter_id)),_format_rewards(applied.get("granted", []))]
+		var next_step := _get_victory_next_step()
+		var continue_text := _get_victory_button_text()
+		if encounter_type == "origin": _show_victory_summary("个人章节完成", str(definition.get("name", encounter_id)), applied.get("granted", []), next_step, continue_text)
+		elif encounter_type == "shared": _show_victory_summary("共享章节完成", str(definition.get("name", encounter_id)), applied.get("granted", []), next_step, continue_text)
+		else: _show_victory_summary("遭遇胜利", str(definition.get("name", encounter_id)), applied.get("granted", []), next_step, continue_text)
 	else:
 		narrative.state.set_inventory(battle_inventory.to_dict())
 		var applied := BountyRewardService.resolve_defeat(narrative,bounty_manager,encounter_id)
@@ -299,7 +304,34 @@ func _on_combat_finished(winner:String) -> void:
 			ridge.complete_stage(narrative, source_stage_id)
 		narrative.save()
 		encounter_resolved = true
-		status_label.text = "悬赏完成：%s · 奖励 %s" % [str(applied.get("target_name",encounter_id)),_format_rewards(applied.get("applied",{}).get("granted",[]))]
+		_show_victory_summary("悬赏完成", str(applied.get("target_name",encounter_id)), applied.get("applied",{}).get("granted",[]), _get_victory_next_step(), _get_victory_button_text())
+
+func _show_victory_summary(result_title: String, target_name: String, rewards: Array, next_step: String, continue_text: String) -> void:
+	if turn_label != null:
+		turn_label.text = "战斗结束 · 胜利"
+	if status_label != null:
+		status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		status_label.text = "%s：%s\n奖励：%s\n下一步：%s" % [result_title, target_name, _format_rewards(rewards), next_step]
+	if return_button != null:
+		return_button.text = continue_text
+
+func _get_victory_next_step() -> String:
+	if encounter_type == "origin":
+		return "返回旅途，继续个人路线。"
+	if encounter_type == "shared":
+		return "返回旅途，继续共享主线。"
+	if encounter_type == "normal" and not source_stage_id.is_empty():
+		return "返回黄风洞，继续探索。"
+	if encounter_type == "bounty" and not source_stage_id.is_empty():
+		return "返回黄风洞，查看探索进度。"
+	return "返回世界地图，继续旅途。"
+
+func _get_victory_button_text() -> String:
+	if (encounter_type == "normal" or encounter_type == "bounty") and not source_stage_id.is_empty():
+		return "继续探索"
+	if encounter_type == "origin" or encounter_type == "shared":
+		return "继续旅途"
+	return "返回地图"
 
 func _format_rewards(rewards:Array) -> String:
 	if rewards.is_empty(): return "无"

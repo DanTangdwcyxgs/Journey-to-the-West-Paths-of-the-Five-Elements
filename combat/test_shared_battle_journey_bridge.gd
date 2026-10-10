@@ -107,6 +107,12 @@ func _run_bridge(narrative: NarrativeManager, spec: Dictionary) -> bool:
 	await process_frame
 	_assert(battle_ui.encounter_resolved, "%s BattleUI should atomically resolve victory" % chapter_id)
 	_assert(str(battle_ui.status_label.text).find("共享章节完成") >= 0, "%s BattleUI should report shared completion" % chapter_id)
+	var victory_summary := battle_ui.status_label.text
+	_assert(victory_summary.find("奖励：") >= 0, "%s victory summary should show rewards" % chapter_id)
+	_assert(victory_summary.find("下一步：返回旅途，继续战后剧情。") >= 0, "%s victory summary should explain the story continuation" % chapter_id)
+	_assert(battle_ui.return_button != null and battle_ui.return_button.text == "继续旅途", "%s return button should communicate the next scene" % chapter_id)
+	battle_ui.call("_refresh")
+	_assert(battle_ui.status_label.text == victory_summary, "%s refresh must not overwrite the result summary" % chapter_id)
 	battle_ui.queue_free()
 	await process_frame
 

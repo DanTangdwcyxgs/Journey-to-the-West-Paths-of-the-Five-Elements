@@ -195,6 +195,16 @@ Wukong progression 修正后的完整 Runtime 已成功通过上一轮验证；�
 
 截至当前最后检查，包含 Longma regression 的 19-test head 已触发 Godot Runtime；Engine import、signature probe、EventRuntime 已通过，最终 runtime suite 仍需等待最终 check-run 结论。
 
+### Round 28 — 2026-10-10：Battle Victory Feedback / Story Continuation
+- 接手前先检查 `docs/AI_MEMORY.md`、`AI_HANDOFF.md`、开发日志索引及最近的 Battle → Reward → Party → Camp 记录。
+- 按上一轮接手点检查战斗胜利反馈，发现战斗结束信号后的回合流可能立即调用 `_refresh()`，覆盖胜利/奖励消息。
+- 在 `BattleUI` 中加入结果展示锁；统一显示完成结果、奖励和下一步提示，并按场景更新返回按钮文字。
+- 在 `NarrativeBattleUI` 中区分“战后剧情恢复成功”与“返回个人/共享路线”，不修改战斗结算事务或 EventRunner 的 UI-independent 边界。
+- 扩展 `test_shared_battle_journey_bridge.gd`：三场共享招募战均检查奖励行、战后剧情提示、按钮文字，以及调用刷新后结果文本不被覆盖。
+- 新增开发日志，并将 2026-09-07 既有记录补入开发日志索引。
+- 验证事实：GitHub connector 不能在本地执行 Godot；本批次 Runtime 状态记录为 pending，必须针对实现提交 SHA 检查 Actions 才能宣称通过。
+- 下一步：先确认该提交的 Godot Runtime 结果；成功后再推进 Journey 的 MOVE / WAIT 反馈，并保持每批单一视觉验收目标。
+
 ---
 
 ## 4. Wukong Origin 当前状态

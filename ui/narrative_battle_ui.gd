@@ -11,6 +11,7 @@ func _on_combat_finished(winner: String) -> void:
 		return
 	if encounter_resolved:
 		return
+	battle_result_locked = true
 	if winner != "allies":
 		status_label.text = "战斗失败。可以返回重新准备。"
 		return
@@ -45,6 +46,7 @@ func _on_combat_finished(winner: String) -> void:
 
 	battle_inventory.restore(resolved.get("inventory", {}))
 	var event_resume: Dictionary = active_record.get("event_resume", {})
+	var event_resumed := false
 	if not event_resume.is_empty():
 		var session := NarrativeEventSession.resume_from_battle_record(active_record, narrative)
 		if session != null:
@@ -60,12 +62,15 @@ func _on_combat_finished(winner: String) -> void:
 				):
 					status_label.text = "战斗已结算，但事件恢复上下文保存失败。"
 					return
+				event_resumed = true
 		else:
 			BountyEncounterState.clear()
 	else:
 		BountyEncounterState.clear()
 	encounter_resolved = true
-	if encounter_type == "origin":
-		status_label.text = "个人章节完成：%s · 获得 %s" % [str(definition.get("name", encounter_id)),_format_rewards(resolved.get("granted", []))]
-	else:
-		status_label.text = "共享章节完成：%s · 获得 %s" % [str(definition.get("name", encounter_id)),_format_rewards(resolved.get("granted", []))]
+	var next_step := "返回旅途，继续个人路线。" if encounter_type == "origin" else "返回旅途，继续共享主线。"
+	if event_resumed:
+		next_step = "返回旅途，继续战后剧情。"
+	var result_title := "个人章节完成" if encounter_type == "origin" else "共享章节完成"
+	var granted: Array = resolved.get("granted", [])
+	_show_victory_summary(result_title, str(definition.get("name", encounter_id)), granted, next_step, "继续旅途")
