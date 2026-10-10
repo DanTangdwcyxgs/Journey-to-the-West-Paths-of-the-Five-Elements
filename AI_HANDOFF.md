@@ -261,15 +261,13 @@ Runner 输出的 `battle` 只生成 `EncounterHandoff` 数据，不直接启动 
 
 最高优先级：
 
-1. 将第一条真实 Event Sequence 的视觉表现继续完善（对白框、镜头、角色移动反馈）
-2. 将其余 Shared Journey 招募章节逐步迁移到 EventSequence 数据格式
-3. 五条 Origin Route 已完成首轮 EventSequence 迁移，下一步做统一 cross-reference / route isolation / SceneTree bridge / Shared timeline handoff 回归
-4. 统一非战斗 `reward` 节点的实际发奖服务，避免未来出现奖励逻辑分散
-5. 统一 `move / wait` 的世界系统执行入口
-6. 清理 `BattleUI` 中仍存在的旧 origin/shared 兼容结算职责，并逐步统一到 Handoff + Resolution
-7. 将 `BountyEncounterState` 逐步收敛为通用 Scene Handoff Service
-8. Camp / Relationship Prototype
-9. 第一完整 Vertical Slice
+1. Journey 的 MOVE / WAIT 基础反馈已完成首轮并通过 Runtime；下一步补 END / chapter-completion feedback 与重复推进回归。
+2. 增强 Main Menu → Journey → EventSequence → Battle / END → Save 的 SceneTree 入口和恢复 smoke coverage。
+3. 五条 Origin Route 的 EventSequence 迁移、统一质量门和 Origin → Shared handoff 已有实现；后续发现新 cross-reference / route-isolation 缺口时按具体回归补强。
+4. 非战斗 reward / move / wait 的副作用继续留在 RewardService / WorldActionService，不得移入 EventRunner。
+5. 逐步清理 BattleUI 旧 origin/shared 兼容结算职责与 BountyEncounterState，但不得破坏现有 Handoff + Resolution 兼容链。
+6. 当前核心叙事与恢复链稳定后推进 Camp / Relationship Prototype。
+7. 完成一个从角色起始路线到白龙马招募与 Memory 的完整 Vertical Slice。
 
 ---
 
@@ -330,7 +328,7 @@ Runner 输出的 `battle` 只生成 `EncounterHandoff` 数据，不直接启动 
 
 ### Batch A — Journey Presentation
 
-当前实现 MOVE / WAIT 专属反馈；确认这一提交对应的 Godot Runtime。通过后继续做 END / chapter-completion feedback 和单屏视觉验收，保持 Runner UI-independent。
+MOVE / WAIT 专属反馈已在 commit ec58f239dfe46a2204727be142dfdc5717de0a70 通过 Godot Runtime（run 38042773314，RUNTIME_SUITE_PASS tests=31）。下一步做 END / chapter-completion feedback 和单屏视觉验收，保持 Runner UI-independent。
 
 ### Batch B — Runtime 与跨场景稳健性
 
@@ -430,7 +428,7 @@ Battle resolution remains service-owned. Victory-result presentation is complete
 - Regression extended in combat/test_journey_event_presentation.gd for MOVE and WAIT wording/action state.
 
 ### Validation gate
-- Pending for the new implementation commit. The prior commit 7ae2e6f41c627892ab3beb1533e8b0923081e12a is green, but it predates these changes.
+- PASS: implementation commit ec58f239dfe46a2204727be142dfdc5717de0a70, runtime run 38042773314; RUNTIME_SUITE_PASS tests=31. The run emitted a missing-font diagnostic and Resource/RID teardown warnings that did not fail the suite.
 
 ### Next handoff
-Check the new commit’s Godot Runtime. If successful, continue with END / chapter-completion feedback, one presentation slice at a time.
+Next implement END / chapter-completion feedback and regression, one presentation slice at a time.

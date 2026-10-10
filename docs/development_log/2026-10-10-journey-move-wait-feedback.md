@@ -29,18 +29,17 @@ Give movement and wait nodes a readable player-facing presentation while preserv
 
 ## Tests
 - Added assertions to the existing Journey presentation test; tests/runtime_suite.gd already includes this script.
-- Static diff review completed.
-- New runtime status remains pending until the Actions run associated with this exact implementation commit finishes.
+- Runtime job 38042773314 completed successfully on implementation commit ec58f239dfe46a2204727be142dfdc5717de0a70; the log confirms PASS for test_journey_event_presentation.gd and RUNTIME_SUITE_PASS tests=31.
 
 ## Godot Runtime status
-Pending for the implementation commit. The previous head was green, but it predates this MOVE / WAIT presentation change.
+**PASS for implementation commit ec58f239dfe46a2204727be142dfdc5717de0a70.** GitHub Actions runtime run 38042773314 completed successfully with RUNTIME_SUITE_PASS tests=31. The run emitted the existing missing-font and Resource/RID teardown diagnostics; these did not fail the suite.
 
 ## Known issues
 - The last successful runtime run still emitted res://fonts/NotoSansSC-Regular.otf missing-font and Resource/RID teardown diagnostics. These did not fail the 31-test suite but are separate technical debt.
 - The transition is a short text-led presentation, not a map-camera animation; adding full camera motion should be a separate visual acceptance batch.
 
 ## Next step
-Verify this commit’s Godot Runtime. If green, add END / chapter-completion feedback and its regression. Keep each presentation change small and avoid moving side effects into EventRunner.
+Next add END / chapter-completion feedback and its regression, keeping each presentation change small and avoiding side effects in EventRunner.
 
 ## Handoff point
 MOVE is committed through JourneyScreen only after its presentation transition; WorldActionService remains the persistent world mutation boundary. WAIT likewise uses the same presentation transition before completing the action.

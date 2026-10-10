@@ -218,9 +218,9 @@ Wukong progression 修正后的完整 Runtime 已成功通过上一轮验证；�
 - JourneyScreen 为 MOVE 增加专属旅途移动说明、地图/路标目标、前往按钮和路途过渡提示；MOVE 与 WAIT 都通过界面过渡后才调用 NarrativeEventSession.complete_action()，让 WorldActionService 仍是 MOVE 持久化副作用边界。
 - WAIT 表现显示停驻秒数、暂歇对白和继续提示；过渡期间禁用主按钮，避免重复提交同一 action。
 - 扩展 test_journey_event_presentation.gd，覆盖 MOVE 目标与操作提示、WAIT 秒数与继续文案。既有 runtime suite 已包含该测试。
-- 本 Round 的实现提交正在触发 Godot Runtime，最终状态必须以该提交 SHA 的 Actions 结果更新；当前不预先声明通过。
+- 实现提交 ec58f239dfe46a2204727be142dfdc5717de0a70 的 Godot Runtime run 38042773314 已成功，日志确认 test_journey_event_presentation.gd PASS 与 RUNTIME_SUITE_PASS tests=31。
 - 需要留意：前一轮通过的 headless suite 在 teardown 时仍输出 NotoSansSC-Regular.otf missing-font 与 Resource/RID leak 诊断；它们没有导致 tests=31 失败，但属于独立技术债。
-- 下一步：验证 MOVE / WAIT 回归通过后，再进入 Journey 的 END / chapter-completion feedback；不要同时做大规模 UI 重构。
+- 下一步：继续 Journey 的 END / chapter-completion feedback，并为完成提示补回归；不要同时做大规模 UI 重构。
 ---
 
 ## 4. Wukong Origin 当前状态
@@ -295,10 +295,10 @@ Shared-09：full pilgrimage / COIN_MEDIUM / timeline 170。
 ## 8. 当前产品任务地图
 
 ### P0 — Emotional / Journey presentation
-MOVE 视觉/状态反馈；WAIT 过渡；END / chapter completion feedback；保持 Battle → Resume → END 不重复结算；把“方块构筑世界里的掌机夏夜”逐步落实到灯光、镜头、环境层次、UI节奏和音频，而不是只停留在文案。
+MOVE / WAIT 的基础提示与过渡已完成首轮并通过 Runtime；下一步补 END / chapter-completion feedback，继续验证 Battle → Resume → END 不重复结算，再逐步把“方块构筑世界里的掌机夏夜”落实到灯光、镜头、环境层次、UI节奏和音频，而不是只停留在文案。
 
-### P1 — Origin migration
-Wukong WUK-01~15、Tang TANG-01~08、Longma LONGMA-01~06 已进入 Sequence 化。下一步优先完成 Tang / Longma SceneTree 入口验证，然后迁移 Bajie / Wujing。
+### P1 — Cross-route / SceneTree robustness
+Wukong、Tang、Longma、Bajie、Wujing 五条 Origin Route 均已完成首轮 Sequence 化，统一五路线质量门与 Origin → Shared handoff 回归已有记录。后续重点是完整 Main Menu → Journey → Sequence → Battle / END → Save 的 SceneTree 入口与恢复边界。
 
 ### P2 — Cleanup
 逐步收敛旧 BattleUI 结算职责与 `BountyEncounterState`，不得提前破坏兼容链。
