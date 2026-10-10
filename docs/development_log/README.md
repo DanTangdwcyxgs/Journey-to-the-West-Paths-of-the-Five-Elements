@@ -10,6 +10,8 @@
 
 ## 最新记录
 
+- [`2026-10-10 — Battle Victory Feedback Regression Fix`](2026-10-10-battle-victory-feedback-regression-fix.md)
+- [`2026-10-10 — Battle Victory Feedback / Story Continuation`](2026-10-10-battle-victory-feedback.md)
 - [`2026-10-10 — Battle Victory Feedback / Story Continuation`](2026-10-10-battle-victory-feedback.md)
 - [`2026-09-07 — Battle → Reward → Party → Camp Loop`](2026-09-07-battle-reward-party-loop.md)
 - [`2026-09-05 — Emotional North Star / Tang & Longma Origin Expansion`](2026-09-05-vision-and-origin-expansion.md)

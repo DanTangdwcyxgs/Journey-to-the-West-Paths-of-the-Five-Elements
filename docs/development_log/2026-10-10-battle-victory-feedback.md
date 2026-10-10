@@ -32,10 +32,10 @@ Make the battle result state communicate three things clearly: what finished, wh
 ## Tests
 - Extended `combat/test_shared_battle_journey_bridge.gd`; the existing `tests/runtime_suite.gd` already includes this suite.
 - Static review of the edit paths and replacement points completed.
-- Local Godot execution was not available through the GitHub repository connector. This commit is expected to trigger the repository's Godot Runtime workflow; its result must be checked against the exact commit SHA before claiming runtime success.
+- The actual GitHub Actions run for the implementation commit reached the runtime suite. It failed at the new exact next-step wording assertion; see the follow-up regression-fix log. Verify the correction commit against its own SHA before claiming runtime success.
 
 ## Godot Runtime status
-**Pending verification for this commit.** No Godot Runtime pass is claimed in this log.
+**Initial attempt failed** in the new bridge test because its next-step assertion required one exact sentence. Import/register, parser probe, EventRuntime and EventRunner direct checks succeeded. The follow-up correction has not yet been verified by a new Godot Runtime run.
 
 ## Known issues
 - This is still a text-level result treatment, not a full victory animation or rewards breakdown screen.

@@ -205,6 +205,14 @@ Wukong progression 修正后的完整 Runtime 已成功通过上一轮验证；�
 - 验证事实：GitHub connector 不能在本地执行 Godot；本批次 Runtime 状态记录为 pending，必须针对实现提交 SHA 检查 Actions 才能宣称通过。
 - 下一步：先确认该提交的 Godot Runtime 结果；成功后再推进 Journey 的 MOVE / WAIT 反馈，并保持每批单一视觉验收目标。
 
+### Round 29 — 2026-10-10：Victory Feedback Regression Assertion Correction
+- 读取提交 5c0cb1d4c91434fbd475e71aa8dd3e6e8c321209 的 GitHub Actions job log；项目导入、parser probe、EventRuntime、EventRunner 检查均成功，headless suite 在新桥接断言处失败。
+- 失败点是测试把下一步提示固定为一个特定句子；应检查胜利摘要包含下一步说明，具体的 EventSession 战后对白在后续断言中独立验证。
+- 将回归改为检查“下一步：”字段存在，并在失败时输出实际摘要，便于下次诊断。
+- 更新开发日志中的验证事实并增加 follow-up log。
+- 修正 AI_HANDOFF.md 中的任务优先级与 2026-09-05 过期快照，避免把已完成的 Shared Sequence 迁移和五路线质量门再次列为未完成。
+- 新提交的 Godot Runtime 仍待核验；不提前声称通过。
+- 下一步：检查修正后提交 SHA 的 Godot Runtime 结果；若继续失败，读取新的 job log 并按真实根因修正。
 ---
 
 ## 4. Wukong Origin 当前状态

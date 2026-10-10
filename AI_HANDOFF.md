@@ -326,35 +326,27 @@ Runner 输出的 `battle` 只生成 `EncounterHandoff` 数据，不直接启动 
 
 ---
 
-## 11. 下一位 Agent 的推荐工作顺序
+## 11. 下一位 Agent 的推荐工作顺序（2026-10-10 刷新）
 
-### Batch A — Event UI / Presentation
+### Batch A — Journey / Battle Presentation
 
-让一个 EventSequence 在 Journey 中拥有稳定的对白显示、选择显示、等待、移动反馈，并保持 Runner UI-independent。
+当前先完成胜利反馈回归修正并确认 Godot Runtime。通过后再完善 Journey 的 MOVE / WAIT / END 表现：可见的位移反馈、适度等待过渡、章节完成提示；Runner 继续保持 UI-independent。
 
-### Batch B — Shared Journey Migration
+### Batch B — Runtime 与跨场景稳健性
 
-优先迁移：
+继续检查 Battle → EventSession resume → Journey 的真实 SceneTree 链路、Save/Load、重复结算保护和失败恢复。所有改动都需要对应 regression 与本提交 SHA 的 Actions 验证。
 
-`SHARED-04 → SHARED-05 → SHARED-06 → SHARED-07 → SHARED-08 → SHARED-09`
+### Batch C — Narrative execution services
 
-不要一次重写所有旧章节；每迁移一条就加入回归。
+评估统一非战斗 reward / move / wait 的执行入口，副作用留在 Service，不能塞进 EventRunner。优先从最小可验证的 MOVE / WAIT 边界开始。
 
-### Batch C — Origin Migration
+### Batch D — Vertical Slice
 
-五条 Origin Route 的首轮 EventSequence 迁移已经完成。下一步优先做统一五路线质量验证：跨数据引用、namespace、battle source、路线隔离、Save/Resume、SceneTree bridge，以及 Origin → Shared handoff。
-
-### Batch D — Reward / World Execution
-
-建立通用 RewardService、WorldActionService，让 `reward / move / wait` 不再停留在“action dictionary only”。
+以一条完整角色起始路线 + 五行山 + 鹰愁涧 + 白龙马招募 + 对应 Memory 为样板，串起剧情、探索、招募、战斗、奖励和存档。
 
 ### Batch E — Camp / Relationship
 
-再进入角色关系、营地和长线成长。
-
-### Batch F — Vertical Slice
-
-以一个完整角色起始路线 + 五行山 + 鹰愁涧 + 招募后回忆为第一个可展示 Vertical Slice。
+等当前叙事与战后恢复链稳定后再扩展营地与人物关系，避免同时扩大多个系统。
 
 ---
 
@@ -403,17 +395,15 @@ Runner 输出的 `battle` 只生成 `EncounterHandoff` 数据，不直接启动 
 - `tests/runtime_suite.gd` 已接入 Wujing 两项回归。
 - `docs/development_log/2026-09-05-wujing-origin-sequence-migration.md` 已记录本批次。
 
-### 当前验证
+### 历史验证（仅截至 2026-09-05）
 
-- Godot Runtime #162 已由 `tests/runtime_suite.gd` 变更触发。
-- 截至本快照，Runner 的 Import/Register 阶段正在执行；后续必须读取最终 workflow conclusion。
+- 当时 Godot Runtime #162 的导入/注册阶段正在执行，最终结果需当时的接手者另行核验。该记录不是当前提交的验证状态。
 
-### 下一落点
+### 后续状态（已取代本快照中的待办）
 
-- 若 #162 通过：立刻进入五路线统一 regression，不再新增第六条独立 Origin Route。
-- 统一检查 Wukong / Tang / Longma / Bajie / Wujing 五条 Route 的 sequence catalog、choice/battle cross-reference、route isolation、Save/Resume、Origin → Shared handoff。
-- 随后把 Shared Journey 迁移作为下一大内容批次。
-
+- 五路线统一质量门与 Origin → Shared handoff 回归已在后续开发日志中完成并登记。
+- Shared-03 至 Shared-09 EventSequence 和相关招募战桥接也已有后续实现与回归。
+- 当前工作及最新验证以第 15 节和最新开发日志为准。
 
 ## 15. 2026-10-10 Battle Victory Feedback Snapshot
 
@@ -424,8 +414,8 @@ Runner 输出的 `battle` 只生成 `EncounterHandoff` 数据，不直接启动 
 - `combat/test_shared_battle_journey_bridge.gd` asserts these behaviors across Eagle Sorrow, Gaojiazhuang, and Flowing Sands.
 
 ### Validation gate
-- The implementation commit triggers the Godot Runtime workflow.
-- Until the workflow result is checked for the exact commit SHA, runtime status is **pending**. Static review does not count as a Godot Runtime pass.
+- Implementation commit 5c0cb1d4c91434fbd475e71aa8dd3e6e8c321209: Godot Runtime run 38042445543 FAILED in test_shared_battle_journey_bridge.gd because the new assertion required one exact next-step sentence. Import/register and direct parser/runtime checks succeeded; the assertion is being corrected.
+- The follow-up correction commit must be checked against its own SHA. Until it has a successful Godot Runtime result, runtime status remains pending / not verified. Static review is not a pass.
 
 ### Next handoff
 After confirming the current Runtime result, continue with one Journey presentation improvement at a time, starting with MOVE / WAIT feedback. Do not add core narrative rules to Presentation or move side effects into EventRunner.
