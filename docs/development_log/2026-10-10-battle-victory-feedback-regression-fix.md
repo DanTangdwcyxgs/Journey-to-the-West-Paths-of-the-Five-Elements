@@ -30,18 +30,19 @@ Correct the new presentation regression so it checks the intended contract witho
 
 ## Tests
 - Static review completed for the test contract and documentation.
-- The corrected test has not yet been exercised by a completed Actions run.
-- The original run reached the runtime suite; it did not fail import or the direct parser/runtime probes.
+- Corrected commit 7ae2e6f41c627892ab3beb1533e8b0923081e12a completed Godot Runtime successfully: run 38042589835, runtime job conclusion success, and log output RUNTIME_SUITE_PASS tests=31.
+- The shared battle bridge regression passed after the assertion correction.
+- The successful run still printed a missing-font diagnostic for res://fonts/NotoSansSC-Regular.otf plus Resource/RID leak warnings while tearing down the scene tree. These did not fail the suite, but remain technical debt.
 
 ## Godot Runtime status
-Pending for the correction commit. The previous implementation commit failed at the over-specific assertion above. Do not represent this follow-up as green before its exact SHA receives a successful run.
+**PASS for correction commit 7ae2e6f41c627892ab3beb1533e8b0923081e12a.** GitHub Actions runtime run 38042589835 finished successfully with RUNTIME_SUITE_PASS tests=31. This does not certify any later commits; each new SHA requires its own run.
 
 ## Known issues
 - The headless bridge test emits a missing-font diagnostic for res://fonts/NotoSansSC-Regular.otf; investigate if it persists or affects final results.
 - The battle victory presentation remains text-based; full animation and a dedicated reward breakdown screen are out of scope for this batch.
 
 ## Next step
-Check the Godot Runtime workflow for the correction commit. If another assertion fails, use the exact log output to correct the real contract rather than weakening unrelated checks.
+With the assertion correction green, proceed to the next documented slice: visible MOVE / WAIT feedback in Journey. Keep movement side effects inside WorldActionService/EventRunner completion, and keep EventRunner presentation-independent.
 
 ## Handoff point
 Victory-summary persistence is directly tested; EventSession dialogue restoration and chapter progression remain separately asserted in the existing three-battle shared bridge.

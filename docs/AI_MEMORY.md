@@ -211,8 +211,16 @@ Wukong progression 修正后的完整 Runtime 已成功通过上一轮验证；�
 - 将回归改为检查“下一步：”字段存在，并在失败时输出实际摘要，便于下次诊断。
 - 更新开发日志中的验证事实并增加 follow-up log。
 - 修正 AI_HANDOFF.md 中的任务优先级与 2026-09-05 过期快照，避免把已完成的 Shared Sequence 迁移和五路线质量门再次列为未完成。
-- 新提交的 Godot Runtime 仍待核验；不提前声称通过。
-- 下一步：检查修正后提交 SHA 的 Godot Runtime 结果；若继续失败，读取新的 job log 并按真实根因修正。
+- 提交 7ae2e6f41c627892ab3beb1533e8b0923081e12a 的 Godot Runtime run 38042589835 已成功，日志为 RUNTIME_SUITE_PASS tests=31。运行期间仍有 missing-font 与 Resource/RID 泄漏诊断，但未影响通过结论。
+- 下一步转为 Journey 的 MOVE / WAIT 表现，保持每批单一视觉验收目标。
+### Round 30 — 2026-10-10：Journey MOVE / WAIT Presentation
+- 在修正胜利反馈回归后读取 GitHub Actions 日志，确认 commit 7ae2e6f41c627892ab3beb1533e8b0923081e12a 的 Godot Runtime 成功，RUNTIME_SUITE_PASS tests=31。
+- JourneyScreen 为 MOVE 增加专属旅途移动说明、地图/路标目标、前往按钮和路途过渡提示；MOVE 与 WAIT 都通过界面过渡后才调用 NarrativeEventSession.complete_action()，让 WorldActionService 仍是 MOVE 持久化副作用边界。
+- WAIT 表现显示停驻秒数、暂歇对白和继续提示；过渡期间禁用主按钮，避免重复提交同一 action。
+- 扩展 test_journey_event_presentation.gd，覆盖 MOVE 目标与操作提示、WAIT 秒数与继续文案。既有 runtime suite 已包含该测试。
+- 本 Round 的实现提交正在触发 Godot Runtime，最终状态必须以该提交 SHA 的 Actions 结果更新；当前不预先声明通过。
+- 需要留意：前一轮通过的 headless suite 在 teardown 时仍输出 NotoSansSC-Regular.otf missing-font 与 Resource/RID leak 诊断；它们没有导致 tests=31 失败，但属于独立技术债。
+- 下一步：验证 MOVE / WAIT 回归通过后，再进入 Journey 的 END / chapter-completion feedback；不要同时做大规模 UI 重构。
 ---
 
 ## 4. Wukong Origin 当前状态

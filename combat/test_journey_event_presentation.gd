@@ -28,6 +28,25 @@ func _initialize() -> void:
 	_assert(not instance.dialogue_revealing, "dialogue should finish revealing after sufficient elapsed time")
 	_assert(instance.dialogue_text_label.text == "鹰愁涧就在前面。", "typewriter should reveal the complete dialogue")
 
+	instance.call("_render_event_action", {
+		"kind": "move", "node_id": "move_to_north_path",
+		"sequence_id": "SHARED-04-EARLY-DEMON-TALES-SEQUENCE",
+		"map_id": "WORLD_MAP", "marker_id": "BLACK_WIND_NORTH_PATH",
+	})
+	_assert(instance.phase_label.text == "旅途移动", "move action should use a dedicated travel phase")
+	_assert(instance.dialogue_text_label.text.find("BLACK_WIND_NORTH_PATH") >= 0, "move presentation should show the destination marker")
+	_assert(instance.primary_button.text == "前往" and not instance.primary_button.disabled, "move action should expose a forward action")
+	_assert(instance.dialogue_hint_label.text.find("旅途过渡") >= 0, "move action should explain the travel transition")
+
+	instance.call("_render_event_action", {
+		"kind": "wait", "node_id": "pause",
+		"sequence_id": "SHARED-04-EARLY-DEMON-TALES-SEQUENCE", "seconds": 0.5,
+	})
+	_assert(instance.phase_label.text == "停驻片刻 · 0.5 秒", "wait action should show its duration")
+	_assert(instance.dialogue_text_label.text.find("片刻后继续前行") >= 0, "wait action should explain the pause")
+	_assert(instance.primary_button.text == "继续" and not instance.primary_button.disabled, "wait action should allow the player to continue")
+	_assert(instance.dialogue_hint_label.text.find("稍作停留") >= 0, "wait action should explain what continuing will do")
+
 	instance.queue_free()
 	print("ALL JOURNEY EVENT PRESENTATION TESTS PASSED")
 	quit(0)

@@ -328,9 +328,9 @@ Runner 输出的 `battle` 只生成 `EncounterHandoff` 数据，不直接启动 
 
 ## 11. 下一位 Agent 的推荐工作顺序（2026-10-10 刷新）
 
-### Batch A — Journey / Battle Presentation
+### Batch A — Journey Presentation
 
-当前先完成胜利反馈回归修正并确认 Godot Runtime。通过后再完善 Journey 的 MOVE / WAIT / END 表现：可见的位移反馈、适度等待过渡、章节完成提示；Runner 继续保持 UI-independent。
+当前实现 MOVE / WAIT 专属反馈；确认这一提交对应的 Godot Runtime。通过后继续做 END / chapter-completion feedback 和单屏视觉验收，保持 Runner UI-independent。
 
 ### Batch B — Runtime 与跨场景稳健性
 
@@ -338,7 +338,7 @@ Runner 输出的 `battle` 只生成 `EncounterHandoff` 数据，不直接启动 
 
 ### Batch C — Narrative execution services
 
-评估统一非战斗 reward / move / wait 的执行入口，副作用留在 Service，不能塞进 EventRunner。优先从最小可验证的 MOVE / WAIT 边界开始。
+评估非战斗 reward / move / wait 的统一执行入口；副作用留在 Service，不能塞进 EventRunner。WorldActionService 已是 MOVE / WAIT 执行边界，应在扩展前复用现有能力。
 
 ### Batch D — Vertical Slice
 
@@ -346,7 +346,7 @@ Runner 输出的 `battle` 只生成 `EncounterHandoff` 数据，不直接启动 
 
 ### Batch E — Camp / Relationship
 
-等当前叙事与战后恢复链稳定后再扩展营地与人物关系，避免同时扩大多个系统。
+等叙事和战后恢复链稳定后再扩展营地与人物关系，避免同时扩大多个系统。
 
 ---
 
@@ -408,14 +408,29 @@ Runner 输出的 `battle` 只生成 `EncounterHandoff` 数据，不直接启动 
 ## 15. 2026-10-10 Battle Victory Feedback Snapshot
 
 ### Current batch
-- Battle victory feedback now has a dedicated presentation lock so a post-combat refresh cannot replace the result summary.
-- The summary surfaces outcome, rewards, and a next-step instruction; the return button label now reflects the next destination.
-- `NarrativeBattleUI` distinguishes successful EventSession battle resume from a general return to the Origin / Shared route.
-- `combat/test_shared_battle_journey_bridge.gd` asserts these behaviors across Eagle Sorrow, Gaojiazhuang, and Flowing Sands.
+- Battle victory feedback has a dedicated presentation lock so a post-combat refresh cannot replace the result summary.
+- The summary surfaces outcome, rewards, and a next-step instruction; the return button label reflects the next destination.
+- NarrativeBattleUI distinguishes successful EventSession battle resume from a general return to the Origin / Shared route.
+- combat/test_shared_battle_journey_bridge.gd asserts reward display, next-step guidance, button label, and summary persistence across all three shared recruitment battles.
 
 ### Validation gate
-- Implementation commit 5c0cb1d4c91434fbd475e71aa8dd3e6e8c321209: Godot Runtime run 38042445543 FAILED in test_shared_battle_journey_bridge.gd because the new assertion required one exact next-step sentence. Import/register and direct parser/runtime checks succeeded; the assertion is being corrected.
-- The follow-up correction commit must be checked against its own SHA. Until it has a successful Godot Runtime result, runtime status remains pending / not verified. Static review is not a pass.
+- Implementation commit 5c0cb1d4c91434fbd475e71aa8dd3e6e8c321209 initially failed the overly-specific next-step assertion.
+- Correction commit 7ae2e6f41c627892ab3beb1533e8b0923081e12a passed Godot Runtime run 38042589835; log reported RUNTIME_SUITE_PASS tests=31.
+- The suite still logged a missing-font diagnostic and Resource/RID teardown warnings. Those did not fail the run, but should be tracked separately.
+
+### Handoff
+Battle resolution remains service-owned. Victory-result presentation is completed for this slice; MOVE / WAIT feedback is the active follow-up documented in section 16.
+
+## 16. 2026-10-10 Journey MOVE / WAIT Presentation
+
+### Implementation
+- MOVE now has a dedicated Journey phase, destination map/marker text, a 前往 button, and a short travel transition.
+- WAIT explains the pause, surfaces the effective duration, and provides a clear Continue action; the transition state disables the primary button to prevent duplicate completion.
+- NarrativeEventSession completion still triggers the existing WorldActionService side-effect boundary; EventRunner remains presentation-independent.
+- Regression extended in combat/test_journey_event_presentation.gd for MOVE and WAIT wording/action state.
+
+### Validation gate
+- Pending for the new implementation commit. The prior commit 7ae2e6f41c627892ab3beb1533e8b0923081e12a is green, but it predates these changes.
 
 ### Next handoff
-After confirming the current Runtime result, continue with one Journey presentation improvement at a time, starting with MOVE / WAIT feedback. Do not add core narrative rules to Presentation or move side effects into EventRunner.
+Check the new commit’s Godot Runtime. If successful, continue with END / chapter-completion feedback, one presentation slice at a time.

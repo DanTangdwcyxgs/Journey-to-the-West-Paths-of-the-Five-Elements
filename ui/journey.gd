@@ -267,9 +267,9 @@ func _advance_event_session() -> void:
 				return
 			var next := event_session.complete_action()
 			_handle_event_action(next)
-		EventRunner.WAIT:
+		EventRunner.WAIT, EventRunner.MOVE:
 			_start_event_transition(action)
-		EventRunner.MOVE, EventRunner.REWARD, EventRunner.JUMP:
+		EventRunner.REWARD, EventRunner.JUMP:
 			var next := event_session.complete_action()
 			_handle_event_action(next)
 		EventRunner.BATTLE:
@@ -284,9 +284,18 @@ func _start_event_transition(action: Dictionary) -> void:
 		return
 	event_transition_pending = true
 	primary_button.disabled = true
-	var seconds: float = max(float(action.get("seconds", 0.0)), EVENT_TRANSITION_DELAY)
-	phase_label.text = "场景过渡 · %.1f 秒" % seconds
-	dialogue_hint_label.text = "场景变化中…"
+	var kind := str(action.get("kind", ""))
+	var seconds: float = maxf(float(action.get("seconds", 0.0)), EVENT_TRANSITION_DELAY)
+	if kind == EventRunner.MOVE:
+		phase_label.text = "旅途移动中"
+		_set_dialogue("旁白", "队伍正沿着新的路标继续前行。抵达后，旅途记录将会更新。", false)
+		primary_button.text = "行进中…"
+		dialogue_hint_label.text = "路途过渡中…"
+	else:
+		phase_label.text = "停驻片刻 · %.1f 秒" % seconds
+		_set_dialogue("旁白", "队伍暂时停下脚步，片刻后继续前行。", false)
+		primary_button.text = "稍候…"
+		dialogue_hint_label.text = "停驻中…"
 	await get_tree().create_timer(seconds).timeout
 	event_transition_pending = false
 	if event_session == null:
@@ -504,6 +513,19 @@ func _render_event_action(action: Dictionary) -> void:
 			primary_button.text = "请选择"
 			primary_button.disabled = true
 			_render_event_choices(action)
+		EventRunner.MOVE:
+			phase_label.text = "旅途移动"
+			_set_dialogue("旁白", _describe_move_action(action), false)
+			primary_button.text = "前往"
+			primary_button.disabled = false
+			dialogue_hint_label.text = "点击前往 · 将短暂呈现旅途过渡"
+		EventRunner.WAIT:
+			var seconds: float = maxf(float(action.get("seconds", 0.0)), EVENT_TRANSITION_DELAY)
+			phase_label.text = "停驻片刻 · %.1f 秒" % seconds
+			_set_dialogue("旁白", "队伍暂时停下脚步，片刻后继续前行。", false)
+			primary_button.text = "继续"
+			primary_button.disabled = false
+			dialogue_hint_label.text = "点击继续 · 稍作停留后恢复剧情"
 		EventRunner.BATTLE:
 			phase_label.text = "战斗"
 			_set_dialogue("", "战斗即将开始。完成后会回到这一段剧情。", false)
@@ -519,6 +541,16 @@ func _render_event_action(action: Dictionary) -> void:
 			_set_dialogue("", str(action), false)
 			primary_button.text = "继续"
 			primary_button.disabled = false
+
+func _describe_move_action(action: Dictionary) -> String:
+	var map_id := str(action.get("map_id", "")).strip_edges()
+	var marker_id := str(action.get("marker_id", "")).strip_edges()
+	var description := "队伍准备离开当前地点，沿着新的路线继续前行。"
+	if not map_id.is_empty():
+		description += "\n目标地图：" + map_id
+	if not marker_id.is_empty():
+		description += "\n目标路标：" + marker_id
+	return description
 
 func _set_dialogue(speaker: String, text: String, typewriter := true) -> void:
 	if speaker_label == null or dialogue_text_label == null:
