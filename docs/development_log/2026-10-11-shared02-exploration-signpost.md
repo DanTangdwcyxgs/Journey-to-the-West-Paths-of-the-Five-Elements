@@ -30,7 +30,7 @@ The interlude should create breathing room between the Five Elements Mountain op
 
 ## Tests
 - Existing sequence runtime test now checks that the SHARED-02 exploration node mentions the map, optional rumors, and Eagle Sorrow as the next mainline destination.
-- Godot Runtime CI: PENDING for this branch head.
+- PASS for implementation head `b70ee0ff9ffc6e95e556b6d37707dc93c45e4a75`: [Godot Runtime run 38128336254](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38128336254) completed successfully and the job log confirms `RUNTIME_SUITE_PASS tests=47`. This status-only follow-up records the observed result.
 
 ## Known issues
 - The signpost is a dialogue cue, not a new map marker or a forced tutorial. It assumes the existing World Map control and rumor/bounty discovery surfaces are available after the sequence completes.
