@@ -36,14 +36,14 @@ An optional branch should be escapable and should return to one fixed Journey. A
 - Uses the real Journey Continue action and Story MOVE transition; a fresh NarrativeManager reload must show GAOJIAZHUANG and unchanged timeline/progression.
 
 ## Godot Runtime status
-**PENDING** — test the exact implementation SHA through Godot Runtime and Web Demo before recording this path as passed.
+**PASS** — exact final test implementation commit `cf4fde67159f14b5deaf99367f705cb9a8adc8c3`. The initial smoke insertion commit `6215b102f66c38101c70f8b719fef79c83ffd4c2` and intermediate correction `95699746e453abc0dd4d6536e1d527815233d954` failed due two GDScript indentation errors in nested test-only conditions; follow-up `cf4fde6` corrected the remaining block. Godot Runtime run [38118968437](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38118968437) passed with `PASS res://combat/test_world_map_rumor_bounty_return.gd` and `RUNTIME_SUITE_PASS tests=43`. Web Demo run [38118968395](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38118968395) build and deploy both passed.
 
 ## Known issues
 - The bounty fight's combat turns are still shortcut through the production victory callback, so this checks state/scene integration rather than manual combat input or encounter balance.
 - Shared-05 is entered from the canonical post-Shared-04 save state; Wukong Origin and Shared-01..04 are separately covered by prior production scene smoke tests.
 
 ## Next step
-After CI passes, review whether Shared-05/07 recruitment fights can also return to the WorldMap consistently after settlement, then move from framework validation to pacing / visual presentation of the first vertical slice.
+Next verify free WorldMap travel has the same save-failure rollback guarantee as canonical story MOVE; then review whether Shared-05/07 recruitment fights return to WorldMap consistently and move from framework validation to first-slice pacing / visual presentation.
 
 ## Handoff point
 Optional detour return to Shared-05. Keep Story MOVE authoritative for canon location and leave free-travel graph guards intact.

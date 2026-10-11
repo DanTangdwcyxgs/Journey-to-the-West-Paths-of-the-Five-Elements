@@ -420,7 +420,7 @@ Wukong progression 修正后的完整 Runtime 已成功通过上一轮验证；�
 - 现有 WorldMap → 鹰愁涧传闻 → Yellow Fang 悬赏 → BattleUI → WorldMap 回归只验证回到地图与主线状态不变，没有继续按“返回行程”重新进入共享剧情。
 - 将测试夹具修正为真实的 Shared-04 完成后状态：current_shared_chapter=SHARED-05、Shared-01..04 已完成、当前时间线 T120、Longma 已招募且 LONGMA-01/02 Memory 可用，WorldMap 位置为 BLACK_WIND_NORTH_PATH。
 - 扩展 `combat/test_world_map_rumor_bounty_return.gd`：悬赏胜利返回地图后点击生产“返回行程”按钮，验证 Journey 读取相同 Shared-05 游标/时间线/已完成章节/队伍和 Eagle Sorrow 实际位置；继续剧情进入 Shared-05 EventSequence，再执行 canonical MOVE 至 GAOJIAZHUANG，并重载存档验证地点持久化、章节未提前完成、timeline 未提前推进。
-- 本批当前精确 SHA 的 Runtime / Web Demo 状态待 Actions；不把旧版本仅返回地图的 42/42 测试当作这次新接续的验证。
+- 首轮实现提交 `6215b102f66c38101c70f8b719fef79c83ffd4c2` 与缩进修正提交 `95699746e453abc0dd4d6536e1d527815233d954` 分别因 GDScript 条件块缩进错误未通过；最终修正提交 `cf4fde67159f14b5deaf99367f705cb9a8adc8c3` 的 Godot Runtime run [38118968437](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38118968437) 通过，输出 `PASS res://combat/test_world_map_rumor_bounty_return.gd` 与 `RUNTIME_SUITE_PASS tests=43`；同一 SHA 的 Web Demo run [38118968395](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38118968395) build/deploy 均成功。
 - 下一步：通过后评估第一条 Shared 纵向切片中地图探索、剧情移动与可选战斗节奏，确定下一个实际内容/演出缺口。
 
 ## 4. Wukong Origin 当前状态
