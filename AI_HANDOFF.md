@@ -261,7 +261,7 @@ Runner 输出的 `battle` 只生成 `EncounterHandoff` 数据，不直接启动 
 
 最高优先级：
 
-1. Journey 的 MOVE / WAIT 基础反馈已完成首轮并通过 Runtime；下一步补 END / chapter-completion feedback 与重复推进回归。
+1. 视觉垂直切片优先：旅途与战斗环境已增加分层像素背景契约；下一步以最终 PNG/WebP 替换五名主角与敌人占位 SVG，修复缺失字体并做真实窗口截图验收。Journey END / chapter-completion feedback 继续排在其后。
 2. 增强 Main Menu → Journey → EventSequence → Battle / END → Save 的 SceneTree 入口和恢复 smoke coverage。
 3. 五条 Origin Route 的 EventSequence 迁移、统一质量门和 Origin → Shared handoff 已有实现；后续发现新 cross-reference / route-isolation 缺口时按具体回归补强。
 4. 非战斗 reward / move / wait 的副作用继续留在 RewardService / WorldActionService，不得移入 EventRunner。
@@ -326,11 +326,13 @@ Runner 输出的 `battle` 只生成 `EncounterHandoff` 数据，不直接启动 
 
 ## 11. 下一位 Agent 的推荐工作顺序（2026-10-10 刷新）
 
-### Batch A — Journey Presentation
+### Batch A — Visual Vertical Slice
 
-MOVE / WAIT 专属反馈已在 commit ec58f239dfe46a2204727be142dfdc5717de0a70 通过 Godot Runtime（run 38042773314，RUNTIME_SUITE_PASS tests=31）。下一步做 END / chapter-completion feedback 和单屏视觉验收，保持 Runner UI-independent。
+2026-10-11 已审查现有视觉链路：当前没有 `assets/art/**/final/` 最终 PNG/WebP，五名主角仍使用 32×48 逻辑画布 SVG 占位资源。旅途与黄风战斗背景已升级为具备远景 / 中景 / 前景职责的像素分层资源，并在 `test_visual_asset_contract.gd` 增加防退化检查。下一步先验证当前提交的 Runtime / Web Demo，再交付五名主角的高识别度最终像素角色，解决缺失字体，做真实窗口截图验收。END / chapter-completion feedback 随后继续。
 
-### Batch B — Runtime 与跨场景稳健性
+### Batch B — Journey Presentation & Runtime
+
+完成视觉垂直切片首轮后，补 END / chapter-completion feedback，再检查 Battle → EventSession resume → Journey 的真实 SceneTree 链路、Save/Load、重复结算保护和失败恢复。
 
 继续检查 Battle → EventSession resume → Journey 的真实 SceneTree 链路、Save/Load、重复结算保护和失败恢复。所有改动都需要对应 regression 与本提交 SHA 的 Actions 验证。
 

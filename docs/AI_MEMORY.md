@@ -221,6 +221,16 @@ Wukong progression 修正后的完整 Runtime 已成功通过上一轮验证；�
 - 实现提交 ec58f239dfe46a2204727be142dfdc5717de0a70 的 Godot Runtime run 38042773314 已成功，日志确认 test_journey_event_presentation.gd PASS 与 RUNTIME_SUITE_PASS tests=31。
 - 需要留意：前一轮通过的 headless suite 在 teardown 时仍输出 NotoSansSC-Regular.otf missing-font 与 Resource/RID leak 诊断；它们没有导致 tests=31 失败，但属于独立技术债。
 - 下一步：继续 Journey 的 END / chapter-completion feedback，并为完成提示补回归；不要同时做大规模 UI 重构。
+### Round 31 — 2026-10-11：HD-2D Environment Depth Foundation
+- 按项目负责人要求重新审查完整接手文档、内容生产规范、视觉规范、ArtAssetCatalog、VisualOverlay 与视觉资产契约测试；确认当前角色仅有 32×48 逻辑画布的 SVG 占位图，且不存在 `assets/art/**/final/` 最终 PNG/WebP 资产目录。
+- 确认当前旅途/战斗背景是少量平面形状组成的简单 SVG，虽已有 VisualOverlay 和 PixelHUD，但不足以达到 Octopath-like HD-2D 的环境层次。
+- 将工作优先级从单纯继续 Journey END 文案反馈调整为视觉垂直切片：先提高环境背景分层质量，再逐步替换五名主角与敌人的最终像素角色资产，之后做角色动画、场景光照和战斗镜头。
+- 重绘 `journey_scenery.svg`，增加远景山脊、远处寺院、中景悬崖、朝圣道路、前景竹木与灯笼光点等有明确景深职责的层。
+- 重绘 `yellow_wind_battle.svg`，增加风沙层、废墟轮廓、战斗地面、余烬裂纹和风旋区域，为角色与技能特效保留空间。
+- 扩展 `test_visual_asset_contract.gd`，检查关键图层标记，避免背景被简化回无层次占位图；更新视觉参考文档和接手优先级。
+- 当前只完成资源级静态修改与契约回归代码；本会话没有本地 Godot 可执行运行环境，不能宣称本批次 Godot Runtime 通过。必须检查本提交 SHA 的 GitHub Actions。
+- 已知问题：没有最终角色 PNG/WebP；缺失字体 `res://fonts/NotoSansSC-Regular.otf` 仍需处理；SVG 分层背景是过渡性环境资产，仍需要真实游戏窗口内的截图验收。
+- 下一步：先检查本提交的 Godot Runtime 与 Web Demo 构建；通过后进行角色资产第一批（Wukong / Tang / Bajie / Wujing / Longma）替换，并解决字体资源缺失。
 ---
 
 ## 4. Wukong Origin 当前状态

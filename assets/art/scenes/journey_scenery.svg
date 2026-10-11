@@ -1,1 +1,59 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 320 180" shape-rendering="crispEdges"><rect width="320" height="180" fill="#1e2a35"/><rect y="42" width="320" height="58" fill="#43586a"/><rect y="100" width="320" height="80" fill="#6e604f"/><path fill="#26333a" d="M0 104V87h18V78h14V65h12v18h18V70h12v16h17V58h11v13h18v25h22V77h13V63h14v22h17V72h11v11h17V54h14v31h16V76h13v11h21v17h19v-1h23v77H0z"/><path fill="#37474e" d="M0 113V95h25V86h17V97h13V82h17v14h24V77h13v16h15V91h21V74h15v20h19V85h16v13h20V76h17v14h22V82h12v19h34v12H0z"/><path fill="#574b42" d="M118 101h48l-5 9h-6l6 70H91l8-70h-7z"/><path fill="#8e7552" d="M133 101h17l-4 9h-6l3 70h-8l-3-70h-5z"/><path fill="#26413b" d="M22 116h10v-16h7v-10h5v10h9v16h8v12H22zM251 113h9v-22h7V81h5v10h9v22h8v13h-38z"/><path fill="#355447" d="M28 106h32v10H22v-5zM254 101h34v12h-41v-7z"/><path fill="#b28a54" d="M46 73h7v7h8v5H39v-4h7zM275 67h6v9h9v5h-20v-4h5z"/><path fill="#1b2026" d="M148 55h18v7h8v18h-5v10h-24V80h-5V62h8z"/><path fill="#7d503a" d="M152 62h11v6h5v10h-4v6h-13v-5h-4V67h5z"/><path fill="#b98e4d" d="M154 52h11v5h4v5h-5v2h-10v-3h-4v-5h4z"/><rect x="161" y="68" width="2" height="2" fill="#171317"/><path fill="#d8b778" d="M93 125h9v7h-9zM218 119h8v7h-8z"/><path fill="#b28b50" d="M96 123h3v3h-3zM221 117h2v3h-2z"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 320 180" shape-rendering="crispEdges">
+<rect width="320" height="180" fill="#111c2c"/>
+<rect width="320" height="30" fill="#18283b"/>
+<rect y="30" width="320" height="42" fill="#293c51"/>
+<rect y="72" width="320" height="36" fill="#435064"/>
+<rect y="108" width="320" height="72" fill="#25343a"/>
+<!-- distant moonlit ridges -->
+<g id="layer-far-ridges" fill="#34465a">
+<path d="M0 79V63h13V54h9V45h6V55h8V62h12V54h8V44h7V39h7V49h7V58h12V66h9V58h11V48h8V41h7V51h8V59h13V67h10V58h8V46h8V39h7V49h9V56h11V63h14V55h8V47h8V40h7V50h8V59h11V68h13V60h12V53h7V61h14V80z"/>
+<path fill="#26394d" d="M0 88V74h15V66h8V61h6V70h10V76h14V68h8V61h7V69h11V76h15V68h8V61h8V69h11V78h12V69h8V63h8V72h13V80h10V72h9V64h8V72h12V79h14V71h8V64h7V72h10V79h15V71h11V65h8V73h12V89z"/>
+</g>
+<!-- distant temple roofs, softened by distance -->
+<g id="layer-distant-temple" fill="#1b2b39">
+<path d="M31 79h42v3H31zM36 75h32v4H36zM41 71h22v4H41zM46 67h12v4H46zM49 63h5v4h-5zM37 82h4v14h-4zM64 82h4v14h-4z"/>
+<path d="M229 79h54v3h-54zM235 75h42v4h-42zM241 71h30v4h-30zM247 67h18v4h-18zM252 63h8v4h-8zM238 82h4v17h-4zM270 82h4v17h-4z"/>
+</g>
+<!-- winding road / stream catches the sky -->
+<path id="layer-river-road" fill="#405a68" d="M127 88h19v10h-8v8h-9v8h-11v8h-8v8H96v8H82v8H0v-8h74v-8h17v-8h13v-8h9v-8h8v-10h6z"/>
+<path fill="#71818a" d="M131 91h11v5h-8v8h-9v8h-11v8h-9v8H92v8H76v5H0v-3h74v-6h16v-8h13v-8h10v-8h9v-8h9z"/>
+<!-- midground cliff and old pilgrimage gate -->
+<g id="layer-midground-cliffs">
+<path fill="#4b514f" d="M0 88h22V77h13V70h12V82h10v9h14v12h13v10h10v12h15v15h11v25H0z"/>
+<path fill="#62645b" d="M0 102h24V89h12V82h8v12h12v10h14v9h12v11h14v10h10v21H0z"/>
+<path fill="#243b38" d="M0 121h18v-8h11v-7h9v12h9v7h14v-5h9v12h13v7h15v21H0z"/>
+<path fill="#344c42" d="M0 139h25v-7h12v-6h8v9h14v8h14v-4h10v9h15v18H0z"/>
+<path fill="#454a49" d="M218 92h18V81h12V73h10V62h7v13h12v8h10v10h13v47h-92z"/>
+<path fill="#626057" d="M233 104h15V91h12V81h7V73h5v13h12v8h9v12h12v30h-72z"/>
+<path fill="#2b463b" d="M227 124h20v-9h11v-7h8v11h11v8h11v-4h8v10h16v25h-84z"/>
+<path fill="#405947" d="M240 140h20v-7h11v-6h8v10h12v8h14v17h-65z"/>
+</g>
+<!-- temple terrace -->
+<g id="layer-pilgrimage-temple">
+<path fill="#181f2a" d="M224 104h70v4h-70zM231 98h56v6h-56zM237 92h44v6h-44zM243 86h32v6h-32zM250 81h18v5h-18z"/>
+<path fill="#9b6548" d="M238 105h43v3h-43zM242 108h4v18h-4zM273 108h4v18h-4zM248 108h4v18h-4zM265 108h4v18h-4z"/>
+<path fill="#d0a45d" d="M226 103h66v2h-66zM234 97h50v2h-50zM241 91h42v2h-42zM247 85h34v2h-34zM253 80h22v2h-22z"/>
+<path fill="#4a3130" d="M244 113h31v4h-31zM244 121h31v3h-31z"/>
+<path fill="#d1a85c" d="M258 73h4v7h-4zM257 70h6v3h-6z"/>
+</g>
+<!-- foreground pilgrimage path -->
+<path id="layer-foreground-path" fill="#695844" d="M91 180l20-28 20-12 18-4 17 6 24 38z"/>
+<path fill="#8c7452" d="M111 180l17-25 19-12 10 1 17 36z"/>
+<path fill="#b39a68" d="M132 180l13-25 11-10 4 1 12 34z"/>
+<path fill="#d0b77b" d="M146 180l9-24 3-2 8 26z"/>
+<!-- foreground bamboo and pine silhouettes -->
+<g id="layer-foreground-foliage" fill="#152b2a">
+<path d="M0 180V128h5v-14h3v14h5v-9h4v9h7v52zM10 130l-10-9v-4l13 8zM14 143l12-12v-4l-15 13zM2 151l-2-4 13-6 3 3z"/>
+<path d="M302 180V119h5v-16h3v16h5v-9h5v70zM305 128l-10-10v-4l13 9zM311 141l9-10v-4l-12 11zM304 151l-4-3 13-8 3 3z"/>
+<path fill="#203b31" d="M0 180v-31h12v8h10v23zM298 180v-28h10v-8h12v36z"/>
+</g>
+<!-- fireflies / lantern pools -->
+<g id="layer-lanterns">
+<rect x="36" y="99" width="3" height="7" fill="#493b2c"/><rect x="34" y="100" width="7" height="4" fill="#d6a85d"/><rect x="35" y="101" width="5" height="2" fill="#f5d38a"/>
+<rect x="283" y="110" width="3" height="7" fill="#493b2c"/><rect x="281" y="111" width="7" height="4" fill="#d6a85d"/><rect x="282" y="112" width="5" height="2" fill="#f5d38a"/>
+<rect x="201" y="126" width="2" height="2" fill="#f0c86d"/><rect x="55" y="120" width="2" height="2" fill="#c9dbb4"/><rect x="273" y="90" width="2" height="2" fill="#f0c86d"/>
+</g>
+<!-- evening vignette and blocky moonlight -->
+<path fill="#0a1524" opacity=".35" d="M0 0h320v18h-18V8h-20V4H38v8H16v10H0zM0 180v-14h14v-8h18v-6h18v28zM320 180v-20h-14v-8h-17v-7h-15v35z"/>
+<path fill="#d6d0ad" opacity=".65" d="M264 18h8v2h-8zM268 14h4v4h-4zM272 18h2v2h-2z"/>
+</svg>
