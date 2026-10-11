@@ -10,6 +10,7 @@
 
 ## 最新记录
 
+- [`2026-10-11 — Main Menu → Journey SceneTree Smoke`](2026-10-11-main-menu-journey-entry-smoke.md)
 - [`2026-10-11 — Runtime Test Node Teardown`](2026-10-11-runtime-test-node-teardown.md)
 - [`2026-10-11 — CJK Font Fallback / Runtime Resource Contract`](2026-10-11-cjk-font-fallback-runtime-contract.md)
 - [`2026-10-11 — Journey END / Chapter Completion Feedback`](2026-10-11-journey-end-chapter-completion-feedback.md)

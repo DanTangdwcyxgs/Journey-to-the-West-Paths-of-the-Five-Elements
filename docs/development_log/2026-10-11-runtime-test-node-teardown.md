@@ -1,40 +1,6 @@
-# 2026-10-11 · Runtime Test Node Teardown
-
-## Goal
-Investigate, rather than hide, Godot Runtime teardown diagnostics after the font-contract fix.
-
-## Evidence
-- Runtime commit `4b383b1230d19f5eaeb616823bd08e368311592c` passed `RUNTIME_SUITE_PASS tests=32`, but its log still reported 49 leaked CanvasItem RIDs, one Canvas RID, a Viewport, TextServer shaped text/font RIDs, ObjectDB instances, and resources still in use.
-- `combat/test_main_menu_contact.gd` runs its static `run_all()` in the suite's long-lived SceneTree process. It instantiated and built a complete MainMenu Control subtree plus a detached AcceptDialog, then returned without freeing either Node. This is a concrete lifecycle leak candidate, and the CanvasItem count is consistent with the large menu subtree.
-- `combat/test_pixel_ui_font_contract.gd` queued the HUD for deletion and immediately quit its SceneTree without waiting for the queued deletion to be processed.
-
-## What changed
-- Explicitly free the detached contact dialog and the MainMenu root before the static test returns.
-- Wait one SceneTree frame after queue_free() in the font contract test before quitting.
-
-## Why
-Tests must clean up the Nodes they create. Fixing test lifetime is safer than changing production UI or forcing resource release globally. This is a hypothesis-driven cleanup, not a claim that all teardown warnings are now solved.
-
-## Files
-- `combat/test_main_menu_contact.gd`
-- `combat/test_pixel_ui_font_contract.gd`
-- `docs/development_log/2026-10-11-runtime-test-node-teardown.md`
-- `docs/development_log/README.md`
-- `docs/AI_MEMORY.md`
-- `AI_HANDOFF.md`
-
-## Tests
-- Await exact new-head GitHub Actions Runtime logs; compare CanvasItem / Canvas / TextServer / ObjectDB diagnostics to the prior 32-test successful run.
-
-## Godot Runtime status
-PENDING until the current implementation SHA has finished GitHub Actions.
-
-## Remaining questions
-- Other UI subtree/static-test lifetime leaks may remain.
-- Resource or TextServer diagnostics are tracked independently; do not globally suppress warnings or call them fixed based on passing tests.
-
-## Next step
-Inspect the exact new Runtime job log. If the CanvasItem warning is gone or lower, isolate remaining diagnostics by test cohort. Otherwise examine other static `run_all()` tests for detached Nodes that are not freed.
-
-## Handoff point
-Runtime test harness / SceneTree lifetime, not game Domain or Narrative code.
+### Round 34 — 2026-10-11：Runtime Test Node Teardown
+- 排查 Godot Runtime suite teardown 诊断：发现 `test_main_menu_contact.gd` 是在长生命周期的 suite SceneTree 进程中以 static `run_all()` 执行；它实例化了整套 MainMenu 控件和独立 AcceptDialog，却没有显式 free，控件数与 `49 CanvasItem RIDs leaked` 的日志规模吻合。
+- 增加显式 `dialog.free()` 与 `instance.free()`，保证静态回归在返回结果前释放创建的节点树。
+- `test_pixel_ui_font_contract.gd` 在 `hud.queue_free()` 后等待一次 `process_frame`，再退出 SceneTree，避免排队释放还未被引擎处理。
+- 这是根据日志定位的测试生命周期修复，不假定它能解决全部 RID/ObjectDB 诊断；验证下一提交 runtime 日志，比较 CanvasItem / TextServer / Viewport 的剩余数量。
+- 下一步：若 CanvasItem 泄漏下降，再逐项隔离剩余资源；若不变，先检查其他静态测试中的 detached Node 生命周期，不改无关战斗逻辑。

@@ -255,8 +255,17 @@ Wukong progression 修正后的完整 Runtime 已成功通过上一轮验证；�
 - 排查 Godot Runtime suite teardown 诊断：发现 `test_main_menu_contact.gd` 是在长生命周期的 suite SceneTree 进程中以 static `run_all()` 执行；它实例化了整套 MainMenu 控件和独立 AcceptDialog，却没有显式 free，控件数与 `49 CanvasItem RIDs leaked` 的日志规模吻合。
 - 增加显式 `dialog.free()` 与 `instance.free()`，保证静态回归在返回结果前释放创建的节点树。
 - `test_pixel_ui_font_contract.gd` 在 `hud.queue_free()` 后等待一次 `process_frame`，再退出 SceneTree，避免排队释放还未被引擎处理。
-- 这是根据日志定位的测试生命周期修复，不假定它能解决全部 RID/ObjectDB 诊断；验证下一提交 runtime 日志，比较 CanvasItem / TextServer / Viewport 的剩余数量。
-- 下一步：若 CanvasItem 泄漏下降，再逐项隔离剩余资源；若不变，先检查其他静态测试中的 detached Node 生命周期，不改无关战斗逻辑。
+- 实现提交 `ff50907c95cb5017a8fdad4b2ee27ee773c37ac5` 的 Runtime run `38103322441` 成功，`RUNTIME_SUITE_PASS tests=32`；Web Demo run `38103322430` 成功。
+- 该 Runtime 日志不再报告 Canvas / CanvasItem / Viewport / TextServer RID 泄漏或 `resources still in use`，只保留 `ObjectDB instances leaked at exit`。这验证了节点树生命周期修复消除了前一批 renderer/text resource 警告，但不代表剩余 ObjectDB 警告已解决。
+- 下一步：新增生产入口 MainMenu → Journey → WUK-01 Sequence SceneTree smoke；然后用针对性日志追查余下 ObjectDB 警告。
+
+
+### Round 35 — 2026-10-11：Main Menu → Journey Production Entry Smoke
+- 新增 `test_main_menu_journey_entry.gd`，从实际 `main_menu.tscn` 开始，调用新游戏 handler，验证保存发生、场景切换到生产 `journey.tscn`，角色选择得到恢复，再进入实际 `WUK-01-SEQUENCE` 的 Dialogue action。
+- 测试前备份并清理 `NarrativeSave.SAVE_PATH`、`BountyEncounterState.PATH`、`BountyEncounterState.RESUME_PATH`，完成后恢复原始字节，避免本地执行时破坏开发者自己的存档或战斗交接记录。
+- 新 smoke 加入 `tests/runtime_suite.gd`，从 32 项扩展到 33 项；本轮最新 SHA Runtime 结果待 CI。
+- 上一轮 teardown 修复提交 `ff50907c95cb5017a8fdad4b2ee27ee773c37ac5` Runtime `38103322441` / Web Demo `38103322430` 均成功。49 个 CanvasItem 及 Canvas / Viewport / TextServer RID 警告不再出现，剩余 `ObjectDB instances leaked at exit` 尚待隔离。
+- 下一步：验证新 SceneTree smoke，随后对剩余 ObjectDB 进行定向诊断，继续保持 Narrative 与 Presentation 的职责边界。
 
 ---
 

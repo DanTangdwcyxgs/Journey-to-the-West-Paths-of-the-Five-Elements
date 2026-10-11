@@ -261,7 +261,7 @@ Runner 输出的 `battle` 只生成 `EncounterHandoff` 数据，不直接启动 
 
 最高优先级：
 
-1. 视觉垂直切片仍是产品目标，但角色最终 PNG/WebP 暂受图像生成额度限制；不把概念展示图当正式资源。Journey END / 章节完成反馈已通过 Runtime，CJK 字体缺失错误已通过统一回退与 CI 字体准备解决。Runtime 仍有 teardown 诊断；当前优先清理测试中 detached Node 的生命周期并用新日志验证，再推进 Main Menu → Journey → Sequence → Battle / END → Save 的完整 SceneTree smoke。额度恢复后再通过 ArtAssetCatalog 替换主角和敌人占位 SVG。
+1. 视觉垂直切片仍是产品目标，但角色最终 PNG/WebP 暂受图像生成额度限制；不把概念展示图当正式资源。Journey END / 章节反馈、CJK 字体回退已通过 Runtime。测试节点生命周期修复后 Canvas / CanvasItem / Viewport / TextServer 泄漏诊断消失，尚有一个 ObjectDB 汇总警告。已增加 Main Menu → Journey → WUK-01 Sequence 生产入口 smoke，先验证此测试，再定向排查剩余 ObjectDB 警告；额度恢复后恢复正式角色资产垂直切片。
 2. 增强 Main Menu → Journey → EventSequence → Battle / END → Save 的 SceneTree 入口和恢复 smoke coverage。
 3. 五条 Origin Route 的 EventSequence 迁移、统一质量门和 Origin → Shared handoff 已有实现；后续发现新 cross-reference / route-isolation 缺口时按具体回归补强。
 4. 非战斗 reward / move / wait 的副作用继续留在 RewardService / WorldActionService，不得移入 EventRunner。
@@ -328,7 +328,7 @@ Runner 输出的 `battle` 只生成 `EncounterHandoff` 数据，不直接启动 
 
 ### Batch A — Visual Vertical Slice
 
-2026-10-11 已审查现有视觉链路：当前没有 `assets/art/**/final/` 最终 PNG/WebP，五名主角仍使用 32×48 逻辑画布 SVG 占位资源。环境分层改进 `cb7fd7c` 已通过 Godot Runtime / Web Demo；Journey END 与章节完成反馈提交 `7ca43f4` 已通过 31 项 Runtime；CJK 字体回退和 Runtime 字体准备提交 `4b383b1` 已通过 32 项 Runtime 与 Web Demo。字体缺失错误已消失，但 Resource/RID teardown 诊断仍在。Free 套餐图像生成额度限制导致本会话未获得正式角色 PNG，因此先做完整 SceneTree 入口回归和资源释放排查；不提交概念图充当游戏资产。
+2026-10-11 已审查现有视觉链路：最终角色 PNG/WebP 尚未生成；`cb7fd7c` 环境分层已通过 Runtime/Web Demo，`7ca43f4` END 反馈通过 31 项 Runtime，`4b383b1` CJK 字体回退通过 32 项 Runtime / Web Demo。`ff50907` 明确释放测试创建的 MainMenu/AcceptDialog 节点后，Canvas、CanvasItem、Viewport、TextServer 资源/RID 警告消失，但还有 `ObjectDB instances leaked at exit`。Free 套餐图像生成额度限制期间继续框架工作、不上传概念图冒充正式素材。当前新增生产 Main Menu → Journey → WUK-01 Sequence SceneTree smoke，等待本提交 CI 结果。
 
 ### Batch B — Journey Presentation & Runtime
 
