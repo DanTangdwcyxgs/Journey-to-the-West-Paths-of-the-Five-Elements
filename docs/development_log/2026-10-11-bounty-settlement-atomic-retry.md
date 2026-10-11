@@ -42,14 +42,14 @@ A bounty victory is a single player-facing event. It must not record a defeated 
 - Successful retry should write exactly one additional save, grant rewards from the final post-combat inventory, mark the bounty defeated, record its journal target, and preserve Shared chapter / global timeline.
 
 ## Godot Runtime status
-**PENDING** — validate exact SHA via Godot Runtime and Web Demo; do not claim success until both pass.
+**PASS** — exact implementation commit `3fd65d9f16453b6cb104ca249b4a87859e47895c`. Godot Runtime run [38120711220](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38120711220) passed with `PASS res://combat/test_bounty_reward_service_atomicity.gd` and `RUNTIME_SUITE_PASS tests=47`; Web Demo run [38120711189](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38120711189) completed successfully with build and deploy jobs both passing.
 
 ## Known issues
 - The test injects the save result rather than simulating mid-write filesystem failure.
 - The runtime transaction commits NarrativeState and BountyManager in memory together, but BountyManager statuses are currently reconstructed from journal/save-level context rather than directly serialized into NarrativeState.
 
 ## Next step
-After CI passes, rerun the Yellow Wind Cave battle roundtrip and inspect the retry UI branch; then return to side-route pacing and presentation.
+Add a production BattleUI regression for the settlement retry button; then return to side-route pacing and presentation.
 
 ## Handoff point
 Bounty victory is now the atomic transaction boundary. Keep reward, journal, inventory and local bounty status synchronized and allow settlement retry without repeating combat.

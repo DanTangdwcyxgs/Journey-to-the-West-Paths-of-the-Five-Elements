@@ -458,8 +458,8 @@ Wukong progression 修正后的完整 Runtime 已成功通过上一轮验证；�
 - Added an optional post-combat inventory payload to `BountyRewardService.resolve_defeat()`. The service snapshots NarrativeState and BountyManager before mutation, applies the final battle inventory + bounty reward + defeated-target journal as one commit, and restores both snapshots if defeat validation, reward application or save fails. It now writes only once.
 - Updated BattleUI to delegate the post-combat inventory to that transaction, remove the duplicate save and unrelated Ridge-stage call, and expose a “重试结算” button after rollback. Pressing it re-enters the production settlement path without replaying combat; only a successful commit clears the handoff and marks the encounter resolved.
 - Added `combat/test_bounty_reward_service_atomicity.gd` to force save failure and verify exact NarrativeState and BountyManager rollback, then retry and assert rewards, inventory, defeated-target journal and fixed Shared chronology.
-- This batch’s exact SHA Runtime / Web Demo status waits for Actions; registered Runtime entries rise from 46 to 47.
-- Next: after pass, rerun the cave battle roundtrip unchanged and verify that the settlement retry button stays on the battle scene and no reward / defeated target can be duplicated.
+- Exact commit `3fd65d9f16453b6cb104ca249b4a87859e47895c` passed Runtime run [38120711220](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38120711220) with `PASS res://combat/test_bounty_reward_service_atomicity.gd` and `RUNTIME_SUITE_PASS tests=47`; the same SHA’s Web Demo run [38120711189](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38120711189) build and deploy both passed.
+- Next: add a production BattleUI regression for the settlement retry button, confirming a failed save leaves the finished battle in place and the successful retry does not replay combat or duplicate rewards / defeated-target journal entries.
 
 ## 4. Wukong Origin 当前状态
 

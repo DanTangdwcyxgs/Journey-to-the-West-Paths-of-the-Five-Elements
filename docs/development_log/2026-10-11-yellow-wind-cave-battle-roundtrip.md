@@ -49,7 +49,7 @@ A cave is not playable if normal encounters return to the wrong room or a boss v
 - The BountyRewardService currently owns part of bounty reward application/save; if this smoke or follow-up forced-failure tests expose a split save boundary, that should be corrected before adding more dungeon mechanics.
 
 ## Next step
-Review the bounty settlement save boundary. `BountyRewardService.resolve_defeat()` currently saves internally and BattleUI saves again; add a rollback regression or consolidate the write so reward, defeated-target journal and route aftermath cannot partially commit. Then review the pacing/visual feedback of the Yellow Wind side route.
+Bounty settlement is now transactional in `2026-10-11-bounty-settlement-atomic-retry.md`: Runtime 47/47 and Web Demo build/deploy passed on exact commit `3fd65d9f16453b6cb104ca249b4a87859e47895c`. Next add a production BattleUI regression for the “重试结算” path, then review side-route pacing/visual feedback.
 
 ## Handoff point
 Yellow Wind Cave battle roundtrip. Do not alter the canonical Shared chapter or global timeline from optional exploration battles.
