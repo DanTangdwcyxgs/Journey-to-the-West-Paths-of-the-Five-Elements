@@ -330,7 +330,7 @@ Runner 输出的 `battle` 只生成 `EncounterHandoff` 数据，不直接启动 
 
 ### Batch B — Journey Presentation & Runtime
 
-Journey END / chapter-completion feedback、Main Menu → WUK-02 battle / resume / END / Save，以及完整 EventSequence production catalog 质量门已通过 Runtime。当前新增模拟 save failure 的 BattleResolutionService 回滚回归，待本批精确提交的 Actions 验证；之后扩展 Shared 招募战真实 SceneTree 场景链，再进入 Camp / Relationship Prototype。
+Journey END / chapter-completion feedback、Main Menu → WUK-02 battle / resume / END / Save，以及完整 EventSequence production catalog 质量门已通过 Runtime。模拟 save failure 的 BattleResolutionService 回滚回归已通过精确提交 Runtime run [38105806758](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38105806758)（35/35）与 Web Demo run [38105806791](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38105806791）。下一步扩展 Shared 招募战真实 SceneTree 场景链，再进入 Camp / Relationship Prototype。
 
 继续检查 Battle → EventSession resume → Journey 的真实 SceneTree 链路、Save/Load、重复结算保护和失败恢复。所有改动都需要对应 regression 与本提交 SHA 的 Actions 验证。
 

@@ -321,7 +321,7 @@ Wukong progression 修正后的完整 Runtime 已成功通过上一轮验证；�
 - 在 `combat/test_battle_resolution_service.gd` 增加只用于测试的 `SaveFailingNarrativeManager`，其 save() 明确返回失败并记录是否触达提交边界。
 - 使用有效 Shared-03 战斗上下文执行胜利结算，验证服务确实执行到 save 阶段；模拟存档失败时结算必须返回空结果，并将奖励、招募、战斗日志和章节推进的全部 NarrativeState 变化恢复到结算前快照。
 - 这项回归不模拟战斗回合，也不更改生产实现；它锁定现有 BattleResolutionService 的原子事务约定。
-- 本批 Godot Runtime / Web Demo 的精确提交验证待 Actions 运行后登记。
+- 精确提交 `c29702d199036be7a097339c762f61fa87eda933` 的 Godot Runtime run [38105806758](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38105806758) 通过，日志确认 `PASS res://combat/test_battle_resolution_service.gd` 和 `RUNTIME_SUITE_PASS tests=35`；同一 SHA 的 Web Demo run [38105806791](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38105806791) 通过。
 - 下一步：修复任何被回归暴露的真实问题；通过后扩展 Shared 招募战的真实 SceneTree 场景链。
 
 ## 4. Wukong Origin 当前状态

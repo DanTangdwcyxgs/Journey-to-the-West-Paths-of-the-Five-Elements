@@ -35,14 +35,14 @@ Atomicity requires rollback not only for invalid input, but also when a late com
 - Existing valid settlement and duplicate-rejection assertions remain after the new case.
 
 ## Godot Runtime status
-**PENDING** — confirm the exact implementation commit in GitHub Actions before claiming the nested test double compiles and rollback assertions pass.
+**PASS** — exact implementation commit `c29702d199036be7a097339c762f61fa87eda933`. Godot Runtime run [38105806758](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38105806758) passed and logs `PASS res://combat/test_battle_resolution_service.gd` plus `RUNTIME_SUITE_PASS tests=35`. The same SHA's Web Demo build/deploy run [38105806791](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38105806791) also passed.
 
 ## Known issues
 - The regression tests the in-memory state rollback after save failure. It does not simulate physical disk corruption or operating-system process termination between write and flush.
 - Shared recruitment battle scene transition remains a separate integration task.
 
 ## Next step
-After exact-head Runtime and Web Demo results, continue the Shared recruitment battle's production SceneTree entry → BattleUI → resolution → EventSession resume smoke.
+Continue the Shared recruitment battle's production SceneTree entry → BattleUI → resolution → EventSession resume smoke, using the actual scene transition and return control rather than only manually instantiating adjacent scenes.
 
 ## Handoff point
 BattleResolutionService / NarrativeManager transaction boundary. Rewards, recruitment and chapter progression must remain service-owned and all-or-nothing.
