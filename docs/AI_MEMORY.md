@@ -582,3 +582,12 @@ Wukong、Tang、Longma、Bajie、Wujing 五条 Origin Route 均已完成首轮 S
 
 任何下一轮继续：
 `实现 → regression → Godot Runtime → development log → AI_MEMORY`。
+
+
+### Round 63 — 2026-10-11：Journey MOVE Destination Names
+- 体验评审发现 Journey 的 MOVE 提示把内部 map_id / marker_id 原样展示给玩家，例如 WORLD_MAP、BLACK_WIND_NORTH_PATH；这是 Presentation 可修复的问题，不需要改叙事或世界状态。
+- JourneyScreen._describe_move_action() 现在通过现有 WorldMapManager.get_node(marker_id) 读取权威地点名，并显示“目的地：黑风山北道”等本地化标签；未知 marker 保留 ID fallback，避免错误内容被静默隐藏。
+- combat/test_journey_event_presentation.gd 改为断言玩家可见的中文地点名并拒绝泄漏内部 marker ID。
+- 分支：codex/journey-move-destination-labels-2026-10-11。开发日志：docs/development_log/2026-10-11-journey-move-destination-names.md。
+- 验证：实现 head `be9147511b2dd7741443135dec08377935427e8c` 的 Godot Runtime run [38125834662](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38125834662) 成功，日志确认 `RUNTIME_SUITE_PASS tests=47`。本次状态记录提交只修改文档。
+- 下一步：CI 通过后继续评审 Shared-02 → Shared-03 的体验节奏和可选探索指引，保持固定西游时间线。
