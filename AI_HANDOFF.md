@@ -429,3 +429,18 @@ Battle resolution remains service-owned. Victory-result presentation is complete
 
 ### Next handoff
 Next implement END / chapter-completion feedback and regression, one presentation slice at a time.
+
+
+## 20. 2026-10-11 WorldMap Rumor Persistence / Optional Bounty Presentation
+
+### Implementation
+- Rumor discovery now snapshots NarrativeState before applying the heard-rumor and bounty-discovery changes. A failed save restores the snapshot, keeps the rumor available, and exposes retry feedback instead of silently consuming it.
+- WorldMap bounty rows use names from `data/world/bounties.json`, not internal IDs, and label these targets as optional with the explicit note “不推进西游主线”.
+- New regression: `combat/test_world_map_rumor_save_failure_rollback.gd`. Existing `combat/test_world_map_rumor_bounty_return.gd` also asserts the player-facing name and optional/mainline wording.
+
+### Validation gate
+- Runtime suite expected entries: 48.
+- Exact-head Godot Runtime is pending; do not mark this batch complete until the run reports `RUNTIME_SUITE_PASS tests=48` and the new rumor rollback test passes.
+
+### Handoff
+Continue from the exact-head CI result. If it passes, update this section and the development log with the run URL/result before creating or marking the PR ready. Keep optional bounty completion separate from canonical Shared chapter/timeline progression.
