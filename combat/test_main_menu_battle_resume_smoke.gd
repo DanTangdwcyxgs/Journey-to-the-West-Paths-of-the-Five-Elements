@@ -105,6 +105,8 @@ func _run_smoke() -> void:
 			await process_frame
 		_record(resumed.event_session == null, "post-battle END should close the resumed sequence")
 		_record(resumed.phase_label.text.find("战后剧情完成") >= 0, "Journey should show post-battle completion feedback")
+		_record(not FileAccess.file_exists(encounter_path), "terminal END should remove the active encounter handoff")
+		_record(not FileAccess.file_exists(resume_path), "terminal END should not leave a stale pending EventSession resume file")
 		var persisted_after_end := NarrativeManager.new()
 		_record(persisted_after_end.load(), "post-battle END should leave a loadable save")
 		if persisted_after_end.state != null:

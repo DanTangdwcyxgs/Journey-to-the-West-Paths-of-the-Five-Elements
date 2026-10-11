@@ -134,7 +134,8 @@ func _run_bridge(narrative: NarrativeManager, spec: Dictionary) -> bool:
 	_assert(str(spec["expected_recruit"]) in narrative.state.recruited_characters, "%s should recruit expected companion" % chapter_id)
 
 	journey.queue_free()
-	BountyEncounterState.clear()
+	# This regression ends before production END, so discard its temporary resume data.
+	BountyEncounterState.clear_completed_event_session()
 	return true
 
 func _assert(condition: bool, message: String) -> void:

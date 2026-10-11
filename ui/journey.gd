@@ -495,9 +495,11 @@ func _finish_event_session() -> void:
 				completion_notice += " · 下一章：" + str(next_origin_chapter.get("title", next_origin_chapter.get("id", "")))
 
 	event_session = null
-	BountyEncounterState.clear()
+	var resume_context_cleared: bool = BountyEncounterState.clear_completed_event_session()
 	var save_succeeded: bool = narrative.save()
 	_refresh()
+	if not resume_context_cleared:
+		completion_notice += " · 事件接续记录清理失败"
 	phase_label.text = completion_notice if save_succeeded else completion_notice + " · 存档失败"
 
 func _sequence_chapter_title(chapter_id: String, namespace_id: String) -> String:

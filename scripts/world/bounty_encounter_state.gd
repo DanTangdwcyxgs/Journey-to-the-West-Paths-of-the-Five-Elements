@@ -58,6 +58,18 @@ static func get_active_record() -> Dictionary:
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(RESUME_PATH))
 	return resume_data if resume_data is Dictionary else {}
 
+## Terminal END cleanup: remove active and pending EventSession state without migrating either file.
+## The generic clear() below preserves resume data when a scene handoff is still in progress.
+static func clear_completed_event_session() -> bool:
+	var active_cleared: bool = _remove_handoff_file(PATH)
+	var pending_cleared: bool = _remove_handoff_file(RESUME_PATH)
+	return active_cleared and pending_cleared
+
+static func _remove_handoff_file(path: String) -> bool:
+	if not FileAccess.file_exists(path):
+		return true
+	return DirAccess.remove_absolute(ProjectSettings.globalize_path(path)) == OK
+
 static func clear() -> void:
 	# Narrative event battles need their serialized continuation to survive the
 	# battle scene's normal cleanup. Ordinary encounters still clear normally.
