@@ -30,11 +30,9 @@ Upgrade the existing MainMenu route-entry smoke into a real scene-switching test
 - AI_HANDOFF.md
 
 ## Tests
-- Exact-head Godot Runtime must validate this test through the registered suite.
-- Assertions cover canonical battle handoff, successful victory settlement, actual scene return, after-battle dialogue, WUK-03 cursor persistence and idempotent END closure.
-
-## Godot Runtime status
-PENDING until the new implementation commit's Actions complete.
+- Initial Runtime run [38104441392](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38104441392) on commit 4102cab failed at the post-victory story-feedback assertion; the assertion revealed a production behavior issue and was not weakened.
+- Parent correction commit [959a32f](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/commit/959a32f06a389ce460d015d16192cb673c0240f2) passed Runtime run [38104519997](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38104519997) with RUNTIME_SUITE_PASS tests=35 and Web Demo run [38104519990](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38104519990).
+- Follow-up commit ea24dd2 adds END assertions that both active and pending resume files are absent. Its exact-head Runtime / Web Demo are pending while this log is updated.
 
 ## Known issues
 - The test intentionally invokes the existing production victory handler with an "allies" winner instead of simulating every individual turn input. It validates the real handoff, battle scene, atomic resolver, return navigation, resume and save path; combat turn mechanics remain covered by their dedicated combat tests.

@@ -10,6 +10,7 @@
 
 ## 最新记录
 
+- [`2026-10-11 — Battle Resume Terminal Handoff Cleanup`](2026-10-11-battle-resume-terminal-cleanup.md)
 - [`2026-10-11 — Main Menu → Origin Battle → Resume Smoke`](2026-10-11-main-menu-battle-resume-smoke.md)
 - [`2026-10-11 — SoundManager Audio Playback Cleanup`](2026-10-11-sound-manager-audio-playback-cleanup.md)
 - [`2026-10-11 — ObjectDB Teardown Detail Capture`](2026-10-11-runtime-objectdb-diagnostics.md)

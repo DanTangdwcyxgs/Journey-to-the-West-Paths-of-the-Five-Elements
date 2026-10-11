@@ -261,7 +261,7 @@ Runner 输出的 `battle` 只生成 `EncounterHandoff` 数据，不直接启动 
 
 最高优先级：
 
-1. 视觉垂直切片仍是产品目标，但角色最终 PNG/WebP 暂受图像生成额度限制；不把概念展示图当正式资源。环境分层、Journey END、CJK 字体回退、节点树生命周期、音频播放清理和 Main Menu → Journey → WUK-01 smoke 已通过 Runtime（34 tests）。当前加测更完整的 Main Menu → WUK-02 real battle → BattleResolutionService → Journey EventSession resume → END / Save SceneTree 链路，新结果以 exact SHA CI 为准；额度恢复后再做角色资产垂直切片。
+1. 视觉垂直切片仍是产品目标，但角色最终 PNG/WebP 暂受图像生成额度限制；不把概念展示图当正式资源。环境分层、Journey END、CJK 字体回退、节点树生命周期、音频播放清理和 Main Menu → Journey → WUK-01 smoke 已通过 Runtime（34 tests）。Main Menu → WUK-02 real battle smoke 暴露了恢复后重复推进的问题，主修复已通过 Runtime（35 tests）和 Web Demo；当前 follow-up 增加 END 后 active / pending resume 清理和回归，等待精确 SHA Runtime / Web Demo。通过后继续框架纵向切片，额度恢复后再做角色资产垂直切片。
 2. 增强 Main Menu → Journey → EventSequence → Battle / END → Save 的 SceneTree 入口和恢复 smoke coverage。
 3. 五条 Origin Route 的 EventSequence 迁移、统一质量门和 Origin → Shared handoff 已有实现；后续发现新 cross-reference / route-isolation 缺口时按具体回归补强。
 4. 非战斗 reward / move / wait 的副作用继续留在 RewardService / WorldActionService，不得移入 EventRunner。
@@ -332,7 +332,7 @@ Runner 输出的 `battle` 只生成 `EncounterHandoff` 数据，不直接启动 
 
 ### Batch B — Journey Presentation & Runtime
 
-Journey END / chapter-completion feedback 已完成首轮；下一步检查 Battle → EventSession resume → Journey 的真实 SceneTree 链路、Save/Load、重复结算保护和失败恢复，并扩展 Main Menu → Journey → END → Save smoke coverage。
+Journey END / chapter-completion feedback 已完成首轮。Main Menu → WUK-02 real battle → resume smoke 暴露并修复了恢复后重复推进；当前验证终态 END 是否清除 active/pending resume 文件。精确 CI 通过后继续失败恢复与 Shared battle path。
 
 继续检查 Battle → EventSession resume → Journey 的真实 SceneTree 链路、Save/Load、重复结算保护和失败恢复。所有改动都需要对应 regression 与本提交 SHA 的 Actions 验证。
 
