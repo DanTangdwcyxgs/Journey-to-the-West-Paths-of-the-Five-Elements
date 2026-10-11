@@ -429,3 +429,14 @@ Battle resolution remains service-owned. Victory-result presentation is complete
 
 ### Next handoff
 Next implement END / chapter-completion feedback and regression, one presentation slice at a time.
+
+
+## 19. 2026-10-11 Shared-02 Optional Exploration Signpost
+
+### Current batch
+- Added a Wukong dialogue node to the production SHARED-02 sequence to point players toward map-based optional rumors while explicitly naming Eagle Sorrow as the next mainline destination.
+- Regression in combat/test_shared_event_sequences.gd runs the production EventRunner and asserts the signpost mentions the map, rumors, and Eagle Sorrow.
+- Implementation head `b70ee0ff9ffc6e95e556b6d37707dc93c45e4a75` passed [Godot Runtime run 38128336254](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38128336254), with `RUNTIME_SUITE_PASS tests=47`. This status-only follow-up records the observed result; its own CI must complete before the PR is marked ready.
+
+### Next handoff
+After CI passes, inspect the World Map/rumor affordances themselves. Keep optional activities non-blocking and do not confuse optional bounty content with the planned full Yellow Wind Ridge mainline.

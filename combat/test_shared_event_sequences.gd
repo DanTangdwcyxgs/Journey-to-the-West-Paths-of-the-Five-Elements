@@ -46,6 +46,7 @@ static func run_all() -> Dictionary:
 	var choice_nodes := 0
 	var battle_handoffs := 0
 	var world_moves := 0
+	var exploration_signpost_seen := false
 
 	for sequence_id in SHARED_SEQUENCE_IDS:
 		var definition := EventSequenceManager.get_definition(sequence_id)
@@ -71,6 +72,12 @@ static func run_all() -> Dictionary:
 			var kind := str(action.get("kind", ""))
 			match kind:
 				EventRunner.DIALOGUE:
+					if sequence_id == "SHARED-02-EARLY-PILGRIMAGE-SEQUENCE" and str(action.get("node_id", "")) == "exploration_signpost":
+						var signpost_text := str(action.get("text", ""))
+						assert(signpost_text.find("地图") >= 0, "Shared-02 exploration signpost should point players to the map")
+						assert(signpost_text.find("传闻") >= 0, "Shared-02 exploration signpost should mention optional rumors")
+						assert(signpost_text.find("鹰愁涧") >= 0, "Shared-02 signpost should preserve the next mainline destination")
+						exploration_signpost_seen = true
 					action = runner.complete_action()
 				EventRunner.WAIT:
 					var seconds := float(action.get("seconds", -1.0))
@@ -117,6 +124,7 @@ static func run_all() -> Dictionary:
 	assert(choice_nodes == 6)
 	assert(battle_handoffs == 3)
 	assert(world_moves == 5)
+	assert(exploration_signpost_seen, "Shared-02 should signpost optional exploration without obscuring the Eagle Sorrow mainline")
 	return {
 		"passed": true,
 		"executed_sequences": completed_sequences,
