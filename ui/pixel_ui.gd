@@ -9,6 +9,15 @@ const GOLD := Color("d8aa57")
 const PAPER := Color("d9eee9")
 const MUTED := Color("81979a")
 
+## Load the bundled CJK font when available; otherwise use Godot's engine fallback.
+## A missing optional font must not emit a missing-resource error during native/headless runs.
+static func load_ui_font(resource_path: String = FONT_PATH) -> Font:
+	if ResourceLoader.exists(resource_path):
+		var loaded_font := load(resource_path) as Font
+		if loaded_font != null:
+			return loaded_font
+	return ThemeDB.fallback_font
+
 static func _box(bg: Color, border: Color, width := 1) -> StyleBoxFlat:
 	var box := StyleBoxFlat.new()
 	box.bg_color = bg
@@ -27,7 +36,7 @@ static func _box(bg: Color, border: Color, width := 1) -> StyleBoxFlat:
 
 static func build_theme() -> Theme:
 	var theme := Theme.new()
-	var font := load(FONT_PATH) as Font
+	var font: Font = load_ui_font()
 	if font != null:
 		theme.default_font = font
 	theme.default_font_size = 18

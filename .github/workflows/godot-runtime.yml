@@ -13,6 +13,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
+      - name: Download CJK UI font
+        run: |
+          mkdir -p fonts
+          curl -fL --retry 3 --retry-all-errors \
+            "https://raw.githubusercontent.com/notofonts/noto-cjk/main/Sans/SubsetOTF/SC/NotoSansSC-Regular.otf" \
+            -o fonts/NotoSansSC-Regular.otf
+          test -s fonts/NotoSansSC-Regular.otf
+
       - name: Setup Godot
         uses: chickensoft-games/setup-godot@v2
         with:

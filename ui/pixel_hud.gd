@@ -18,7 +18,7 @@ func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	z_index = 200
 	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-	font = load(FONT_PATH) as Font
+	font = PixelUI.load_ui_font(FONT_PATH)
 	_process_scene()
 
 func _process(_delta: float) -> void:
