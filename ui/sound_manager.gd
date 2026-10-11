@@ -5,47 +5,33 @@ const MIX_RATE := 44100.0
 const BUS_NAME := "SFX"
 
 var _player: AudioStreamPlayer
-var _stream: AudioStreamGenerator
-var _playback: AudioStreamGeneratorPlayback
 var _connected_scene: Node = null
 var _connected_buttons: Array[Button] = []
+var _pending_wavs: Array[AudioStreamWAV] = []
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
-	_stream = AudioStreamGenerator.new()
-	_stream.mix_rate = MIX_RATE
-	_stream.buffer_length = 0.35
 	_player = AudioStreamPlayer.new()
-	_player.stream = _stream
 	_player.bus = BUS_NAME if AudioServer.get_bus_index(BUS_NAME) >= 0 else &"Master"
+	_player.finished.connect(_on_player_finished)
 	add_child(_player)
-	_player.play()
-	_playback = _player.get_stream_playback() as AudioStreamGeneratorPlayback
 	set_process(true)
 
 func _exit_tree() -> void:
 	_release_audio_resources()
 
-## Stop the active stream and release references to the generated playback.
-## Safe to call repeatedly; the autoload uses it during shutdown and regression tests
-## exercise it directly in a headless SceneTree.
+## Stop audio and release player resources. Safe to invoke repeatedly.
 func _release_audio_resources() -> void:
 	set_process(false)
 	_connected_buttons.clear()
 	_connected_scene = null
+	_pending_wavs.clear()
 
 	var player_to_free: AudioStreamPlayer = _player
+	_player = null
 	if is_instance_valid(player_to_free):
 		player_to_free.stop()
 		player_to_free.stream = null
-
-	# AudioStreamGeneratorPlayback is ObjectDB-managed; keeping the reference alive
-	# after stopping the player leaves it visible as a leaked instance at shutdown.
-	_playback = null
-	_stream = null
-	_player = null
-
-	if is_instance_valid(player_to_free):
 		if player_to_free.get_parent() == self:
 			remove_child(player_to_free)
 		player_to_free.free()
@@ -82,8 +68,12 @@ func play_attack(power: float = 1.0) -> void:
 
 func play_hit(power: float = 1.0) -> void:
 	var strength := clampf(power, 0.25, 2.0)
-	_play_noise(0.075, 0.08 * strength)
-	_play_notes([90.0, 65.0], 0.11, 0.08 * strength, 0.03)
+	var samples: Array[float] = []
+	_append_noise(samples, 0.075, 0.08 * strength)
+	_append_sine(samples, 90.0, 0.11, 0.08 * strength)
+	_append_silence(samples, 0.03)
+	_append_sine(samples, 65.0, 0.11, 0.08 * strength)
+	_queue_samples(samples)
 
 func play_victory() -> void:
 	_play_notes([523.25, 659.25, 783.99, 1046.5], 0.10, 0.10, 0.025)
@@ -92,37 +82,62 @@ func play_fail() -> void:
 	_play_notes([392.0, 330.0, 261.63, 196.0], 0.10, 0.09, 0.025)
 
 func _play_notes(frequencies: Array[float], note_duration: float, amplitude: float, gap: float) -> void:
-	if _playback == null:
-		return
+	var samples: Array[float] = []
 	for frequency in frequencies:
-		_fill_sine(frequency, note_duration, amplitude)
+		_append_sine(samples, frequency, note_duration, amplitude)
 		if gap > 0.0:
-			_fill_silence(gap)
+			_append_silence(samples, gap)
+	_queue_samples(samples)
 
-func _fill_sine(frequency: float, duration: float, amplitude: float) -> void:
+func _append_sine(samples: Array[float], frequency: float, duration: float, amplitude: float) -> void:
 	var frames := maxi(1, int(MIX_RATE * duration))
 	for i in range(frames):
-		if _playback.get_frames_available() <= 0:
-			return
 		var t := float(i) / MIX_RATE
 		var envelope := 1.0 - (float(i) / float(frames))
-		var sample := sin(TAU * frequency * t) * amplitude * envelope
-		_playback.push_frame(Vector2(sample, sample))
+		samples.append(sin(TAU * frequency * t) * amplitude * envelope)
 
-func _fill_silence(duration: float) -> void:
+func _append_silence(samples: Array[float], duration: float) -> void:
 	var frames := maxi(1, int(MIX_RATE * duration))
 	for _i in range(frames):
-		if _playback.get_frames_available() <= 0:
-			return
-		_playback.push_frame(Vector2.ZERO)
+		samples.append(0.0)
 
-func _play_noise(duration: float, amplitude: float) -> void:
+func _append_noise(samples: Array[float], duration: float, amplitude: float) -> void:
 	var frames := maxi(1, int(MIX_RATE * duration))
 	var rng := RandomNumberGenerator.new()
 	rng.randomize()
 	for i in range(frames):
-		if _playback.get_frames_available() <= 0:
-			return
 		var envelope := 1.0 - (float(i) / float(frames))
-		var sample := rng.randf_range(-1.0, 1.0) * amplitude * envelope
-		_playback.push_frame(Vector2(sample, sample))
+		samples.append(rng.randf_range(-1.0, 1.0) * amplitude * envelope)
+
+func _queue_samples(samples: Array[float]) -> void:
+	if _player == null or not is_instance_valid(_player) or samples.is_empty():
+		return
+	var pcm := PackedByteArray()
+	pcm.resize(samples.size() * 2)
+	for i in range(samples.size()):
+		var sample_value: int = clampi(roundi(clampf(samples[i], -1.0, 1.0) * 32767.0), -32768, 32767)
+		pcm.encode_s16(i * 2, sample_value)
+
+	var wav := AudioStreamWAV.new()
+	wav.format = AudioStreamWAV.FORMAT_16_BITS
+	wav.mix_rate = int(MIX_RATE)
+	wav.stereo = false
+	wav.data = pcm
+
+	if _player.playing:
+		_pending_wavs.append(wav)
+	else:
+		_start_wav(wav)
+
+func _start_wav(wav: AudioStreamWAV) -> void:
+	if _player == null or not is_instance_valid(_player) or wav == null:
+		return
+	_player.stream = wav
+	_player.play()
+
+func _on_player_finished() -> void:
+	if _player == null or not is_instance_valid(_player):
+		return
+	_player.stream = null
+	if not _pending_wavs.is_empty():
+		_start_wav(_pending_wavs.pop_front())
