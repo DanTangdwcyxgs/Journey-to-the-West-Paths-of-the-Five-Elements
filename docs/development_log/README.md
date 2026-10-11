@@ -10,6 +10,7 @@
 
 ## 最新记录
 
+- [`2026-10-11 — BattleUI Bounty Settlement Retry Button Regression`](2026-10-11-bounty-settlement-retry-button.md)
 - [`2026-10-11 — Atomic Bounty Settlement and Retry`](2026-10-11-bounty-settlement-atomic-retry.md)
 - [`2026-10-11 — Yellow Wind Cave Battle Roundtrip`](2026-10-11-yellow-wind-cave-battle-roundtrip.md)
 - [`2026-10-11 — Yellow Wind Ridge/Cave Stage Gate and Save Rollback`](2026-10-11-yellow-wind-ridge-cave-gates-rollback.md)
