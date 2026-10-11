@@ -382,7 +382,16 @@ Wukong progression 修正后的完整 Runtime 已成功通过上一轮验证；�
 - 通过生产 Shared-04 EventSequence 的 departure dialogue 进入 MOVE 节点，启动真实 Journey UI 移动过渡。
 - 断言保存失败后 NarrativeState 与原始 world location 完全恢复、当前位置仍为 FIVE_ELEMENTS_MOUNTAIN、EventSession 游标仍停留在 MOVE，且过渡锁解除、主按钮显示“重试移动”。
 - Shared-04 MOVE → WorldMap 成功路径已通过提交 `0aa7d6bffb22c03d05f51d95a09ee3e57f1927d5` 的 Runtime 40/40 和 Web Demo build/deploy；本次新增加载失败回归的精确 SHA 结果待 Actions。
-- 下一步：通过后回到完整 Wukong → Longma 产品垂直切片，检查剧情章节结束后探索/传闻/悬赏如何分支再回归主线。
+- Shared-04 Story MOVE save-failure rollback 的精确提交 `1b84b1abcf668b9d2d96412822fa00c7a43a9ecc` 的 Runtime run [38116864150](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38116864150) 通过并输出 `PASS res://combat/test_story_move_save_failure_rollback.gd`、`RUNTIME_SUITE_PASS tests=41`；Web Demo run [38116864144](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38116864144) build/deploy 成功。
+- 下一步：把可选探索/传闻/悬赏战的真实 UI 分支接入回归，并确认它不会推进共享主线或全球时间线。
+
+### Round 51 — 2026-10-11：WorldMap Rumor → Optional Bounty → Return
+- 发现 WorldMap 服务层已有 rumor discovery 逻辑，但尚无生产 SceneTree 回归证明玩家从 WorldMap 实际听取传闻、进入独立悬赏战并返回同一探索地点。
+- 新增 `combat/test_world_map_rumor_bounty_return.gd`：从保存的 BLACK_WIND_NORTH_PATH 起点打开真实 WorldMap，使用 Travel 控件前往 Eagle Sorrow，选中并听取 Yellow Fang rumor，检查 bounty discovery 持久化，点击悬赏进入 production BattleUI。
+- 使用生产胜利结算 callback 完成可选悬赏，再点击实际“返回地图”按钮；验证当前地点/发现状态保持、被击败目标写入 JourneyLog、active/pending handoff 清理。
+- 核心回归同时锁定剧情不变量：共享章节、全球时间线、已完成共享章节和招募 roster 在可选悬赏胜利后都必须与开战前一致。
+- 本批精确提交 Runtime/Web Demo 结果待 Actions 验证。
+- 下一步：通过后梳理黄风岭探索分支与固定主线章节推进的边界，再评估完整 Wukong → Longma → Memory vertical slice 的手感/演出缺口。
 
 ## 4. Wukong Origin 当前状态
 

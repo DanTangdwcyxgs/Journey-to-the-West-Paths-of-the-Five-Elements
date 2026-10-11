@@ -37,14 +37,14 @@ Location changes are durable world facts, while the event graph owns chronology.
 - EventSession must remain at MOVE and UI must offer retry.
 
 ## Godot Runtime status
-**PENDING** — only mark passed after Runtime and Web Demo succeed on the exact implementation commit.
+**PASS** — exact implementation commit `1b84b1abcf668b9d2d96412822fa00c7a43a9ecc`. Godot Runtime run [38116864150](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38116864150) passed with `PASS res://combat/test_story_move_save_failure_rollback.gd` and `RUNTIME_SUITE_PASS tests=41`. Web Demo run [38116864144](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38116864144) build and deploy passed.
 
 ## Known issues
 - The test forces save() to fail in memory; it does not simulate operating-system process termination during a disk write.
 - Free exploration still observes WorldMapManager's current timeline, milestone and connection gates.
 
 ## Next step
-After CI passes, inspect how the optional bounty/rumor branch near Black Wind North Path returns the player to the canonical Shared chapter sequence.
+Next, the optional rumor/bounty branch from Black Wind North Path to Eagle Sorrow is covered by `2026-10-11-world-map-rumor-bounty-return.md`; after that passes, inspect how exploration returns to the canonical Shared chapter sequence.
 
 ## Handoff point
 MOVE transaction rollback. NarrativeState and EventSession must agree: no durable location means no advanced story cursor.

@@ -10,6 +10,7 @@
 
 ## 最新记录
 
+- [`2026-10-11 — WorldMap Rumor to Optional Bounty Return`](2026-10-11-world-map-rumor-bounty-return.md)
 - [`2026-10-11 — Story MOVE Save-Failure Rollback`](2026-10-11-story-move-save-failure-rollback.md)
 - [`2026-10-11 — Story MOVE to World Map Persistence`](2026-10-11-story-move-world-map.md)
 - [`2026-10-11 — Origin Final Handoff Save-Failure Rollback`](2026-10-11-origin-final-handoff-rollback.md)
