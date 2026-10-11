@@ -414,7 +414,7 @@ MainMenu / Origin battle resume、Origin final END → Shared-01 + rollback、Ev
 - The suite still logged a missing-font diagnostic and Resource/RID teardown warnings. Those did not fail the run, but should be tracked separately.
 
 ### Handoff
-Battle resolution remains service-owned. Victory-result presentation is completed for this slice; MOVE / WAIT feedback is the active follow-up documented in section 16.
+Battle resolution remains service-owned. Victory-result presentation and MOVE / WAIT feedback have dedicated regression coverage. The next content-facing task is a Wukong → Longma vertical-slice pacing / presentation review: audit dialogue density, player-facing objectives, optional exploration signposting, and the boundary between canonical Shared progression and optional bounties. The Shared chapter bible has been aligned to current production IDs on branch `codex/shared-chapter-pacing-doc-alignment-2026-10-11`; its full Black Wind / Guanyin Monastery and Yellow Wind Ridge arcs remain planned, not shipped.
 
 ## 16. 2026-10-10 Journey MOVE / WAIT Presentation
 
@@ -429,3 +429,10 @@ Battle resolution remains service-owned. Victory-result presentation is complete
 
 ### Next handoff
 Next implement END / chapter-completion feedback and regression, one presentation slice at a time.
+
+
+## 17. Shared Chapter Bible Alignment — Runtime Result
+
+- Exact implementation head 6cdca5773bdca9ecc7dc4824a32e0e30e08d88e5 passed Godot Runtime run 38121480379; the job log explicitly reports RUNTIME_SUITE_PASS tests=47.
+- PR #18 remains unmerged. The follow-up commit only records the already-observed result; its own CI must still complete before the PR is marked ready.
+- Continue with the separate Journey MOVE destination-label presentation regression on PR #19, then review the Shared-02 → Shared-03 pacing and exploration signposting.

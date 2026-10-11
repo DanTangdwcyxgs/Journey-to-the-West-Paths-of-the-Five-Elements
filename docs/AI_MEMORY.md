@@ -582,3 +582,12 @@ Wukong、Tang、Longma、Bajie、Wujing 五条 Origin Route 均已完成首轮 S
 
 任何下一轮继续：
 `实现 → regression → Godot Runtime → development log → AI_MEMORY`。
+
+
+### Round 62 — 2026-10-11：Shared chapter pacing / canon alignment
+- 接手后核对上一轮 bounty retry log，确认上一轮工作内容、文件、Runtime 48/48 与下一步都已记录；PR #17 仍是独立开放 PR，未合并 main。
+- 对照 `data/narrative/shared_chapters.json`、`data/narrative/event_sequences.json`、`data/world/world_map.json` 与 `docs/shared_pilgrimage_chapter_bible.md`，发现圣经的 Shared-01/02 描述落后于生产章节顺序。
+- 文档现已对齐生产事实：Shared-01 五行山、Shared-02 师徒初行、Shared-03 鹰愁涧/白龙马招募、Shared-04 黑风山北道前奏；完整黑风山/观音禅院与完整黄风岭仍明确标注为目标设计，不伪装成已实现内容。
+- 补充 pacing 原则：招募后用短章节建立队伍关系；可选悬赏不推进 Shared chronology；WAIT 只负责过渡；完整主线战役与黄风洞可选悬赏必须区分。
+- 本批仅修改文档，独立分支 `codex/shared-chapter-pacing-doc-alignment-2026-10-11`；精确实现 head `6cdca5773bdca9ecc7dc4824a32e0e30e08d88e5` 的 Runtime run [38121480379](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38121480379) 成功，日志确认 `RUNTIME_SUITE_PASS tests=47`。后续状态记录提交只更新验证文档。
+- 下一步：通过 Runtime 后审查 Wukong → Longma vertical slice 的对白密度、玩家目标提示、可选探索标识与主线/悬赏区分，再实现一项有回归测试的小改进。
