@@ -443,8 +443,8 @@ Wukong progression 修正后的完整 Runtime 已成功通过上一轮验证；�
 - 黄风岭每个 Choice/Event 现在通过完整 NarrativeState snapshot + Save 提交；失败恢复状态、保留当前阶段并给出重试提示。进入黄风洞先提交 YELLOW_WIND_GATE_OPEN，只有保存成功才切场景。
 - 黄风洞检查 gate milestone 与当前位置后才允许进入；CAVE_MOUTH / SAND_ALTAR 的房间/选择进度也改成 save boundary 失败回滚，失败后房间和操作保持可重试。
 - 新增 SceneTree 回归验证阶段锁、真实 UI choice/event 按钮、Stage 入口 gate 的存档失败/重试、未开 gate 直接进洞被拒绝，以及 Cave room/choice 在保存失败后 NarrativeState 和房间游标回滚。
-- 本批 Runtime/Web Demo 精确 SHA 状态待 Actions 验证；suite 从 44 项增至 45 项。
-- 下一步：通过后检查洞内普通遭遇/妖王胜利与探索游标的同存档恢复，并继续打磨支线与 Shared 主线的返回节奏。
+- 精确提交 `30f727d181df9b056c2abfb5e8731dcdd2e45840` 的 Godot Runtime run [38120240661](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38120240661) 通过，输出 `PASS res://combat/test_yellow_wind_ridge_cave_progression.gd` 与 `RUNTIME_SUITE_PASS tests=45`；同一 SHA 的 Web Demo run [38120240657](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38120240657) build/deploy 均成功。
+- 下一步：补全洞内普通遭遇/妖王胜利与探索游标的同存档恢复，并继续打磨支线与 Shared 主线的返回节奏。
 
 ## 4. Wukong Origin 当前状态
 

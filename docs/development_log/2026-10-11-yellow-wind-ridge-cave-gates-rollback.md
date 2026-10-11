@@ -46,14 +46,14 @@ These controls form the next part of the first Vertical Slice. A UI that referen
 - Tests that the cave cannot be entered directly before the saved gate is opened.
 
 ## Godot Runtime status
-**PENDING** — run Godot Runtime and Web Demo on the exact implementation SHA before marking this batch green.
+**PASS** — exact implementation commit `30f727d181df9b056c2abfb5e8731dcdd2e45840`. Godot Runtime run [38120240661](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38120240661) passed with `PASS res://combat/test_yellow_wind_ridge_cave_progression.gd` and `RUNTIME_SUITE_PASS tests=45`. Web Demo run [38120240657](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38120240657) completed successfully; both build and deploy jobs passed.
 
 ## Known issues
 - This batch does not yet run a fully interactive Yellow Wind Cave battle route in one smoke. Existing BattleUI supports returning normal encounters to the cave and persists a cave-room completion marker on victory; the boss route still requires a dedicated scene smoke.
 - Boss battle turns remain outside this test; this is progression/access/persistence validation rather than combat balance.
 
 ## Next step
-After this batch passes, add a production scene smoke through the cave's normal encounter → return → Yellow Wind King battle → return, then evaluate side-story pacing/feedback before adding more systems.
+Next add a production scene smoke through the cave's normal encounter → return → Yellow Wind King battle → return, then evaluate side-story pacing/feedback before adding more systems.
 
 ## Handoff point
 Yellow Wind Ridge and Cave progression gates. Keep Yellow Wind Ridge optional: it must not advance the canonical Shared Journey chapter or timeline by itself.
