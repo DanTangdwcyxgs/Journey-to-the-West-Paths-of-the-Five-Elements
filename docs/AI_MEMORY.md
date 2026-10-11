@@ -360,8 +360,15 @@ Wukong progression 修正后的完整 Runtime 已成功通过上一轮验证；�
 - 修复终章 END：完成最后一个 Origin 章节后立即调用 `NarrativeManager.handoff_origin_to_shared()`，初始化 canonical roster，保存 handoff milestone / timeline / first Shared chapter，并向玩家显示进入共享西游的下一章提示。
 - 将非战斗 Origin END 完成和 handoff 置于同一保存边界：保存失败时恢复完整 NarrativeState 快照并保留 END 会话供玩家重试；handoff 拒绝时也回滚，不留下只有 ROUTE_COMPLETE 却没有 Shared 章节的半成品状态。
 - 新增 `combat/test_origin_final_shared_handoff.gd`：用 chapter-manager fixture 将存档定位到 WUK-15，再从生产 MainMenu Continue 进入真实 Journey，推进 WUK-15 EventSequence 到 END，断言 Shared-01 / WUKONG_RECRUITED / canonical roster 已提交；重新载入存档并使用真实 Journey action 启动 Shared-01 production EventSequence。
-- 上一批 Shared-03 recruitment → Memory integration 已通过 Runtime 37/37 与 Web Demo；本批精确 SHA 的 Runtime/Web Demo 结果待 Actions 验证。
+- 本批精确提交 `deba063d42c46156b37b313f8b59863d2e558949` 的 Godot Runtime run [38116199981](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38116199981) 通过并记录 `PASS res://combat/test_origin_final_shared_handoff.gd`、`RUNTIME_SUITE_PASS tests=38`；Web Demo run [38116199980](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38116199980) build 与 deploy 都成功。
 - 下一步：验证本批后，再做 Wukong 全路线的 scene-assisted smoke，并审视 Shared-01/02 的实际旅途 UI 与世界地图入口如何衔接。
+
+### Round 48 — 2026-10-11：Final Origin Handoff Save-Failure Rollback
+- 自检上一批的事务边界发现：handoff 已成功后，如果 `NarrativeManager.save()` 失败，代码恢复了 NarrativeState，但 `PartyManager` 已先按最终招募名单重建，可能与回滚后的 NarrativeState 不一致。
+- 在 handoff 拒绝与 save 失败两个 rollback 分支中同步调用 `party.initialize_from_saved_state()`，让显示层 roster / formation 跟回恢复后的 NarrativeState。
+- 新增 `combat/test_origin_final_shared_handoff_rollback.gd`：使用 save() 总是失败的测试 manager，将真实 WUK-15 EventSequence 推到 END 后触发 production `_finish_event_session()`；断言一次 save 尝试后完整 NarrativeState 与 PartyManager 都恢复、共享章节仍为空、WUK-15 cursor 未丢失，而且 END session 保持可重试。
+- 上一批 WUK-15 → Shared-01 的精确 SHA Runtime 38/38 与 Web Demo build/deploy 已通过；本批新回归的 Runtime/Web Demo 结果等待 Actions。
+- 下一步：通过后继续检查 Wukong 到 Eagle Sorrow 的实际世界地图/旅途入口连接，开始把故事 MOVE 与可交互探索区域串起来。
 
 ## 4. Wukong Origin 当前状态
 

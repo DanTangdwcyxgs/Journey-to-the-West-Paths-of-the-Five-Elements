@@ -40,7 +40,7 @@ The individual manager and SceneTree tests covered both ends of the handoff but 
 - Runtime suite expected registered entries: 38.
 
 ## Godot Runtime status
-**PENDING** — do not claim this batch passed until Runtime and Web Demo finish on the exact implementation SHA.
+**PASS** — exact implementation commit `deba063d42c46156b37b313f8b59863d2e558949`. Godot Runtime run [38116199981](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38116199981) passed with `PASS res://combat/test_origin_final_shared_handoff.gd` and `RUNTIME_SUITE_PASS tests=38`. Web Demo run [38116199980](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38116199980) build and deploy also passed.
 
 ## Known issues
 - Earlier Origin chapters are seeded through the authoritative chapter manager rather than replayed through UI in this smoke. Existing MainMenu → WUK-02 smoke covers a real Origin battle/resume path; the new smoke targets the final boundary specifically.
@@ -48,7 +48,7 @@ The individual manager and SceneTree tests covered both ends of the handoff but 
 - The batch does not yet cover every Wukong Origin chapter in one uninterrupted UI session.
 
 ## Next step
-After CI passes, add save-failure rollback coverage for final Origin handoff if needed, then assess the full Wukong-to-Longma Vertical Slice and the connection between Journey story beats and World Map exploration.
+Final Origin handoff is green. The save-failure follow-up is tracked in `2026-10-11-origin-final-handoff-rollback.md`; after it passes, assess the full Wukong-to-Longma Vertical Slice and the connection between Journey story beats and World Map exploration.
 
 ## Handoff point
 Origin route completion and first Shared chapter entry. Preserve one fixed Journey to the West chronology; do not treat a completed Origin route as a completed whole game.

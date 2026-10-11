@@ -262,7 +262,7 @@ Runner 输出的 `battle` 只生成 `EncounterHandoff` 数据，不直接启动 
 最高优先级：
 
 1. 第一条完整可玩 Vertical Slice 仍需补齐探索/区域进入与最终角色正式 PNG/WebP 资产。图片资产仍受生成额度限制，不把概念展示图当正式资源。
-2. Wukong Origin → Shared 的最后一个真实 UI 边界正在补回归：最终 WUK-15 END 必须立即提交 Origin → Shared handoff，而不能只标记 ROUTE_COMPLETE 后留下空的 current_shared_chapter。本批精确 SHA CI 完成前保持 Pending。
+2. Wukong WUK-15 END → Shared-01 的真实 UI 交接已在提交 `deba063d42c46156b37b313f8b59863d2e558949` 通过 Runtime run [38116199981](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38116199981)（38/38）与 Web Demo run [38116199980](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38116199980)。当前补强最终交接的保存失败回滚，确保 NarrativeState 与 PartyManager 同步恢复；新批次精确 SHA CI 完成前保持 Pending。
 3. Memory 已有只读对白回放与完成保存/失败回滚；Shared-03 的真实招募 → LONGMA-02 回忆解锁/播放/重载路径已通过 Runtime 与 Web Demo。接下来重点是整合 Origin 终点 handoff 与真实共享章节进入。
 4. 五条 Origin Route 的 EventSequence 迁移、统一质量门及 namespace 元数据一致性已有实现；新增 cross-reference / route-isolation 缺口按具体回归补强。
 5. 非战斗 reward / move / wait 的副作用继续留在 RewardService / WorldActionService，不得移入 EventRunner。
@@ -329,7 +329,7 @@ Runner 输出的 `battle` 只生成 `EncounterHandoff` 数据，不直接启动 
 
 ### Batch B — Journey Presentation & Runtime
 
-Journey END / chapter completion、MainMenu → WUK-02 real battle / resume / END / Save、production EventSequence catalog + namespace quality gate、BattleResolutionService save-failure rollback、Shared-03/05/07 real scene smoke、Memory read-only playback and save-failure retry 均已通过精确提交的 Runtime/Web Demo。Shared-03 实际招募 → LONGMA-02 Memory 解锁/回放/重载已在提交 `ca1112c514823c159de8884cde345d79361fa041` 通过 Runtime run [38107440411](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38107440411)（37/37）与 Web Demo run [38107440351](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38107440351)。自检又发现 OriginSequenceJourneyScreen 完成最后一章时只标记 route complete，没有调用 Origin → Shared handoff；本批新增真实 WUK-15 END → Shared-01 回归和事务回滚，本批精确 SHA CI 完成前保持 Pending。
+Journey END / chapter completion、MainMenu → WUK-02 real battle / resume / END / Save、EventSequence content/namespace quality gates、BattleResolutionService save-failure rollback、Shared-03/05/07 real scene smoke、Memory read-only playback and save-failure retry、Shared-03 recruitment → LONGMA-02 Memory 与 WUK-15 final END → Shared-01 production handoff 均已通过精确 SHA Runtime/Web Demo。WUK-15 handoff 的 Runtime run [38116199981](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38116199981) 通过 38/38，Web Demo run [38116199980](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38116199980) build/deploy 成功。当前新增 final handoff save-failure rollback 回归，并确保派生 PartyManager roster 同步恢复；本批精确 SHA CI 完成前保持 Pending。
 
 ### Batch C — Narrative execution services
 
