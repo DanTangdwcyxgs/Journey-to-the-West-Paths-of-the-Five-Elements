@@ -47,7 +47,7 @@ Atomic service rollback alone does not prove the production button re-enters set
 - Web Demo was not triggered for this feature branch: `.github/workflows/web-demo.yml` runs on pushes to `main` or manual dispatch only. No web export/deploy pass is claimed for this PR.
 
 ## Next step
-The exact implementation commit passed Godot Runtime. Make the PR ready for review after the latest documentation commit's Runtime check; Web Demo validation remains tied to main/manual workflow dispatch.
+The implementation commit `c3f972ba2039c3ac1a78ad432414724d214e66b0` passed Runtime run [38121039084](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38121039084), and the latest documentation head `c7c6186bcab56c52c02f47e3e8ad5d0a92eba8fb` also passed Runtime run [38121120915](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38121120915), both with `RUNTIME_SUITE_PASS tests=48`. PR [#17](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/pull/17) is ready for review. After owner review, continue with the side-route pacing and Presentation review described in `AI_HANDOFF.md`. Web Demo validation remains tied to main/manual workflow dispatch.
 
 ## Handoff point
 Keep the UI responsible only for retry presentation/orchestration. Do not move transaction logic out of `BountyRewardService`.

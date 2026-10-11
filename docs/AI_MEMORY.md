@@ -590,6 +590,7 @@ Wukong、Tang、Longma、Bajie、Wujing 五条 Origin Route 均已完成首轮 S
 - 在 `ui/battle_ui.gd` 给结算流程增加可覆写测试边界；生产默认实现仍调用 NarrativeManager、BountyRewardService 与 BountyEncounterState，不改变事务所有权。
 - 新增 `combat/test_bounty_settlement_retry_button.gd` 并接入 `tests/runtime_suite.gd`。测试模拟首次结算失败，再发出真实 `Button.pressed` 信号，验证二次尝试成功、成功提交仅一次、状态和结果文案更新，且战斗回合计数不变。
 - 新增 `docs/development_log/2026-10-11-bounty-settlement-retry-button.md` 并更新开发日志索引、AI_HANDOFF 下一接手点。
-- 实现提交 `c3f972ba2039c3ac1a78ad432414724d214e66b0` 的 Godot Runtime run [38121039084](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38121039084) 成功，日志确认新增测试 PASS，且 `RUNTIME_SUITE_PASS tests=48`。
+- 实现提交 `c3f972ba2039c3ac1a78ad432414724d214e66b0` 的 Godot Runtime run [38121039084](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38121039084) 成功；日志确认新增测试 PASS 与 `RUNTIME_SUITE_PASS tests=48`。
+- 文档更新 head `c7c6186bcab56c52c02f47e3e8ad5d0a92eba8fb` 的 Runtime run [38121120915](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38121120915) 同样通过 48/48。
 - Web Demo workflow 只响应 main push 或手动 dispatch，本次 feature PR 未触发 Web Demo；没有宣称 Web export/deploy 已通过。
-- 下一步：核对文档更新后的 PR head Runtime；随后将 PR 交给负责人审阅，再按 AI_HANDOFF 转向支线节奏与 Presentation 评审。
+- PR [#17](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/pull/17) 已标记 Ready for review。下一步：完成负责人审阅后转向支线节奏与 Presentation 评审。
