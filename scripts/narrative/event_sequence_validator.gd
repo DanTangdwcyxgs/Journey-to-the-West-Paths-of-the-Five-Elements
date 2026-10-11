@@ -26,13 +26,20 @@ static func validate(definition: EventSequenceDefinition) -> Dictionary:
 	var origin_route_id := _origin_route_id_for_chapter(origin_routes, chapter_id)
 	if chapter_id.is_empty():
 		errors.append("sequence missing chapter_id")
+	elif namespace_id == "SHARED":
+		var shared_chapter := SharedJourneyManager.get_chapter(chapter_id)
+		if shared_chapter.is_empty():
+			errors.append("shared sequence chapter not found: %s" % chapter_id)
+		else:
+			for metadata_error in _namespace_metadata_errors(namespace_id, chapter_id, shared_chapter):
+				errors.append(metadata_error)
 	else:
-		if namespace_id == "SHARED":
-			var shared_chapter := SharedJourneyManager.get_chapter(chapter_id)
-			if shared_chapter.is_empty():
-				errors.append("shared sequence chapter not found: %s" % chapter_id)
-		elif origin_route_id.is_empty():
+		if origin_route_id.is_empty():
 			errors.append("origin sequence chapter not found: %s" % chapter_id)
+		else:
+			var origin_chapter := _origin_chapter_for_id(origin_routes, chapter_id)
+			for metadata_error in _namespace_metadata_errors(namespace_id, chapter_id, origin_chapter):
+				errors.append(metadata_error)
 
 	var encounter_manager := EncounterManager.new()
 	var origin_manager := OriginEventManager.new()
@@ -78,6 +85,36 @@ static func validate(definition: EventSequenceDefinition) -> Dictionary:
 					errors.append("origin encounter %s source %s does not match route %s" % [encounter_id, str(encounter_definition.get("source", "")), origin_route_id])
 
 	return {"valid": errors.is_empty(), "errors": errors}
+
+static func _namespace_metadata_errors(namespace_id: String, chapter_id: String, chapter: Dictionary) -> Array[String]:
+	var errors: Array[String] = []
+	if chapter.is_empty():
+		return errors
+	var chapter_type := str(chapter.get("chapter_type", "")).strip_edges().to_upper()
+	if namespace_id == "SHARED":
+		if chapter_type == "ORIGIN":
+			errors.append("shared sequence chapter %s has conflicting chapter_type ORIGIN" % chapter_id)
+		if chapter.has("is_origin") and bool(chapter.get("is_origin")):
+			errors.append("shared sequence chapter %s is marked is_origin=true" % chapter_id)
+		if chapter.has("is_shared") and not bool(chapter.get("is_shared")):
+			errors.append("shared sequence chapter %s is marked is_shared=false" % chapter_id)
+	elif namespace_id == "ORIGIN":
+		if chapter_type == "SHARED_JOURNEY":
+			errors.append("origin sequence chapter %s has conflicting chapter_type SHARED_JOURNEY" % chapter_id)
+		if chapter.has("is_origin") and not bool(chapter.get("is_origin")):
+			errors.append("origin sequence chapter %s is marked is_origin=false" % chapter_id)
+		if chapter.has("is_shared") and bool(chapter.get("is_shared")):
+			errors.append("origin sequence chapter %s is marked is_shared=true" % chapter_id)
+	return errors
+
+static func _origin_chapter_for_id(routes: Dictionary, chapter_id: String) -> Dictionary:
+	for route in routes.values():
+		if not route is Dictionary:
+			continue
+		for chapter in route.get("chapters", []):
+			if chapter is Dictionary and str(chapter.get("id", "")) == chapter_id:
+				return chapter.duplicate(true)
+	return {}
 
 static func _origin_chapter_exists(routes: Dictionary, chapter_id: String) -> bool:
 	return not _origin_route_id_for_chapter(routes, chapter_id).is_empty()

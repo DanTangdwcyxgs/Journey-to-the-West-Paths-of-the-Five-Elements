@@ -39,7 +39,7 @@ The previous bridge regression verified service interactions but could miss bugs
 - The test is isolated in a child Godot process by the runtime suite and restores files it touches.
 
 ## Godot Runtime status
-**PENDING** — wait for the exact implementation commit to pass the Godot Runtime workflow. The expected suite entry count becomes 36; do not mark it green based on the previous 35-entry suite.
+**PASS** — exact implementation commit `895ee2b3324aae7cde21a6a41b74c882dfae7227`. Godot Runtime run [38106171552](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38106171552) passed with `PASS res://combat/test_shared_battle_scene_transition.gd` and `RUNTIME_SUITE_PASS tests=36`. The same SHA's Web Demo run [38106171496](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38106171496) also passed.
 
 ## Known issues
 - The test prepares earlier chapters through canonical managers/resolution service; it starts each target battle from a valid saved prerequisite state rather than replaying the entire pilgrimage from chapter 01.
@@ -47,7 +47,7 @@ The previous bridge regression verified service interactions but could miss bugs
 - It does not simulate a process crash in the middle of OS-level file writes.
 
 ## Next step
-If the real scene-transition smoke passes, add an explicit consistency rule/test between chapter category fields (`chapter_type`, `is_origin`, `is_shared`) and EventSequence namespace. Then reassess the Wukong-to-Longma vertical slice and Memory entry point.
+The real scene-transition smoke passed. Chapter metadata / namespace consistency is the follow-up batch in `2026-10-11-event-sequence-namespace-metadata-consistency.md`; after that passes, reassess the Wukong-to-Longma vertical slice and Memory entry point.
 
 ## Handoff point
 Production UI / SceneTree integration. Keep EventRunner UI-independent and keep rewards, recruitment and shared chronology owned by the existing resolution / chapter managers.

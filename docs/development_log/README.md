@@ -10,6 +10,7 @@
 
 ## 最新记录
 
+- [`2026-10-11 — EventSequence Chapter Namespace Metadata Consistency`](2026-10-11-event-sequence-namespace-metadata-consistency.md)
 - [`2026-10-11 — Shared Recruitment Battle SceneTree Smoke`](2026-10-11-shared-battle-scene-transition-smoke.md)
 - [`2026-10-11 — Battle Resolution Save-Failure Rollback`](2026-10-11-battle-resolution-save-failure-rollback.md)
 - [`2026-10-11 — Full EventSequence Catalog Quality Gate`](2026-10-11-event-sequence-catalog-quality-gate.md)

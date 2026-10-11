@@ -295,11 +295,10 @@ Runner 输出的 `battle` 只生成 `EncounterHandoff` 数据，不直接启动 
 ### Sequence Content Quality Gate
 
 - `EventSequenceDefinition.validate()` 检查结构：节点 ID、节点类型、起点与图连接。
-- `EventSequenceValidator.validate()` 检查跨内容引用：namespace 仅允许 ORIGIN / SHARED；sequence chapter 必须存在于对应的 Origin Route / Shared Journey 内容；choice event 必须存在于匹配的事件目录；battle encounter 必须存在；battle 的 source chapter 必须与 sequence chapter 一致；Shared encounter 必须匹配章节的 canonical encounter；Origin battle 的 route 与 encounter source 必须匹配所属路线。
-- `EventSequenceManager` 会拒绝无效序列，并通过 `get_load_errors()` 暴露被拒绝的项目与重复 ID。
-- 本批 Runtime regression 已扩展为检查整个 production catalog 的加载错误，并逐个调用 cross-reference validator。实现提交 `0e3998318ea771cee07a3343bc82986e04c3a1e8` 的 Godot Runtime [38105696943](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38105696943) 已通过，`RUNTIME_SUITE_PASS tests=35`。
-
-剩余缺口：validator 尚未显式交叉检查章节上的 `chapter_type` / legacy `is_origin` / `is_shared` 标记是否与 sequence namespace 一致。当前先依靠章节是否存在于对应目录来约束 namespace，后续可添加一个独立 schema-consistency regression，避免把此缺口误报成已完成。
+- `EventSequenceValidator.validate()` 检查跨内容引用：namespace 仅允许 ORIGIN / SHARED；sequence chapter 必须存在于对应的 Origin Route / Shared Journey 内容；choice event 必须存在于匹配的事件目录；battle encounter 必须存在；battle source chapter 必须与 sequence chapter 一致；Shared encounter 必须匹配章节的 canonical encounter；Origin battle 的 route 与 encounter source 必须匹配所属路线。
+- Validator 同时检查章节中显式提供的 namespace 元数据：SHARED 章节不能声明为 ORIGIN、`is_origin=true` 或 `is_shared=false`；ORIGIN 章节不能声明为 `SHARED_JOURNEY`、`is_origin=false` 或 `is_shared=true`。Shared chapter 的 `RECRUITMENT` 与 `INTERLUDE` 属于有效类型，不会被误判为 ORIGIN。
+- Legacy `origin_chapters.json` 目前未提供 `chapter_type` / `is_origin` / `is_shared`；对于这些记录，Origin Route 目录归属仍是权威来源。缺失 legacy 字段本身不视为冲突。
+- `EventSequenceManager` 会拒绝无效序列，并通过 `get_load_errors()` 暴露被拒绝的项目与重复 ID。全 production catalog 校验已包含在 Runtime regression 中。
 
 ---
 
@@ -326,13 +325,11 @@ Runner 输出的 `battle` 只生成 `EncounterHandoff` 数据，不直接启动 
 
 ### Batch A — Visual Vertical Slice
 
-2026-10-11 视觉分层、Journey END、CJK 字体回退、节点树生命周期、有限 WAV 音效、Main Menu → Journey → WUK-01 smoke，以及 Main Menu → WUK-02 Battle → resume → END/Save smoke 均已通过 Runtime/Web Demo（最近的稳定主线 suite 为 35 entries）。角色正式 PNG/WebP 仍受图像生成额度限制，暂不把概念图作为正式素材。
+2026-10-11 视觉分层、Journey END、CJK 字体回退、节点树生命周期、有限 WAV 音效、Main Menu → Journey → WUK-01 smoke，以及 Main Menu → WUK-02 Battle → resume → END/Save smoke 均已通过 Runtime/Web Demo（已确认稳定主线 suite 为 35 entries）。角色正式 PNG/WebP 仍受图像生成额度限制，暂不把概念图作为正式素材。
 
 ### Batch B — Journey Presentation & Runtime
 
-Journey END / chapter-completion feedback、Main Menu → WUK-02 battle / resume / END / Save、完整 EventSequence production catalog 质量门与 BattleResolutionService save-failure rollback regression 均已有精确提交的 Runtime 验证；rollback 的 Runtime run [38105806758](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38105806758)（35/35）与 Web Demo run [38105806791](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38105806791) 通过。当前新增 Shared-03 / Shared-05 / Shared-07 三场招募战真实 SceneTree smoke：由 MainMenu Continue 进入 Journey，选择实际剧情选项、进入真实 BattleUI、使用生产结算与返回按钮，再恢复 EventSession 并走完 END；当前批次仍等待精确 SHA 的 Actions 结果。
-
-继续检查 Battle → EventSession resume → Journey 的真实 SceneTree 链路、Save/Load、重复结算保护和失败恢复。所有改动都需要对应 regression 与本提交 SHA 的 Actions 验证。
+Journey END / chapter-completion feedback、Main Menu → WUK-02 battle / resume / END / Save、完整 EventSequence production catalog 质量门及 BattleResolutionService save-failure rollback regression 均已通过对应 SHA 的 Runtime / Web Demo。Shared-03 / Shared-05 / Shared-07 三场招募战的真实 SceneTree smoke 已通过 Runtime run [38106171552](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38106171552)（36/36，包含新 smoke）和 Web Demo run [38106171496](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38106171496)。当前继续补全 chapter metadata 与 EventSequence namespace 的显式一致性校验；本批精确提交 Actions 完成前保持 Pending。
 
 ### Batch C — Narrative execution services
 

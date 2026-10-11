@@ -329,8 +329,16 @@ Wukong progression 修正后的完整 Runtime 已成功通过上一轮验证；�
 - 每场由生产 MainMenu 的 Continue 载入具备 canonical 前置状态的存档；使用 Journey 的真实按钮推进到 choice，点击实际 choice button 后由生产代码切入 `ui/battle_ui.tscn`。
 - 调用生产 `NarrativeBattleUI._on_combat_finished` 进入原子结算边界，点击真实的“继续旅途”按钮切回 Journey，断言 EventSession 恢复到战后对话并走到 END。
 - 回归检查下一共享章节、招募角色、已完成章节，以及 END 后 active / pending handoff 清理和禁止重复推进。测试会备份并恢复 `user://narrative_slot_1.json`、`active_bounty.json` 与 `pending_event_resume.json`。
-- 本批精确提交 Godot Runtime / Web Demo 结果待 Actions 完成后登记；不能用旧 Shared bridge 通过记录替代本次真实 scene transition 结果。
+- 精确提交 `895ee2b3324aae7cde21a6a41b74c882dfae7227` 已通过 Godot Runtime run [38106171552](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38106171552)；日志确认 `PASS res://combat/test_shared_battle_scene_transition.gd` 与 `RUNTIME_SUITE_PASS tests=36`。同一 SHA 的 Web Demo run [38106171496](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38106171496) 也已通过。
 - 下一步：若此 smoke 通过，继续补章节分类字段与 sequence namespace 的显式一致性校验，再评估完整垂直切片中的 Memory 进入路径。
+
+### Round 44 — 2026-10-11：EventSequence Chapter Namespace Metadata Consistency
+- `EventSequenceValidator` 现在除了检查 sequence chapter 的目录归属，也会检查章节显式提供的 `chapter_type`、`is_origin` 与 `is_shared` 是否同 sequence namespace 冲突。
+- Shared 允许 `SHARED_JOURNEY`、`RECRUITMENT` 与 `INTERLUDE` 等有效类别；不是把所有 Shared chapter 错误地要求为 `SHARED_JOURNEY`。
+- Legacy Origin route chapters 当前没有这些 metadata 字段，继续以对应 Origin Route 目录归属作为权威；字段缺失不会被当成矛盾。
+- 新增双向矛盾 fixture 检查，并让完整 production catalog regression 执行新校验。
+- 本批实现提交的 Runtime / Web Demo 结果等待 Actions；上一批 Shared 真实场景回归已在 SHA `895ee2b3324aae7cde21a6a41b74c882dfae7227` 的 Runtime/Web Demo 完成验证。
+- 下一步：若通过，评估完整 Wukong → Eagle Sorrow → Longma → Memory 的可玩垂直切片与 Memory 入口。
 
 ## 4. Wukong Origin 当前状态
 

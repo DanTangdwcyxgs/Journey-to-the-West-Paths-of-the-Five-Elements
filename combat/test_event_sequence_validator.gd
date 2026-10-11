@@ -29,6 +29,28 @@ static func run_all() -> Dictionary:
 		assert(validation.get("valid", false), "%s -> %s" % [sequence_id, str(validation)])
 		validated_count += 1
 
+	var contradictory_shared_metadata := EventSequenceValidator._namespace_metadata_errors("SHARED", "TEST-SHARED", {
+		"id": "TEST-SHARED",
+		"chapter_type": "ORIGIN",
+		"is_origin": true,
+		"is_shared": false,
+	})
+	assert(contradictory_shared_metadata.size() == 3, "shared namespace should reject every explicit origin metadata contradiction: %s" % str(contradictory_shared_metadata))
+	assert("chapter_type ORIGIN" in str(contradictory_shared_metadata))
+	assert("is_origin=true" in str(contradictory_shared_metadata))
+	assert("is_shared=false" in str(contradictory_shared_metadata))
+
+	var contradictory_origin_metadata := EventSequenceValidator._namespace_metadata_errors("ORIGIN", "TEST-ORIGIN", {
+		"id": "TEST-ORIGIN",
+		"chapter_type": "SHARED_JOURNEY",
+		"is_origin": false,
+		"is_shared": true,
+	})
+	assert(contradictory_origin_metadata.size() == 3, "origin namespace should reject every explicit shared metadata contradiction: %s" % str(contradictory_origin_metadata))
+	assert("chapter_type SHARED_JOURNEY" in str(contradictory_origin_metadata))
+	assert("is_origin=false" in str(contradictory_origin_metadata))
+	assert("is_shared=true" in str(contradictory_origin_metadata))
+
 	var invalid := EventSequenceDefinition.new({
 		"id": "TEST-EVENT-SEQUENCE-INVALID-REF",
 		"chapter_id": "SHARED-03-EAGLE-SORROW",
@@ -107,4 +129,6 @@ static func run_all() -> Dictionary:
 		"origin_route_cross_reference_rejected": true,
 		"origin_route_presence_rejected": true,
 		"route_specific_catalog_validated": true,
+		"namespace_metadata_consistency_checked": true,
+		"chapter_metadata_mismatches_rejected": true,
 	}
