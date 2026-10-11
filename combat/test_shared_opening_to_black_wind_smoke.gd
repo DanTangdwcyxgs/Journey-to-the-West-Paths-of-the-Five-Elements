@@ -63,7 +63,6 @@ func _run_smoke() -> void:
 				_record(handoff_save.state.current_shared_chapter == "SHARED-01-FIVE-ELEMENTS", "Shared-01 handoff should survive an immediate save reload")
 				_record(handoff_save.state.current_origin_chapter.is_empty(), "handoff save should clear the active Origin chapter")
 		if journey != null:
-			if journey != null:
 			journey = await _drive_sequence(journey, "SHARED-01-FIVE-ELEMENTS-SEQUENCE", "TRUST_WUKONG", "FIVE_ELEMENTS_MOUNTAIN")
 			if journey != null:
 				_record(journey.narrative.state.current_shared_chapter == "SHARED-02-EARLY-PILGRIMAGE", "Shared-01 END should advance to Shared-02")
