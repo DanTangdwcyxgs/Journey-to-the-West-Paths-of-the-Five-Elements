@@ -324,6 +324,14 @@ Wukong progression 修正后的完整 Runtime 已成功通过上一轮验证；�
 - 精确提交 `c29702d199036be7a097339c762f61fa87eda933` 的 Godot Runtime run [38105806758](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38105806758) 通过，日志确认 `PASS res://combat/test_battle_resolution_service.gd` 和 `RUNTIME_SUITE_PASS tests=35`；同一 SHA 的 Web Demo run [38105806791](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38105806791) 通过。
 - 下一步：修复任何被回归暴露的真实问题；通过后扩展 Shared 招募战的真实 SceneTree 场景链。
 
+### Round 43 — 2026-10-11：Shared Recruitment Battle Real SceneTree Smoke
+- 在保留既有跨模块 Shared battle bridge 回归的同时，新增 `combat/test_shared_battle_scene_transition.gd`，验证 Shared-03 / Shared-05 / Shared-07 三场招募战的真实 UI 路径。
+- 每场由生产 MainMenu 的 Continue 载入具备 canonical 前置状态的存档；使用 Journey 的真实按钮推进到 choice，点击实际 choice button 后由生产代码切入 `ui/battle_ui.tscn`。
+- 调用生产 `NarrativeBattleUI._on_combat_finished` 进入原子结算边界，点击真实的“继续旅途”按钮切回 Journey，断言 EventSession 恢复到战后对话并走到 END。
+- 回归检查下一共享章节、招募角色、已完成章节，以及 END 后 active / pending handoff 清理和禁止重复推进。测试会备份并恢复 `user://narrative_slot_1.json`、`active_bounty.json` 与 `pending_event_resume.json`。
+- 本批精确提交 Godot Runtime / Web Demo 结果待 Actions 完成后登记；不能用旧 Shared bridge 通过记录替代本次真实 scene transition 结果。
+- 下一步：若此 smoke 通过，继续补章节分类字段与 sequence namespace 的显式一致性校验，再评估完整垂直切片中的 Memory 进入路径。
+
 ## 4. Wukong Origin 当前状态
 
 Production Sequence：`WUK-01~15` 全部存在。

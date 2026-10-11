@@ -326,11 +326,11 @@ Runner 输出的 `battle` 只生成 `EncounterHandoff` 数据，不直接启动 
 
 ### Batch A — Visual Vertical Slice
 
-2026-10-11 视觉分层、Journey END、CJK 字体回退、节点树释放、有限 WAV 音效与 Main Menu → Journey → WUK-01 入口 smoke 已通过 Runtime/Web Demo；Runtime suite 35 tests。针对完整 Battle → resume → END/Save 新增 Main Menu → WUK-02 SceneTree 回归，等待本提交 CI 验证。角色正式 PNG/WebP 仍受图像生成额度限制，暂不把概念图作为正式素材。
+2026-10-11 视觉分层、Journey END、CJK 字体回退、节点树生命周期、有限 WAV 音效、Main Menu → Journey → WUK-01 smoke，以及 Main Menu → WUK-02 Battle → resume → END/Save smoke 均已通过 Runtime/Web Demo（最近的稳定主线 suite 为 35 entries）。角色正式 PNG/WebP 仍受图像生成额度限制，暂不把概念图作为正式素材。
 
 ### Batch B — Journey Presentation & Runtime
 
-Journey END / chapter-completion feedback、Main Menu → WUK-02 battle / resume / END / Save，以及完整 EventSequence production catalog 质量门已通过 Runtime。模拟 save failure 的 BattleResolutionService 回滚回归已通过精确提交 Runtime run [38105806758](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38105806758)（35/35）与 Web Demo run [38105806791](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38105806791）。下一步扩展 Shared 招募战真实 SceneTree 场景链，再进入 Camp / Relationship Prototype。
+Journey END / chapter-completion feedback、Main Menu → WUK-02 battle / resume / END / Save、完整 EventSequence production catalog 质量门与 BattleResolutionService save-failure rollback regression 均已有精确提交的 Runtime 验证；rollback 的 Runtime run [38105806758](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38105806758)（35/35）与 Web Demo run [38105806791](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38105806791) 通过。当前新增 Shared-03 / Shared-05 / Shared-07 三场招募战真实 SceneTree smoke：由 MainMenu Continue 进入 Journey，选择实际剧情选项、进入真实 BattleUI、使用生产结算与返回按钮，再恢复 EventSession 并走完 END；当前批次仍等待精确 SHA 的 Actions 结果。
 
 继续检查 Battle → EventSession resume → Journey 的真实 SceneTree 链路、Save/Load、重复结算保护和失败恢复。所有改动都需要对应 regression 与本提交 SHA 的 Actions 验证。
 
