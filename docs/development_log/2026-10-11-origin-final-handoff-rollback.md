@@ -34,14 +34,14 @@ Rollback must restore both authoritative narrative data and presentation-side pr
 
 ## Tests
 - Initial commit `bfa267ba1be413918189df9e4f94e7ff8886143f` failed Runtime because the scripted rollback insertion had inconsistent GDScript indentation at the handoff-rejected branch. That parse failure cascaded into tests that load `OriginSequenceJourneyScreen`; it was not a behavioral failure.
-- Follow-up commit fixes the indentation and explicitly restores PartyManager for the save-failure branch as well as the handoff-rejected branch.
+- Follow-up commit `efb1e7c1cfdfe6dd84fd5618bd0405c72f2f377f` fixes the indentation and explicitly restores PartyManager for the save-failure branch as well as the handoff-rejected branch. Exact-head Runtime and Web Demo are green.
 - New forced-save-failure regression drives the production WUK-15 session to END.
 - Asserts serialized NarrativeState equals its pre-END snapshot and PartyManager matches its pre-END roster/formation.
 - Confirms save was attempted exactly once, the session remains at END, and retry remains possible.
 - Runtime suite expected registered entries: 39.
 
 ## Godot Runtime status
-**PENDING** — only record green after Runtime and Web Demo complete on the exact implementation SHA.
+**PASS** — initial implementation commit `bfa267ba1be413918189df9e4f94e7ff8886143f` failed at script import due to an indentation mismatch around the handoff-rejected `else`; the parser error prevented several dependent SceneTree tests from loading. Follow-up fix commit `efb1e7c1cfdfe6dd84fd5618bd0405c72f2f377f` passed Godot Runtime run [38116451019](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38116451019) with `RUNTIME_SUITE_PASS tests=39`. Web Demo run [38116450981](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38116450981) build and deploy both passed.
 
 ## Known issues
 - The test validates the late save failure in memory; it does not simulate OS process termination during a physical file write.

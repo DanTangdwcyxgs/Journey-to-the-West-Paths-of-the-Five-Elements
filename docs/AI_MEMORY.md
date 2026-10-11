@@ -367,7 +367,7 @@ Wukong progression 修正后的完整 Runtime 已成功通过上一轮验证；�
 - 自检上一批的事务边界发现：handoff 已成功后，如果 `NarrativeManager.save()` 失败，代码恢复了 NarrativeState，但 `PartyManager` 已先按最终招募名单重建，可能与回滚后的 NarrativeState 不一致。
 - 在 handoff 拒绝与 save 失败两个 rollback 分支中同步调用 `party.initialize_from_saved_state()`，让显示层 roster / formation 跟回恢复后的 NarrativeState。
 - 新增 `combat/test_origin_final_shared_handoff_rollback.gd`：使用 save() 总是失败的测试 manager，将真实 WUK-15 EventSequence 推到 END 后触发 production `_finish_event_session()`；断言一次 save 尝试后完整 NarrativeState 与 PartyManager 都恢复、共享章节仍为空、WUK-15 cursor 未丢失，而且 END session 保持可重试。
-- 上一批 WUK-15 → Shared-01 的精确 SHA Runtime 38/38 与 Web Demo build/deploy 已通过；本批新回归的 Runtime/Web Demo 结果等待 Actions。
+- 上一批 WUK-15 → Shared-01 提交 `deba063d42c46156b37b313f8b59863d2e558949` 的 Runtime 38/38 与 Web Demo build/deploy 已通过。本批首次提交 `bfa267ba1be413918189df9e4f94e7ff8886143f` 曾因手工插入 rollback 代码时 `else` 缩进不一致导致 GDScript parse failure；随后的 `efb1e7c1cfdfe6dd84fd5618bd0405c72f2f377f` 修复缩进，并通过 Runtime run [38116451019](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38116451019)（39/39）和 Web Demo run [38116450981](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38116450981)。
 - 下一步：通过后继续检查 Wukong 到 Eagle Sorrow 的实际世界地图/旅途入口连接，开始把故事 MOVE 与可交互探索区域串起来。
 
 ## 4. Wukong Origin 当前状态
