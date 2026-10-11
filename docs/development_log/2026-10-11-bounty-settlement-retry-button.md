@@ -39,14 +39,15 @@ Atomic service rollback alone does not prove the production button re-enters set
 - Exactly one successful commit is allowed, and the combat turn counter must remain unchanged.
 
 ## Godot Runtime status
-**PENDING** — this change has not yet been verified by a Godot Runtime workflow. Do not treat the static test expectations as a runtime pass.
+**PASS** — implementation commit `c3f972ba2039c3ac1a78ad432414724d214e66b0`. Godot Runtime run [38121039084](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38121039084) completed successfully; the log includes `PASS res://combat/test_bounty_settlement_retry_button.gd` and `RUNTIME_SUITE_PASS tests=48`.
 
 ## Known issues
 - The UI click regression uses a deterministic test double for the settlement service boundary. The real service's rollback / save semantics remain covered separately by `combat/test_bounty_reward_service_atomicity.gd`.
 - No local Godot runtime is available through this GitHub-only workflow; CI is the authority.
+- Web Demo was not triggered for this feature branch: `.github/workflows/web-demo.yml` runs on pushes to `main` or manual dispatch only. No web export/deploy pass is claimed for this PR.
 
 ## Next step
-Run the exact feature-branch PR through Godot Runtime and Web Demo CI. Fix any parser/test failures before marking this regression verified.
+The exact implementation commit passed Godot Runtime. Make the PR ready for review after the latest documentation commit's Runtime check; Web Demo validation remains tied to main/manual workflow dispatch.
 
 ## Handoff point
 Keep the UI responsible only for retry presentation/orchestration. Do not move transaction logic out of `BountyRewardService`.

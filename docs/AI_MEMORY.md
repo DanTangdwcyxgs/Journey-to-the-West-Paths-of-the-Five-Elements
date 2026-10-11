@@ -584,11 +584,12 @@ Wukong、Tang、Longma、Bajie、Wujing 五条 Origin Route 均已完成首轮 S
 `实现 → regression → Godot Runtime → development log → AI_MEMORY`。
 
 
-### Round 61 — 2026-10-11：BattleUI 悬赏结算重试按钮回归（CI pending）
+### Round 61 — 2026-10-11：BattleUI 悬赏结算重试按钮回归（Runtime PASS）
 - 基于 `69c162913800f49345ed4b61e679f3484c5a1a0c` 接手，先检查 AI_HANDOFF、DEVELOPMENT_RULES、README、game vision、architecture、production rules、content pipeline、chapter bible、AI_MEMORY 与最新 bounty settlement log。
 - 当前 main 的 Godot Runtime（run 38120818119）与 Web Demo（run 38120818109）均已成功；原套件为 47 项，上一轮服务层回归已验证事务回滚，但尚未通过真实 Button 信号覆盖 UI retry 分支。
 - 在 `ui/battle_ui.gd` 给结算流程增加可覆写测试边界；生产默认实现仍调用 NarrativeManager、BountyRewardService 与 BountyEncounterState，不改变事务所有权。
 - 新增 `combat/test_bounty_settlement_retry_button.gd` 并接入 `tests/runtime_suite.gd`。测试模拟首次结算失败，再发出真实 `Button.pressed` 信号，验证二次尝试成功、成功提交仅一次、状态和结果文案更新，且战斗回合计数不变。
 - 新增 `docs/development_log/2026-10-11-bounty-settlement-retry-button.md` 并更新开发日志索引、AI_HANDOFF 下一接手点。
-- 当前提交的 Godot Runtime / Web Demo 结果尚待该 PR 的精确 SHA 对应 workflow；不把测试代码的存在视为已通过。
-- 下一步：查看 PR 的 Godot Runtime 与 Web Demo 结果；如失败，先根据 CI 日志修复并重复验证，再更新本轮日志的验证事实。
+- 实现提交 `c3f972ba2039c3ac1a78ad432414724d214e66b0` 的 Godot Runtime run [38121039084](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38121039084) 成功，日志确认新增测试 PASS，且 `RUNTIME_SUITE_PASS tests=48`。
+- Web Demo workflow 只响应 main push 或手动 dispatch，本次 feature PR 未触发 Web Demo；没有宣称 Web export/deploy 已通过。
+- 下一步：核对文档更新后的 PR head Runtime；随后将 PR 交给负责人审阅，再按 AI_HANDOFF 转向支线节奏与 Presentation 评审。
