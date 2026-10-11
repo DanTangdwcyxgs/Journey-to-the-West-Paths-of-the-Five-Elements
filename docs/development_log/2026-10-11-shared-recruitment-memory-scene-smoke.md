@@ -35,14 +35,14 @@ A feature can pass an isolated unit regression while being disconnected from the
 - Current registered suite remains at 37 entries because the new assertions extend the existing scene smoke.
 
 ## Godot Runtime status
-**PENDING** — confirm the exact commit's Runtime and Web Demo workflows before recording this integration as passed.
+**PASS** — exact implementation commit `ca1112c514823c159de8884cde345d79361fa041`. Godot Runtime run [38107440411](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38107440411) passed with `PASS res://combat/test_shared_battle_scene_transition.gd` and `RUNTIME_SUITE_PASS tests=37`. Web Demo run [38107440351](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38107440351) build and deploy also passed.
 
 ## Known issues
 - Memory replay intentionally presents safe dialogue only; it does not simulate old combat, apply old rewards, or replay historical choices.
 - The smoke starts from canonical saved prerequisite state at Shared-03 rather than replaying the entire Wukong route from the very beginning. The separate Wukong route progression and MainMenu smoke cover that earlier part.
 
 ## Next step
-After this integration passes, review the first product Vertical Slice from Wukong opening through Longma recruitment and identify whether the biggest remaining gap is exploration traversal, art assets, or encounter pacing before committing to the Camp / Relationship prototype.
+Recruitment-to-Memory integration is green. A follow-up audit found the final Origin END → Shared handoff was not wired in the production UI; see `2026-10-11-origin-final-shared-handoff.md`. After that transition is fixed, review the first product Vertical Slice from Wukong opening through Longma recruitment and identify the next exploration/encounter gap before Camp / Relationship.
 
 ## Handoff point
 Recruitment-to-Memory scene bridge. Preserve the fixed shared chronology and keep historical playback read-only.

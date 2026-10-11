@@ -352,8 +352,16 @@ Wukong progression 修正后的完整 Runtime 已成功通过上一轮验证；�
 - 扩展既有 Shared-03 / Shared-05 / Shared-07 production SceneTree smoke；Shared-03 成功返回 Journey 并完成 END 后，额外断言真实 BattleResolutionService 招募会解锁 `LONGMA-01` 与 `LONGMA-02`。
 - 测试通过生产 Journey sidebar 选择 LONGMA-02 并启动真实 MemoryPlaybackSession，逐字显示战前对白、前进到战后对白，再显式完成回忆。
 - 验证整个过程中没有切到 BattleUI、没有新建 active/pending battle handoff；共享章节、全球时间线、已完成章节与招募队伍完全不变。完成后仅 `available_memory_chapters` / `played_memory_chapters` 变化，且重载存档后已读标记和 Shared-04 当前章节仍正确。
-- 本批 Runtime / Web Demo 的精确提交状态待 Actions 验证；不以 Memory 单元回归的通过结果代替这一条招募端到端证据。
+- 精确提交 `ca1112c514823c159de8884cde345d79361fa041` 已通过 Godot Runtime run [38107440411](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38107440411)，日志为 `PASS res://combat/test_shared_battle_scene_transition.gd` 与 `RUNTIME_SUITE_PASS tests=37`；同一 SHA 的 Web Demo run [38107440351](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38107440351) build/deploy 成功。
 - 下一步：通过后复核从 Wukong 起始到 Longma 招募的 Vertical Slice 其余缺口，优先处理真实探索/章节切换，不扩大到 Camp / Relationship 前先核实第一条产品样板的闭环程度。
+
+### Round 47 — 2026-10-11：Origin Final END → Shared Handoff
+- 自检发现 `OriginSequenceJourneyScreen._finish_event_session()` 在最后一个非战斗 Origin chapter END 时只调用 `complete_origin_chapter()`。该调用会把 route 标记为完成，但没有设置 `current_shared_chapter`；之后 Journey 只会尝试推进一个空的 Shared chapter，导致正式 UI 路径无法汇入共同西游。
+- 修复终章 END：完成最后一个 Origin 章节后立即调用 `NarrativeManager.handoff_origin_to_shared()`，初始化 canonical roster，保存 handoff milestone / timeline / first Shared chapter，并向玩家显示进入共享西游的下一章提示。
+- 将非战斗 Origin END 完成和 handoff 置于同一保存边界：保存失败时恢复完整 NarrativeState 快照并保留 END 会话供玩家重试；handoff 拒绝时也回滚，不留下只有 ROUTE_COMPLETE 却没有 Shared 章节的半成品状态。
+- 新增 `combat/test_origin_final_shared_handoff.gd`：用 chapter-manager fixture 将存档定位到 WUK-15，再从生产 MainMenu Continue 进入真实 Journey，推进 WUK-15 EventSequence 到 END，断言 Shared-01 / WUKONG_RECRUITED / canonical roster 已提交；重新载入存档并使用真实 Journey action 启动 Shared-01 production EventSequence。
+- 上一批 Shared-03 recruitment → Memory integration 已通过 Runtime 37/37 与 Web Demo；本批精确 SHA 的 Runtime/Web Demo 结果待 Actions 验证。
+- 下一步：验证本批后，再做 Wukong 全路线的 scene-assisted smoke，并审视 Shared-01/02 的实际旅途 UI 与世界地图入口如何衔接。
 
 ## 4. Wukong Origin 当前状态
 

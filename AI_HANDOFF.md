@@ -261,13 +261,13 @@ Runner 输出的 `battle` 只生成 `EncounterHandoff` 数据，不直接启动 
 
 最高优先级：
 
-1. 视觉垂直切片仍是产品目标，但角色最终 PNG/WebP 暂受图像生成额度限制；不把概念展示图当正式资源。Main Menu → WUK-02 real battle → BattleResolutionService → Journey resume → END / Save 真实 SceneTree smoke 已通过，Godot Runtime 35/35；Web Demo build + deploy 也已通过。修复包含战斗恢复不重复推进与 END 后 active / pending resume 文件清理。当前继续推进其他框架切片，额度恢复后再做角色资产垂直切片。
-2. 继续将完整 SceneTree smoke 扩展到 Shared 招募战，同时验证失败恢复与 rollback / retry；Origin 主菜单到 battle / resume / END / Save 路径已覆盖。
-3. 五条 Origin Route 的 EventSequence 迁移、统一质量门和 Origin → Shared handoff 已有实现；后续发现新 cross-reference / route-isolation 缺口时按具体回归补强。
-4. 非战斗 reward / move / wait 的副作用继续留在 RewardService / WorldActionService，不得移入 EventRunner。
-5. 逐步清理 BattleUI 旧 origin/shared 兼容结算职责与 BountyEncounterState，但不得破坏现有 Handoff + Resolution 兼容链。
-6. 当前核心叙事与恢复链稳定后推进 Camp / Relationship Prototype。
-7. Memory 数据与招募解锁已存在，但此前 Journey 列表/点击入口未连通且会直接标记完成。本批正在补 read-only 对白回放、完成后保存与失败回滚；通过后再把 Memory 嵌入 Wukong → 鹰愁涧 → 白龙马招募的完整 Vertical Slice。
+1. 第一条完整可玩 Vertical Slice 仍需补齐探索/区域进入与最终角色正式 PNG/WebP 资产。图片资产仍受生成额度限制，不把概念展示图当正式资源。
+2. Wukong Origin → Shared 的最后一个真实 UI 边界正在补回归：最终 WUK-15 END 必须立即提交 Origin → Shared handoff，而不能只标记 ROUTE_COMPLETE 后留下空的 current_shared_chapter。本批精确 SHA CI 完成前保持 Pending。
+3. Memory 已有只读对白回放与完成保存/失败回滚；Shared-03 的真实招募 → LONGMA-02 回忆解锁/播放/重载路径已通过 Runtime 与 Web Demo。接下来重点是整合 Origin 终点 handoff 与真实共享章节进入。
+4. 五条 Origin Route 的 EventSequence 迁移、统一质量门及 namespace 元数据一致性已有实现；新增 cross-reference / route-isolation 缺口按具体回归补强。
+5. 非战斗 reward / move / wait 的副作用继续留在 RewardService / WorldActionService，不得移入 EventRunner。
+6. 逐步清理 BattleUI 旧 origin/shared 兼容结算职责与 BountyEncounterState，但不得破坏现有 Handoff + Resolution 兼容链。
+7. Origin → Shared 与 Wukong → Eagle Sorrow → Longma → Memory 主流程稳定后，再推进 Camp / Relationship Prototype。
 
 ---
 
@@ -329,7 +329,7 @@ Runner 输出的 `battle` 只生成 `EncounterHandoff` 数据，不直接启动 
 
 ### Batch B — Journey Presentation & Runtime
 
-Journey END / chapter-completion feedback、Main Menu → WUK-02 battle / resume / END / Save、完整 EventSequence production catalog 质量门、BattleResolutionService save-failure rollback、Shared-03 / Shared-05 / Shared-07 真实 SceneTree smoke 与 chapter namespace metadata consistency 均已通过对应 SHA 的 Runtime / Web Demo。Memory 回放已在精确提交 `fb7ece8f1af3f49aaeece9a31e3d1b62457df0eb` 通过 Godot Runtime run [38107309910](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38107309910)（37/37）与 Web Demo build/deploy run [38107309919](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38107309919)。当前扩展 Shared-03 真实 SceneTree smoke，验证实际招募解锁、播放 LONGMA-02 历史对白、保存状态和不触发战斗。
+Journey END / chapter completion、MainMenu → WUK-02 real battle / resume / END / Save、production EventSequence catalog + namespace quality gate、BattleResolutionService save-failure rollback、Shared-03/05/07 real scene smoke、Memory read-only playback and save-failure retry 均已通过精确提交的 Runtime/Web Demo。Shared-03 实际招募 → LONGMA-02 Memory 解锁/回放/重载已在提交 `ca1112c514823c159de8884cde345d79361fa041` 通过 Runtime run [38107440411](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38107440411)（37/37）与 Web Demo run [38107440351](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38107440351)。自检又发现 OriginSequenceJourneyScreen 完成最后一章时只标记 route complete，没有调用 Origin → Shared handoff；本批新增真实 WUK-15 END → Shared-01 回归和事务回滚，本批精确 SHA CI 完成前保持 Pending。
 
 ### Batch C — Narrative execution services
 

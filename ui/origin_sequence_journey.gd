@@ -47,21 +47,37 @@ func _finish_event_session() -> void:
 			var start := narrative.state.starting_character
 			var current := origin.get_current_chapter(narrative, start)
 			if not current.is_empty() and str(current.get("id", "")) == chapter_id:
+				var state_before_completion: Dictionary = narrative.serialize().duplicate(true)
 				var completed: Dictionary = narrative.complete_origin_chapter(start)
 				if not completed.is_empty():
 					var chapter_title := str(completed.get("title", chapter_id))
 					var completion_notice := "个人章节完成 · %s" % chapter_title
 					var next_chapter: Dictionary = origin.get_current_chapter(narrative, start)
 					if next_chapter.is_empty():
-						completion_notice += " · 个人序章已完结"
+						if not narrative.handoff_origin_to_shared(start):
+							narrative.restore_snapshot(state_before_completion)
+							_refresh()
+							phase_label.text = "个人序章完成，但无法进入共享西游；进度已回滚，请再次确认重试。"
+							return
+						party.initialize_from_recruited(narrative.state.recruited_characters)
+						var shared_chapter := SharedJourneyManager.get_chapter(narrative.state.current_shared_chapter)
+						completion_notice += " · 已汇入共享西游"
+						if not shared_chapter.is_empty():
+							completion_notice += " · 下一章：" + str(shared_chapter.get("title", shared_chapter.get("id", "")))
 					else:
 						completion_notice += " · 下一章：" + str(next_chapter.get("title", next_chapter.get("id", "")))
+
+					if not narrative.save():
+						narrative.restore_snapshot(state_before_completion)
+						_refresh()
+						phase_label.text = "存档失败，章节进度已回滚；再次确认可重试。"
+						return
+
 					event_session = null
 					var resume_context_cleared: bool = BountyEncounterState.clear_completed_event_session()
-					var save_succeeded: bool = narrative.save()
 					_refresh()
 					if not resume_context_cleared:
 						completion_notice += " · 事件接续记录清理失败"
-					phase_label.text = completion_notice if save_succeeded else completion_notice + " · 存档失败"
+					phase_label.text = completion_notice
 					return
 	super._finish_event_session()
