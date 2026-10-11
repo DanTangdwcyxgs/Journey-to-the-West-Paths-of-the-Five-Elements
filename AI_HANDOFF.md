@@ -264,7 +264,7 @@ Runner 输出的 `battle` 只生成 `EncounterHandoff` 数据，不直接启动 
 1. 第一条完整可玩 Vertical Slice 仍需补齐探索/区域进入与最终角色正式 PNG/WebP 资产。图片资产仍受生成额度限制，不把概念展示图当正式资源。
 2. Wukong WUK-15 END → Shared-01 交接与失败回滚、Memory 只读播放和白龙马实际招募解锁均已通过 Runtime/Web Demo。
 3. Shared-04 story MOVE → WorldMap、MOVE 保存失败重试、可选 WorldMap → rumor → bounty battle → return、Shared-05/07 到达位置均已通过对应 CI。
-4. 当前补 Shared-01 的五行山起始位置与 Shared-03 的鹰愁涧到达位置；新批次将检查真实 MainMenu/Origin handoff 和 Longma battle 路径，并确认当前地图位置能保存/重载。本批精确 SHA CI 完成前保持 Pending。
+4. Shared-01 五行山起始位置与 Shared-03 鹰愁涧到达位置已在提交 `584db9e18ddd3d0a850f2779e9d1acb2e255b880` 通过 Runtime run [38117715977](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38117715977)（42/42）与 Web Demo run [38117715919](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38117715919) build/deploy。下一步检查 Shared-01 → Shared-02 → Shared-03 → Shared-04 同一存档链的进度接续。
 5. 五条 Origin Route 的 EventSequence 迁移、统一质量门及 namespace 元数据一致性已有实现；新增 cross-reference / route-isolation 缺口按具体回归补强。
 6. 非战斗 reward / move / wait 的副作用继续留在 RewardService / WorldActionService，不得移入 EventRunner。
 7. Origin → Shared、WorldMap travel、可选悬赏与 Memory 主流程稳定后，再推进 Camp / Relationship Prototype。

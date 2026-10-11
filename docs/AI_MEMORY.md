@@ -406,7 +406,7 @@ Wukong progression 修正后的完整 Runtime 已成功通过上一轮验证；�
 - 更新 Shared sequence graph regression 的 MOVE 总数到 5，并继续用每个 action 的 canonical marker 校验 current_location 与 visited_nodes。
 - `combat/test_shared_opening_journey_bridge.gd` 验证 Shared-01 的位置 mutation；`combat/test_origin_final_shared_handoff.gd` 从真实 MainMenu / WUK-15 handoff 接进 Shared-01，再通过生产 Journey UI 跑完第一条 MOVE、保存并重载验证五行山。
 - `combat/test_shared_battle_journey_bridge.gd` 与生产 Shared SceneTree smoke 都验证 Longma 招募战前到达鹰愁涧，且战斗结算不会把地图位置倒退。
-- Shared-05/07 arrivals 的兼容性修复已在 `9cd478d516ad4dfaaa749dbf5c017ae210ff17cb` 通过 Runtime 42/42 与 Web Demo build/deploy；本批精确 SHA Actions 待验证。
+- Shared-05/07 arrivals 的兼容性修复已在 `9cd478d516ad4dfaaa749dbf5c017ae210ff17cb` 通过 Runtime 42/42 与 Web Demo build/deploy。当前 Shared-01/03 arrival 提交 `584db9e18ddd3d0a850f2779e9d1acb2e255b880` 的 Runtime [38117715977](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38117715977) 通过，输出 `PASS res://combat/test_shared_event_sequences.gd`、`PASS res://combat/test_shared_opening_journey_bridge.gd`、`PASS res://combat/test_shared_battle_journey_bridge.gd`、`PASS res://combat/test_shared_battle_scene_transition.gd`、`PASS res://combat/test_origin_final_shared_handoff.gd` 和 `RUNTIME_SUITE_PASS tests=42`；同 SHA 的 Web Demo [38117715919](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38117715919) build/deploy 成功。
 - 下一步：通过后按真实主线顺序检查 Shared-01 → Shared-02 → Shared-03 → Shared-04 的存档、时间线、地图位置协同。
 
 ## 4. Wukong Origin 当前状态

@@ -43,7 +43,7 @@ The WorldMap should not show an empty or stale location as the player begins the
 - Runtime suite remains at 42 registered entries.
 
 ## Godot Runtime status
-**PENDING** — confirm the exact implementation SHA in Godot Runtime and Web Demo before claiming green.
+**PASS** — exact implementation commit `584db9e18ddd3d0a850f2779e9d1acb2e255b880`. Godot Runtime run [38117715977](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38117715977) passed with `RUNTIME_SUITE_PASS tests=42` and explicit PASS lines for the Shared sequence graph, opening bridge, battle bridge, production Shared scene transition, and final handoff smoke. Web Demo run [38117715919](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38117715919) build and deploy passed.
 
 ## Known issues
 - Story MOVE is an authoritative mainline arrival and may enter a canonical node before that chapter's final timeline milestone is recorded. Free travel still observes WorldMapManager's timeline, milestone, and connection guards.
