@@ -390,8 +390,16 @@ Wukong progression 修正后的完整 Runtime 已成功通过上一轮验证；�
 - 新增 `combat/test_world_map_rumor_bounty_return.gd`：从保存的 BLACK_WIND_NORTH_PATH 起点打开真实 WorldMap，使用 Travel 控件前往 Eagle Sorrow，选中并听取 Yellow Fang rumor，检查 bounty discovery 持久化，点击悬赏进入 production BattleUI。
 - 使用生产胜利结算 callback 完成可选悬赏，再点击实际“返回地图”按钮；验证当前地点/发现状态保持、被击败目标写入 JourneyLog、active/pending handoff 清理。
 - 核心回归同时锁定剧情不变量：共享章节、全球时间线、已完成共享章节和招募 roster 在可选悬赏胜利后都必须与开战前一致。
-- 本批精确提交 Runtime/Web Demo 结果待 Actions 验证。
+- 精确提交 `d387b16ab7af58fb4e841a257c6c053e430056f4` 已通过 Godot Runtime run [38117052682](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38117052682)，日志为 `PASS res://combat/test_world_map_rumor_bounty_return.gd` 与 `RUNTIME_SUITE_PASS tests=42`；同一 SHA 的 Web Demo run [38117052652](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38117052652) build/deploy 均成功。
 - 下一步：通过后梳理黄风岭探索分支与固定主线章节推进的边界，再评估完整 Wukong → Longma → Memory vertical slice 的手感/演出缺口。
+
+### Round 52 — 2026-10-11：Shared-05 / Shared-07 Story Arrival Locations
+- 复核 WorldMap 主线接入发现 Shared-04 会把当前位置落到 BLACK_WIND_NORTH_PATH，但 Shared-05 的高老庄剧情、Shared-07 的流沙河剧情只有对白→选择→战斗，地图位置不随主线章节变化；Story MOVE 用 canonical marker 更新位置，和自由 travel 的连接/时间门槛保持分工。
+- 为 `SHARED-05-GAOJIAZHUANG-SEQUENCE` 增加 `MOVE(map_id=WORLD_MAP, marker_id=GAOJIAZHUANG)`，并在 `SHARED-07-FLOWING-SANDS-SEQUENCE` 增加 `MOVE(map_id=WORLD_MAP, marker_id=FLOWING_SANDS)`，然后才显示各自 recruitment choice。
+- 强化 `combat/test_shared_event_sequences.gd`：对每条 MOVE 读取 canonical marker，验证 runner 完成节点后 current_location 和 visited_nodes 都匹配该 marker，MOVE 总数由 1 增至 3。
+- 扩展既有真实 Shared battle SceneTree smoke：Shared-05 和 Shared-07 进入战斗前检查地图位置已经提交、保存重载后仍正确，并且战斗结算不能把当前位置倒退。
+- WorldMap rumor → optional bounty → return 已在 `d387b16ab7af58fb4e841a257c6c053e430056f4` 通过 Runtime 42/42 与 Web Demo build/deploy；本批 Shared arrival locations 的精确 SHA CI 待 Actions 验证。
+- 下一步：通过后检查自由 travel/传闻分支结束后回到主线时的章节状态和区域 gating，再评估世界地图 UI 与剧情演出之间的体验缝隙。
 
 ## 4. Wukong Origin 当前状态
 

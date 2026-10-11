@@ -77,8 +77,12 @@ static func run_all() -> Dictionary:
 					assert(seconds >= 0.0)
 					action = runner.complete_action()
 				EventRunner.MOVE:
+					var destination := str(action.get("marker_id", ""))
+					assert(not destination.is_empty(), "%s MOVE should declare its canonical WorldMap marker" % sequence_id)
 					action = runner.complete_action()
-					assert("BLACK_WIND_NORTH_PATH" in manager.state.get_world_state().get("visited_nodes", []))
+					var world_state: Dictionary = manager.state.get_world_state()
+					assert(str(world_state.get("current_location", "")) == destination, "%s MOVE should set current WorldMap location to %s" % [sequence_id, destination])
+					assert(destination in world_state.get("visited_nodes", []), "%s MOVE should record %s as visited" % [sequence_id, destination])
 					world_moves += 1
 				EventRunner.CHOICE:
 					assert(CHOICE_IDS.has(sequence_id))
@@ -112,7 +116,7 @@ static func run_all() -> Dictionary:
 	assert(completed_sequences == SHARED_SEQUENCE_IDS.size())
 	assert(choice_nodes == 6)
 	assert(battle_handoffs == 3)
-	assert(world_moves == 1)
+	assert(world_moves == 3)
 	return {
 		"passed": true,
 		"executed_sequences": completed_sequences,

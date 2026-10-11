@@ -39,7 +39,7 @@ The map should provide meaningful optional content without quietly advancing the
 - Runtime suite expected registered entries: 42.
 
 ## Godot Runtime status
-**PENDING** — only mark green after Runtime and Web Demo pass on the exact implementation commit.
+**PASS** — exact implementation commit `d387b16ab7af58fb4e841a257c6c053e430056f4`. Godot Runtime run [38117052682](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38117052682) passed with `PASS res://combat/test_world_map_rumor_bounty_return.gd` and `RUNTIME_SUITE_PASS tests=42`. Web Demo run [38117052652](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38117052652) build and deploy both passed.
 
 ## Known issues
 - Battle turns are shortcut by calling the production victory callback; this smoke tests scene integration and progression semantics, not combat balance or manual player input.

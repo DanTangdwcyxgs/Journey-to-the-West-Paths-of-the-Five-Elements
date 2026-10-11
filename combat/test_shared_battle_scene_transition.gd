@@ -5,8 +5,8 @@ extends SceneTree
 
 const CASES := [
 	{"chapter_id":"SHARED-03-EAGLE-SORROW","encounter_id":"SHARED_EAGLE_SORROW","choice_event_id":"LONGMA_ENCOUNTER","choice_id":"SAVE_THE_DRAGON","expected_recruit":"LONGMA","next_chapter":"SHARED-04-EARLY-DEMON-TALES"},
-	{"chapter_id":"SHARED-05-GAOJIAZHUANG","encounter_id":"SHARED_GAOJIAZHUANG","choice_event_id":"BAJIE_ENCOUNTER","choice_id":"OFFER_REDEMPTION","expected_recruit":"BAJIE","next_chapter":"SHARED-06-FOUR-PERSON-JOURNEY"},
-	{"chapter_id":"SHARED-07-FLOWING-SANDS","encounter_id":"SHARED_FLOWING_SANDS","choice_event_id":"WUJING_ENCOUNTER","choice_id":"ACCEPT_WUJING","expected_recruit":"WUJING","next_chapter":"SHARED-08-PARTY-FULL"},
+	{"chapter_id":"SHARED-05-GAOJIAZHUANG","encounter_id":"SHARED_GAOJIAZHUANG","choice_event_id":"BAJIE_ENCOUNTER","choice_id":"OFFER_REDEMPTION","expected_recruit":"BAJIE","next_chapter":"SHARED-06-FOUR-PERSON-JOURNEY","expected_world_location":"GAOJIAZHUANG"},
+	{"chapter_id":"SHARED-07-FLOWING-SANDS","encounter_id":"SHARED_FLOWING_SANDS","choice_event_id":"WUJING_ENCOUNTER","choice_id":"ACCEPT_WUJING","expected_recruit":"WUJING","next_chapter":"SHARED-08-PARTY-FULL","expected_world_location":"FLOWING_SANDS"},
 ]
 
 var failures: Array[String] = []
@@ -90,6 +90,9 @@ func _run_smoke() -> void:
 		_record(committed.load(), "%s victory should persist a loadable narrative" % chapter_id)
 		_record(committed.state.current_shared_chapter == str(spec["next_chapter"]), "%s victory should advance the canonical shared chapter" % chapter_id)
 		_record(str(spec["expected_recruit"]) in committed.state.recruited_characters, "%s victory should recruit the expected companion" % chapter_id)
+		var expected_world_location := str(spec.get("expected_world_location", ""))
+		if not expected_world_location.is_empty():
+			_record(str(committed.state.get_world_state().get("current_location", "")) == expected_world_location, "%s victory should preserve the story-established WorldMap location" % chapter_id)
 
 		battle.return_button.emit_signal("pressed")
 		var resumed_journey := await _wait_for_journey()
@@ -270,9 +273,18 @@ func _drive_journey_into_battle(journey: JourneyScreen, spec: Dictionary) -> Bat
 					_record(false, "%s canonical choice button should exist in Journey UI" % str(spec["chapter_id"]))
 					return null
 			EventRunner.WAIT, EventRunner.MOVE:
+				var transition_kind := kind
 				var seconds := maxf(float(action.get("seconds", 0.0)), 0.35) + 0.12
 				journey.primary_button.emit_signal("pressed")
 				await create_timer(seconds).timeout
+				if transition_kind == EventRunner.MOVE:
+					var expected_location := str(spec.get("expected_world_location", ""))
+					if not expected_location.is_empty():
+						_record(str(journey.narrative.state.get_world_state().get("current_location", "")) == expected_location, "%s story MOVE should set WorldMap location to %s" % [str(spec["chapter_id"]), expected_location])
+						var moved_save := NarrativeManager.new()
+						_record(moved_save.load(), "%s story move save should reload" % str(spec["chapter_id"]))
+						if moved_save.state != null:
+							_record(str(moved_save.state.get_world_state().get("current_location", "")) == expected_location, "%s story move location should persist through reload" % str(spec["chapter_id"]))
 			EventRunner.BATTLE:
 				journey.primary_button.emit_signal("pressed")
 			_:

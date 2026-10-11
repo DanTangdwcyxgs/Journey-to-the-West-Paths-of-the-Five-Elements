@@ -7,10 +7,30 @@
       "namespace": "SHARED",
       "start": "meeting",
       "nodes": [
-        {"id":"meeting","type":"dialogue","speaker":"玄奘","text":"五行山下，我终于见到了被镇压的孙悟空。若这条西行路真要开始，总得有人先愿意相信他。","next":"choice"},
-        {"id":"choice","type":"choice","event_id":"SHARED-01-FIVE-ELEMENTS","next":"resolve"},
-        {"id":"resolve","type":"dialogue","speaker":"孙悟空","text":"你敢打开这山，我便敢走出这山。往后的路，咱们师徒一起担。","next":"finish"},
-        {"id":"finish","type":"end"}
+        {
+          "id": "meeting",
+          "type": "dialogue",
+          "speaker": "玄奘",
+          "text": "五行山下，我终于见到了被镇压的孙悟空。若这条西行路真要开始，总得有人先愿意相信他。",
+          "next": "choice"
+        },
+        {
+          "id": "choice",
+          "type": "choice",
+          "event_id": "SHARED-01-FIVE-ELEMENTS",
+          "next": "resolve"
+        },
+        {
+          "id": "resolve",
+          "type": "dialogue",
+          "speaker": "孙悟空",
+          "text": "你敢打开这山，我便敢走出这山。往后的路，咱们师徒一起担。",
+          "next": "finish"
+        },
+        {
+          "id": "finish",
+          "type": "end"
+        }
       ]
     },
     {
@@ -19,10 +39,30 @@
       "namespace": "SHARED",
       "start": "departure",
       "nodes": [
-        {"id":"departure","type":"dialogue","speaker":"玄奘","text":"离开五行山后，真正的取经路才刚开始。前路未明，但既已许下誓愿，便不能只因为艰难而停步。","next":"choice"},
-        {"id":"choice","type":"choice","event_id":"SHARED-02-EARLY-PILGRIMAGE","next":"continue"},
-        {"id":"continue","type":"dialogue","speaker":"孙悟空","text":"走吧。俺老孙先护着师父赶路。等真正遇上妖怪，再看这一路要打多少架。","next":"finish"},
-        {"id":"finish","type":"end"}
+        {
+          "id": "departure",
+          "type": "dialogue",
+          "speaker": "玄奘",
+          "text": "离开五行山后，真正的取经路才刚开始。前路未明，但既已许下誓愿，便不能只因为艰难而停步。",
+          "next": "choice"
+        },
+        {
+          "id": "choice",
+          "type": "choice",
+          "event_id": "SHARED-02-EARLY-PILGRIMAGE",
+          "next": "continue"
+        },
+        {
+          "id": "continue",
+          "type": "dialogue",
+          "speaker": "孙悟空",
+          "text": "走吧。俺老孙先护着师父赶路。等真正遇上妖怪，再看这一路要打多少架。",
+          "next": "finish"
+        },
+        {
+          "id": "finish",
+          "type": "end"
+        }
       ]
     },
     {
@@ -31,11 +71,39 @@
       "namespace": "SHARED",
       "start": "arrival",
       "nodes": [
-        {"id":"arrival","type":"dialogue","speaker":"玄奘","text":"鹰愁涧就在前面。此处山水凶险，诸位且不可大意。","next":"encounter_choice"},
-        {"id":"encounter_choice","type":"choice","event_id":"LONGMA_ENCOUNTER","next":"battle"},
-        {"id":"battle","type":"battle","encounter_type":"shared","encounter_id":"SHARED_EAGLE_SORROW","source_chapter_id":"SHARED-03-EAGLE-SORROW","source_route_id":"SHARED_JOURNEY","next":"after_battle"},
-        {"id":"after_battle","type":"dialogue","speaker":"玄奘","text":"因缘既已相逢，便同行吧。往后的路，还要彼此照应。","next":"finish"},
-        {"id":"finish","type":"end"}
+        {
+          "id": "arrival",
+          "type": "dialogue",
+          "speaker": "玄奘",
+          "text": "鹰愁涧就在前面。此处山水凶险，诸位且不可大意。",
+          "next": "encounter_choice"
+        },
+        {
+          "id": "encounter_choice",
+          "type": "choice",
+          "event_id": "LONGMA_ENCOUNTER",
+          "next": "battle"
+        },
+        {
+          "id": "battle",
+          "type": "battle",
+          "encounter_type": "shared",
+          "encounter_id": "SHARED_EAGLE_SORROW",
+          "source_chapter_id": "SHARED-03-EAGLE-SORROW",
+          "source_route_id": "SHARED_JOURNEY",
+          "next": "after_battle"
+        },
+        {
+          "id": "after_battle",
+          "type": "dialogue",
+          "speaker": "玄奘",
+          "text": "因缘既已相逢，便同行吧。往后的路，还要彼此照应。",
+          "next": "finish"
+        },
+        {
+          "id": "finish",
+          "type": "end"
+        }
       ]
     },
     {
@@ -44,12 +112,44 @@
       "namespace": "SHARED",
       "start": "departure",
       "nodes": [
-        {"id":"departure","type":"dialogue","speaker":"玄奘","text":"黑风山的妖气已经逼近。我们先沿北道探看一番，再决定是否继续赶路。","next":"move_to_north_path"},
-        {"id":"move_to_north_path","type":"move","map_id":"WORLD_MAP","marker_id":"BLACK_WIND_NORTH_PATH","next":"warning"},
-        {"id":"warning","type":"dialogue","speaker":"孙悟空","text":"俺老孙闻到的妖气就在前头。师父，你们跟紧些，莫叫小妖钻了空子。","next":"pause"},
-        {"id":"pause","type":"wait","seconds":0.3,"next":"resolve"},
-        {"id":"resolve","type":"dialogue","speaker":"玄奘","text":"先不急着深入。记下此处妖踪，我们向前一步，也为后面的路留一步退处。","next":"finish"},
-        {"id":"finish","type":"end"}
+        {
+          "id": "departure",
+          "type": "dialogue",
+          "speaker": "玄奘",
+          "text": "黑风山的妖气已经逼近。我们先沿北道探看一番，再决定是否继续赶路。",
+          "next": "move_to_north_path"
+        },
+        {
+          "id": "move_to_north_path",
+          "type": "move",
+          "map_id": "WORLD_MAP",
+          "marker_id": "BLACK_WIND_NORTH_PATH",
+          "next": "warning"
+        },
+        {
+          "id": "warning",
+          "type": "dialogue",
+          "speaker": "孙悟空",
+          "text": "俺老孙闻到的妖气就在前头。师父，你们跟紧些，莫叫小妖钻了空子。",
+          "next": "pause"
+        },
+        {
+          "id": "pause",
+          "type": "wait",
+          "seconds": 0.3,
+          "next": "resolve"
+        },
+        {
+          "id": "resolve",
+          "type": "dialogue",
+          "speaker": "玄奘",
+          "text": "先不急着深入。记下此处妖踪，我们向前一步，也为后面的路留一步退处。",
+          "next": "finish"
+        },
+        {
+          "id": "finish",
+          "type": "end"
+        }
       ]
     },
     {
@@ -58,11 +158,46 @@
       "namespace": "SHARED",
       "start": "arrival",
       "nodes": [
-        {"id":"arrival","type":"dialogue","speaker":"玄奘","text":"前方就是高老庄。庄中妖患未平，看来这一路又有一桩因果要了结。","next":"encounter_choice"},
-        {"id":"encounter_choice","type":"choice","event_id":"BAJIE_ENCOUNTER","next":"battle"},
-        {"id":"battle","type":"battle","encounter_type":"shared","encounter_id":"SHARED_GAOJIAZHUANG","source_chapter_id":"SHARED-05-GAOJIAZHUANG","source_route_id":"SHARED_JOURNEY","next":"after_battle"},
-        {"id":"after_battle","type":"dialogue","speaker":"孙悟空","text":"好个天蓬，嘴硬归嘴硬，本事倒没丢。师父，这一路若多个人帮忙，未必是坏事。","next":"finish"},
-        {"id":"finish","type":"end"}
+        {
+          "id": "arrival",
+          "type": "dialogue",
+          "speaker": "玄奘",
+          "text": "前方就是高老庄。庄中妖患未平，看来这一路又有一桩因果要了结。",
+          "next": "move_to_gaojiazhuang"
+        },
+        {
+          "id": "move_to_gaojiazhuang",
+          "type": "move",
+          "map_id": "WORLD_MAP",
+          "marker_id": "GAOJIAZHUANG",
+          "next": "encounter_choice"
+        },
+        {
+          "id": "encounter_choice",
+          "type": "choice",
+          "event_id": "BAJIE_ENCOUNTER",
+          "next": "battle"
+        },
+        {
+          "id": "battle",
+          "type": "battle",
+          "encounter_type": "shared",
+          "encounter_id": "SHARED_GAOJIAZHUANG",
+          "source_chapter_id": "SHARED-05-GAOJIAZHUANG",
+          "source_route_id": "SHARED_JOURNEY",
+          "next": "after_battle"
+        },
+        {
+          "id": "after_battle",
+          "type": "dialogue",
+          "speaker": "孙悟空",
+          "text": "好个天蓬，嘴硬归嘴硬，本事倒没丢。师父，这一路若多个人帮忙，未必是坏事。",
+          "next": "finish"
+        },
+        {
+          "id": "finish",
+          "type": "end"
+        }
       ]
     },
     {
@@ -71,10 +206,30 @@
       "namespace": "SHARED",
       "start": "depart",
       "nodes": [
-        {"id":"depart","type":"dialogue","speaker":"玄奘","text":"高老庄之后，四人同行的路比从前热闹了许多。不同的性情，也开始慢慢磨成同一个方向。","next":"observe"},
-        {"id":"observe","type":"wait","seconds":0.4,"next":"resolve"},
-        {"id":"resolve","type":"dialogue","speaker":"猪八戒","text":"俺也去取经就是了。先说好，路上若有好吃的，可别全叫猴哥一个人抢了。","next":"finish"},
-        {"id":"finish","type":"end"}
+        {
+          "id": "depart",
+          "type": "dialogue",
+          "speaker": "玄奘",
+          "text": "高老庄之后，四人同行的路比从前热闹了许多。不同的性情，也开始慢慢磨成同一个方向。",
+          "next": "observe"
+        },
+        {
+          "id": "observe",
+          "type": "wait",
+          "seconds": 0.4,
+          "next": "resolve"
+        },
+        {
+          "id": "resolve",
+          "type": "dialogue",
+          "speaker": "猪八戒",
+          "text": "俺也去取经就是了。先说好，路上若有好吃的，可别全叫猴哥一个人抢了。",
+          "next": "finish"
+        },
+        {
+          "id": "finish",
+          "type": "end"
+        }
       ]
     },
     {
@@ -83,11 +238,46 @@
       "namespace": "SHARED",
       "start": "river",
       "nodes": [
-        {"id":"river","type":"dialogue","speaker":"玄奘","text":"流沙河水势凶险。若河中之人真在等一个能够理解他的人，我们也不该只以妖怪二字定他的生死。","next":"encounter_choice"},
-        {"id":"encounter_choice","type":"choice","event_id":"WUJING_ENCOUNTER","next":"battle"},
-        {"id":"battle","type":"battle","encounter_type":"shared","encounter_id":"SHARED_FLOWING_SANDS","source_chapter_id":"SHARED-07-FLOWING-SANDS","source_route_id":"SHARED_JOURNEY","next":"after_battle"},
-        {"id":"after_battle","type":"dialogue","speaker":"沙悟净","text":"俺在这河中守了太久。今日既有人愿意带我走，我便用余生护住这条西行路。","next":"finish"},
-        {"id":"finish","type":"end"}
+        {
+          "id": "river",
+          "type": "dialogue",
+          "speaker": "玄奘",
+          "text": "流沙河水势凶险。若河中之人真在等一个能够理解他的人，我们也不该只以妖怪二字定他的生死。",
+          "next": "move_to_flowing_sands"
+        },
+        {
+          "id": "move_to_flowing_sands",
+          "type": "move",
+          "map_id": "WORLD_MAP",
+          "marker_id": "FLOWING_SANDS",
+          "next": "encounter_choice"
+        },
+        {
+          "id": "encounter_choice",
+          "type": "choice",
+          "event_id": "WUJING_ENCOUNTER",
+          "next": "battle"
+        },
+        {
+          "id": "battle",
+          "type": "battle",
+          "encounter_type": "shared",
+          "encounter_id": "SHARED_FLOWING_SANDS",
+          "source_chapter_id": "SHARED-07-FLOWING-SANDS",
+          "source_route_id": "SHARED_JOURNEY",
+          "next": "after_battle"
+        },
+        {
+          "id": "after_battle",
+          "type": "dialogue",
+          "speaker": "沙悟净",
+          "text": "俺在这河中守了太久。今日既有人愿意带我走，我便用余生护住这条西行路。",
+          "next": "finish"
+        },
+        {
+          "id": "finish",
+          "type": "end"
+        }
       ]
     },
     {
@@ -96,10 +286,30 @@
       "namespace": "SHARED",
       "start": "gather",
       "nodes": [
-        {"id":"gather","type":"dialogue","speaker":"玄奘","text":"从今日起，我们不再只是各自背负过去的人。五个人，要走同一条取经路。","next":"party_choice"},
-        {"id":"party_choice","type":"choice","event_id":"PARTY_FULL","next":"oath"},
-        {"id":"oath","type":"dialogue","speaker":"孙悟空","text":"俺老孙先说一句：这条路，谁也别想半道把谁丢下。","next":"finish"},
-        {"id":"finish","type":"end"}
+        {
+          "id": "gather",
+          "type": "dialogue",
+          "speaker": "玄奘",
+          "text": "从今日起，我们不再只是各自背负过去的人。五个人，要走同一条取经路。",
+          "next": "party_choice"
+        },
+        {
+          "id": "party_choice",
+          "type": "choice",
+          "event_id": "PARTY_FULL",
+          "next": "oath"
+        },
+        {
+          "id": "oath",
+          "type": "dialogue",
+          "speaker": "孙悟空",
+          "text": "俺老孙先说一句：这条路，谁也别想半道把谁丢下。",
+          "next": "finish"
+        },
+        {
+          "id": "finish",
+          "type": "end"
+        }
       ]
     },
     {
@@ -108,8 +318,17 @@
       "namespace": "SHARED",
       "start": "departure",
       "nodes": [
-        {"id":"departure","type":"dialogue","speaker":"玄奘","text":"五人齐备，西天路也终于真正展开。前方还有千山万水，但这一次，我们一起走。","next":"finish"},
-        {"id":"finish","type":"end"}
+        {
+          "id": "departure",
+          "type": "dialogue",
+          "speaker": "玄奘",
+          "text": "五人齐备，西天路也终于真正展开。前方还有千山万水，但这一次，我们一起走。",
+          "next": "finish"
+        },
+        {
+          "id": "finish",
+          "type": "end"
+        }
       ]
     },
     {
@@ -118,8 +337,17 @@
       "namespace": "ORIGIN",
       "start": "birth",
       "nodes": [
-        {"id":"birth","type":"dialogue","speaker":"旁白","text":"一块灵石在花果山顶裂开。石猴睁眼看见天地，也第一次感到自己不属于任何人的安排。","next":"finish"},
-        {"id":"finish","type":"end"}
+        {
+          "id": "birth",
+          "type": "dialogue",
+          "speaker": "旁白",
+          "text": "一块灵石在花果山顶裂开。石猴睁眼看见天地，也第一次感到自己不属于任何人的安排。",
+          "next": "finish"
+        },
+        {
+          "id": "finish",
+          "type": "end"
+        }
       ]
     },
     {
@@ -128,10 +356,33 @@
       "namespace": "ORIGIN",
       "start": "cave",
       "nodes": [
-        {"id":"cave","type":"dialogue","speaker":"孙悟空","text":"水帘洞虽是猴儿们的新家，也总有人想来抢走这份安稳。那就让我自己守住它。","next":"battle"},
-        {"id":"battle","type":"battle","encounter_type":"origin","encounter_id":"WUKONG_ORIGIN_WATER_CAVE","source_chapter_id":"WUK-02","source_route_id":"WUKONG_ORIGIN","next":"after_battle"},
-        {"id":"after_battle","type":"dialogue","speaker":"孙悟空","text":"原来守住自由，也得有承担后果的本事。","next":"finish"},
-        {"id":"finish","type":"end"}
+        {
+          "id": "cave",
+          "type": "dialogue",
+          "speaker": "孙悟空",
+          "text": "水帘洞虽是猴儿们的新家，也总有人想来抢走这份安稳。那就让我自己守住它。",
+          "next": "battle"
+        },
+        {
+          "id": "battle",
+          "type": "battle",
+          "encounter_type": "origin",
+          "encounter_id": "WUKONG_ORIGIN_WATER_CAVE",
+          "source_chapter_id": "WUK-02",
+          "source_route_id": "WUKONG_ORIGIN",
+          "next": "after_battle"
+        },
+        {
+          "id": "after_battle",
+          "type": "dialogue",
+          "speaker": "孙悟空",
+          "text": "原来守住自由，也得有承担后果的本事。",
+          "next": "finish"
+        },
+        {
+          "id": "finish",
+          "type": "end"
+        }
       ]
     },
     {
@@ -140,9 +391,23 @@
       "namespace": "ORIGIN",
       "start": "sea",
       "nodes": [
-        {"id":"sea","type":"dialogue","speaker":"孙悟空","text":"花果山再好，也回答不了寿数将尽的问题。若要寻找答案，就得先踏过这片海。","next":"choice"},
-        {"id":"choice","type":"choice","event_id":"WUK-03","next":"finish"},
-        {"id":"finish","type":"end"}
+        {
+          "id": "sea",
+          "type": "dialogue",
+          "speaker": "孙悟空",
+          "text": "花果山再好，也回答不了寿数将尽的问题。若要寻找答案，就得先踏过这片海。",
+          "next": "choice"
+        },
+        {
+          "id": "choice",
+          "type": "choice",
+          "event_id": "WUK-03",
+          "next": "finish"
+        },
+        {
+          "id": "finish",
+          "type": "end"
+        }
       ]
     },
     {
@@ -151,10 +416,30 @@
       "namespace": "ORIGIN",
       "start": "arrival",
       "nodes": [
-        {"id":"arrival","type":"dialogue","speaker":"孙悟空","text":"菩提祖师门前，万般术法都只是门槛。师父肯教我变化之术，却先要我学会收住炫耀之心。","next":"lesson"},
-        {"id":"lesson","type":"wait","seconds":0.25,"next":"resolve"},
-        {"id":"resolve","type":"dialogue","speaker":"旁白","text":"七十二变入门，真正的考验却从来不是变成什么，而是知道何时不该显露。","next":"finish"},
-        {"id":"finish","type":"end"}
+        {
+          "id": "arrival",
+          "type": "dialogue",
+          "speaker": "孙悟空",
+          "text": "菩提祖师门前，万般术法都只是门槛。师父肯教我变化之术，却先要我学会收住炫耀之心。",
+          "next": "lesson"
+        },
+        {
+          "id": "lesson",
+          "type": "wait",
+          "seconds": 0.25,
+          "next": "resolve"
+        },
+        {
+          "id": "resolve",
+          "type": "dialogue",
+          "speaker": "旁白",
+          "text": "七十二变入门，真正的考验却从来不是变成什么，而是知道何时不该显露。",
+          "next": "finish"
+        },
+        {
+          "id": "finish",
+          "type": "end"
+        }
       ]
     },
     {
@@ -163,9 +448,24 @@
       "namespace": "ORIGIN",
       "start": "return",
       "nodes": [
-        {"id":"return","type":"dialogue","speaker":"孙悟空","text":"本事学会了，山还是那座山，猴群却已经在等我回来。若我只会炫技，又凭什么做它们的大王？","next":"resolve"},
-        {"id":"resolve","type":"dialogue","speaker":"孙悟空","text":"往后这身本领，先用来护住花果山，再谈什么威风名号。","next":"finish"},
-        {"id":"finish","type":"end"}
+        {
+          "id": "return",
+          "type": "dialogue",
+          "speaker": "孙悟空",
+          "text": "本事学会了，山还是那座山，猴群却已经在等我回来。若我只会炫技，又凭什么做它们的大王？",
+          "next": "resolve"
+        },
+        {
+          "id": "resolve",
+          "type": "dialogue",
+          "speaker": "孙悟空",
+          "text": "往后这身本领，先用来护住花果山，再谈什么威风名号。",
+          "next": "finish"
+        },
+        {
+          "id": "finish",
+          "type": "end"
+        }
       ]
     },
     {
@@ -174,10 +474,33 @@
       "namespace": "ORIGIN",
       "start": "palace",
       "nodes": [
-        {"id":"palace","type":"dialogue","speaker":"孙悟空","text":"东海龙宫的宝贝多得叫人眼花，可若连一件称手兵器都没有，拿什么守住自己的路？","next":"battle"},
-        {"id":"battle","type":"battle","encounter_type":"origin","encounter_id":"WUKONG_ORIGIN_DRAGON_PALACE","source_chapter_id":"WUK-06","source_route_id":"WUKONG_ORIGIN","next":"after_battle"},
-        {"id":"after_battle","type":"dialogue","speaker":"孙悟空","text":"金箍棒既肯认我，我便也认这根棒子。兵器不是炫耀的本钱，是一路走下去的倚仗。","next":"finish"},
-        {"id":"finish","type":"end"}
+        {
+          "id": "palace",
+          "type": "dialogue",
+          "speaker": "孙悟空",
+          "text": "东海龙宫的宝贝多得叫人眼花，可若连一件称手兵器都没有，拿什么守住自己的路？",
+          "next": "battle"
+        },
+        {
+          "id": "battle",
+          "type": "battle",
+          "encounter_type": "origin",
+          "encounter_id": "WUKONG_ORIGIN_DRAGON_PALACE",
+          "source_chapter_id": "WUK-06",
+          "source_route_id": "WUKONG_ORIGIN",
+          "next": "after_battle"
+        },
+        {
+          "id": "after_battle",
+          "type": "dialogue",
+          "speaker": "孙悟空",
+          "text": "金箍棒既肯认我，我便也认这根棒子。兵器不是炫耀的本钱，是一路走下去的倚仗。",
+          "next": "finish"
+        },
+        {
+          "id": "finish",
+          "type": "end"
+        }
       ]
     },
     {
@@ -186,9 +509,24 @@
       "namespace": "ORIGIN",
       "start": "underworld",
       "nodes": [
-        {"id":"underworld","type":"dialogue","speaker":"孙悟空","text":"生死簿上写着我的寿数，可我偏不信。既然命数能写在纸上，便也能被我自己撕掉。","next":"resolve"},
-        {"id":"resolve","type":"dialogue","speaker":"旁白","text":"他划去名字，也第一次真正把‘命’当成可以反抗的东西。","next":"finish"},
-        {"id":"finish","type":"end"}
+        {
+          "id": "underworld",
+          "type": "dialogue",
+          "speaker": "孙悟空",
+          "text": "生死簿上写着我的寿数，可我偏不信。既然命数能写在纸上，便也能被我自己撕掉。",
+          "next": "resolve"
+        },
+        {
+          "id": "resolve",
+          "type": "dialogue",
+          "speaker": "旁白",
+          "text": "他划去名字，也第一次真正把‘命’当成可以反抗的东西。",
+          "next": "finish"
+        },
+        {
+          "id": "finish",
+          "type": "end"
+        }
       ]
     },
     {
@@ -197,9 +535,23 @@
       "namespace": "ORIGIN",
       "start": "heaven",
       "nodes": [
-        {"id":"heaven","type":"dialogue","speaker":"孙悟空","text":"天庭给了我弼马温的官，却也把我关进了另一座看不见的笼子。","next":"choice"},
-        {"id":"choice","type":"choice","event_id":"WUK-08","next":"finish"},
-        {"id":"finish","type":"end"}
+        {
+          "id": "heaven",
+          "type": "dialogue",
+          "speaker": "孙悟空",
+          "text": "天庭给了我弼马温的官，却也把我关进了另一座看不见的笼子。",
+          "next": "choice"
+        },
+        {
+          "id": "choice",
+          "type": "choice",
+          "event_id": "WUK-08",
+          "next": "finish"
+        },
+        {
+          "id": "finish",
+          "type": "end"
+        }
       ]
     },
     {
@@ -208,9 +560,24 @@
       "namespace": "ORIGIN",
       "start": "banner",
       "nodes": [
-        {"id":"banner","type":"dialogue","speaker":"孙悟空","text":"既然天庭不认我这个弼马温，那我就自己立个名号。齐天大圣，不是求人给的，是我自己要的。","next":"resolve"},
-        {"id":"resolve","type":"dialogue","speaker":"旁白","text":"花果山立起旗号。名号越大，真正要承担的代价也越近。","next":"finish"},
-        {"id":"finish","type":"end"}
+        {
+          "id": "banner",
+          "type": "dialogue",
+          "speaker": "孙悟空",
+          "text": "既然天庭不认我这个弼马温，那我就自己立个名号。齐天大圣，不是求人给的，是我自己要的。",
+          "next": "resolve"
+        },
+        {
+          "id": "resolve",
+          "type": "dialogue",
+          "speaker": "旁白",
+          "text": "花果山立起旗号。名号越大，真正要承担的代价也越近。",
+          "next": "finish"
+        },
+        {
+          "id": "finish",
+          "type": "end"
+        }
       ]
     },
     {
@@ -219,9 +586,24 @@
       "namespace": "ORIGIN",
       "start": "peach",
       "nodes": [
-        {"id":"peach","type":"dialogue","speaker":"孙悟空","text":"蟠桃不是因为好吃才让人惦记，而是因为有人规定我不能吃。既然如此，我偏要看看这条禁令到底值几斤几两。","next":"resolve"},
-        {"id":"resolve","type":"dialogue","speaker":"旁白","text":"一口蟠桃下肚，放纵也第一次从山场走进了天庭禁地。","next":"finish"},
-        {"id":"finish","type":"end"}
+        {
+          "id": "peach",
+          "type": "dialogue",
+          "speaker": "孙悟空",
+          "text": "蟠桃不是因为好吃才让人惦记，而是因为有人规定我不能吃。既然如此，我偏要看看这条禁令到底值几斤几两。",
+          "next": "resolve"
+        },
+        {
+          "id": "resolve",
+          "type": "dialogue",
+          "speaker": "旁白",
+          "text": "一口蟠桃下肚，放纵也第一次从山场走进了天庭禁地。",
+          "next": "finish"
+        },
+        {
+          "id": "finish",
+          "type": "end"
+        }
       ]
     },
     {
@@ -230,10 +612,33 @@
       "namespace": "ORIGIN",
       "start": "army",
       "nodes": [
-        {"id":"army","type":"dialogue","speaker":"孙悟空","text":"天兵天将铺满天路。好，今日便让我看看天庭究竟准备拿多少人来挡我。","next":"battle"},
-        {"id":"battle","type":"battle","encounter_type":"origin","encounter_id":"WUKONG_ORIGIN_HEAVENLY_TROOPS","source_chapter_id":"WUK-11","source_route_id":"WUKONG_ORIGIN","next":"after_battle"},
-        {"id":"after_battle","type":"dialogue","speaker":"孙悟空","text":"人多不等于理对。可这一次，我也终于知道，天上的秩序不是几棒子就能打散的。","next":"finish"},
-        {"id":"finish","type":"end"}
+        {
+          "id": "army",
+          "type": "dialogue",
+          "speaker": "孙悟空",
+          "text": "天兵天将铺满天路。好，今日便让我看看天庭究竟准备拿多少人来挡我。",
+          "next": "battle"
+        },
+        {
+          "id": "battle",
+          "type": "battle",
+          "encounter_type": "origin",
+          "encounter_id": "WUKONG_ORIGIN_HEAVENLY_TROOPS",
+          "source_chapter_id": "WUK-11",
+          "source_route_id": "WUKONG_ORIGIN",
+          "next": "after_battle"
+        },
+        {
+          "id": "after_battle",
+          "type": "dialogue",
+          "speaker": "孙悟空",
+          "text": "人多不等于理对。可这一次，我也终于知道，天上的秩序不是几棒子就能打散的。",
+          "next": "finish"
+        },
+        {
+          "id": "finish",
+          "type": "end"
+        }
       ]
     },
     {
@@ -242,10 +647,33 @@
       "namespace": "ORIGIN",
       "start": "duel",
       "nodes": [
-        {"id":"duel","type":"dialogue","speaker":"孙悟空","text":"这人能跟住我的变化？有意思。若只靠蛮力赢不了，那就看看谁更懂得下一步。","next":"battle"},
-        {"id":"battle","type":"battle","encounter_type":"origin","encounter_id":"WUKONG_ORIGIN_ERLANG_SHEN","source_chapter_id":"WUK-12","source_route_id":"WUKONG_ORIGIN","next":"after_battle"},
-        {"id":"after_battle","type":"dialogue","speaker":"旁白","text":"二郎神的锋芒让悟空第一次明白，变化不只是躲开规则，也可能意味着更快看懂规则。","next":"finish"},
-        {"id":"finish","type":"end"}
+        {
+          "id": "duel",
+          "type": "dialogue",
+          "speaker": "孙悟空",
+          "text": "这人能跟住我的变化？有意思。若只靠蛮力赢不了，那就看看谁更懂得下一步。",
+          "next": "battle"
+        },
+        {
+          "id": "battle",
+          "type": "battle",
+          "encounter_type": "origin",
+          "encounter_id": "WUKONG_ORIGIN_ERLANG_SHEN",
+          "source_chapter_id": "WUK-12",
+          "source_route_id": "WUKONG_ORIGIN",
+          "next": "after_battle"
+        },
+        {
+          "id": "after_battle",
+          "type": "dialogue",
+          "speaker": "旁白",
+          "text": "二郎神的锋芒让悟空第一次明白，变化不只是躲开规则，也可能意味着更快看懂规则。",
+          "next": "finish"
+        },
+        {
+          "id": "finish",
+          "type": "end"
+        }
       ]
     },
     {
@@ -254,9 +682,23 @@
       "namespace": "ORIGIN",
       "start": "furnace",
       "nodes": [
-        {"id":"furnace","type":"dialogue","speaker":"孙悟空","text":"八卦炉里没有退路。既然他们要拿火炼我，我就看看这火究竟能留下什么。","next":"choice"},
-        {"id":"choice","type":"choice","event_id":"WUK-13","next":"finish"},
-        {"id":"finish","type":"end"}
+        {
+          "id": "furnace",
+          "type": "dialogue",
+          "speaker": "孙悟空",
+          "text": "八卦炉里没有退路。既然他们要拿火炼我，我就看看这火究竟能留下什么。",
+          "next": "choice"
+        },
+        {
+          "id": "choice",
+          "type": "choice",
+          "event_id": "WUK-13",
+          "next": "finish"
+        },
+        {
+          "id": "finish",
+          "type": "end"
+        }
       ]
     },
     {
@@ -265,10 +707,33 @@
       "namespace": "ORIGIN",
       "start": "palace",
       "nodes": [
-        {"id":"palace","type":"dialogue","speaker":"孙悟空","text":"走到这一步，已经不是一个官位、一口蟠桃的事了。天宫不退，我也不退。","next":"battle"},
-        {"id":"battle","type":"battle","encounter_type":"origin","encounter_id":"WUKONG_ORIGIN_HEAVEN_PALACE","source_chapter_id":"WUK-14","source_route_id":"WUKONG_ORIGIN","next":"after_battle"},
-        {"id":"after_battle","type":"dialogue","speaker":"旁白","text":"反抗终于撞上更高一层的秩序。大圣输了这场仗，却没有因此承认自己错在不该反抗。","next":"finish"},
-        {"id":"finish","type":"end"}
+        {
+          "id": "palace",
+          "type": "dialogue",
+          "speaker": "孙悟空",
+          "text": "走到这一步，已经不是一个官位、一口蟠桃的事了。天宫不退，我也不退。",
+          "next": "battle"
+        },
+        {
+          "id": "battle",
+          "type": "battle",
+          "encounter_type": "origin",
+          "encounter_id": "WUKONG_ORIGIN_HEAVEN_PALACE",
+          "source_chapter_id": "WUK-14",
+          "source_route_id": "WUKONG_ORIGIN",
+          "next": "after_battle"
+        },
+        {
+          "id": "after_battle",
+          "type": "dialogue",
+          "speaker": "旁白",
+          "text": "反抗终于撞上更高一层的秩序。大圣输了这场仗，却没有因此承认自己错在不该反抗。",
+          "next": "finish"
+        },
+        {
+          "id": "finish",
+          "type": "end"
+        }
       ]
     },
     {
@@ -277,9 +742,24 @@
       "namespace": "ORIGIN",
       "start": "mountain",
       "nodes": [
-        {"id":"mountain","type":"dialogue","speaker":"孙悟空","text":"五行山压得住手脚，却压不住心。日子一天天过去，我开始听见山外越来越近的脚步声。","next":"resolve"},
-        {"id":"resolve","type":"dialogue","speaker":"旁白","text":"那不是终点。取经人的命运正在靠近，五行山下的岁月也终于有了新的方向。","next":"finish"},
-        {"id":"finish","type":"end"}
+        {
+          "id": "mountain",
+          "type": "dialogue",
+          "speaker": "孙悟空",
+          "text": "五行山压得住手脚，却压不住心。日子一天天过去，我开始听见山外越来越近的脚步声。",
+          "next": "resolve"
+        },
+        {
+          "id": "resolve",
+          "type": "dialogue",
+          "speaker": "旁白",
+          "text": "那不是终点。取经人的命运正在靠近，五行山下的岁月也终于有了新的方向。",
+          "next": "finish"
+        },
+        {
+          "id": "finish",
+          "type": "end"
+        }
       ]
     }
   ]
