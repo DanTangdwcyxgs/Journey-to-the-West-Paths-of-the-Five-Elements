@@ -427,8 +427,8 @@ Wukong progression 修正后的完整 Runtime 已成功通过上一轮验证；�
 - Story MOVE 已经将地点变更包在 save boundary 内：保存失败恢复完整 NarrativeState 并保持 MOVE 可重试；生产 WorldMapScreen 的自由旅行却仍是 `world.visit(); narrative.save();`，忽略 save() 返回值。
 - 修改 `WorldMapScreen._travel()`：在自由 travel 前保存完整 state snapshot；只有 visit 与 save 均成功才显示抵达；保存失败 restore_snapshot、刷新地图并提示地点变更已回滚，原地点与目的地选择保持可重试。
 - 新增 `combat/test_world_map_travel_save_failure_rollback.gd`：生产 WorldMapScreen 的控件/路径配合一个可切换 save 成败的 NarrativeManager；先注入 save 失败，比较完整 NarrativeState 与当前地点/visited history；再打开保存开关，通过同一旅行按钮重试并验证目的地与 visit history 被提交。
-- 本批精确 SHA Runtime / Web Demo 状态待 Actions 验证；Runtime suite 增加 1 项，从 43 升到 44。
-- 下一步：通过后评估主线地图移动、可选悬赏和真实区域探索之间的分工，转向第一条 Vertical Slice 的内容节奏/呈现评审。
+- 新增测试已通过精确提交 `d82a8be8a05b7c18f699f3956c4dcc031819ba25` 的 Godot Runtime run [38119239984](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38119239984)，日志为 `RUNTIME_SUITE_PASS tests=44`；同一 SHA 的 Web Demo run [38119240011](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38119240011) build/deploy 均成功。
+- 下一步：进入第一条 Vertical Slice 的体验/内容节奏评审，继续检视主线地图移动、可选悬赏与正式区域探索之间的分工。
 
 ## 4. Wukong Origin 当前状态
 

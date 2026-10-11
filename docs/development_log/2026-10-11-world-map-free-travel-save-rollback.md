@@ -38,14 +38,14 @@ Narrative locations and their visited history are part of the save state, not ju
 - A second successful attempt through the same UI button commits EAGLE_SORROW as current and visited.
 
 ## Godot Runtime status
-**PENDING** — validate the exact implementation SHA with the Godot Runtime and Web Demo workflows before marking it green.
+**PASS** — exact implementation commit `d82a8be8a05b7c18f699f3956c4dcc031819ba25`. Godot Runtime run [38119239984](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38119239984) passed with `RUNTIME_SUITE_PASS tests=44`. Web Demo run [38119240011](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38119240011) completed successfully; both build and deploy jobs passed.
 
 ## Known issues
 - The test controls the save return value and does not simulate file-system power loss mid-write.
 - This change deliberately does not alter WorldMapManager's timeline, milestone, connection, or reachable-node rules.
 
 ## Next step
-After CI passes, review the overall Wukong → Longma → Memory slice for remaining gameplay / presentation gaps instead of continuing framework-only work.
+Review the overall Wukong → Longma → Memory slice for remaining gameplay / presentation gaps instead of continuing framework-only work.
 
 ## Handoff point
 Free WorldMap travel persistence. Keep NarrativeState authoritative and restore it on any failed save after a location mutation.
