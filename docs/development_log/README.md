@@ -10,6 +10,7 @@
 
 ## 最新记录
 
+- [`2026-10-11 — Shared Chapter Pacing / Canon Alignment`](2026-10-11-shared-chapter-pacing-canon-alignment.md)
 - [`2026-10-11 — Atomic Bounty Settlement and Retry`](2026-10-11-bounty-settlement-atomic-retry.md)
 - [`2026-10-11 — Yellow Wind Cave Battle Roundtrip`](2026-10-11-yellow-wind-cave-battle-roundtrip.md)
 - [`2026-10-11 — Yellow Wind Ridge/Cave Stage Gate and Save Rollback`](2026-10-11-yellow-wind-ridge-cave-gates-rollback.md)

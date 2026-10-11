@@ -414,7 +414,7 @@ MainMenu / Origin battle resume、Origin final END → Shared-01 + rollback、Ev
 - The suite still logged a missing-font diagnostic and Resource/RID teardown warnings. Those did not fail the run, but should be tracked separately.
 
 ### Handoff
-Battle resolution remains service-owned. Victory-result presentation is completed for this slice; MOVE / WAIT feedback is the active follow-up documented in section 16.
+Battle resolution remains service-owned. Victory-result presentation and MOVE / WAIT feedback have dedicated regression coverage. The next content-facing task is a Wukong → Longma vertical-slice pacing / presentation review: audit dialogue density, player-facing objectives, optional exploration signposting, and the boundary between canonical Shared progression and optional bounties. The Shared chapter bible has been aligned to current production IDs on branch `codex/shared-chapter-pacing-doc-alignment-2026-10-11`; its full Black Wind / Guanyin Monastery and Yellow Wind Ridge arcs remain planned, not shipped.
 
 ## 16. 2026-10-10 Journey MOVE / WAIT Presentation
 
