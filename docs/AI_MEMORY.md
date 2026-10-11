@@ -590,5 +590,5 @@ Wukong、Tang、Longma、Bajie、Wujing 五条 Origin Route 均已完成首轮 S
 - Memory playback 复用导航锁 helper，保留原有播放期间不能跳场景的行为。
 - 扩展 combat/test_journey_event_presentation.gd，断言 MOVE action 活跃时四个退出入口都禁用并可在释放后解锁。
 - 分支：codex/journey-event-navigation-lock-2026-10-11。开发日志：docs/development_log/2026-10-11-journey-event-navigation-lock.md。
-- 验证：该分支精确 head 的 Godot Runtime CI 待运行；不以 PR #18/#19 的历史通过替代。
+- 验证：实现 head `f9462b51ab52779db0388a70b4a2da607977a133` 的 Godot Runtime run [38126091739](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38126091739) 成功，日志确认 `RUNTIME_SUITE_PASS tests=47`。本次提交仅记录该结果。
 - 下一步：CI 通过后继续 Shared-02 → Shared-03 节奏和可选探索提示评审；以后若做通用 Journey session serialization，需为中断/恢复单独补回归。

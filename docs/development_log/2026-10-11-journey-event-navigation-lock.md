@@ -32,7 +32,7 @@ The current scene transition callbacks do not serialize the active EventRunner. 
 
 ## Tests
 - Regression now checks World Map, Party, Save, and Return-to-Menu disabled state while a MOVE action is active.
-- Godot Runtime CI: PENDING for this branch head; exact-head CI must finish before the batch is considered validated.
+- PASS for implementation head `f9462b51ab52779db0388a70b4a2da607977a133`: [Godot Runtime run 38126091739](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38126091739) completed successfully and the job log confirms `RUNTIME_SUITE_PASS tests=47`. This status-only follow-up records the observed result.
 
 ## Known issues
 - This protects the visible buttons; it does not introduce a serializable Journey session or support deliberate mid-sequence scene suspension.

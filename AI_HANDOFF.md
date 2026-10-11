@@ -436,7 +436,7 @@ Next implement END / chapter-completion feedback and regression, one presentatio
 ### Current batch
 - Journey locks Party, World Map, Save, and Return-to-Menu while an EventSequence action is active, because the current scene-switch callbacks do not serialize the active NarrativeEventSession.
 - The primary event action remains available. Navigation unlocks when the sequence is finished and the regular route/shared overview is rendered, so optional exploration can happen between completed sequences.
-- Regression asserts the four controls are locked during MOVE and can be unlocked; exact-head Runtime is pending for branch codex/journey-event-navigation-lock-2026-10-11.
+- Regression asserts the four controls are locked during MOVE and can be unlocked; Implementation head `f9462b51ab52779db0388a70b4a2da607977a133` passed [Godot Runtime run 38126091739](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38126091739), with `RUNTIME_SUITE_PASS tests=47`. This follow-up only records the observed result; its own CI must complete before the PR is marked ready.
 
 ### Next handoff
 Review Shared-02 → Shared-03 dialogue pacing and optional exploration signposting. Do not change canon chronology or conflate the optional Yellow Wind bounty with the full planned Yellow Wind Ridge mainline. A future general Journey session handoff must include explicit interruption/resume tests before removing this conservative lock.
