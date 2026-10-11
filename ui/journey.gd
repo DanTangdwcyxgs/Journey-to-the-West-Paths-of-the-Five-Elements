@@ -450,23 +450,65 @@ func _back_to_menu() -> void:
 
 func _finish_event_session() -> void:
 	var sequence_chapter_id := ""
+	var sequence_namespace := ""
 	var sequence_has_battle := false
 	if event_session != null and event_session.sequence != null:
 		var definition := event_session.sequence.to_dict()
 		sequence_chapter_id = str(definition.get("chapter_id", ""))
+		sequence_namespace = event_session.namespace_id
 		for node in definition.get("nodes", []):
 			if str(node.get("type", node.get("kind", ""))).to_lower() == EventRunner.BATTLE:
 				sequence_has_battle = true
 				break
-	var complete_shared_chapter := not sequence_chapter_id.is_empty() and not sequence_has_battle and narrative.state.current_shared_chapter == sequence_chapter_id
+
+	var completion_notice := "本段剧情完成。"
+	if not sequence_chapter_id.is_empty():
+		var chapter_title := _sequence_chapter_title(sequence_chapter_id, sequence_namespace)
+		if sequence_namespace == "SHARED":
+			if not sequence_has_battle and narrative.state.current_shared_chapter == sequence_chapter_id:
+				if SharedJourneyManager.complete(sequence_chapter_id, narrative, false):
+					party.initialize_from_saved_state(narrative.state.recruited_characters, narrative.state.get_party_formation())
+					completion_notice = "章节完成 · %s" % chapter_title
+				else:
+					completion_notice = "章节推进未确认 · %s" % chapter_title
+			elif sequence_has_battle:
+				if sequence_chapter_id in narrative.state.completed_shared_chapters:
+					completion_notice = "战后剧情完成 · %s 已结算" % chapter_title
+				else:
+					completion_notice = "战后剧情结束 · %s" % chapter_title
+			else:
+				completion_notice = "剧情片段完成 · %s" % chapter_title
+
+			var next_shared_id := narrative.state.current_shared_chapter
+			if not next_shared_id.is_empty() and next_shared_id != sequence_chapter_id:
+				var next_shared_chapter: Dictionary = SharedJourneyManager.get_chapter(next_shared_id)
+				if not next_shared_chapter.is_empty():
+					completion_notice += " · 下一章：" + str(next_shared_chapter.get("title", next_shared_id))
+			elif sequence_chapter_id in narrative.state.completed_shared_chapters:
+				var completed_definition: ChapterDefinition = SharedJourneyManager.get_definition(sequence_chapter_id)
+				if ChapterRuntime.next_id(completed_definition).is_empty():
+					completion_notice += " · 当前共享章节链已完成"
+		elif sequence_namespace == "ORIGIN" and sequence_has_battle:
+			completion_notice = "战后剧情完成 · %s" % chapter_title
+			var next_origin_chapter: Dictionary = origin.get_current_chapter(narrative, narrative.state.starting_character)
+			if not next_origin_chapter.is_empty() and str(next_origin_chapter.get("id", "")) != sequence_chapter_id:
+				completion_notice += " · 下一章：" + str(next_origin_chapter.get("title", next_origin_chapter.get("id", "")))
+
 	event_session = null
 	BountyEncounterState.clear()
-	if complete_shared_chapter:
-		SharedJourneyManager.complete(sequence_chapter_id, narrative, false)
-		party.initialize_from_saved_state(narrative.state.recruited_characters, narrative.state.get_party_formation())
-	narrative.save()
-	phase_label.text = "本段剧情完成。"
+	var save_succeeded: bool = narrative.save()
 	_refresh()
+	phase_label.text = completion_notice if save_succeeded else completion_notice + " · 存档失败"
+
+func _sequence_chapter_title(chapter_id: String, namespace_id: String) -> String:
+	if namespace_id == "SHARED":
+		var shared_chapter: Dictionary = SharedJourneyManager.get_chapter(chapter_id)
+		if not shared_chapter.is_empty():
+			return str(shared_chapter.get("title", chapter_id))
+	for chapter in origin.get_chapters(narrative.state.starting_character):
+		if str(chapter.get("id", "")) == chapter_id:
+			return str(chapter.get("title", chapter_id))
+	return chapter_id
 
 func _refresh() -> void:
 	if title_label == null:
@@ -532,10 +574,11 @@ func _render_event_action(action: Dictionary) -> void:
 			primary_button.text = "进入战斗"
 			primary_button.disabled = false
 		EventRunner.END:
-			phase_label.text = "事件完成"
-			_set_dialogue("", "这一段故事已经走完。", false)
-			primary_button.text = "完成"
+			phase_label.text = "剧情终点 · 等待确认"
+			_set_dialogue("", "这一段故事已经走完。确认后会记录章节进度，并返回旅途。", false)
+			primary_button.text = "完成并继续"
 			primary_button.disabled = false
+			dialogue_hint_label.text = "确认结束本段剧情 · 完成记录由旅途统一处理"
 		_:
 			phase_label.text = "剧情进行中"
 			_set_dialogue("", str(action), false)

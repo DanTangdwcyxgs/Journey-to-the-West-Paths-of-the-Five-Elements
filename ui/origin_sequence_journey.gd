@@ -44,12 +44,19 @@ func _finish_event_session() -> void:
 			var start := narrative.state.starting_character
 			var current := origin.get_current_chapter(narrative, start)
 			if not current.is_empty() and str(current.get("id", "")) == chapter_id:
-				var completed := narrative.complete_origin_chapter(start)
+				var completed: Dictionary = narrative.complete_origin_chapter(start)
 				if not completed.is_empty():
+					var chapter_title := str(completed.get("title", chapter_id))
+					var completion_notice := "个人章节完成 · %s" % chapter_title
+					var next_chapter: Dictionary = origin.get_current_chapter(narrative, start)
+					if next_chapter.is_empty():
+						completion_notice += " · 个人序章已完结"
+					else:
+						completion_notice += " · 下一章：" + str(next_chapter.get("title", next_chapter.get("id", "")))
 					event_session = null
 					BountyEncounterState.clear()
-					narrative.save()
-					phase_label.text = "本段个人故事完成。"
+					var save_succeeded: bool = narrative.save()
 					_refresh()
+					phase_label.text = completion_notice if save_succeeded else completion_notice + " · 存档失败"
 					return
 	super._finish_event_session()

@@ -228,9 +228,19 @@ Wukong progression 修正后的完整 Runtime 已成功通过上一轮验证；�
 - 重绘 `journey_scenery.svg`，增加远景山脊、远处寺院、中景悬崖、朝圣道路、前景竹木与灯笼光点等有明确景深职责的层。
 - 重绘 `yellow_wind_battle.svg`，增加风沙层、废墟轮廓、战斗地面、余烬裂纹和风旋区域，为角色与技能特效保留空间。
 - 扩展 `test_visual_asset_contract.gd`，检查关键图层标记，避免背景被简化回无层次占位图；更新视觉参考文档和接手优先级。
-- 当前只完成资源级静态修改与契约回归代码；本会话没有本地 Godot 可执行运行环境，不能宣称本批次 Godot Runtime 通过。必须检查本提交 SHA 的 GitHub Actions。
-- 已知问题：没有最终角色 PNG/WebP；缺失字体 `res://fonts/NotoSansSC-Regular.otf` 仍需处理；SVG 分层背景是过渡性环境资产，仍需要真实游戏窗口内的截图验收。
-- 下一步：先检查本提交的 Godot Runtime 与 Web Demo 构建；通过后进行角色资产第一批（Wukong / Tang / Bajie / Wujing / Longma）替换，并解决字体资源缺失。
+- 本会话没有本地 Godot 可执行运行环境；随后对实现提交 `cb7fd7c577e1811fa3c2b141019db871ed79150a` 检查了对应 Actions：Godot Runtime run `38102287644` 成功，日志包含 `RUNTIME_SUITE_PASS tests=31`；Web Demo run `38102287631` 也成功。
+- Runtime 日志仍报告缺失 `res://fonts/NotoSansSC-Regular.otf` 与 Resource/RID teardown 诊断；这些没有使该提交的 31 项 suite 失败，但尚未解决。
+- 已知问题：没有最终角色 PNG/WebP；SVG 分层背景是过渡性环境资产，仍需真实游戏窗口截图验收。当前会话的角色图像生成请求被 Free 套餐生成额度限制，未产出可提交正式资源；不会把概念图冒充游戏资产。
+- 下一步：图像额度恢复后继续最终角色资产垂直切片；在此之前先推进不依赖图像生成的 Journey END / 章节完成反馈与 SceneTree 回归，并解决字体缺失。
+
+### Round 32 — 2026-10-11：Asset-Generation Blocker Recorded / Journey END Feedback
+- 记录图像生成额度限制：本会话未获得可用的最终角色 PNG，不上传概念展示图冒充可投入游戏的素材；美术垂直切片暂时不阻塞框架开发。
+- 检查上一提交 `cb7fd7c577e1811fa3c2b141019db871ed79150a` 的专属 CI：Godot Runtime `38102287644` 成功（`RUNTIME_SUITE_PASS tests=31`），Web Demo `38102287631` 成功；Runtime 仍有缺失 CJK 字体和 Resource/RID teardown 诊断。
+- Journey 的 END 节点改为明确说明“确认完成会记录章节进度并返回旅途”，操作按钮改为“完成并继续”。
+- Shared Sequence END 收口现在显示已完成章节标题及下一章；战后 END 显示战后剧情结算状态。Origin 非战斗 END 显示个人章节完成标题、下一章或个人序章收束信息。
+- 对 SharedJourneyManager.complete() 返回值进行处理，不再在章节推进未确认时显示成功文案；Save 失败也会显示明确提示。章节奖励、章节事实和战斗原子结算仍由既有 Manager / Service 承担，Presentation 只负责反馈。
+- 扩展 Journey END 展示回归与真实 SHARED-01 → SHARED-02 SceneTree 桥接回归。当前批次的 Runtime 结果必须继续以新实现提交 SHA 对应 Actions 为准。
+- 下一步：确认新提交 CI；再做 Main Menu → Journey → END/Chapter → Save 的更完整 SceneTree smoke。缺失字体与 teardown 诊断单独处理；正式角色 PNG/WebP 待图像生成可用后再进入资产替换。
 ---
 
 ## 4. Wukong Origin 当前状态

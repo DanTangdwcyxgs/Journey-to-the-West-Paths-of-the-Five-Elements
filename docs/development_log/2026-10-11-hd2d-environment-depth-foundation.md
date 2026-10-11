@@ -38,20 +38,23 @@ The target is a playable pixel HD-2D JRPG, not a text-first prototype with place
 
 ## Tests
 - Added static resource-contract assertions for the new scene layers.
-- This session does not have a local Godot executable, so the Godot Runtime was not run locally.
-- The commit-specific GitHub Actions Runtime and Web Demo build must be checked before claiming runtime success.
+- Commit `cb7fd7c577e1811fa3c2b141019db871ed79150a` was checked against its own GitHub Actions runs.
+- Godot Runtime run [38102287644](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38102287644) passed, with `RUNTIME_SUITE_PASS tests=31`.
+- Web Demo build/deploy run [38102287631](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38102287631) passed.
+- Runtime still logs a missing `res://fonts/NotoSansSC-Regular.otf` resource and Resource/RID teardown diagnostics. They did not fail this run and remain separate issues.
 
 ## Godot Runtime status
-PENDING until GitHub Actions reports the result for the exact implementation commit. Do not infer success from static review.
+**PASS for commit `cb7fd7c577e1811fa3c2b141019db871ed79150a`.** Both the commit-specific Godot Runtime suite and Web Demo workflow completed successfully. This does not constitute screenshot or final-art acceptance.
 
 ## Known issues
 - No final PNG/WebP character assets are currently present under assets/art/**/final/.
 - The existing six SVG character assets are placeholders, not final production character art.
-- res://fonts/NotoSansSC-Regular.otf is missing and must be resolved separately.
+- The image-generation request in this session was blocked by the Free-plan image-generation limit; no usable final character PNG was returned, and no concept sheet was added to the repository as if it were game-ready art.
+- `res://fonts/NotoSansSC-Regular.otf` is missing and must be resolved separately.
 - These SVG environment layers are an interim visual improvement; the scene still needs in-game screenshot review for readability, composition, and actual pixel density.
 
 ## Next step
-Check this implementation commit's Godot Runtime and Web Demo build. If green, replace Wukong, Tang, Bajie, Wujing, and Longma placeholder sprites with detailed transparent-background pixel assets through ArtAssetCatalog, then fix the font contract and inspect real in-game screenshots.
+Do not block framework work on image-generation availability. Continue Journey END / chapter-completion feedback and SceneTree smoke coverage now; return to final transparent-background character PNG/WebP delivery through ArtAssetCatalog once image generation is available. Fix the missing-font contract as a separate runtime-quality task and inspect real in-game screenshots before visual acceptance.
 
 ## Handoff point
 Visual layer: Presentation / assets. Do not modify EventRunner, NarrativeState, BattleResolutionService, reward services, or save behavior for this work.

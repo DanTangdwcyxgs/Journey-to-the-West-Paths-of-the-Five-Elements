@@ -261,7 +261,7 @@ Runner 输出的 `battle` 只生成 `EncounterHandoff` 数据，不直接启动 
 
 最高优先级：
 
-1. 视觉垂直切片优先：旅途与战斗环境已增加分层像素背景契约；下一步以最终 PNG/WebP 替换五名主角与敌人占位 SVG，修复缺失字体并做真实窗口截图验收。Journey END / chapter-completion feedback 继续排在其后。
+1. 视觉垂直切片仍是产品目标，但角色最终 PNG/WebP 暂受图像生成额度限制；不把概念展示图当正式资源，也不因此暂停其他工作。当前先完成 Journey END / chapter-completion feedback 与 SceneTree 入口回归；随后处理缺失字体与 runtime teardown 诊断。额度恢复后再通过 ArtAssetCatalog 替换五名主角和敌人占位 SVG，并做真实窗口截图验收。
 2. 增强 Main Menu → Journey → EventSequence → Battle / END → Save 的 SceneTree 入口和恢复 smoke coverage。
 3. 五条 Origin Route 的 EventSequence 迁移、统一质量门和 Origin → Shared handoff 已有实现；后续发现新 cross-reference / route-isolation 缺口时按具体回归补强。
 4. 非战斗 reward / move / wait 的副作用继续留在 RewardService / WorldActionService，不得移入 EventRunner。
@@ -328,7 +328,7 @@ Runner 输出的 `battle` 只生成 `EncounterHandoff` 数据，不直接启动 
 
 ### Batch A — Visual Vertical Slice
 
-2026-10-11 已审查现有视觉链路：当前没有 `assets/art/**/final/` 最终 PNG/WebP，五名主角仍使用 32×48 逻辑画布 SVG 占位资源。旅途与黄风战斗背景已升级为具备远景 / 中景 / 前景职责的像素分层资源，并在 `test_visual_asset_contract.gd` 增加防退化检查。下一步先验证当前提交的 Runtime / Web Demo，再交付五名主角的高识别度最终像素角色，解决缺失字体，做真实窗口截图验收。END / chapter-completion feedback 随后继续。
+2026-10-11 已审查现有视觉链路：当前没有 `assets/art/**/final/` 最终 PNG/WebP，五名主角仍使用 32×48 逻辑画布 SVG 占位资源。旅途与黄风战斗背景的分层改进已在提交 `cb7fd7c577e1811fa3c2b141019db871ed79150a` 通过 Godot Runtime 与 Web Demo CI，但仍未做真实窗口截图验收。当前会话尝试生成最终角色资源时受到 Free 套餐图像生成额度限制，未获得可提交的正式 PNG；因此先推进 Journey END / 章节完成反馈及 SceneTree 回归，不提交概念图充当游戏资源。随后处理缺失字体和 teardown 诊断，额度恢复后再恢复角色资产垂直切片。
 
 ### Batch B — Journey Presentation & Runtime
 

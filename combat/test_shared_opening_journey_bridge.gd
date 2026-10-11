@@ -42,6 +42,10 @@ func _initialize() -> void:
 	_assert(instance.event_session == null, "completed shared sequence should clear event session")
 	_assert(manager.state.current_shared_chapter == "SHARED-02-EARLY-PILGRIMAGE", "shared completion should advance to next chapter")
 	_assert("SHARED-01-FIVE-ELEMENTS" in manager.state.completed_shared_chapters, "shared opening should record completion")
+	_assert(instance.phase_label.text.find("章节完成") >= 0, "END should report that the shared chapter was completed")
+	var completed_title := str(SharedJourneyManager.get_chapter("SHARED-01-FIVE-ELEMENTS").get("title", ""))
+	_assert(not completed_title.is_empty() and instance.phase_label.text.find(completed_title) >= 0, "completion feedback should name the chapter title")
+	_assert(instance.phase_label.text.find("下一章：") >= 0, "completion feedback should identify the next chapter")
 
 	instance.queue_free()
 	print("ALL SHARED OPENING JOURNEY BRIDGE TESTS PASSED")

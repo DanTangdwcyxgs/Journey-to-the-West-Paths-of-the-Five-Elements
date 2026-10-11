@@ -47,6 +47,15 @@ func _initialize() -> void:
 	_assert(instance.primary_button.text == "继续" and not instance.primary_button.disabled, "wait action should allow the player to continue")
 	_assert(instance.dialogue_hint_label.text.find("稍作停留") >= 0, "wait action should explain what continuing will do")
 
+	instance.call("_render_event_action", {
+		"kind": "end", "node_id": "finish",
+		"sequence_id": "SHARED-04-EARLY-DEMON-TALES-SEQUENCE",
+	})
+	_assert(instance.phase_label.text == "剧情终点 · 等待确认", "END should communicate that the sequence has reached its endpoint")
+	_assert(instance.dialogue_text_label.text.find("记录章节进度") >= 0, "END should explain that completion will record chapter progress")
+	_assert(instance.primary_button.text == "完成并继续" and not instance.primary_button.disabled, "END should expose a clear completion action")
+	_assert(instance.dialogue_hint_label.text.find("完成记录") >= 0, "END should explain that the Journey layer owns completion recording")
+
 	instance.queue_free()
 	print("ALL JOURNEY EVENT PRESENTATION TESTS PASSED")
 	quit(0)
