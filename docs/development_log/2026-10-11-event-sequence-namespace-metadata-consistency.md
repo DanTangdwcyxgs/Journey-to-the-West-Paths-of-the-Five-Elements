@@ -38,7 +38,7 @@ Catalog membership catches a sequence placed in the wrong catalog, but it cannot
 - Existing missing event, missing encounter, invalid source chapter, namespace mismatch and Origin route mismatch tests remain intact.
 
 ## Godot Runtime status
-**PENDING** — do not mark this implementation passed until Actions finishes on the exact commit. The overall runtime suite is expected to remain at 36 registered entries because the additional assertions extend an existing test entry.
+**PASS** — exact implementation commit `3316ce96124ba7ff9e8a30f686e3d586b966a44a`. Godot Runtime run [38106312375](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38106312375) passed with `PASS res://combat/test_event_sequence_validator.gd` and `RUNTIME_SUITE_PASS tests=36`. Web Demo run [38106312426](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38106312426) completed successfully; both build and deploy jobs passed. The assertions extend the existing test entry, so the suite remains at 36 registered entries.
 
 ## Known issues
 - The check validates only metadata explicitly present. Legacy Origin chapter dictionaries currently omit the fields and continue to rely on Origin Route membership by design.

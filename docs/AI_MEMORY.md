@@ -337,7 +337,7 @@ Wukong progression 修正后的完整 Runtime 已成功通过上一轮验证；�
 - Shared 允许 `SHARED_JOURNEY`、`RECRUITMENT` 与 `INTERLUDE` 等有效类别；不是把所有 Shared chapter 错误地要求为 `SHARED_JOURNEY`。
 - Legacy Origin route chapters 当前没有这些 metadata 字段，继续以对应 Origin Route 目录归属作为权威；字段缺失不会被当成矛盾。
 - 新增双向矛盾 fixture 检查，并让完整 production catalog regression 执行新校验。
-- 本批实现提交的 Runtime / Web Demo 结果等待 Actions；上一批 Shared 真实场景回归已在 SHA `895ee2b3324aae7cde21a6a41b74c882dfae7227` 的 Runtime/Web Demo 完成验证。
+- 实现提交 `3316ce96124ba7ff9e8a30f686e3d586b966a44a` 的 Godot Runtime run [38106312375](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38106312375) 通过，日志确认 `PASS res://combat/test_event_sequence_validator.gd` 和 `RUNTIME_SUITE_PASS tests=36`；同一 SHA 的 Web Demo run [38106312426](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38106312426) build 与 deploy 均成功。上一批 Shared 真实场景回归也已在 SHA `895ee2b3324aae7cde21a6a41b74c882dfae7227` 的 Runtime/Web Demo 完成验证。
 - 下一步：若通过，评估完整 Wukong → Eagle Sorrow → Longma → Memory 的可玩垂直切片与 Memory 入口。
 
 ## 4. Wukong Origin 当前状态
