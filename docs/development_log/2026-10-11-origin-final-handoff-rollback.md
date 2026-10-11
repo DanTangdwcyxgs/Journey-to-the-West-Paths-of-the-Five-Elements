@@ -33,6 +33,8 @@ Rollback must restore both authoritative narrative data and presentation-side pr
 - `docs/development_log/2026-10-11-origin-final-handoff-rollback.md`
 
 ## Tests
+- Initial commit `bfa267ba1be413918189df9e4f94e7ff8886143f` failed Runtime because the scripted rollback insertion had inconsistent GDScript indentation at the handoff-rejected branch. That parse failure cascaded into tests that load `OriginSequenceJourneyScreen`; it was not a behavioral failure.
+- Follow-up commit fixes the indentation and explicitly restores PartyManager for the save-failure branch as well as the handoff-rejected branch.
 - New forced-save-failure regression drives the production WUK-15 session to END.
 - Asserts serialized NarrativeState equals its pre-END snapshot and PartyManager matches its pre-END roster/formation.
 - Confirms save was attempted exactly once, the session remains at END, and retry remains possible.

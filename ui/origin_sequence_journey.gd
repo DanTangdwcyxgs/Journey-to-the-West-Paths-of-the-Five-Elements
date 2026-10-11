@@ -55,7 +55,7 @@ func _finish_event_session() -> void:
 					var next_chapter: Dictionary = origin.get_current_chapter(narrative, start)
 					if next_chapter.is_empty():
 						if not narrative.handoff_origin_to_shared(start):
-														narrative.restore_snapshot(state_before_completion)
+								narrative.restore_snapshot(state_before_completion)
 							party.initialize_from_saved_state(narrative.state.recruited_characters, narrative.state.get_party_formation())
 							_refresh()
 							phase_label.text = "个人序章完成，但无法进入共享西游；进度已回滚，请再次确认重试。"
@@ -70,6 +70,7 @@ func _finish_event_session() -> void:
 
 					if not narrative.save():
 						narrative.restore_snapshot(state_before_completion)
+						party.initialize_from_saved_state(narrative.state.recruited_characters, narrative.state.get_party_formation())
 						_refresh()
 						phase_label.text = "存档失败，章节进度已回滚；再次确认可重试。"
 						return
