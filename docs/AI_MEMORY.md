@@ -416,6 +416,13 @@ Wukong progression 修正后的完整 Runtime 已成功通过上一轮验证；�
 - 上一批五个主线 MOVE markers 在 commit `5e0e11ca890e1469e8b88fd2121c55c10e6f32d4` 通过 Runtime 42/42 与 Web Demo build/deploy。本批精确提交 `7b1b08a83448419f9cbd867cd15b7dd1f5905a06` 的 Runtime run [38118079231](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38118079231) 通过并记录 `PASS res://combat/test_shared_opening_to_black_wind_smoke.gd`、`RUNTIME_SUITE_PASS tests=43`；同一 SHA 的 Web Demo run [38118079238](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38118079238) build/deploy 均成功。
 - 下一步：通过后继续确认可选探索/悬赏返回后从 Shared-04/05 接续时不会丢失主线章节游标，再进入纵向切片的节奏/演出评审。
 
+### Round 55 — 2026-10-11：Optional Bounty Return → Shared-05 Mainline
+- 现有 WorldMap → 鹰愁涧传闻 → Yellow Fang 悬赏 → BattleUI → WorldMap 回归只验证回到地图与主线状态不变，没有继续按“返回行程”重新进入共享剧情。
+- 将测试夹具修正为真实的 Shared-04 完成后状态：current_shared_chapter=SHARED-05、Shared-01..04 已完成、当前时间线 T120、Longma 已招募且 LONGMA-01/02 Memory 可用，WorldMap 位置为 BLACK_WIND_NORTH_PATH。
+- 扩展 `combat/test_world_map_rumor_bounty_return.gd`：悬赏胜利返回地图后点击生产“返回行程”按钮，验证 Journey 读取相同 Shared-05 游标/时间线/已完成章节/队伍和 Eagle Sorrow 实际位置；继续剧情进入 Shared-05 EventSequence，再执行 canonical MOVE 至 GAOJIAZHUANG，并重载存档验证地点持久化、章节未提前完成、timeline 未提前推进。
+- 本批当前精确 SHA 的 Runtime / Web Demo 状态待 Actions；不把旧版本仅返回地图的 42/42 测试当作这次新接续的验证。
+- 下一步：通过后评估第一条 Shared 纵向切片中地图探索、剧情移动与可选战斗节奏，确定下一个实际内容/演出缺口。
+
 ## 4. Wukong Origin 当前状态
 
 Production Sequence：`WUK-01~15` 全部存在。

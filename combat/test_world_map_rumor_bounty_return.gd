@@ -1,6 +1,6 @@
 extends SceneTree
 
-## Production WorldMap -> rumor -> optional bounty battle -> WorldMap return.
+## Production WorldMap -> rumor -> optional bounty -> WorldMap -> Journey -> Shared-05.
 ## The bounty must not advance the fixed Shared Journey chronology.
 var failures: Array[String] = []
 
@@ -22,11 +22,14 @@ func _run_smoke() -> void:
 	_record(fixture.start_new_game("WUKONG"), "Wukong should initialize the optional-bounty fixture")
 	fixture.encounter_character("TANG")
 	fixture.encounter_character("WUKONG")
+	var longma_memories: Array[String] = ["LONGMA-01", "LONGMA-02"]
+	_record(fixture.encounter_character("LONGMA", longma_memories), "canonical starting state should already include recruited Longma")
 	fixture.state.mark_route_complete("WUKONG")
 	fixture.state.record_milestone("WUKONG_RECRUITED", 100)
+	fixture.state.record_milestone("BAI_LONGMA_RECRUITED", 110)
 	fixture.state.current_global_timeline = 120
-	fixture.state.set_current_shared_chapter("SHARED-04-EARLY-DEMON-TALES")
-	for chapter_id in ["SHARED-01-FIVE-ELEMENTS", "SHARED-02-EARLY-PILGRIMAGE", "SHARED-03-EAGLE-SORROW"]:
+	fixture.state.set_current_shared_chapter("SHARED-05-GAOJIAZHUANG")
+	for chapter_id in ["SHARED-01-FIVE-ELEMENTS", "SHARED-02-EARLY-PILGRIMAGE", "SHARED-03-EAGLE-SORROW", "SHARED-04-EARLY-DEMON-TALES"]:
 		if chapter_id not in fixture.state.completed_shared_chapters:
 			fixture.state.completed_shared_chapters.append(chapter_id)
 	fixture.state.set_inventory({"currencies": {"COIN": 0}, "items": {}})
@@ -98,6 +101,46 @@ func _run_smoke() -> void:
 				_record(not FileAccess.file_exists(encounter_path), "resolved bounty should clear the active encounter handoff")
 				_record(not FileAccess.file_exists(resume_path), "resolved bounty should not leave pending EventSession resume data")
 
+				var return_to_journey := _find_button_by_text(returned_map, "返回行程")
+				_record(return_to_journey != null, "production WorldMap should offer Return to Journey")
+				if return_to_journey != null:
+					return_to_journey.emit_signal("pressed")
+					var resumed_journey: JourneyScreen = await _wait_for_journey()
+					_record(resumed_journey != null, "Return to Journey should load the production Journey scene")
+					if resumed_journey != null:
+						_record(resumed_journey.narrative.state.current_shared_chapter == saved_shared_chapter, "returning from optional exploration should resume Shared-05 rather than restart Shared-04")
+						_record(resumed_journey.narrative.state.current_global_timeline == saved_timeline, "returning to Journey should preserve the canonical timeline after the bounty")
+						_record(resumed_journey.narrative.state.completed_shared_chapters == saved_completed, "returning to Journey should preserve completed Shared-01 through Shared-04")
+						_record(resumed_journey.narrative.state.recruited_characters == saved_roster, "returning to Journey should preserve the recruited roster")
+						_record(str(resumed_journey.narrative.state.get_world_state().get("current_location", "")) == "EAGLE_SORROW", "Journey should load from the actual optional-exploration return location")
+
+						resumed_journey.primary_button.emit_signal("pressed")
+						await process_frame
+						_record(resumed_journey.event_session != null, "Journey Continue should start the next canonical Shared sequence")
+						if resumed_journey.event_session != null:
+							_record(resumed_journey.event_session.sequence.get_id() == "SHARED-05-GAOJIAZHUANG-SEQUENCE", "the next story beat after the bounty should be Shared-05, not Shared-04")
+							_record(str(resumed_journey.event_session.get_action().get("kind", "")) == EventRunner.DIALOGUE, "Shared-05 should begin with the Gaojiazhuang arrival dialogue")
+							if resumed_journey.dialogue_revealing:
+							resumed_journey.call("_reveal_dialogue_immediately")
+							resumed_journey.primary_button.emit_signal("pressed")
+							await process_frame
+							_record(str(resumed_journey.event_session.get_action().get("kind", "")) == EventRunner.MOVE, "Shared-05 should next move the story location to Gaojiazhuang")
+							if str(resumed_journey.event_session.get_action().get("kind", "")) == EventRunner.MOVE:
+								_record(str(resumed_journey.event_session.get_action().get("marker_id", "")) == "GAOJIAZHUANG", "Shared-05 story move should target the canonical Gaojiazhuang map marker")
+								resumed_journey.primary_button.emit_signal("pressed")
+								await create_timer(0.6).timeout
+								await process_frame
+								_record(current_scene == resumed_journey, "Shared-05 story MOVE should remain in Journey, not switch to another scene")
+								_record(str(resumed_journey.narrative.state.get_world_state().get("current_location", "")) == "GAOJIAZHUANG", "canonical Shared-05 MOVE should override the optional detour location")
+								_record(str(resumed_journey.event_session.get_action().get("kind", "")) == EventRunner.CHOICE, "Shared-05 should continue from its arrival move to the recruitment choice")
+								var post_arrival_save := NarrativeManager.new()
+								_record(post_arrival_save.load(), "post-return Shared-05 MOVE should leave a loadable save")
+								if post_arrival_save.state != null:
+								_record(post_arrival_save.state.current_shared_chapter == "SHARED-05-GAOJIAZHUANG", "Shared-05 move save should preserve the current chapter")
+									_record(post_arrival_save.state.current_global_timeline == saved_timeline, "Shared-05 arrival move should not prematurely advance its timeline milestone")
+									_record(str(post_arrival_save.state.get_world_state().get("current_location", "")) == "GAOJIAZHUANG", "Gaojiazhuang arrival should persist after reload")
+									_record(post_arrival_save.state.completed_shared_chapters == saved_completed, "Shared-05 arrival should not retroactively alter completed chapter history")
+
 	var final_scene: Node = current_scene
 	current_scene = null
 	if is_instance_valid(final_scene):
@@ -134,6 +177,23 @@ func _wait_for_world_map() -> WorldMapScreen:
 		await process_frame
 		if current_scene is WorldMapScreen:
 			return current_scene as WorldMapScreen
+	return null
+
+func _wait_for_journey() -> JourneyScreen:
+	for _frame in range(45):
+		await process_frame
+		if current_scene is JourneyScreen:
+			return current_scene as JourneyScreen
+	return null
+
+func _find_button_by_text(parent: Node, target_text: String) -> Button:
+	for child in parent.get_children():
+		var button := child as Button
+		if button != null and button.text == target_text:
+			return button
+		var nested: Button = _find_button_by_text(child, target_text)
+		if nested != null:
+			return nested
 	return null
 
 func _capture_file(path: String) -> Dictionary:

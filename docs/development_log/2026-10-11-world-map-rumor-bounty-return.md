@@ -46,7 +46,7 @@ The map should provide meaningful optional content without quietly advancing the
 - The current bounty scene uses the existing Yellow Wind boss runtime for the Yellow Fang bounty; this matches the first currently implemented optional bounty but should be generalized before exposing different bounty bosses through the same UI.
 
 ## Next step
-After CI passes, evaluate the optional branch's return path to the Shared-04 story and the next mainline chapter; then continue the Wukong → Longma vertical slice pacing review.
+The WorldMap → Journey → Shared-05 continuation is covered by `2026-10-11-world-map-bounty-return-to-shared05.md`; the original test only checked that the bounty returns to WorldMap. After that expanded test passes, evaluate pacing / presentation of the Wukong → Longma vertical slice.
 
 ## Handoff point
 Optional exploration must stay a branch within the fixed Journey, never a separate campaign or an implicit Shared chapter completion.
