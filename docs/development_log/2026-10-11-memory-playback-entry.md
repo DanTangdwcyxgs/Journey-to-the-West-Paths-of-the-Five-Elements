@@ -43,7 +43,7 @@ Unlock flags alone do not deliver a Memory experience. Reusing EventRunner would
 - Runtime suite expected registered entry count: 37.
 
 ## Godot Runtime status
-**PENDING** — only mark this batch green after Godot Runtime and Web Demo complete on the exact implementation commit.
+**PASS** — exact implementation commit `fb7ece8f1af3f49aaeece9a31e3d1b62457df0eb`. Godot Runtime run [38107309910](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38107309910) passed with `PASS res://combat/test_memory_playback.gd` and `RUNTIME_SUITE_PASS tests=37`. Web Demo run [38107309919](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38107309919) completed successfully; both build and deploy jobs passed.
 
 ## Known issues
 - This first increment replays canonical text dialogue, not character sprites, voice performance, battle simulation or route-dependent alternate dialogue branches.
@@ -51,7 +51,7 @@ Unlock flags alone do not deliver a Memory experience. Reusing EventRunner would
 - The memory list is scoped to the current Journey screen; a dedicated Memory Gallery / replay of already-played memories remains future work.
 
 ## Next step
-After the exact SHA passes, add an end-to-end recruitment-to-memory test (Shared-03 victory unlocks Longma memory, then Journey opens it) and evaluate the first full Wukong → Longma vertical slice.
+Add an end-to-end recruitment-to-memory test (Shared-03 victory unlocks Longma memory, then Journey opens it) and evaluate the first full Wukong → Longma vertical slice.
 
 ## Handoff point
 Read-only Memory presentation and save boundary. Do not execute EventRunner actions during flashback playback or mutate world chronology.
