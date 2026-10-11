@@ -261,7 +261,7 @@ Runner 输出的 `battle` 只生成 `EncounterHandoff` 数据，不直接启动 
 
 最高优先级：
 
-1. 视觉垂直切片仍是产品目标，但角色最终 PNG/WebP 暂受图像生成额度限制；不把概念展示图当正式资源。Journey END / 章节反馈、CJK 字体回退已通过 Runtime。测试节点生命周期修复后 Canvas / CanvasItem / Viewport / TextServer 泄漏诊断消失，尚有一个 ObjectDB 汇总警告。已增加 Main Menu → Journey → WUK-01 Sequence 生产入口 smoke，先验证此测试，再定向排查剩余 ObjectDB 警告；额度恢复后恢复正式角色资产垂直切片。
+1. 视觉垂直切片仍是产品目标，但角色最终 PNG/WebP 暂受图像生成额度限制；不把概念展示图当正式资源。Journey END、CJK 字体回退、节点树释放和 Main Menu → Journey → WUK-01 Sequence 入口 smoke 均已通过 Runtime（33 tests）。Canvas / CanvasItem / Viewport / TextServer 泄漏诊断已消失，只剩 ObjectDB 汇总警告；当前用一次临时 verbose CI 重跑获取具体实例，定位后移除调试步骤，再恢复正式角色资产垂直切片。
 2. 增强 Main Menu → Journey → EventSequence → Battle / END → Save 的 SceneTree 入口和恢复 smoke coverage。
 3. 五条 Origin Route 的 EventSequence 迁移、统一质量门和 Origin → Shared handoff 已有实现；后续发现新 cross-reference / route-isolation 缺口时按具体回归补强。
 4. 非战斗 reward / move / wait 的副作用继续留在 RewardService / WorldActionService，不得移入 EventRunner。
@@ -328,7 +328,7 @@ Runner 输出的 `battle` 只生成 `EncounterHandoff` 数据，不直接启动 
 
 ### Batch A — Visual Vertical Slice
 
-2026-10-11 已审查现有视觉链路：最终角色 PNG/WebP 尚未生成；`cb7fd7c` 环境分层已通过 Runtime/Web Demo，`7ca43f4` END 反馈通过 31 项 Runtime，`4b383b1` CJK 字体回退通过 32 项 Runtime / Web Demo。`ff50907` 明确释放测试创建的 MainMenu/AcceptDialog 节点后，Canvas、CanvasItem、Viewport、TextServer 资源/RID 警告消失，但还有 `ObjectDB instances leaked at exit`。Free 套餐图像生成额度限制期间继续框架工作、不上传概念图冒充正式素材。当前新增生产 Main Menu → Journey → WUK-01 Sequence SceneTree smoke，等待本提交 CI 结果。
+2026-10-11 已审查现有视觉链路：角色最终 PNG/WebP 尚未生成。环境分层、Journey END、CJK 字体回退都通过 Runtime/Web Demo。`ff50907` 释放静态主菜单测试创建的节点后，Canvas / CanvasItem / Viewport / TextServer RID 警告消失。`9cf78a1` 的 33 项 Runtime + Web Demo 全绿，并新增 Main Menu → Journey → WUK-01 Sequence 真实入口 smoke。仅余 ObjectDB 汇总警告，临时在 workflow 捕获 verbose 细节。Free 套餐图像生成额度限制期间继续框架工作，不上传概念图冒充正式素材。
 
 ### Batch B — Journey Presentation & Runtime
 

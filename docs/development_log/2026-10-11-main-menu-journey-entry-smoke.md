@@ -34,7 +34,7 @@ Verify a real entry path across the production MainMenu and Journey scenes, not 
 - Requires the exact new-head GitHub Actions Runtime result before declaring PASS.
 
 ## Godot Runtime status
-PENDING until the SceneTree smoke is executed in Godot 4.5.1 CI.
+**PASS for commit `9cf78a11f923ff1834a6f796c3b4b3dfc4cfe0bc`.** Godot Runtime run [38103454949](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38103454949) completed successfully with `RUNTIME_SUITE_PASS tests=33`; log confirms `PASS res://combat/test_main_menu_journey_entry.gd`. Web Demo run [38103454926](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38103454926) also passed.
 
 ## Known issues
 - Runtime still reports one generic ObjectDB leak warning at exit. The detailed leaked Object list has not yet been isolated.

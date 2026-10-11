@@ -263,9 +263,16 @@ Wukong progression 修正后的完整 Runtime 已成功通过上一轮验证；�
 ### Round 35 — 2026-10-11：Main Menu → Journey Production Entry Smoke
 - 新增 `test_main_menu_journey_entry.gd`，从实际 `main_menu.tscn` 开始，调用新游戏 handler，验证保存发生、场景切换到生产 `journey.tscn`，角色选择得到恢复，再进入实际 `WUK-01-SEQUENCE` 的 Dialogue action。
 - 测试前备份并清理 `NarrativeSave.SAVE_PATH`、`BountyEncounterState.PATH`、`BountyEncounterState.RESUME_PATH`，完成后恢复原始字节，避免本地执行时破坏开发者自己的存档或战斗交接记录。
-- 新 smoke 加入 `tests/runtime_suite.gd`，从 32 项扩展到 33 项；本轮最新 SHA Runtime 结果待 CI。
+- 新 smoke 加入 `tests/runtime_suite.gd`，从 32 项扩展到 33 项。实现提交 `9cf78a11f923ff1834a6f796c3b4b3dfc4cfe0bc` 的 Runtime run `38103454949` 通过，`RUNTIME_SUITE_PASS tests=33`，并确认 `test_main_menu_journey_entry.gd` PASS；Web Demo run `38103454926` 成功。
 - 上一轮 teardown 修复提交 `ff50907c95cb5017a8fdad4b2ee27ee773c37ac5` Runtime `38103322441` / Web Demo `38103322430` 均成功。49 个 CanvasItem 及 Canvas / Viewport / TextServer RID 警告不再出现，剩余 `ObjectDB instances leaked at exit` 尚待隔离。
 - 下一步：验证新 SceneTree smoke，随后对剩余 ObjectDB 进行定向诊断，继续保持 Narrative 与 Presentation 的职责边界。
+
+
+### Round 36 — 2026-10-11：ObjectDB Teardown Detail Capture
+- 已确认生产入口 smoke 提交 `9cf78a11f923ff1834a6f796c3b4b3dfc4cfe0bc` 的 Godot Runtime run `38103454949` 成功（33/33），Web Demo run `38103454926` 成功。
+- 为排查残留的 `ObjectDB instances leaked at exit`，在 `.github/workflows/godot-runtime.yml` 原 33-test suite 通过后增加一条临时 verbose 重跑步骤；输出完整日志到临时文件，只筛选泄漏实例、ObjectDB 和 resources-in-use 相关上下文，不在普通步骤刷屏。
+- 该调试步骤仅在之前 Runtime suite 成功后执行，且重复执行同一存档安全 SceneTree smoke。新提交 CI 结果尚待验证。
+- 定位后必须移除或收敛调试重跑步骤，避免不必要的长期 CI 时间成本。
 
 ---
 
