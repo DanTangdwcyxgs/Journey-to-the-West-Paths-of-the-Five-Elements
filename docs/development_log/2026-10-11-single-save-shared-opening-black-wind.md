@@ -1,7 +1,7 @@
 # 2026-10-11 · Single-Save Shared Opening → Black Wind North Path Arc
 
 ## Goal
-Validate the first contiguous playable Shared arc on one saved game, rather than relying on separate fixtures for the opening, Longma recruitment and Shared-04 movement.
+Validate one contiguous saved production UI flow from the final Wukong Origin chapter through Shared-01..04, including Longma recruitment and a read-only Longma Memory playback.
 
 ## Starting point
 - WUK-15 final Origin END → Shared-01 was fixed and passed on commit `deba063d42c46156b37b313f8b59863d2e558949` (Runtime 38/38 + Web Demo pass); the handoff save-failure rollback passed on follow-up `efb1e7c1cfdfe6dd84fd5618bd0405c72f2f377f` (Runtime 39/39 + Web Demo pass).
@@ -10,8 +10,8 @@ Validate the first contiguous playable Shared arc on one saved game, rather than
 
 ## What changed
 - Added `combat/test_shared_opening_to_black_wind_smoke.gd` to the Runtime suite.
-- Seeds a canonical Wukong handoff save through narrative managers, then enters the actual production MainMenu Continue → Journey.
-- Uses real Journey choice buttons and EventSession controls to complete Shared-01, Shared-02, Shared-03, and Shared-04 in sequence.
+- Seeds canonical WUK-01..14 completion through the chapter manager while leaving WUK-15 current, then enters production MainMenu Continue → Journey and executes the real WUK-15 EventSequence END / Origin-to-Shared handoff.
+- Uses real Journey choice buttons and EventSession controls to complete Shared-01, Shared-02, Shared-03, and Shared-04 in sequence. After real Longma recruitment, it selects LONGMA-02 in the Journey sidebar, plays both canonical text dialogue entries without running historical combat, completes the memory and reloads the save before continuing Shared-04.
 - Shared-03 switches into the production BattleUI, resolves the real Longma recruitment settlement, returns through the production button and completes the after-battle EventSession.
 - Checks every MOVE's current location and its save/reload, then verifies the final post-Shared-04 save is at Shared-05 with Black Wind North Path as current location, chapters 01–04 completed, timeline advanced, Longma recruited and Longma memories unlocked.
 
@@ -42,11 +42,11 @@ The player experiences these chapters as one connected journey; testing each cha
 **PASS** — exact implementation commit `7b1b08a83448419f9cbd867cd15b7dd1f5905a06`. Godot Runtime run [38118079231](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38118079231) passed with `PASS res://combat/test_shared_opening_to_black_wind_smoke.gd` and `RUNTIME_SUITE_PASS tests=43`. Web Demo run [38118079238](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38118079238) build and deploy both passed.
 
 ## Known issues
-- Origin WUK-01..WUK-15 are seeded with the canonical manager progression rather than replayed through the full Origin UI; production WUK-15 END → Shared-01 is separately covered by its SceneTree smoke.
+- WUK-01..14 are seeded through canonical manager progression rather than replayed through UI; WUK-15's final EventSequence END → Shared-01 now runs via production MainMenu / Journey in this same smoke.
 - Combat turns remain shortcut by invoking the production battle completion callback; this test covers transition / settlement / progression, not combat balance.
 
 ## Next step
-After CI passes, test the return from an optional bounty to the continuing Shared story and review the end-to-end pacing / presentation of the first Wukong → Longma → Memory vertical slice.
+After this integrated smoke passes, review the vertical slice's story pacing, interactive exploration and production character assets instead of adding framework-only work.
 
 ## Handoff point
 Shared-01 to Shared-04 contiguous saved arc. Keep chronology, current map location, recruitment, and Memory availability in sync.

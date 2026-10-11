@@ -10,6 +10,7 @@
 
 ## 最新记录
 
+- [`2026-10-11 — Wukong to Longma Memory Vertical Slice`](2026-10-11-wukong-longma-memory-vertical-slice.md)
 - [`2026-10-11 — WorldMap Free-Travel Save-Failure Rollback`](2026-10-11-world-map-free-travel-save-rollback.md)
 - [`2026-10-11 — Optional Bounty Return to Shared-05 Mainline`](2026-10-11-world-map-bounty-return-to-shared05.md)
 - [`2026-10-11 — Single-Save Shared Opening to Black Wind Arc`](2026-10-11-single-save-shared-opening-black-wind.md)
