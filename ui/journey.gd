@@ -29,6 +29,7 @@ var memory_button: Button
 var party_button: Button
 var world_button: Button
 var save_button: Button
+var back_button: Button
 var dialogue_full_text := ""
 var dialogue_visible_characters := 0
 var dialogue_revealing := false
@@ -214,11 +215,11 @@ func _build_ui() -> void:
 	save_button.custom_minimum_size = Vector2(76, 30)
 	save_button.pressed.connect(_save)
 	utility.add_child(save_button)
-	var back := Button.new()
-	back.text = "返回"
-	back.custom_minimum_size = Vector2(76, 30)
-	back.pressed.connect(_back_to_menu)
-	utility.add_child(back)
+	back_button = Button.new()
+	back_button.text = "返回"
+	back_button.custom_minimum_size = Vector2(76, 30)
+	back_button.pressed.connect(_back_to_menu)
+	utility.add_child(back_button)
 	var route_status := _label("个人序章 → 共享西游", 12, MUTED)
 	route_status.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	route_status.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
@@ -491,14 +492,14 @@ func _play_selected_memory() -> void:
 func _set_memory_playback_controls(playing: bool) -> void:
 	if memory_button != null:
 		memory_button.disabled = playing
-	if party_button != null:
-		party_button.disabled = playing
-	if world_button != null:
-		world_button.disabled = playing
-	if save_button != null:
-		save_button.disabled = playing
+	_set_event_navigation_locked(playing)
 	if primary_button != null:
 		primary_button.disabled = false
+
+func _set_event_navigation_locked(locked: bool) -> void:
+	for button in [party_button, world_button, save_button, back_button]:
+		if button != null:
+			button.disabled = locked
 
 func _render_memory_playback_entry() -> void:
 	if memory_playback_session == null:
@@ -667,6 +668,9 @@ func _refresh_sidebar() -> void:
 		list.add_item("回忆 · %s" % memory_id)
 
 func _render_event_action(action: Dictionary) -> void:
+	_set_event_navigation_locked(true)
+	if memory_button != null:
+		memory_button.disabled = true
 	if action.is_empty():
 		chapter_label.text = "剧情运行失败"
 		_set_dialogue("", event_session.runner.get_error() if event_session != null else "未知错误", false)
@@ -755,6 +759,7 @@ func _render_event_choices(action: Dictionary) -> void:
 		choice_box.add_child(button)
 
 func _render_route_or_shared() -> void:
+	_set_event_navigation_locked(false)
 	if narrative.state.route_progress.get(narrative.state.starting_character, NarrativeState.ROUTE_LOCKED) == NarrativeState.ROUTE_COMPLETE:
 		phase_label.text = "共享旅途 · 队伍 %d/5" % party.roster.size()
 		var chapter := SharedJourneyManager.get_chapter(narrative.state.current_shared_chapter)

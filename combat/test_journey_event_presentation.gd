@@ -37,6 +37,12 @@ func _initialize() -> void:
 	_assert(instance.dialogue_text_label.text.find("BLACK_WIND_NORTH_PATH") >= 0, "move presentation should show the destination marker")
 	_assert(instance.primary_button.text == "前往" and not instance.primary_button.disabled, "move action should expose a forward action")
 	_assert(instance.dialogue_hint_label.text.find("旅途过渡") >= 0, "move action should explain the travel transition")
+	_assert(instance.world_button.disabled, "world map navigation should be locked during an active event sequence")
+	_assert(instance.party_button.disabled, "party navigation should be locked during an active event sequence")
+	_assert(instance.save_button.disabled, "manual save should be locked during an active event sequence")
+	_assert(instance.back_button.disabled, "return-to-menu navigation should be locked during an active event sequence")
+	instance.call("_set_event_navigation_locked", false)
+	_assert(not instance.world_button.disabled and not instance.party_button.disabled and not instance.save_button.disabled and not instance.back_button.disabled, "navigation should unlock after the event sequence is released")
 
 	instance.call("_render_event_action", {
 		"kind": "wait", "node_id": "pause",
