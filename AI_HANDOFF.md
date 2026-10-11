@@ -261,7 +261,7 @@ Runner 输出的 `battle` 只生成 `EncounterHandoff` 数据，不直接启动 
 
 最高优先级：
 
-1. 视觉垂直切片仍是产品目标，但角色最终 PNG/WebP 暂受图像生成额度限制；不把概念展示图当正式资源，也不因此暂停其他工作。当前先完成 Journey END / chapter-completion feedback 与 SceneTree 入口回归；随后处理缺失字体与 runtime teardown 诊断。额度恢复后再通过 ArtAssetCatalog 替换五名主角和敌人占位 SVG，并做真实窗口截图验收。
+1. 视觉垂直切片仍是产品目标，但角色最终 PNG/WebP 暂受图像生成额度限制；不把概念展示图当正式资源。Journey END / 章节完成反馈已提交并通过 Runtime；CJK 字体加载已加入缺失资源回退，Runtime workflow 也会准备字体。当前下一步转向 Main Menu → Journey → Sequence → Battle / END → Save 的 SceneTree 入口回归，并单独排查 Resource/RID teardown 诊断。额度恢复后再通过 ArtAssetCatalog 替换五名主角和敌人占位 SVG，并做真实窗口截图验收。
 2. 增强 Main Menu → Journey → EventSequence → Battle / END → Save 的 SceneTree 入口和恢复 smoke coverage。
 3. 五条 Origin Route 的 EventSequence 迁移、统一质量门和 Origin → Shared handoff 已有实现；后续发现新 cross-reference / route-isolation 缺口时按具体回归补强。
 4. 非战斗 reward / move / wait 的副作用继续留在 RewardService / WorldActionService，不得移入 EventRunner。
@@ -328,11 +328,11 @@ Runner 输出的 `battle` 只生成 `EncounterHandoff` 数据，不直接启动 
 
 ### Batch A — Visual Vertical Slice
 
-2026-10-11 已审查现有视觉链路：当前没有 `assets/art/**/final/` 最终 PNG/WebP，五名主角仍使用 32×48 逻辑画布 SVG 占位资源。旅途与黄风战斗背景的分层改进已在提交 `cb7fd7c577e1811fa3c2b141019db871ed79150a` 通过 Godot Runtime 与 Web Demo CI，但仍未做真实窗口截图验收。当前会话尝试生成最终角色资源时受到 Free 套餐图像生成额度限制，未获得可提交的正式 PNG；因此先推进 Journey END / 章节完成反馈及 SceneTree 回归，不提交概念图充当游戏资源。随后处理缺失字体和 teardown 诊断，额度恢复后再恢复角色资产垂直切片。
+2026-10-11 已审查现有视觉链路：当前没有 `assets/art/**/final/` 最终 PNG/WebP，五名主角仍使用 32×48 逻辑画布 SVG 占位资源。环境分层改进 `cb7fd7c` 已通过 Godot Runtime / Web Demo；Journey END 与章节完成反馈提交 `7ca43f4` 已通过 31 项 Runtime；CJK 字体回退和 Runtime 字体准备提交 `4b383b1` 已通过 32 项 Runtime 与 Web Demo。字体缺失错误已消失，但 Resource/RID teardown 诊断仍在。Free 套餐图像生成额度限制导致本会话未获得正式角色 PNG，因此先做完整 SceneTree 入口回归和资源释放排查；不提交概念图充当游戏资产。
 
 ### Batch B — Journey Presentation & Runtime
 
-完成视觉垂直切片首轮后，补 END / chapter-completion feedback，再检查 Battle → EventSession resume → Journey 的真实 SceneTree 链路、Save/Load、重复结算保护和失败恢复。
+Journey END / chapter-completion feedback 已完成首轮；下一步检查 Battle → EventSession resume → Journey 的真实 SceneTree 链路、Save/Load、重复结算保护和失败恢复，并扩展 Main Menu → Journey → END → Save smoke coverage。
 
 继续检查 Battle → EventSession resume → Journey 的真实 SceneTree 链路、Save/Load、重复结算保护和失败恢复。所有改动都需要对应 regression 与本提交 SHA 的 Actions 验证。
 

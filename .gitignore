@@ -5,3 +5,6 @@
 *.log
 .DS_Store
 .vscode/
+
+# CJK UI font is downloaded by build workflows and should not be committed.
+/fonts/

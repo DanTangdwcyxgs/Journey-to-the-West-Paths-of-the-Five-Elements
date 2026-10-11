@@ -239,8 +239,17 @@ Wukong progression 修正后的完整 Runtime 已成功通过上一轮验证；�
 - Journey 的 END 节点改为明确说明“确认完成会记录章节进度并返回旅途”，操作按钮改为“完成并继续”。
 - Shared Sequence END 收口现在显示已完成章节标题及下一章；战后 END 显示战后剧情结算状态。Origin 非战斗 END 显示个人章节完成标题、下一章或个人序章收束信息。
 - 对 SharedJourneyManager.complete() 返回值进行处理，不再在章节推进未确认时显示成功文案；Save 失败也会显示明确提示。章节奖励、章节事实和战斗原子结算仍由既有 Manager / Service 承担，Presentation 只负责反馈。
-- 扩展 Journey END 展示回归与真实 SHARED-01 → SHARED-02 SceneTree 桥接回归。当前批次的 Runtime 结果必须继续以新实现提交 SHA 对应 Actions 为准。
+- 扩展 Journey END 展示回归与真实 SHARED-01 → SHARED-02 SceneTree 桥接回归。实现提交 `7ca43f4a9c01370f0adefda4e41f9b28a89f2f76` 的 Godot Runtime run `38103040349` 成功，`RUNTIME_SUITE_PASS tests=31`；该 SHA 的 Web Demo run 被后续 push 取消，后续包含相同 END 改动的 `4b383b1230d19f5eaeb616823bd08e368311592c` 已通过 Web Demo。
 - 下一步：确认新提交 CI；再做 Main Menu → Journey → END/Chapter → Save 的更完整 SceneTree smoke。缺失字体与 teardown 诊断单独处理；正式角色 PNG/WebP 待图像生成可用后再进入资产替换。
+
+### Round 33 — 2026-10-11：CJK Font Fallback / Runtime Resource Contract
+- 给 `PixelUI` 增加统一的 `load_ui_font()`：存在并可加载时使用项目 CJK 字体，资源缺失时回退到 `ThemeDB.fallback_font`。`PixelHUD` 不再直接 load 缺失路径，因此无字体的本地/headless 环境不会主动触发缺失资源错误。
+- `godot-runtime.yml` 在项目导入前下载 `NotoSansSC-Regular.otf`，与 Web Demo 的构建资源准备保持一致。字体仍不提交进 Git。
+- 新增 `test_pixel_ui_font_contract.gd`，明确验证故意缺失字体路径时的回退、主题默认字体与 PixelHUD 初始化；Runtime suite 增至 32 项。
+- 实现提交 `4b383b1230d19f5eaeb616823bd08e368311592c` 的 Godot Runtime run `38103113032` 成功，日志为 `RUNTIME_SUITE_PASS tests=32`；Web Demo run `38103113019` 成功。
+- 字体缺失错误已从对应 Runtime 日志中消失；Canvas / CanvasItem / Viewport / TextServer 等 Resource/RID teardown 诊断仍存在，单独作为下一项质量问题，未宣称已修复。
+- 为避免本地或 CI 下载的字体被误提交，`.gitignore` 增加 `/fonts/`。
+- 下一步：做 Main Menu → Journey → EventSequence → Battle / END → Save 的完整入口 smoke，并另行定位 Runtime teardown 资源所有权问题。图像生成额度恢复前继续框架工作，最终角色图继续保持未完成状态。
 ---
 
 ## 4. Wukong Origin 当前状态

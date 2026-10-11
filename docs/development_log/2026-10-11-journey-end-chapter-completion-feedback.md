@@ -40,7 +40,7 @@ Continue framework work while final character-art generation is blocked. Make ev
 - Static inspection only in this session; no local Godot executable is available. The new commit's Godot Runtime Actions must be checked before claiming suite success.
 
 ## Godot Runtime status
-PENDING until the new implementation commit's GitHub Actions finish. Prior commit `cb7fd7c577e1811fa3c2b141019db871ed79150a` passed, but that does not validate this new code.
+**PASS for implementation commit `7ca43f4a9c01370f0adefda4e41f9b28a89f2f76`.** Runtime run [38103040349](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38103040349) completed successfully with `RUNTIME_SUITE_PASS tests=31`. Its Web Demo run was cancelled after a subsequent push; the later superset commit `4b383b1230d19f5eaeb616823bd08e368311592c` passed both workflows.
 
 ## Known issues
 - Final transparent-background character PNG/WebP are not yet available; generated art was not committed because the request was blocked by the Free-plan image-generation limit.
