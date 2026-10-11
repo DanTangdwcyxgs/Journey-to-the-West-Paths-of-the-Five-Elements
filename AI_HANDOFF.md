@@ -264,7 +264,7 @@ Runner 输出的 `battle` 只生成 `EncounterHandoff` 数据，不直接启动 
 1. 第一条完整可玩 Vertical Slice 仍需补齐探索/区域进入与最终角色正式 PNG/WebP 资产。图片资产仍受生成额度限制，不把概念展示图当正式资源。
 2. Wukong WUK-15 END → Shared-01 与终章存档失败回滚均已通过精确 SHA Runtime/Web Demo；最后交接若保存失败会同步恢复 NarrativeState 和 PartyManager。
 3. Memory 只读对白回放与 Shared-03 实际招募 → LONGMA-02 解锁/回放/重载均已通过 Runtime/Web Demo。
-4. 当前打通主线剧情 MOVE → 世界探索状态：Shared-04 的 MOVE 应把当前位置写入 WORLD_MAP，再由真实 WorldMap UI 展示北道并允许旅行到鹰愁涧。新增 Runtime 回归待精确 SHA 验证。
+4. Shared-04 剧情 MOVE 已在提交 `0aa7d6bffb22c03d05f51d95a09ee3e57f1927d5` 通过 Runtime 40/40 与 Web Demo build/deploy：北道被保存为当前位置，WorldMap 可从这里旅行至鹰愁涧。当前补一条 save failure 回滚回归，确认失败时 MOVE 游标保持可重试。
 5. 五条 Origin Route 的 EventSequence 迁移、统一质量门及 namespace 元数据一致性已有实现；新增 cross-reference / route-isolation 缺口按具体回归补强。
 6. 非战斗 reward / move / wait 的副作用继续留在 RewardService / WorldActionService，不得移入 EventRunner。
 7. Origin → Shared、WorldMap travel 与 Memory 主流程稳定后，再推进 Camp / Relationship Prototype。
@@ -329,7 +329,7 @@ Runner 输出的 `battle` 只生成 `EncounterHandoff` 数据，不直接启动 
 
 ### Batch B — Journey Presentation & Runtime
 
-Journey END / chapter completion、MainMenu → WUK-02 battle / resume / END / Save、EventSequence content/namespace quality gates、BattleResolutionService rollback、Shared-03/05/07 real scene smoke、Memory read-only playback + recruitment integration、WUK-15 final END → Shared-01 与 final handoff save-failure rollback 均已通过 Runtime/Web Demo；最后一批 commit `efb1e7c1cfdfe6dd84fd5618bd0405c72f2f377f` 的 Runtime [38116451019](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38116451019) 39/39、Web Demo [38116450981](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38116450981) build/deploy 均通过。当前把 Shared-04 的故事 MOVE 正式提交到 WorldActionService / NarrativeState，并验证 WorldMap 连接行路；当前 batch 精确 SHA CI 待验证。
+Journey END / chapter completion、MainMenu → WUK-02 battle / resume / END / Save、EventSequence content/namespace quality gates、BattleResolutionService rollback、Shared-03/05/07 real scene smoke、Memory read-only playback + recruitment integration、WUK-15 final END → Shared-01 production handoff、final handoff rollback，以及 Shared-04 story MOVE → saved WorldMap travel 均已通过精确 SHA Runtime/Web Demo。MOVE 集成提交 `0aa7d6bffb22c03d05f51d95a09ee3e57f1927d5` 的 Runtime [38116737816](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38116737816) 40/40，Web Demo [38116737826](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38116737826) build/deploy 均通过。当前新增强制 save failure 的 MOVE 回滚/重试回归，待精确 SHA CI 验证。
 
 ### Batch C — Narrative execution services
 

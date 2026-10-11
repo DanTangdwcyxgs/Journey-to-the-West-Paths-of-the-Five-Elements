@@ -40,12 +40,12 @@ A story move must establish the canonical place where optional exploration begin
 - Expected registered Runtime suite entries: 40.
 
 ## Godot Runtime status
-**PENDING** — only mark passed when Godot Runtime and Web Demo finish on this exact implementation commit.
+**PASS** — exact implementation commit `0aa7d6bffb22c03d05f51d95a09ee3e57f1927d5`. Godot Runtime run [38116737816](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38116737816) passed with `PASS res://combat/test_shared_story_move_world_map.gd` and `RUNTIME_SUITE_PASS tests=40`. Web Demo run [38116737826](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38116737826) build and deploy passed.
 
 ## Known issues
 - The smoke starts at a valid saved Shared-04 prerequisite state rather than replaying all earlier Wukong/Longma chapters. Earlier entries are covered by the MainMenu, Origin handoff and Shared-03 recruitment scene smokes.
 - WorldMap travel remains restricted to reachable nodes and required milestones; this change does not bypass those checks.
-- A failure-injected save rollback for MOVE is not yet independently exercised by a SceneTree test; current coverage verifies successful transaction persistence and uses the same snapshot/rollback pattern as existing battle and final-handoff regressions.
+- A dedicated failure-injected MOVE save rollback is the next batch and is tracked in `2026-10-11-story-move-save-failure-rollback.md`.
 
 ## Next step
 After CI passes, add a direct movement-save failure test if warranted, then test how optional rumors and bounties branch from Black Wind North Path without advancing the canonical Shared chapter.
