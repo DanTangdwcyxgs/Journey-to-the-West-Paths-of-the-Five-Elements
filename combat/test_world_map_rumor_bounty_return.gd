@@ -136,7 +136,7 @@ func _run_smoke() -> void:
 								var post_arrival_save := NarrativeManager.new()
 								_record(post_arrival_save.load(), "post-return Shared-05 MOVE should leave a loadable save")
 								if post_arrival_save.state != null:
-								_record(post_arrival_save.state.current_shared_chapter == "SHARED-05-GAOJIAZHUANG", "Shared-05 move save should preserve the current chapter")
+									_record(post_arrival_save.state.current_shared_chapter == "SHARED-05-GAOJIAZHUANG", "Shared-05 move save should preserve the current chapter")
 									_record(post_arrival_save.state.current_global_timeline == saved_timeline, "Shared-05 arrival move should not prematurely advance its timeline milestone")
 									_record(str(post_arrival_save.state.get_world_state().get("current_location", "")) == "GAOJIAZHUANG", "Gaojiazhuang arrival should persist after reload")
 									_record(post_arrival_save.state.completed_shared_chapters == saved_completed, "Shared-05 arrival should not retroactively alter completed chapter history")
