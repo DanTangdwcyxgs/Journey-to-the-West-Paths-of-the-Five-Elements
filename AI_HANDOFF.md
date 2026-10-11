@@ -429,3 +429,14 @@ Battle resolution remains service-owned. Victory-result presentation is complete
 
 ### Next handoff
 Next implement END / chapter-completion feedback and regression, one presentation slice at a time.
+
+
+## 18. 2026-10-11 Journey Event Navigation Lock
+
+### Current batch
+- Journey locks Party, World Map, Save, and Return-to-Menu while an EventSequence action is active, because the current scene-switch callbacks do not serialize the active NarrativeEventSession.
+- The primary event action remains available. Navigation unlocks when the sequence is finished and the regular route/shared overview is rendered, so optional exploration can happen between completed sequences.
+- Regression asserts the four controls are locked during MOVE and can be unlocked; exact-head Runtime is pending for branch codex/journey-event-navigation-lock-2026-10-11.
+
+### Next handoff
+Review Shared-02 → Shared-03 dialogue pacing and optional exploration signposting. Do not change canon chronology or conflate the optional Yellow Wind bounty with the full planned Yellow Wind Ridge mainline. A future general Journey session handoff must include explicit interruption/resume tests before removing this conservative lock.

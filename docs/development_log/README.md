@@ -62,6 +62,9 @@
 - [`2026-09-05 — EventSequence / EventRunner 运行骨架`](2026-09-05-event-runner.md)
 - [`2026-09-05 — Chapter Event Runtime 第一批部署`](2026-09-05-chapter-event-runtime.md)
 
+## 最新记录
+- [2026-10-11 — Journey Event Navigation Lock](2026-10-11-journey-event-navigation-lock.md)
+
 ## 规则
 
 一次更新可以包含多个 commit，但应至少对应一份交接记录。

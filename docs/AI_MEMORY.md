@@ -582,3 +582,13 @@ Wukong、Tang、Longma、Bajie、Wujing 五条 Origin Route 均已完成首轮 S
 
 任何下一轮继续：
 `实现 → regression → Godot Runtime → development log → AI_MEMORY`。
+
+
+### Round 64 — 2026-10-11：Journey Event Navigation Lock
+- 自我审计发现 Journey 的 party/map/save/back 按钮在 EventSequence 运行期间仍可点击，但 scene-switch callbacks 不序列化当前 NarrativeEventSession；中途离开可能丢失 runner 的当前节点并在返回时重播。
+- 当前最小安全方案是在 _render_event_action() 锁定队伍、地图、手动保存和返回菜单按钮；序列结束回到普通 route/shared overview 后解锁。主剧情 primary action 仍可用，事件结束后可照常进入 WorldMap 处理可选探索。
+- Memory playback 复用导航锁 helper，保留原有播放期间不能跳场景的行为。
+- 扩展 combat/test_journey_event_presentation.gd，断言 MOVE action 活跃时四个退出入口都禁用并可在释放后解锁。
+- 分支：codex/journey-event-navigation-lock-2026-10-11。开发日志：docs/development_log/2026-10-11-journey-event-navigation-lock.md。
+- 验证：该分支精确 head 的 Godot Runtime CI 待运行；不以 PR #18/#19 的历史通过替代。
+- 下一步：CI 通过后继续 Shared-02 → Shared-03 节奏和可选探索提示评审；以后若做通用 Journey session serialization，需为中断/恢复单独补回归。
