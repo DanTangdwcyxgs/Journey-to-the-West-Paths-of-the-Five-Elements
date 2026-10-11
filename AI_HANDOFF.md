@@ -429,3 +429,14 @@ Battle resolution remains service-owned. Victory-result presentation is complete
 
 ### Next handoff
 Next implement END / chapter-completion feedback and regression, one presentation slice at a time.
+
+
+## 19. 2026-10-11 Shared-02 Optional Exploration Signpost
+
+### Current batch
+- Added a Wukong dialogue node to the production SHARED-02 sequence to point players toward map-based optional rumors while explicitly naming Eagle Sorrow as the next mainline destination.
+- Regression in combat/test_shared_event_sequences.gd runs the production EventRunner and asserts the signpost mentions the map, rumors, and Eagle Sorrow.
+- Exact-head Godot Runtime CI is pending for branch codex/shared02-exploration-signpost-2026-10-11; no pass should be inferred from earlier batches.
+
+### Next handoff
+After CI passes, inspect the World Map/rumor affordances themselves. Keep optional activities non-blocking and do not confuse optional bounty content with the planned full Yellow Wind Ridge mainline.

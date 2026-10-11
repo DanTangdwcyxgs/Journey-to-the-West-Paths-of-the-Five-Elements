@@ -582,3 +582,12 @@ Wukong、Tang、Longma、Bajie、Wujing 五条 Origin Route 均已完成首轮 S
 
 任何下一轮继续：
 `实现 → regression → Godot Runtime → development log → AI_MEMORY`。
+
+
+### Round 65 — 2026-10-11：Shared-02 Optional Exploration Signpost
+- 对照生产 event_sequences.json 与 shared_chapters/shared_pilgrimage，SHARED-02 当前是短师徒过渡，下一条固定主线是 SHARED-03 鹰愁涧。现有对白没有告诉玩家可以在序列结束后通过地图调查沿途传闻。
+- 在 SHARED-02 的悟空台词后新增 exploration_signpost 对话节点：提示地图和沿途传闻属于可选探索，同时明确鹰愁涧仍是下一主线目标。
+- 扩展 combat/test_shared_event_sequences.gd，执行真实 EventRunner 时验证提示包含“地图”“传闻”“鹰愁涧”，避免支线提示模糊主线顺序。
+- 分支：codex/shared02-exploration-signpost-2026-10-11。开发日志：docs/development_log/2026-10-11-shared02-exploration-signpost.md。
+- 验证：该分支精确 head 的 Godot Runtime CI 待运行，不提前宣称通过。
+- 下一步：CI 通过后检查 World Map 与 rumor UI 是否足够清楚地展示可选内容；保留 SHARED-03 的固定顺序。
