@@ -36,7 +36,7 @@ A content-driven production pipeline should fail CI when any production sequence
 - Negative tests for missing event/encounter/chapter, chapter mismatch, namespace mismatch, and origin route mismatch remain in place.
 
 ## Godot Runtime status
-**PENDING** — do not mark this batch passed until Actions finishes for the exact implementation commit. Baseline success above is not evidence for the new assertions.
+**PASS** — exact implementation commit `0e3998318ea771cee07a3343bc82986e04c3a1e8`; Godot Runtime run [38105696943](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38105696943) completed successfully with `RUNTIME_SUITE_PASS tests=35`. The output explicitly records `PASS res://combat/test_event_sequence_validator.gd`. This confirms the full-catalog assertions passed; the baseline run is listed separately only as starting evidence.
 
 ## Known issues
 - The validator still relies on namespace-specific chapter catalog membership; it does not explicitly compare chapter `chapter_type` / legacy `is_origin` / `is_shared` flags against the sequence namespace.

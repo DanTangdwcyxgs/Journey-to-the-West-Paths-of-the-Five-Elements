@@ -297,7 +297,7 @@ Runner 输出的 `battle` 只生成 `EncounterHandoff` 数据，不直接启动 
 - `EventSequenceDefinition.validate()` 检查结构：节点 ID、节点类型、起点与图连接。
 - `EventSequenceValidator.validate()` 检查跨内容引用：namespace 仅允许 ORIGIN / SHARED；sequence chapter 必须存在于对应的 Origin Route / Shared Journey 内容；choice event 必须存在于匹配的事件目录；battle encounter 必须存在；battle 的 source chapter 必须与 sequence chapter 一致；Shared encounter 必须匹配章节的 canonical encounter；Origin battle 的 route 与 encounter source 必须匹配所属路线。
 - `EventSequenceManager` 会拒绝无效序列，并通过 `get_load_errors()` 暴露被拒绝的项目与重复 ID。
-- 本批 Runtime regression 已扩展为检查整个 production catalog 的加载错误，并逐个调用 cross-reference validator；仍须等待本批精确提交的 Actions 结果后再宣告验证通过。
+- 本批 Runtime regression 已扩展为检查整个 production catalog 的加载错误，并逐个调用 cross-reference validator。实现提交 `0e3998318ea771cee07a3343bc82986e04c3a1e8` 的 Godot Runtime [38105696943](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38105696943) 已通过，`RUNTIME_SUITE_PASS tests=35`。
 
 剩余缺口：validator 尚未显式交叉检查章节上的 `chapter_type` / legacy `is_origin` / `is_shared` 标记是否与 sequence namespace 一致。当前先依靠章节是否存在于对应目录来约束 namespace，后续可添加一个独立 schema-consistency regression，避免把此缺口误报成已完成。
 
