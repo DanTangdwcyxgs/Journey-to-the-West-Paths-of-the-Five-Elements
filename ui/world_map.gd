@@ -152,8 +152,18 @@ func _on_node_selected(index:int) -> void:
 	selected_node_id = str(reachable[index].get("id","")); _render_node(reachable[index]); travel_button.disabled = selected_node_id == world.get_current_location(narrative)
 
 func _travel() -> void:
-	if selected_node_id.is_empty(): return
-	if world.visit(narrative, selected_node_id): narrative.save(); _refresh(); status_label.text += " · 已抵达"
+	if selected_node_id.is_empty():
+		return
+	var state_before_travel: Dictionary = narrative.serialize().duplicate(true)
+	if not world.visit(narrative, selected_node_id):
+		return
+	if not narrative.save():
+		narrative.restore_snapshot(state_before_travel)
+		_refresh()
+		status_label.text += " · 保存失败，地点变更已回滚；可以重试"
+		return
+	_refresh()
+	status_label.text += " · 已抵达"
 
 func _hear_rumor() -> void:
 	var selected := rumor_list.get_selected_items()
