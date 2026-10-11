@@ -39,7 +39,7 @@ Testing route handoff, Longma battle, and Memory independently did not prove the
 - The final save must be Shared-05, WorldMap current location BLACK_WIND_NORTH_PATH, Wukong route complete, Longma recruited, and LONGMA-02 recorded as played rather than available.
 
 ## Godot Runtime status
-**PENDING** — validate this exact implementation SHA via Godot Runtime and Web Demo. Prior independent smokes do not prove the integrated path.
+**PASS** — exact final implementation commit `b4aa8ef0515354d12705cedd5715bd5321415e30`. Godot Runtime run [38119684898](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38119684898) passed with `PASS res://combat/test_shared_opening_to_black_wind_smoke.gd` and `RUNTIME_SUITE_PASS tests=44`; Web Demo run [38119684880](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38119684880) build/deploy both passed. The initial code commit failed on a test-only indentation error; an intermediate correction then exposed a stale Memory availability assertion. The final test distinguishes available LONGMA-01 from played LONGMA-02.
 
 ## Known issues
 - WUK-01..14 progress is seeded by canonical chapter progression services rather than replayed through every Origin UI scene. WUK-15 runs via production UI; the battle victory is still shortcut by the production success callback rather than a full player-turn simulation.
@@ -47,7 +47,7 @@ Testing route handoff, Longma battle, and Memory independently did not prove the
 - Final polished character art / environment art remains separate product work.
 
 ## Next step
-Once both CI workflows pass, perform a pacing and usability review of this first vertical slice, prioritizing interactive exploration/region presentation and final production assets over further framework-only changes.
+Perform a pacing and usability review of this first vertical slice, prioritizing interactive exploration/region presentation and final production assets over further framework-only changes.
 
 ## Handoff point
 Integrated WUK-15 → Shared-01..04 → Longma Memory slice. Preserve the one canon timeline and ensure Memory changes only its own played/available flags.

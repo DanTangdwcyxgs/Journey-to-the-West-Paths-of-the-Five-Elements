@@ -434,8 +434,8 @@ Wukong progression 修正后的完整 Runtime 已成功通过上一轮验证；�
 - 既有 `test_shared_opening_to_black_wind_smoke.gd` 用 manager 直接调用 `handoff_origin_to_shared()` 设置 Shared-01，因此会跳过玩家真实完成 WUK-15 END 的 UI 边界；它也只断言 Longma memory 解锁，从未在这条连续存档中实际播放。
 - 将该 single-save SceneTree smoke 起点改为一个规范的 WUK-15 存档：WUK-01..14 通过 OriginRouteManager / NarrativeManager 正式章节游标推进并记录，WUK-15 保留为当前章节。测试必须经生产 MainMenu Continue / Journey UI 完成真实 WUK-15 EventSequence，确认 Shared-01 handoff 与存档，再按既有流程跑 Shared-01 → Shared-02 → Shared-03 Longma 招募战 → Shared-04。
 - 在 Shared-03 真实结算后，使用生产 Journey 列表/回忆按钮打开 LONGMA-02，展示战前和战后对白，但跳过历史战斗节点；显式完成后验证只有 available/played Memory flags 改变，Shared 章节/时间线/队伍/当前位置均保持不变，已读状态可重载。
-- 本批精确 SHA Godot Runtime / Web Demo 状态待 Actions；不以此前各自独立的 WUK-15 handoff / Shared-01..04 smoke 通过代替一条连续垂直切片证据。
-- 下一步：通过后从框架回归转向这条切片的体验节奏、互动区域与最终正式视觉资产评审；不要继续无明确玩家价值地叠加纯框架测试。
+- 最终实现提交 `b4aa8ef0515354d12705cedd5715bd5321415e30` 的 Godot Runtime run [38119684898](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38119684898) 通过，输出 `RUNTIME_SUITE_PASS tests=44`；同一 SHA 的 Web Demo run [38119684880](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38119684880) build/deploy 均成功。中间实现提交 `85655409e38f84f851ec1c0568d1ab27f223bbce` 因测试代码 `if` 块缩进错误未通过；修正提交 `e83e07fd5d18660d92f9ea862f73444e3f1de161` 则暴露旧的最终断言仍要求 LONGMA-02 留在 available-memory 列表。最终回归已校正为 LONGMA-01 保持可回忆、LONGMA-02 从 available 移至 played，精确 SHA 全绿。
+- 下一步：从框架回归转向这条切片的体验节奏、互动区域与最终正式视觉资产评审；不要继续无明确玩家价值地叠加纯框架测试。
 
 ## 4. Wukong Origin 当前状态
 
