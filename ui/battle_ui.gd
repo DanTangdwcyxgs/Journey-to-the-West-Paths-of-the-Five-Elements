@@ -37,6 +37,14 @@ var item_catalog: Dictionary = {}
 var battle_inventory := InventoryManager.new()
 var loadout := LoadoutManager.new()
 
+## Optional persistence dependency for deterministic SceneTree regression; normal play uses a fresh manager.
+var narrative_manager_override: NarrativeManager
+
+func _create_narrative_manager() -> NarrativeManager:
+	if narrative_manager_override != null:
+		return narrative_manager_override
+	return NarrativeManager.new()
+
 func _ready() -> void:
 	var handoff := BountyEncounterState.get_active_record()
 	encounter_type = str(handoff.get("encounter_type", "bounty"))
@@ -46,7 +54,7 @@ func _ready() -> void:
 	source_route_id = str(handoff.get("source_route_id", ""))
 	_load_bounty_definitions()
 	_load_item_catalog()
-	var narrative := NarrativeManager.new()
+	var narrative := _create_narrative_manager()
 	if narrative.load():
 		battle_inventory.restore(narrative.state.get_inventory())
 		loadout.restore_from_narrative(narrative)
@@ -183,7 +191,7 @@ func _use_item(item_id: String) -> void:
 	battle_inventory.remove_item(item_id,1); _save_battle_inventory(); _on_combat_log("使用道具：%s → %s" % [str(item.get("name",item_id)),_name(target)]); _end_turn()
 
 func _save_battle_inventory() -> void:
-	var narrative := NarrativeManager.new(); if narrative.load(): narrative.state.set_inventory(battle_inventory.to_dict()); narrative.save()
+	var narrative := _create_narrative_manager(); if narrative.load(): narrative.state.set_inventory(battle_inventory.to_dict()); narrative.save()
 
 func _boost_selected() -> void:
 	if current_actor == null or selected_target == null or not selected_target.is_alive(): return
@@ -237,7 +245,7 @@ func _on_combat_log(message:String) -> void:
 func _on_combat_finished(winner:String) -> void:
 	if encounter_resolved: return
 	battle_result_locked = true
-	var narrative := NarrativeManager.new()
+	var narrative := _create_narrative_manager()
 	if winner != "allies":
 		status_label.text = "战斗失败。可以返回重新准备。"
 		return

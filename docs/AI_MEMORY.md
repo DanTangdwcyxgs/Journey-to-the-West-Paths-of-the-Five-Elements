@@ -461,6 +461,13 @@ Wukong progression 修正后的完整 Runtime 已成功通过上一轮验证；�
 - Exact commit `3fd65d9f16453b6cb104ca249b4a87859e47895c` passed Runtime run [38120711220](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38120711220) with `PASS res://combat/test_bounty_reward_service_atomicity.gd` and `RUNTIME_SUITE_PASS tests=47`; the same SHA’s Web Demo run [38120711189](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38120711189) build and deploy both passed.
 - Next: add a production BattleUI regression for the settlement retry button, confirming a failed save leaves the finished battle in place and the successful retry does not replay combat or duplicate rewards / defeated-target journal entries.
 
+### Round 61 — 2026-10-11：Production BattleUI Bounty Settlement Retry
+- 按 Round 60 的 handoff 补齐真实 UI 边界：`ui/battle_ui.gd` 增加可选 NarrativeManager 注入点，生产默认创建新 manager；增加 SceneTree regression，加载生产 `battle_ui.tscn`，通过真实 `combat_finished` 信号触发胜利，再点击“重试结算”按钮。
+- 首次保存失败应保留战斗场景、恢复完整 NarrativeState 与 BountyManager、保留 handoff 并提示可重试；第二次点击成功时只保存一次、发放黄风妖王奖励一次、击败日志仅一条、共享章节与世界时间线不变。之后正常离开结果页不得再次结算。
+- 新增 `combat/test_battle_ui_bounty_settlement_retry.gd` 并登记到 `tests/runtime_suite.gd`；本批 Runtime suite 预期 48 项。
+- 本批精确 SHA Runtime / Web Demo 尚待新 PR 的 Actions 验证。之前的 47/47 仅验证父提交 `3fd65d9f16453b6cb104ca249b4a87859e47895c`，不能当作此 UI 回归已经通过。
+- 下一步：CI 通过后转回 Vertical Slice 的探索节奏、互动区域和正式角色视觉资产评审；继续遵守战斗结算由 Service 原子提交、Presentation 不拥有规则的边界。
+
 ## 4. Wukong Origin 当前状态
 
 Production Sequence：`WUK-01~15` 全部存在。
