@@ -314,6 +314,22 @@ func _start_event_transition(action: Dictionary) -> void:
 	event_transition_pending = false
 	if event_session == null:
 		return
+
+	if kind == EventRunner.MOVE:
+		var state_before_move: Dictionary = narrative.serialize().duplicate(true)
+		var movement_result := WorldActionService.apply_move(narrative, action)
+		if movement_result.is_empty():
+			primary_button.disabled = false
+			primary_button.text = "重试移动"
+			phase_label.text = "路途位置无效，未更新探索记录；可以重试。"
+			return
+		if not narrative.save():
+			narrative.restore_snapshot(state_before_move)
+			primary_button.disabled = false
+			primary_button.text = "重试移动"
+			phase_label.text = "保存失败，抵达记录已回滚；再次确认可重试。"
+			return
+
 	var next := event_session.complete_action()
 	_handle_event_action(next)
 

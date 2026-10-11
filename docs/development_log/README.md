@@ -10,6 +10,7 @@
 
 ## 最新记录
 
+- [`2026-10-11 — Story MOVE to World Map Persistence`](2026-10-11-story-move-world-map.md)
 - [`2026-10-11 — Origin Final Handoff Save-Failure Rollback`](2026-10-11-origin-final-handoff-rollback.md)
 - [`2026-10-11 — Origin Final END → Shared Handoff`](2026-10-11-origin-final-shared-handoff.md)
 - [`2026-10-11 — Shared Recruitment to Memory SceneTree Smoke`](2026-10-11-shared-recruitment-memory-scene-smoke.md)

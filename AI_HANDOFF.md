@@ -262,12 +262,12 @@ Runner 输出的 `battle` 只生成 `EncounterHandoff` 数据，不直接启动 
 最高优先级：
 
 1. 第一条完整可玩 Vertical Slice 仍需补齐探索/区域进入与最终角色正式 PNG/WebP 资产。图片资产仍受生成额度限制，不把概念展示图当正式资源。
-2. Wukong WUK-15 END → Shared-01 的真实 UI 交接已在提交 `deba063d42c46156b37b313f8b59863d2e558949` 通过 Runtime/Web Demo；后续保存失败回滚与 PartyManager 同步恢复在修复提交 `efb1e7c1cfdfe6dd84fd5618bd0405c72f2f377f` 通过 Runtime run [38116451019](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38116451019)（39/39）与 Web Demo run [38116450981](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38116450981)。首个尝试曾因 else 缩进错误失败，已记录于开发日志；修复后精确 SHA 的两条工作流均通过。
-3. Memory 已有只读对白回放与完成保存/失败回滚；Shared-03 的真实招募 → LONGMA-02 回忆解锁/播放/重载路径已通过 Runtime 与 Web Demo。接下来重点是整合 Origin 终点 handoff 与真实共享章节进入。
-4. 五条 Origin Route 的 EventSequence 迁移、统一质量门及 namespace 元数据一致性已有实现；新增 cross-reference / route-isolation 缺口按具体回归补强。
-5. 非战斗 reward / move / wait 的副作用继续留在 RewardService / WorldActionService，不得移入 EventRunner。
-6. 逐步清理 BattleUI 旧 origin/shared 兼容结算职责与 BountyEncounterState，但不得破坏现有 Handoff + Resolution 兼容链。
-7. Origin → Shared 与 Wukong → Eagle Sorrow → Longma → Memory 主流程稳定后，再推进 Camp / Relationship Prototype。
+2. Wukong WUK-15 END → Shared-01 与终章存档失败回滚均已通过精确 SHA Runtime/Web Demo；最后交接若保存失败会同步恢复 NarrativeState 和 PartyManager。
+3. Memory 只读对白回放与 Shared-03 实际招募 → LONGMA-02 解锁/回放/重载均已通过 Runtime/Web Demo。
+4. 当前打通主线剧情 MOVE → 世界探索状态：Shared-04 的 MOVE 应把当前位置写入 WORLD_MAP，再由真实 WorldMap UI 展示北道并允许旅行到鹰愁涧。新增 Runtime 回归待精确 SHA 验证。
+5. 五条 Origin Route 的 EventSequence 迁移、统一质量门及 namespace 元数据一致性已有实现；新增 cross-reference / route-isolation 缺口按具体回归补强。
+6. 非战斗 reward / move / wait 的副作用继续留在 RewardService / WorldActionService，不得移入 EventRunner。
+7. Origin → Shared、WorldMap travel 与 Memory 主流程稳定后，再推进 Camp / Relationship Prototype。
 
 ---
 
@@ -329,7 +329,7 @@ Runner 输出的 `battle` 只生成 `EncounterHandoff` 数据，不直接启动 
 
 ### Batch B — Journey Presentation & Runtime
 
-Journey END / chapter completion、MainMenu → WUK-02 real battle / resume / END / Save、EventSequence content/namespace quality gates、BattleResolutionService save-failure rollback、Shared-03/05/07 real scene smoke、Memory read-only playback、Shared-03 recruitment → LONGMA-02 Memory、WUK-15 final END → Shared-01 production handoff，以及 final handoff save-failure rollback 均已通过精确 SHA Runtime/Web Demo。最后一批回滚验证提交 `efb1e7c1cfdfe6dd84fd5618bd0405c72f2f377f` 的 Runtime [38116451019](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38116451019) 通过 39/39，Web Demo [38116450981](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38116450981) build/deploy 通过。下一步继续检查 Wukong → Eagle Sorrow 的实际世界地图/旅途入口连接，将剧情 MOVE 和可交互探索区域串联。
+Journey END / chapter completion、MainMenu → WUK-02 battle / resume / END / Save、EventSequence content/namespace quality gates、BattleResolutionService rollback、Shared-03/05/07 real scene smoke、Memory read-only playback + recruitment integration、WUK-15 final END → Shared-01 与 final handoff save-failure rollback 均已通过 Runtime/Web Demo；最后一批 commit `efb1e7c1cfdfe6dd84fd5618bd0405c72f2f377f` 的 Runtime [38116451019](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38116451019) 39/39、Web Demo [38116450981](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38116450981) build/deploy 均通过。当前把 Shared-04 的故事 MOVE 正式提交到 WorldActionService / NarrativeState，并验证 WorldMap 连接行路；当前 batch 精确 SHA CI 待验证。
 
 ### Batch C — Narrative execution services
 

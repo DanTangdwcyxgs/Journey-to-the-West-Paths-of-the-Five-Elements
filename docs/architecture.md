@@ -670,3 +670,8 @@ Migration order:
 5. remove legacy duplicated paths only after regression coverage exists.
 
 This keeps the playable prototype stable while the architecture evolves toward mass content production.
+
+
+## Story MOVE 与 World Map 状态提交
+
+Origin/Shared EventSequence 的 `MOVE` 是主线世界位置变更，不只是演出提示。Journey 在移动过渡结束后必须通过 `WorldActionService.apply_move()` 更新 NarrativeState 的当前位置、已访问和已发现节点，并在推进 EventSession 游标前成功保存。若移动记录无效或保存失败，不得推进到后续剧情 action；保存失败必须恢复 pre-MOVE NarrativeState，让同一 MOVE 可重试。WorldMap 的自由旅行继续由 `WorldMapManager.can_visit()/visit()` 控制时间线、里程碑与连接关系。

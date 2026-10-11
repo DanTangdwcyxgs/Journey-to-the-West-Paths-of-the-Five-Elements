@@ -370,6 +370,13 @@ Wukong progression 修正后的完整 Runtime 已成功通过上一轮验证；�
 - 上一批 WUK-15 → Shared-01 提交 `deba063d42c46156b37b313f8b59863d2e558949` 的 Runtime 38/38 与 Web Demo build/deploy 已通过。本批首次提交 `bfa267ba1be413918189df9e4f94e7ff8886143f` 曾因手工插入 rollback 代码时 `else` 缩进不一致导致 GDScript parse failure；随后的 `efb1e7c1cfdfe6dd84fd5618bd0405c72f2f377f` 修复缩进，并通过 Runtime run [38116451019](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38116451019)（39/39）和 Web Demo run [38116450981](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38116450981)。
 - 下一步：通过后继续检查 Wukong 到 Eagle Sorrow 的实际世界地图/旅途入口连接，开始把故事 MOVE 与可交互探索区域串起来。
 
+### Round 49 — 2026-10-11：Story MOVE → World Map Persistence
+- 自检发现 Shared-04 EventSequence 有 `MOVE(map_id=WORLD_MAP, marker_id=BLACK_WIND_NORTH_PATH)`，但 Journey 的 `_start_event_transition()` 只显示短暂移动动画，随后直接 `complete_action()`；从未调用 `WorldActionService.apply_move()`，导致世界地图当前位置没有被剧情行进更新。
+- 修复 MOVE 提交边界：动画完成后快照 NarrativeState，通过 WorldActionService 写入 visited/discovered/current location，并先保存；只有保存成功才推进 EventSession。若移动无效或保存失败，会提示玩家重试；存档失败时恢复整个 pre-MOVE NarrativeState，MOVE 节点仍停留在当前 action。
+- 新增 `combat/test_shared_story_move_world_map.gd`：从 MainMenu Continue 进入生产 Shared-04 Journey，推进真实 EventSequence 到 MOVE，验证 BLACK_WIND_NORTH_PATH 被记录并重载持久化；随后点真实地图按钮，确认北道成为当前位置、鹰愁涧为可达节点，并使用 WorldMap 的真实 Travel 控件旅行到鹰愁涧后再次重载验证。
+- 上一批 rollback 的 Runtime 39/39 与 Web Demo build/deploy 已通过（修复 SHA `efb1e7c1cfdfe6dd84fd5618bd0405c72f2f377f`）。当前 MOVE → WorldMap 新增回归的精确 SHA CI 结果待 Actions。
+- 下一步：通过后继续把 WorldMap travel、探索传闻/悬赏与主线下一章条件之间的界限锁进回归，再评估纵向切片节奏。
+
 ## 4. Wukong Origin 当前状态
 
 Production Sequence：`WUK-01~15` 全部存在。

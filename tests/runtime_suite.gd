@@ -38,6 +38,7 @@ const TEST_SCRIPTS := [
 	"res://combat/test_main_menu_journey_entry.gd",
 	"res://combat/test_origin_final_shared_handoff.gd",
 	"res://combat/test_origin_final_shared_handoff_rollback.gd",
+	"res://combat/test_shared_story_move_world_map.gd",
 	"res://combat/test_main_menu_battle_resume_smoke.gd",
 	"res://combat/test_sound_manager_lifecycle.gd",
 	"res://combat/test_main_menu_contact.gd",
