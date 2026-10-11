@@ -409,6 +409,13 @@ Wukong progression 修正后的完整 Runtime 已成功通过上一轮验证；�
 - Shared-05/07 arrivals 的兼容性修复已在 `9cd478d516ad4dfaaa749dbf5c017ae210ff17cb` 通过 Runtime 42/42 与 Web Demo build/deploy。当前 Shared-01/03 arrival 提交 `584db9e18ddd3d0a850f2779e9d1acb2e255b880` 的 Runtime [38117715977](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38117715977) 通过，输出 `PASS res://combat/test_shared_event_sequences.gd`、`PASS res://combat/test_shared_opening_journey_bridge.gd`、`PASS res://combat/test_shared_battle_journey_bridge.gd`、`PASS res://combat/test_shared_battle_scene_transition.gd`、`PASS res://combat/test_origin_final_shared_handoff.gd` 和 `RUNTIME_SUITE_PASS tests=42`；同 SHA 的 Web Demo [38117715919](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38117715919) build/deploy 成功。
 - 下一步：通过后按真实主线顺序检查 Shared-01 → Shared-02 → Shared-03 → Shared-04 的存档、时间线、地图位置协同。
 
+### Round 54 — 2026-10-11：Single-Save Shared Opening → Black Wind North Path Arc
+- 新增 `combat/test_shared_opening_to_black_wind_smoke.gd`，从 Wukong Origin 完成后的 canonical Shared-01 存档，通过真实 MainMenu Continue 进入 Journey。
+- 测试按生产 EventSequence / Journey UI 依次完成 Shared-01（五行山 MOVE / Trust Wukong）、Shared-02（Keep Moving）、Shared-03（鹰愁涧 MOVE / Longma choice / 生产 BattleUI victory / 回到战后对话并 END）、Shared-04（黑风山北道 MOVE / wait / END）。
+- 每条 Story MOVE 都必须保存并经 NarrativeManager 重载确认；最终 save 需停在 Shared-05，保留 Shared-01..04 完成记录，global timeline 推进、Longma 已招募且 LONGMA-01/02 回忆解锁，WorldMap current location = BLACK_WIND_NORTH_PATH。
+- 上一批五个主线 MOVE markers 在 commit `5e0e11ca890e1469e8b88fd2121c55c10e6f32d4` 已通过 Runtime 42/42 与 Web Demo build/deploy；本批单存档 arc smoke 精确 SHA 的 Runtime / Web Demo 结果待 Actions。
+- 下一步：通过后继续确认可选探索/悬赏返回后从 Shared-04/05 接续时不会丢失主线章节游标，再进入纵向切片的节奏/演出评审。
+
 ## 4. Wukong Origin 当前状态
 
 Production Sequence：`WUK-01~15` 全部存在。
