@@ -401,6 +401,14 @@ Wukong progression 修正后的完整 Runtime 已成功通过上一轮验证；�
 - WorldMap rumor → optional bounty → return 已在 `d387b16ab7af58fb4e841a257c6c053e430056f4` 通过 Runtime 42/42 与 Web Demo build/deploy；本批 Shared arrival locations 的精确 SHA CI 待 Actions 验证。
 - 下一步：通过后检查自由 travel/传闻分支结束后回到主线时的章节状态和区域 gating，再评估世界地图 UI 与剧情演出之间的体验缝隙。
 
+### Round 53 — 2026-10-11：Shared Opening / Eagle Sorrow Map Arrivals
+- 将 Shared-01 开场真实 MOVE 到 `FIVE_ELEMENTS_MOUNTAIN`，将 Shared-03 白龙马遭遇前真实 MOVE 到 `EAGLE_SORROW`，让五行山 → 鹰愁涧 → 黑风山北道 → 高老庄 → 流沙河成为显式的主线地图落点。
+- 更新 Shared sequence graph regression 的 MOVE 总数到 5，并继续用每个 action 的 canonical marker 校验 current_location 与 visited_nodes。
+- `combat/test_shared_opening_journey_bridge.gd` 验证 Shared-01 的位置 mutation；`combat/test_origin_final_shared_handoff.gd` 从真实 MainMenu / WUK-15 handoff 接进 Shared-01，再通过生产 Journey UI 跑完第一条 MOVE、保存并重载验证五行山。
+- `combat/test_shared_battle_journey_bridge.gd` 与生产 Shared SceneTree smoke 都验证 Longma 招募战前到达鹰愁涧，且战斗结算不会把地图位置倒退。
+- Shared-05/07 arrivals 的兼容性修复已在 `9cd478d516ad4dfaaa749dbf5c017ae210ff17cb` 通过 Runtime 42/42 与 Web Demo build/deploy；本批精确 SHA Actions 待验证。
+- 下一步：通过后按真实主线顺序检查 Shared-01 → Shared-02 → Shared-03 → Shared-04 的存档、时间线、地图位置协同。
+
 ## 4. Wukong Origin 当前状态
 
 Production Sequence：`WUK-01~15` 全部存在。

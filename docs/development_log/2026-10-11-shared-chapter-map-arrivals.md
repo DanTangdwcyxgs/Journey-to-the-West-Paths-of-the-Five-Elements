@@ -40,7 +40,7 @@ The story owns fixed chapter chronology while WorldMap owns optional connections
 - Runtime suite remains at 42 registered entries because the changes extend two existing tests.
 
 ## Godot Runtime status
-**PENDING** — the first exact-head Runtime run failed in the legacy `combat/test_shared_battle_journey_bridge.gd`: it auto-advanced only Dialogue and expected CHOICE immediately, so the new Shared-05 MOVE made the old test stop before the choice. Both `test_shared_event_sequences.gd` and the production `test_shared_battle_scene_transition.gd` passed on that SHA. The bridge regression now explicitly handles Dialogue / MOVE / WAIT, verifies the canonical map marker and save before choosing, and checks that victory preserves the location. Await the follow-up exact SHA Runtime and Web Demo.
+**PASS** — initial commit `28ddd0f37f5b27f31e10e8c054b870845e246f32` exposed a legacy bridge test that expected dialogue to go directly to CHOICE. Follow-up fix commit `9cd478d516ad4dfaaa749dbf5c017ae210ff17cb` passed Runtime [38117421680](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38117421680) with `RUNTIME_SUITE_PASS tests=42`; Web Demo [38117421677](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38117421677) build and deploy also passed. The bridge regression now executes MOVE / WAIT before validating the choice, checks the canonical map marker and save, and verifies that battle settlement preserves the story-established location.
 
 ## Known issues
 - Story MOVE is authoritative and does not call WorldMapManager.can_visit(); optional free travel still uses the latter's connection/timeline/milestone guards.

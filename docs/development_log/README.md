@@ -10,6 +10,7 @@
 
 ## 最新记录
 
+- [`2026-10-11 — Shared Opening and Eagle Sorrow Map Arrivals`](2026-10-11-shared-opening-map-arrivals.md)
 - [`2026-10-11 — Shared Chapter Story Arrival Locations`](2026-10-11-shared-chapter-map-arrivals.md)
 - [`2026-10-11 — WorldMap Rumor to Optional Bounty Return`](2026-10-11-world-map-rumor-bounty-return.md)
 - [`2026-10-11 — Story MOVE Save-Failure Rollback`](2026-10-11-story-move-save-failure-rollback.md)

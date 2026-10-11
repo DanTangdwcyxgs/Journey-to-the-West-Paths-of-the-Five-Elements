@@ -263,8 +263,8 @@ Runner 输出的 `battle` 只生成 `EncounterHandoff` 数据，不直接启动 
 
 1. 第一条完整可玩 Vertical Slice 仍需补齐探索/区域进入与最终角色正式 PNG/WebP 资产。图片资产仍受生成额度限制，不把概念展示图当正式资源。
 2. Wukong WUK-15 END → Shared-01 交接与失败回滚、Memory 只读播放和白龙马实际招募解锁均已通过 Runtime/Web Demo。
-3. Shared-04 story MOVE → WorldMap 和 MOVE 保存失败重试均已验证；可选 WorldMap → rumor → bounty battle → return 分支在提交 `d387b16ab7af58fb4e841a257c6c053e430056f4` 通过 Runtime 42/42 与 Web Demo build/deploy。
-4. 当前把 Shared-05 / 高老庄、Shared-07 / 流沙河的主线到达位置写入 EventSequence，使真实剧情 MOVE 更新当前位置并可在地图回归测试中断言保存/重载；本批精确 SHA CI 完成前保持 Pending。
+3. Shared-04 story MOVE → WorldMap、MOVE 保存失败重试、可选 WorldMap → rumor → bounty battle → return、Shared-05/07 到达位置均已通过对应 CI。
+4. 当前补 Shared-01 的五行山起始位置与 Shared-03 的鹰愁涧到达位置；新批次将检查真实 MainMenu/Origin handoff 和 Longma battle 路径，并确认当前地图位置能保存/重载。本批精确 SHA CI 完成前保持 Pending。
 5. 五条 Origin Route 的 EventSequence 迁移、统一质量门及 namespace 元数据一致性已有实现；新增 cross-reference / route-isolation 缺口按具体回归补强。
 6. 非战斗 reward / move / wait 的副作用继续留在 RewardService / WorldActionService，不得移入 EventRunner。
 7. Origin → Shared、WorldMap travel、可选悬赏与 Memory 主流程稳定后，再推进 Camp / Relationship Prototype。
@@ -329,7 +329,7 @@ Runner 输出的 `battle` 只生成 `EncounterHandoff` 数据，不直接启动 
 
 ### Batch B — Journey Presentation & Runtime
 
-MainMenu / Origin battle resume、Origin final END → Shared-01 + rollback、EventSequence content/namespace quality gates、Shared-03/05/07 real scene smoke、Memory read-only playback + recruitment integration、Shared-04 MOVE → WorldMap + save-failure retry、WorldMap rumor → optional bounty → return 均已通过精确 SHA Runtime/Web Demo。最新 optional branch commit `d387b16ab7af58fb4e841a257c6c053e430056f4` 的 Runtime [38117052682](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38117052682) 42/42，Web Demo [38117052652](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38117052652) build/deploy 通过。Shared-05 / Shared-07 主线到达节点已加入地图位置更新。首个 Runtime 失败揭示旧 `test_shared_battle_journey_bridge.gd` 仍假设对白后直接到选择；现在修复该桥接回归，逐个完成 MOVE/WAIT 并验证位置与保存。本批修复 SHA 的 CI 待重新验证。
+MainMenu / Origin battle resume、Origin final END → Shared-01 + rollback、EventSequence content/namespace quality gates、Memory read-only playback + recruitment integration、Shared-04 MOVE → WorldMap + save-failure retry、WorldMap rumor → optional bounty → return 均已通过精确 SHA Runtime/Web Demo。Shared-05 / Shared-07 到达节点加入 MOVE 后，初次 Runtime [38117331886](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38117331886) 发现旧桥接测试只推进 Dialogue、没有处理 MOVE；修复提交 `9cd478d516ad4dfaaa749dbf5c017ae210ff17cb` 的 Runtime [38117421680](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38117421680) 42/42，Web Demo [38117421677](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38117421677) build/deploy 通过。当前继续给 Shared-01 增加五行山位置、Shared-03 增加鹰愁涧位置并扩展生产入口回归；本批精确 SHA CI 待验证。
 
 ### Batch C — Narrative execution services
 
