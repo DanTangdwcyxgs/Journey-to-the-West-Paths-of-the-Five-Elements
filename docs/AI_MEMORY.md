@@ -453,6 +453,14 @@ Wukong progression 修正后的完整 Runtime 已成功通过上一轮验证；�
 - 精确提交 `a552810c769bb2d0725a0edd4fade92a5386c2f0` 的 Godot Runtime run [38120481337](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38120481337) 通过，输出 `PASS res://combat/test_yellow_wind_cave_battle_roundtrip.gd` 与 `RUNTIME_SUITE_PASS tests=46`；同一 SHA 的 Web Demo run [38120481282](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38120481282) build/deploy 均成功。
 - 下一步：检查 BattleUI 对存档失败的弱事务边界，特别是 BountyRewardService 内部保存与 BattleUI 再保存的双写路径；随后转向侧线节奏与区域呈现。
 
+### Round 60 — 2026-10-11：Atomic Bounty Settlement / Retry
+- Audit after Yellow Wind cave roundtrip found `BountyRewardService.resolve_defeat()` mutated BountyManager status, inventory and battle journal, ignored the first `manager.save()` result, and returned success even on save failure; BattleUI then performed an unrelated second save. A late failure could leave in-memory and persisted bounty state divergent.
+- Added an optional post-combat inventory payload to `BountyRewardService.resolve_defeat()`. The service snapshots NarrativeState and BountyManager before mutation, applies the final battle inventory + bounty reward + defeated-target journal as one commit, and restores both snapshots if defeat validation, reward application or save fails. It now writes only once.
+- Updated BattleUI to delegate the post-combat inventory to that transaction, remove the duplicate save and unrelated Ridge-stage call, and expose a “重试结算” button after rollback. Pressing it re-enters the production settlement path without replaying combat; only a successful commit clears the handoff and marks the encounter resolved.
+- Added `combat/test_bounty_reward_service_atomicity.gd` to force save failure and verify exact NarrativeState and BountyManager rollback, then retry and assert rewards, inventory, defeated-target journal and fixed Shared chronology.
+- This batch’s exact SHA Runtime / Web Demo status waits for Actions; registered Runtime entries rise from 46 to 47.
+- Next: after pass, rerun the cave battle roundtrip unchanged and verify that the settlement retry button stays on the battle scene and no reward / defeated target can be duplicated.
+
 ## 4. Wukong Origin 当前状态
 
 Production Sequence：`WUK-01~15` 全部存在。

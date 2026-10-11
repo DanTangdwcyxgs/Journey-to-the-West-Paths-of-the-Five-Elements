@@ -32,6 +32,7 @@ var source_route_id := ""
 var bounty_manager := BountyManager.new()
 var encounter_resolved := false
 var battle_result_locked := false
+var bounty_settlement_pending := false
 var item_catalog: Dictionary = {}
 var battle_inventory := InventoryManager.new()
 var loadout := LoadoutManager.new()
@@ -293,16 +294,22 @@ func _on_combat_finished(winner:String) -> void:
 		elif encounter_type == "shared": _show_victory_summary("共享章节完成", str(definition.get("name", encounter_id)), applied.get("granted", []), next_step, continue_text)
 		else: _show_victory_summary("遭遇胜利", str(definition.get("name", encounter_id)), applied.get("granted", []), next_step, continue_text)
 	else:
-		narrative.state.set_inventory(battle_inventory.to_dict())
-		var applied := BountyRewardService.resolve_defeat(narrative,bounty_manager,encounter_id)
+		var applied := BountyRewardService.resolve_defeat(
+			narrative,
+			bounty_manager,
+			encounter_id,
+			battle_inventory.to_dict()
+		)
 		if applied.is_empty():
-			status_label.text = "战斗胜利，但悬赏状态写入失败。"
+			bounty_settlement_pending = true
+			battle_result_locked = false
+			status_label.text = "战斗胜利，但悬赏结算保存失败；奖励、击败记录和悬赏状态已回滚。点击“重试结算”。"
+			if return_button != null:
+				return_button.text = "重试结算"
+				return_button.disabled = false
 			return
+		bounty_settlement_pending = false
 		BountyEncounterState.clear()
-		if not source_stage_id.is_empty():
-			var ridge := YellowWindRidgeManager.new()
-			ridge.complete_stage(narrative, source_stage_id)
-		narrative.save()
 		encounter_resolved = true
 		_show_victory_summary("悬赏完成", str(applied.get("target_name",encounter_id)), applied.get("applied",{}).get("granted",[]), _get_victory_next_step(), _get_victory_button_text())
 
@@ -340,6 +347,9 @@ func _format_rewards(rewards:Array) -> String:
 	return "、".join(parts)
 
 func _return_from_battle() -> void:
+	if bounty_settlement_pending:
+		_on_combat_finished("allies")
+		return
 	if not encounter_resolved: BountyEncounterState.clear()
 	if encounter_type == "origin" or encounter_type == "shared": get_tree().change_scene_to_file("res://ui/journey.tscn")
 	elif encounter_type == "normal" and not source_stage_id.is_empty(): get_tree().change_scene_to_file("res://ui/yellow_wind_cave.tscn")
