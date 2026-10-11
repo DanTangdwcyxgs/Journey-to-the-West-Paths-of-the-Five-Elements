@@ -13,11 +13,21 @@ static func run_all() -> Dictionary:
 		"SHARED-09-FULL-PILGRIMAGE-SEQUENCE",
 		"TANG-01-SEQUENCE",
 	]
+	var catalog_errors := EventSequenceManager.get_load_errors()
+	assert(catalog_errors.is_empty(), "production sequence catalogs must load without rejected entries: %s" % str(catalog_errors))
+
+	var all_sequence_ids := EventSequenceManager.get_all_ids()
+	assert(all_sequence_ids.size() >= sequence_ids.size(), "the complete production catalog should contain all critical sequence IDs")
 	for sequence_id in sequence_ids:
+		assert(sequence_id in all_sequence_ids, "critical production sequence should load: %s" % sequence_id)
+
+	var validated_count := 0
+	for sequence_id in all_sequence_ids:
 		var definition := EventSequenceManager.get_definition(sequence_id)
-		assert(definition != null, sequence_id)
+		assert(definition != null, "%s should be present in the runtime catalog" % sequence_id)
 		var validation := EventSequenceValidator.validate(definition)
 		assert(validation.get("valid", false), "%s -> %s" % [sequence_id, str(validation)])
+		validated_count += 1
 
 	var invalid := EventSequenceDefinition.new({
 		"id": "TEST-EVENT-SEQUENCE-INVALID-REF",
@@ -89,7 +99,8 @@ static func run_all() -> Dictionary:
 
 	return {
 		"passed": true,
-		"production_sequences_validated": sequence_ids.size(),
+		"production_sequences_validated": validated_count,
+		"catalog_load_errors_checked": true,
 		"invalid_sequence_rejected": true,
 		"chapter_cross_reference_rejected": true,
 		"namespace_cross_reference_rejected": true,

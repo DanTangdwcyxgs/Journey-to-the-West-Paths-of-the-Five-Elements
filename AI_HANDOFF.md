@@ -262,7 +262,7 @@ Runner 输出的 `battle` 只生成 `EncounterHandoff` 数据，不直接启动 
 最高优先级：
 
 1. 视觉垂直切片仍是产品目标，但角色最终 PNG/WebP 暂受图像生成额度限制；不把概念展示图当正式资源。Main Menu → WUK-02 real battle → BattleResolutionService → Journey resume → END / Save 真实 SceneTree smoke 已通过，Godot Runtime 35/35；Web Demo build + deploy 也已通过。修复包含战斗恢复不重复推进与 END 后 active / pending resume 文件清理。当前继续推进其他框架切片，额度恢复后再做角色资产垂直切片。
-2. 增强 Main Menu → Journey → EventSequence → Battle / END → Save 的 SceneTree 入口和恢复 smoke coverage。
+2. 继续将完整 SceneTree smoke 扩展到 Shared 招募战，同时验证失败恢复与 rollback / retry；Origin 主菜单到 battle / resume / END / Save 路径已覆盖。
 3. 五条 Origin Route 的 EventSequence 迁移、统一质量门和 Origin → Shared handoff 已有实现；后续发现新 cross-reference / route-isolation 缺口时按具体回归补强。
 4. 非战斗 reward / move / wait 的副作用继续留在 RewardService / WorldActionService，不得移入 EventRunner。
 5. 逐步清理 BattleUI 旧 origin/shared 兼容结算职责与 BountyEncounterState，但不得破坏现有 Handoff + Resolution 兼容链。
@@ -294,14 +294,12 @@ Runner 输出的 `battle` 只生成 `EncounterHandoff` 数据，不直接启动 
 
 ### Sequence Content Quality Gate
 
-当前 `EventSequenceDefinition.validate()` 已检查结构和图连接，但还没有完全检查：
+- `EventSequenceDefinition.validate()` 检查结构：节点 ID、节点类型、起点与图连接。
+- `EventSequenceValidator.validate()` 检查跨内容引用：namespace 仅允许 ORIGIN / SHARED；sequence chapter 必须存在于对应的 Origin Route / Shared Journey 内容；choice event 必须存在于匹配的事件目录；battle encounter 必须存在；battle 的 source chapter 必须与 sequence chapter 一致；Shared encounter 必须匹配章节的 canonical encounter；Origin battle 的 route 与 encounter source 必须匹配所属路线。
+- `EventSequenceManager` 会拒绝无效序列，并通过 `get_load_errors()` 暴露被拒绝的项目与重复 ID。
+- 本批 Runtime regression 已扩展为检查整个 production catalog 的加载错误，并逐个调用 cross-reference validator；仍须等待本批精确提交的 Actions 结果后再宣告验证通过。
 
-- choice node 对应的 event 是否存在；
-- battle node 对应的 encounter 是否存在；
-- source_chapter_id 是否与 chapter data 一致；
-- namespace 是否与章节类型一致。
-
-后续应把这些升级为内容 CI 的 cross-reference validation，而不是靠 UI 运行时发现。
+剩余缺口：validator 尚未显式交叉检查章节上的 `chapter_type` / legacy `is_origin` / `is_shared` 标记是否与 sequence namespace 一致。当前先依靠章节是否存在于对应目录来约束 namespace，后续可添加一个独立 schema-consistency regression，避免把此缺口误报成已完成。
 
 ---
 
@@ -324,11 +322,11 @@ Runner 输出的 `battle` 只生成 `EncounterHandoff` 数据，不直接启动 
 
 ---
 
-## 11. 下一位 Agent 的推荐工作顺序（2026-10-10 刷新）
+## 11. 下一位 Agent 的推荐工作顺序（2026-10-11 刷新）
 
 ### Batch A — Visual Vertical Slice
 
-2026-10-11 视觉分层、Journey END、CJK 字体回退、节点树释放、有限 WAV 音效与 Main Menu → Journey → WUK-01 入口 smoke 已通过 Runtime/Web Demo；Runtime suite 34 tests。针对完整 Battle → resume → END/Save 新增 Main Menu → WUK-02 SceneTree 回归，等待本提交 CI 验证。角色正式 PNG/WebP 仍受图像生成额度限制，暂不把概念图作为正式素材。
+2026-10-11 视觉分层、Journey END、CJK 字体回退、节点树释放、有限 WAV 音效与 Main Menu → Journey → WUK-01 入口 smoke 已通过 Runtime/Web Demo；Runtime suite 35 tests。针对完整 Battle → resume → END/Save 新增 Main Menu → WUK-02 SceneTree 回归，等待本提交 CI 验证。角色正式 PNG/WebP 仍受图像生成额度限制，暂不把概念图作为正式素材。
 
 ### Batch B — Journey Presentation & Runtime
 

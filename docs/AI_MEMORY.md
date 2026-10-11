@@ -309,6 +309,14 @@ Wukong progression 修正后的完整 Runtime 已成功通过上一轮验证；�
 - Runtime run 38104663818 passed 35/35 for implementation commit ea24dd2; follow-up branch head Runtime run 38104713527 passed 35/35; Web Demo run 38104713524 passed build and deploy. Continue framework regressions without committing concept sheets as production assets.
 
 
+### Round 41 — 2026-10-11：Full EventSequence Catalog Quality Gate
+- 复查发现 `EventSequenceValidator` 已能检查事件、遭遇、章节和路线跨引用，但对应测试只列举少量关键 sequence，未直接要求生产目录零加载/验证错误。
+- 扩展 `combat/test_event_sequence_validator.gd`：检查两个 production catalogs 的 `get_load_errors()` 必须为空，确认关键序列全部已加载，并对 `EventSequenceManager.get_all_ids()` 返回的每条序列执行 cross-reference validation。
+- 测试结果字段报告实际验证的 production sequence 数量，避免用硬编码样本数代表覆盖面。
+- 同步修正文档中已过时的“跨引用验证尚未实现”描述，并明确仍待补的是 chapter_type / legacy 分类标记与 namespace 的显式一致性校验。
+- 基线：main commit `173bbb2f8be211ace60f635830b0c0c7ad7a4c5e` 的 Godot Runtime run `38104853441` 通过（35 个测试入口）。本次实现提交的精确 SHA Runtime 验证待 Actions 完成后登记。
+- 下一步：通过后继续对 failure recovery / battle rollback-retry 增加独立回归，再扩展 Shared 招募战真实场景链。
+
 ## 4. Wukong Origin 当前状态
 
 Production Sequence：`WUK-01~15` 全部存在。
