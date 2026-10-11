@@ -89,6 +89,19 @@ func _run_smoke() -> void:
 			if journey.event_session != null:
 				_record(journey.event_session.sequence.get_id() == "SHARED-01-FIVE-ELEMENTS-SEQUENCE", "the first shared chapter should use its production EventSequence")
 				_record(str(journey.event_session.get_action().get("kind", "")) == EventRunner.DIALOGUE, "Shared-01 should start with the opening dialogue")
+				journey.call("_reveal_dialogue_immediately")
+				journey.call("_advance_primary")
+				_record(str(journey.event_session.get_action().get("kind", "")) == EventRunner.MOVE, "Shared-01 should expose the Five Elements Mountain arrival MOVE")
+				journey.call("_advance_primary")
+				for _frame in range(60):
+					await process_frame
+					if not journey.event_transition_pending:
+						break
+				_record(journey.narrative.state.get_world_state().get("current_location", "") == "FIVE_ELEMENTS_MOUNTAIN", "production Journey should commit the starting WorldMap location")
+				var opening_move_save := NarrativeManager.new()
+				_record(opening_move_save.load(), "Shared-01 arrival should leave a loadable save")
+				if opening_move_save.state != null:
+					_record(opening_move_save.state.get_world_state().get("current_location", "") == "FIVE_ELEMENTS_MOUNTAIN", "Shared-01 starting location should persist after reload")
 
 	var final_scene: Node = current_scene
 	current_scene = null

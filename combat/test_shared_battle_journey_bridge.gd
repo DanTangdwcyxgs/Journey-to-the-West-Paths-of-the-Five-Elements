@@ -9,6 +9,7 @@ const CASES := [
 		"choice_id": "SAVE_THE_DRAGON",
 		"expected_recruit": "LONGMA",
 		"next_chapter": "SHARED-04-EARLY-DEMON-TALES",
+		"expected_world_location": "EAGLE_SORROW",
 	},
 	{
 		"chapter_id": "SHARED-05-GAOJIAZHUANG",

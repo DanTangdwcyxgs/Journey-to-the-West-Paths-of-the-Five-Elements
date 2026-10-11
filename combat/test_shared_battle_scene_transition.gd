@@ -4,7 +4,7 @@ extends SceneTree
 ## Every user:// file touched by this test is backed up and restored.
 
 const CASES := [
-	{"chapter_id":"SHARED-03-EAGLE-SORROW","encounter_id":"SHARED_EAGLE_SORROW","choice_event_id":"LONGMA_ENCOUNTER","choice_id":"SAVE_THE_DRAGON","expected_recruit":"LONGMA","next_chapter":"SHARED-04-EARLY-DEMON-TALES"},
+	{"chapter_id":"SHARED-03-EAGLE-SORROW","encounter_id":"SHARED_EAGLE_SORROW","choice_event_id":"LONGMA_ENCOUNTER","choice_id":"SAVE_THE_DRAGON","expected_recruit":"LONGMA","next_chapter":"SHARED-04-EARLY-DEMON-TALES","expected_world_location":"EAGLE_SORROW"},
 	{"chapter_id":"SHARED-05-GAOJIAZHUANG","encounter_id":"SHARED_GAOJIAZHUANG","choice_event_id":"BAJIE_ENCOUNTER","choice_id":"OFFER_REDEMPTION","expected_recruit":"BAJIE","next_chapter":"SHARED-06-FOUR-PERSON-JOURNEY","expected_world_location":"GAOJIAZHUANG"},
 	{"chapter_id":"SHARED-07-FLOWING-SANDS","encounter_id":"SHARED_FLOWING_SANDS","choice_event_id":"WUJING_ENCOUNTER","choice_id":"ACCEPT_WUJING","expected_recruit":"WUJING","next_chapter":"SHARED-08-PARTY-FULL","expected_world_location":"FLOWING_SANDS"},
 ]

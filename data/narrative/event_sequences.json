@@ -12,6 +12,13 @@
           "type": "dialogue",
           "speaker": "玄奘",
           "text": "五行山下，我终于见到了被镇压的孙悟空。若这条西行路真要开始，总得有人先愿意相信他。",
+          "next": "move_to_five_elements_mountain"
+        },
+        {
+          "id": "move_to_five_elements_mountain",
+          "type": "move",
+          "map_id": "WORLD_MAP",
+          "marker_id": "FIVE_ELEMENTS_MOUNTAIN",
           "next": "choice"
         },
         {
@@ -76,6 +83,13 @@
           "type": "dialogue",
           "speaker": "玄奘",
           "text": "鹰愁涧就在前面。此处山水凶险，诸位且不可大意。",
+          "next": "move_to_eagle_sorrow"
+        },
+        {
+          "id": "move_to_eagle_sorrow",
+          "type": "move",
+          "map_id": "WORLD_MAP",
+          "marker_id": "EAGLE_SORROW",
           "next": "encounter_choice"
         },
         {

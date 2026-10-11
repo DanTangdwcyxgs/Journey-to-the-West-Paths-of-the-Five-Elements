@@ -116,7 +116,7 @@ static func run_all() -> Dictionary:
 	assert(completed_sequences == SHARED_SEQUENCE_IDS.size())
 	assert(choice_nodes == 6)
 	assert(battle_handoffs == 3)
-	assert(world_moves == 3)
+	assert(world_moves == 5)
 	return {
 		"passed": true,
 		"executed_sequences": completed_sequences,

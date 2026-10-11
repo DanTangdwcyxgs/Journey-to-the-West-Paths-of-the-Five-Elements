@@ -28,7 +28,11 @@ func _initialize() -> void:
 	_assert(instance.event_session.get_action().get("kind", "") == EventRunner.DIALOGUE, "shared opening should start with dialogue")
 
 	instance.call("_advance_primary")
-	_assert(instance.event_session.get_action().get("kind", "") == EventRunner.CHOICE, "shared opening should reach choice")
+	_assert(instance.event_session.get_action().get("kind", "") == EventRunner.MOVE, "shared opening should travel to Five Elements Mountain before choice")
+	var arrival_action: Dictionary = instance.event_session.complete_action()
+	_assert(manager.state.get_world_state().get("current_location", "") == "FIVE_ELEMENTS_MOUNTAIN", "Shared-01 story MOVE should set Five Elements Mountain as current location")
+	_assert("FIVE_ELEMENTS_MOUNTAIN" in manager.state.get_world_state().get("visited_nodes", []), "Shared-01 story MOVE should record Five Elements Mountain as visited")
+	_assert(arrival_action.get("kind", "") == EventRunner.CHOICE, "Shared-01 should reach choice after committing its arrival MOVE")
 
 	instance.call("_submit_event_choice", "TRUST_WUKONG")
 	_assert(manager.state.get_shared_choice("SHARED-01-FIVE-ELEMENTS") == "TRUST_WUKONG", "shared choice should persist")
