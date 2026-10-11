@@ -329,7 +329,7 @@ Runner 输出的 `battle` 只生成 `EncounterHandoff` 数据，不直接启动 
 
 ### Batch B — Journey Presentation & Runtime
 
-MainMenu / Origin battle resume、Origin final END → Shared-01 + rollback、EventSequence content/namespace quality gates、Shared-03/05/07 real scene smoke、Memory read-only playback + recruitment integration、Shared-04 MOVE → WorldMap + save-failure retry、WorldMap rumor → optional bounty → return 均已通过精确 SHA Runtime/Web Demo。最新 optional branch commit `d387b16ab7af58fb4e841a257c6c053e430056f4` 的 Runtime [38117052682](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38117052682) 42/42，Web Demo [38117052652](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38117052652) build/deploy 通过。当前把 Shared-05 / Shared-07 的主线到达节点连到地图位置，并扩展 Shared graph 与 production SceneTree 回归；新批次 CI 待验证。
+MainMenu / Origin battle resume、Origin final END → Shared-01 + rollback、EventSequence content/namespace quality gates、Shared-03/05/07 real scene smoke、Memory read-only playback + recruitment integration、Shared-04 MOVE → WorldMap + save-failure retry、WorldMap rumor → optional bounty → return 均已通过精确 SHA Runtime/Web Demo。最新 optional branch commit `d387b16ab7af58fb4e841a257c6c053e430056f4` 的 Runtime [38117052682](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38117052682) 42/42，Web Demo [38117052652](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38117052652) build/deploy 通过。Shared-05 / Shared-07 主线到达节点已加入地图位置更新。首个 Runtime 失败揭示旧 `test_shared_battle_journey_bridge.gd` 仍假设对白后直接到选择；现在修复该桥接回归，逐个完成 MOVE/WAIT 并验证位置与保存。本批修复 SHA 的 CI 待重新验证。
 
 ### Batch C — Narrative execution services
 

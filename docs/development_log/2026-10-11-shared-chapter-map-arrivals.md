@@ -40,7 +40,7 @@ The story owns fixed chapter chronology while WorldMap owns optional connections
 - Runtime suite remains at 42 registered entries because the changes extend two existing tests.
 
 ## Godot Runtime status
-**PENDING** — only record green after Runtime and Web Demo pass on the exact implementation SHA.
+**PENDING** — the first exact-head Runtime run failed in the legacy `combat/test_shared_battle_journey_bridge.gd`: it auto-advanced only Dialogue and expected CHOICE immediately, so the new Shared-05 MOVE made the old test stop before the choice. Both `test_shared_event_sequences.gd` and the production `test_shared_battle_scene_transition.gd` passed on that SHA. The bridge regression now explicitly handles Dialogue / MOVE / WAIT, verifies the canonical map marker and save before choosing, and checks that victory preserves the location. Await the follow-up exact SHA Runtime and Web Demo.
 
 ## Known issues
 - Story MOVE is authoritative and does not call WorldMapManager.can_visit(); optional free travel still uses the latter's connection/timeline/milestone guards.

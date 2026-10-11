@@ -16,6 +16,7 @@ const CASES := [
 		"choice_id": "OFFER_REDEMPTION",
 		"expected_recruit": "BAJIE",
 		"next_chapter": "SHARED-06-FOUR-PERSON-JOURNEY",
+		"expected_world_location": "GAOJIAZHUANG",
 	},
 	{
 		"chapter_id": "SHARED-07-FLOWING-SANDS",
@@ -23,6 +24,7 @@ const CASES := [
 		"choice_id": "ACCEPT_WUJING",
 		"expected_recruit": "WUJING",
 		"next_chapter": "SHARED-08-PARTY-FULL",
+		"expected_world_location": "FLOWING_SANDS",
 	},
 ]
 
@@ -76,8 +78,25 @@ func _run_bridge(narrative: NarrativeManager, spec: Dictionary) -> bool:
 	var sequence := EventSequenceManager.get_definition("%s-SEQUENCE" % chapter_id)
 	var session := NarrativeEventSession.new(sequence, narrative, "SHARED")
 	var action := session.start()
-	while str(action.get("kind", "")) == EventRunner.DIALOGUE:
-		action = session.complete_action()
+	var action_guard := 0
+	while str(action.get("kind", "")) != EventRunner.CHOICE and action_guard < 16:
+		action_guard += 1
+		var action_kind := str(action.get("kind", ""))
+		match action_kind:
+			EventRunner.DIALOGUE, EventRunner.WAIT, EventRunner.MOVE:
+				var move_marker := str(action.get("marker_id", "")) if action_kind == EventRunner.MOVE else ""
+				action = session.complete_action()
+				if not move_marker.is_empty():
+					var world_state: Dictionary = narrative.state.get_world_state()
+					_assert(str(world_state.get("current_location", "")) == move_marker, "%s MOVE should set current location to %s before choice" % [chapter_id, move_marker])
+					_assert(move_marker in world_state.get("visited_nodes", []), "%s MOVE should record %s as visited" % [chapter_id, move_marker])
+					_assert(narrative.save(), "%s story arrival should save before recruitment choice" % chapter_id)
+					var expected_location := str(spec.get("expected_world_location", ""))
+					if not expected_location.is_empty():
+						_assert(move_marker == expected_location, "%s story arrival should match its canonical map location" % chapter_id)
+			_:
+				_assert(false, "%s should reach choice through dialogue/move/wait, got %s" % [chapter_id, action_kind])
+	_assert(action_guard < 16, "%s event sequence should reach its choice within the action guard" % chapter_id)
 	_assert(str(action.get("kind", "")) == EventRunner.CHOICE, "%s sequence should reach its choice" % chapter_id)
 	_assert(str(action.get("event_id", "")) == choice_event, "%s choice node should use canonical event id" % chapter_id)
 	action = session.submit_choice(choice_id)
@@ -132,6 +151,9 @@ func _run_bridge(narrative: NarrativeManager, spec: Dictionary) -> bool:
 	_assert("" != str(resumed.get("text", "")), "%s after-battle dialogue should contain story text" % chapter_id)
 	_assert(narrative.state.current_shared_chapter == str(spec["next_chapter"]), "%s BattleResolutionService should advance the shared chapter" % chapter_id)
 	_assert(str(spec["expected_recruit"]) in narrative.state.recruited_characters, "%s should recruit expected companion" % chapter_id)
+	var expected_world_location := str(spec.get("expected_world_location", ""))
+	if not expected_world_location.is_empty():
+		_assert(str(narrative.state.get_world_state().get("current_location", "")) == expected_world_location, "%s battle victory should preserve the story arrival location" % chapter_id)
 
 	journey.queue_free()
 	# This regression ends before production END, so discard its temporary resume data.

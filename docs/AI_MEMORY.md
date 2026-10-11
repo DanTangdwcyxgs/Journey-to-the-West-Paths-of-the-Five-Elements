@@ -397,7 +397,7 @@ Wukong progression 修正后的完整 Runtime 已成功通过上一轮验证；�
 - 复核 WorldMap 主线接入发现 Shared-04 会把当前位置落到 BLACK_WIND_NORTH_PATH，但 Shared-05 的高老庄剧情、Shared-07 的流沙河剧情只有对白→选择→战斗，地图位置不随主线章节变化；Story MOVE 用 canonical marker 更新位置，和自由 travel 的连接/时间门槛保持分工。
 - 为 `SHARED-05-GAOJIAZHUANG-SEQUENCE` 增加 `MOVE(map_id=WORLD_MAP, marker_id=GAOJIAZHUANG)`，并在 `SHARED-07-FLOWING-SANDS-SEQUENCE` 增加 `MOVE(map_id=WORLD_MAP, marker_id=FLOWING_SANDS)`，然后才显示各自 recruitment choice。
 - 强化 `combat/test_shared_event_sequences.gd`：对每条 MOVE 读取 canonical marker，验证 runner 完成节点后 current_location 和 visited_nodes 都匹配该 marker，MOVE 总数由 1 增至 3。
-- 扩展既有真实 Shared battle SceneTree smoke：Shared-05 和 Shared-07 进入战斗前检查地图位置已经提交、保存重载后仍正确，并且战斗结算不能把当前位置倒退。
+- 扩展既有真实 Shared battle SceneTree smoke：Shared-05 和 Shared-07 进入战斗前检查地图位置已经提交、保存重载后仍正确，并且战斗结算不能把当前位置倒退。初次 Runtime run 暴露旧 `test_shared_battle_journey_bridge.gd` 只会推进 Dialogue、因此跳不过 MOVE；新测试修复中同样执行 MOVE / WAIT，断言目标 marker、visited_nodes 与保存，并在战斗后检查位置不倒退。
 - WorldMap rumor → optional bounty → return 已在 `d387b16ab7af58fb4e841a257c6c053e430056f4` 通过 Runtime 42/42 与 Web Demo build/deploy；本批 Shared arrival locations 的精确 SHA CI 待 Actions 验证。
 - 下一步：通过后检查自由 travel/传闻分支结束后回到主线时的章节状态和区域 gating，再评估世界地图 UI 与剧情演出之间的体验缝隙。
 
