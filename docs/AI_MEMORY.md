@@ -317,6 +317,13 @@ Wukong progression 修正后的完整 Runtime 已成功通过上一轮验证；�
 - 基线：main commit `173bbb2f8be211ace60f635830b0c0c7ad7a4c5e` 的 Godot Runtime run `38104853441` 通过（35 个测试入口）。实现提交 `0e3998318ea771cee07a3343bc82986e04c3a1e8` 的 Godot Runtime run `38105696943` 通过，日志确认 `PASS res://combat/test_event_sequence_validator.gd` 与 `RUNTIME_SUITE_PASS tests=35`。
 - 下一步：通过后继续对 failure recovery / battle rollback-retry 增加独立回归，再扩展 Shared 招募战真实场景链。
 
+### Round 42 — 2026-10-11：BattleResolutionService Save-Failure Rollback Regression
+- 在 `combat/test_battle_resolution_service.gd` 增加只用于测试的 `SaveFailingNarrativeManager`，其 save() 明确返回失败并记录是否触达提交边界。
+- 使用有效 Shared-03 战斗上下文执行胜利结算，验证服务确实执行到 save 阶段；模拟存档失败时结算必须返回空结果，并将奖励、招募、战斗日志和章节推进的全部 NarrativeState 变化恢复到结算前快照。
+- 这项回归不模拟战斗回合，也不更改生产实现；它锁定现有 BattleResolutionService 的原子事务约定。
+- 本批 Godot Runtime / Web Demo 的精确提交验证待 Actions 运行后登记。
+- 下一步：修复任何被回归暴露的真实问题；通过后扩展 Shared 招募战的真实 SceneTree 场景链。
+
 ## 4. Wukong Origin 当前状态
 
 Production Sequence：`WUK-01~15` 全部存在。

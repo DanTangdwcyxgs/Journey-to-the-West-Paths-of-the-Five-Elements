@@ -10,6 +10,7 @@
 
 ## 最新记录
 
+- [`2026-10-11 — Battle Resolution Save-Failure Rollback`](2026-10-11-battle-resolution-save-failure-rollback.md)
 - [`2026-10-11 — Full EventSequence Catalog Quality Gate`](2026-10-11-event-sequence-catalog-quality-gate.md)
 - [`2026-10-11 — Battle Resume Terminal Handoff Cleanup`](2026-10-11-battle-resume-terminal-cleanup.md)
 - [`2026-10-11 — Main Menu → Origin Battle → Resume Smoke`](2026-10-11-main-menu-battle-resume-smoke.md)

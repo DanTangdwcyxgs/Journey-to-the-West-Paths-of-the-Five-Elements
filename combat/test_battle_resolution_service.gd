@@ -1,5 +1,13 @@
 extends SceneTree
 
+class SaveFailingNarrativeManager:
+	extends NarrativeManager
+	var save_attempted := false
+
+	func save(path: String = NarrativeSave.SAVE_PATH) -> bool:
+		save_attempted = true
+		return false
+
 ## Regression coverage for the unified narrative battle commit boundary.
 func _initialize() -> void:
 	var encounter_manager := EncounterManager.new()
@@ -19,6 +27,18 @@ func _initialize() -> void:
 	)
 	_assert(rejected.is_empty(), "invalid shared source must be rejected before mutation")
 	_assert(narrative.serialize() == before, "invalid source must not mutate narrative state")
+
+	# Force a persistence failure after the battle mutations have been applied.
+	var failing_save_manager := SaveFailingNarrativeManager.new()
+	_assert(failing_save_manager.restore_snapshot(before), "save-failure fixture should restore the pre-battle snapshot")
+	var before_failed_save := failing_save_manager.serialize().duplicate(true)
+	var failed_save_result := BattleResolutionService.resolve_narrative_victory(
+		failing_save_manager, "shared", "SHARED_EAGLE_SORROW", "", "SHARED-03-EAGLE-SORROW", "SHARED_JOURNEY",
+		"鹰愁涧·白龙阻路", ["COIN_LOW"], [], encounter_manager
+	)
+	_assert(failing_save_manager.save_attempted, "rollback fixture must reach the persistence boundary")
+	_assert(failed_save_result.is_empty(), "resolution should fail when its save cannot be committed")
+	_assert(failing_save_manager.serialize() == before_failed_save, "save failure must roll back rewards, recruitment, journal and chapter progression")
 
 	var resolved := BattleResolutionService.resolve_narrative_victory(
 		narrative, "shared", "SHARED_EAGLE_SORROW", "", "SHARED-03-EAGLE-SORROW", "SHARED_JOURNEY",
