@@ -291,6 +291,14 @@ Wukong progression 修正后的完整 Runtime 已成功通过上一轮验证；�
 - 更新 SoundManager 与 ObjectDB 诊断日志，明确记录第一次释放引用方案失败，及后续改为按需 PCM WAV/队列播放的有效修复，避免留下过时结论。
 - 下一步：继续补齐更完整的 SceneTree battle resume / END / Save 路径；图像生成额度恢复后再进入最终角色 PNG/WebP 资产批次。
 
+
+### Round 39 — 2026-10-11：Main Menu → Origin Battle → EventSession Resume Smoke
+- 新增 SceneTree 入口回归，从生产 MainMenu 选择悟空开始新游戏，真实执行 WUK-01 END 并推进到 WUK-02。
+- 让生产 OriginSequenceJourneyScreen 触发 WUK-02 battle action，检查 WUKONG_ORIGIN_WATER_CAVE handoff、source chapter 与序列快照，进入真实 battle_ui.tscn（NarrativeBattleUI）。
+- 测试调用真实战斗胜利收口，验证 BattleResolutionService 后的战后摘要、返回旅途按钮、实际场景切换、Journey 自动恢复 WUK-02 的 after-battle Dialogue、战斗存档后章节指针 WUK-03，以及 END 后再次保存且不重复推进。
+- 测试对 narrative save / active encounter / pending resume 三个 user:// 文件备份并恢复，以防覆盖开发者存档。
+- 本测试新增至 runtime_suite；新提交 Godot Runtime 结果待确认。
+
 ---
 
 ## 4. Wukong Origin 当前状态

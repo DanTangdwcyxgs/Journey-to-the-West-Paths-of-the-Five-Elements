@@ -261,7 +261,7 @@ Runner 输出的 `battle` 只生成 `EncounterHandoff` 数据，不直接启动 
 
 最高优先级：
 
-1. 视觉垂直切片仍是产品目标，但角色最终 PNG/WebP 暂受图像生成额度限制；不把概念展示图当正式资源。Journey END、CJK 字体回退、节点树释放、Main Menu → Journey → WUK-01 入口 smoke 与音频生命周期都已通过 Runtime（34 tests）。已将常驻 AudioStreamGenerator 改为有限 PCM WAV 排队播放；verbose 追踪确认 ObjectDB / Canvas / TextServer 泄漏诊断消失，临时 verbose workflow 步骤已移除。下一步推进 Battle → EventSession resume → END / Save 的完整 SceneTree smoke，额度恢复后再做角色资产垂直切片。
+1. 视觉垂直切片仍是产品目标，但角色最终 PNG/WebP 暂受图像生成额度限制；不把概念展示图当正式资源。环境分层、Journey END、CJK 字体回退、节点树生命周期、音频播放清理和 Main Menu → Journey → WUK-01 smoke 已通过 Runtime（34 tests）。当前加测更完整的 Main Menu → WUK-02 real battle → BattleResolutionService → Journey EventSession resume → END / Save SceneTree 链路，新结果以 exact SHA CI 为准；额度恢复后再做角色资产垂直切片。
 2. 增强 Main Menu → Journey → EventSequence → Battle / END → Save 的 SceneTree 入口和恢复 smoke coverage。
 3. 五条 Origin Route 的 EventSequence 迁移、统一质量门和 Origin → Shared handoff 已有实现；后续发现新 cross-reference / route-isolation 缺口时按具体回归补强。
 4. 非战斗 reward / move / wait 的副作用继续留在 RewardService / WorldActionService，不得移入 EventRunner。
@@ -328,7 +328,7 @@ Runner 输出的 `battle` 只生成 `EncounterHandoff` 数据，不直接启动 
 
 ### Batch A — Visual Vertical Slice
 
-2026-10-11 视觉分层通过 Runtime/Web Demo；Journey END、CJK 字体回退、Main Menu → Journey → WUK-01 入口 smoke 与音频清理均已通过。Runtime suite 当前 34 tests；按需 WAV 音效替换常驻 AudioStreamGenerator 后，verbose 日志不再报告 ObjectDB instances leaked、AudioStreamGeneratorPlayback 或 Renderer/TextServer RIDs。正式角色 PNG/WebP 尚未生成，受图像额度限制，先继续框架 SceneTree battle-resume/END/Save 链路。
+2026-10-11 视觉分层、Journey END、CJK 字体回退、节点树释放、有限 WAV 音效与 Main Menu → Journey → WUK-01 入口 smoke 已通过 Runtime/Web Demo；Runtime suite 34 tests。针对完整 Battle → resume → END/Save 新增 Main Menu → WUK-02 SceneTree 回归，等待本提交 CI 验证。角色正式 PNG/WebP 仍受图像生成额度限制，暂不把概念图作为正式素材。
 
 ### Batch B — Journey Presentation & Runtime
 
