@@ -450,8 +450,8 @@ Wukong progression 修正后的完整 Runtime 已成功通过上一轮验证；�
 - 在 Round58 的入口 gate/阶段保存回滚通过后，继续覆盖洞内战斗完整场景返回链。
 - 新增 `combat/test_yellow_wind_cave_battle_roundtrip.gd`：备份/恢复存档和战斗交接文件，预置 canonical Shared-05、Longma 已招募、黄风洞 gate 已开启及洞口/祭坛已完成的存档；进入 production Cave 场景。
 - 通过真实 “迎击风沙妖兵” 按钮进入生产 BattleUI 并调用 production victory handler，验证 SANDSTORM_HALL 进度写入、返回洞穴后游标恢复到黄风妖王殿；随后通过真实 Boss 按钮进入 bounty BattleUI、胜利并返回洞穴，验证 defeated target、gate milestone 和 Shared timeline 保持、Boss 不可重复挑战、出口标记安全，最后经生产返回按钮回到黄风岭。
-- 本批精确 SHA Runtime/Web Demo 状态待 Actions。Runtime suite 从 45 增至 46 项。
-- 下一步：若测试暴露 BattleUI 对存档失败的弱事务边界，修正战斗奖励/进度单次提交；随后转向侧线节奏与区域呈现。
+- 精确提交 `a552810c769bb2d0725a0edd4fade92a5386c2f0` 的 Godot Runtime run [38120481337](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38120481337) 通过，输出 `PASS res://combat/test_yellow_wind_cave_battle_roundtrip.gd` 与 `RUNTIME_SUITE_PASS tests=46`；同一 SHA 的 Web Demo run [38120481282](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38120481282) build/deploy 均成功。
+- 下一步：检查 BattleUI 对存档失败的弱事务边界，特别是 BountyRewardService 内部保存与 BattleUI 再保存的双写路径；随后转向侧线节奏与区域呈现。
 
 ## 4. Wukong Origin 当前状态
 

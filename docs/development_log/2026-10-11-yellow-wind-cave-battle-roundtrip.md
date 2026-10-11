@@ -42,14 +42,14 @@ A cave is not playable if normal encounters return to the wrong room or a boss v
 - Confirms Shared chapter, timeline, completed chapter history and recruited roster remain fixed throughout.
 
 ## Godot Runtime status
-**PENDING** — validate this exact implementation SHA with Godot Runtime and Web Demo before marking the scene roundtrip green.
+**PASS** — exact implementation commit `a552810c769bb2d0725a0edd4fade92a5386c2f0`. Godot Runtime run [38120481337](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38120481337) passed with `PASS res://combat/test_yellow_wind_cave_battle_roundtrip.gd` and `RUNTIME_SUITE_PASS tests=46`. Web Demo run [38120481282](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38120481282) completed successfully; both build and deploy jobs passed.
 
 ## Known issues
 - Battle victory is shortcut through the production success callback rather than manual combat input, as in the established scene smoke conventions; this validates integration and progression, not combat balance.
 - The BountyRewardService currently owns part of bounty reward application/save; if this smoke or follow-up forced-failure tests expose a split save boundary, that should be corrected before adding more dungeon mechanics.
 
 ## Next step
-After CI passes, add a forced save-failure regression for bounty settlement if the reward path is not atomic, then review pacing/visual feedback of the Yellow Wind side route.
+Review the bounty settlement save boundary. `BountyRewardService.resolve_defeat()` currently saves internally and BattleUI saves again; add a rollback regression or consolidate the write so reward, defeated-target journal and route aftermath cannot partially commit. Then review the pacing/visual feedback of the Yellow Wind side route.
 
 ## Handoff point
 Yellow Wind Cave battle roundtrip. Do not alter the canonical Shared chapter or global timeline from optional exploration battles.
