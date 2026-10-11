@@ -10,6 +10,7 @@
 
 ## 最新记录
 
+- [`2026-10-11 — SoundManager Audio Playback Cleanup`](2026-10-11-sound-manager-audio-playback-cleanup.md)
 - [`2026-10-11 — ObjectDB Teardown Detail Capture`](2026-10-11-runtime-objectdb-diagnostics.md)
 - [`2026-10-11 — Main Menu → Journey SceneTree Smoke`](2026-10-11-main-menu-journey-entry-smoke.md)
 - [`2026-10-11 — Runtime Test Node Teardown`](2026-10-11-runtime-test-node-teardown.md)

@@ -23,6 +23,33 @@ func _ready() -> void:
 	_playback = _player.get_stream_playback() as AudioStreamGeneratorPlayback
 	set_process(true)
 
+func _exit_tree() -> void:
+	_release_audio_resources()
+
+## Stop the active stream and release references to the generated playback.
+## Safe to call repeatedly; the autoload uses it during shutdown and regression tests
+## exercise it directly in a headless SceneTree.
+func _release_audio_resources() -> void:
+	set_process(false)
+	_connected_buttons.clear()
+	_connected_scene = null
+
+	var player_to_free: AudioStreamPlayer = _player
+	if is_instance_valid(player_to_free):
+		player_to_free.stop()
+		player_to_free.stream = null
+
+	# AudioStreamGeneratorPlayback is ObjectDB-managed; keeping the reference alive
+	# after stopping the player leaves it visible as a leaked instance at shutdown.
+	_playback = null
+	_stream = null
+	_player = null
+
+	if is_instance_valid(player_to_free):
+		if player_to_free.get_parent() == self:
+			remove_child(player_to_free)
+		player_to_free.free()
+
 func _process(_delta: float) -> void:
 	var scene := get_tree().current_scene
 	if scene == null or scene == _connected_scene:

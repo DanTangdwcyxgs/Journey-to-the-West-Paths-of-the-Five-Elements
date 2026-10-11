@@ -271,8 +271,16 @@ Wukong progression 修正后的完整 Runtime 已成功通过上一轮验证；�
 ### Round 36 — 2026-10-11：ObjectDB Teardown Detail Capture
 - 已确认生产入口 smoke 提交 `9cf78a11f923ff1834a6f796c3b4b3dfc4cfe0bc` 的 Godot Runtime run `38103454949` 成功（33/33），Web Demo run `38103454926` 成功。
 - 为排查残留的 `ObjectDB instances leaked at exit`，在 `.github/workflows/godot-runtime.yml` 原 33-test suite 通过后增加一条临时 verbose 重跑步骤；输出完整日志到临时文件，只筛选泄漏实例、ObjectDB 和 resources-in-use 相关上下文，不在普通步骤刷屏。
-- 该调试步骤仅在之前 Runtime suite 成功后执行，且重复执行同一存档安全 SceneTree smoke。新提交 CI 结果尚待验证。
-- 定位后必须移除或收敛调试重跑步骤，避免不必要的长期 CI 时间成本。
+- Runtime run `38103543718` 在 commit `c62bfdef1e268c8ad726c6287e59490ce8be26d2` 上通过 33 项测试；verbose diagnostics 确认唯一残留为 `AudioStreamGeneratorPlayback:9223372175082259984`。
+- 随后针对 `GameSfx` 的 `AudioStreamGeneratorPlayback` 加入显式停止、断开并释放 AudioStreamPlayer 与 playback 引用的逻辑，且增加生命周期回归。此具体修复提交的 Runtime 结果待验证；修复通过后应删除临时 verbose workflow 重跑步骤。
+
+
+### Round 37 — 2026-10-11：AudioStreamGeneratorPlayback Lifecycle
+- 定向 verbose Runtime 日志确认剩余 ObjectDB 对象为 AudioStreamGeneratorPlayback，属于 ui/sound_manager.gd 中生成音效使用的 AudioStreamGenerator 播放对象，而非叙事或 UI 节点。
+- SoundManager 增加幂等 _release_audio_resources() 并在 _exit_tree() 调用：停止播放器、断开 stream、释放 playback/stream/播放器引用，并显式移除和释放生成的 AudioStreamPlayer 节点。
+- 新增 combat/test_sound_manager_lifecycle.gd，验证主动释放和 autoload GameSfx 实例的资源/节点引用；加入 tests/runtime_suite.gd，suite 扩展到 34 项。
+- 调试用 verbose Runtime 重跑暂时保留，用于确认 ObjectDB 泄漏是否消失；必须在修复验证后移除。
+- 本轮新提交 Runtime 与 Web Demo 状态待以精确 SHA 对应 Actions 核实。
 
 ---
 

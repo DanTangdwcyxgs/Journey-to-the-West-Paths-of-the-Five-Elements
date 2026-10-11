@@ -29,15 +29,15 @@ The standard runtime log only gives an aggregate ObjectDB warning. The previous 
 - `AI_HANDOFF.md`
 
 ## Tests
-- The previous implementation head's normal Runtime suite passed 33/33.
-- This commit's regular and verbose Runtime steps must be checked against this exact SHA.
+- Runtime run [38103543718](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38103543718) passed 33/33 and its verbose step identified AudioStreamGeneratorPlayback:9223372175082259984 as the remaining ObjectDB instance.
+- Follow-up: SoundManager now explicitly stops the generated player and releases playback / stream references on _exit_tree; an isolated lifecycle regression is added. Confirm this exact commit's normal and verbose Runtime results, then remove the temporary verbose rerun.
 
 ## Godot Runtime status
 PENDING until exact-head GitHub Actions captures the verbose ObjectDB details.
 
 ## Remaining issues
-- One `ObjectDB instances leaked at exit` warning is still open.
-- The temporary verbose rerun currently duplicates the suite; remove it after diagnosis to keep the regular workflow lean.
+- The suspected source is AudioStreamGeneratorPlayback held by the global GameSfx autoload. The first lifecycle-cleanup attempt awaits exact-head CI to determine whether the warning is resolved.
+- The temporary verbose rerun still duplicates the suite and should be removed after validation.
 
 ## Next step
 Check the verbose step's log for concrete class/object names and inspect only the responsible test or lifecycle boundary. Remove this temporary tracing step as soon as the diagnosis is captured.
