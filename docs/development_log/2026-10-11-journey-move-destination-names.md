@@ -31,7 +31,7 @@ MOVE is a player-facing transition, not a content-debug panel. Internal IDs are 
 
 ## Tests
 - Updated combat/test_journey_event_presentation.gd to assert the localized destination and absence of the internal marker ID.
-- Godot Runtime CI: PENDING for this branch head. Do not treat the regression as passed until the exact commit's workflow completes.
+- PASS for implementation head be9147511b2dd7741443135dec08377935427e8c: [Godot Runtime run 38125834662](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38125834662) completed successfully, and the job log confirms RUNTIME_SUITE_PASS tests=47. This status-only follow-up records the exact observed result.
 
 ## Known issues
 - Unknown marker IDs still fall back to the ID text; this is intentional as a diagnostic fallback. Existing production story markers are resolved from the canonical world-map catalog.

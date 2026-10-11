@@ -436,7 +436,7 @@ Next implement END / chapter-completion feedback and regression, one presentatio
 ### Current batch
 - Journey story MOVE prompts resolve marker_id through WorldMapManager.get_node() and show the catalog's localized destination name instead of exposing internal map/marker IDs.
 - Regression: combat/test_journey_event_presentation.gd asserts “目的地：黑风山北道” and that BLACK_WIND_NORTH_PATH is absent from the player-facing prompt.
-- Exact-head Godot Runtime validation is pending until the workflow completes for this batch; do not infer a pass from previous commits.
+- Exact implementation head `be9147511b2dd7741443135dec08377935427e8c` passed Godot Runtime run [38125834662](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38125834662), with `RUNTIME_SUITE_PASS tests=47`. A status-only follow-up records this observed result; its own check must complete before marking the PR ready.
 
 ### Next handoff
 Review the short Shared-02 interlude and optional exploration signposting between the Five Elements Mountain opening and the Eagle Sorrow recruitment encounter. Keep canon chronology fixed, and keep the optional Yellow Wind bounty distinct from the planned full Yellow Wind Ridge mainline.
