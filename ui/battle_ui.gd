@@ -234,14 +234,31 @@ func _enemy_turn(enemy: Combatant) -> void:
 func _on_combat_log(message:String) -> void:
 	if log_box != null: log_box.append_text(message + "\n")
 
+func _load_narrative_for_resolution() -> NarrativeManager:
+	var narrative := NarrativeManager.new()
+	if not narrative.load():
+		return null
+	return narrative
+
+func _resolve_bounty_defeat(narrative: NarrativeManager) -> Dictionary:
+	return BountyRewardService.resolve_defeat(
+		narrative,
+		bounty_manager,
+		encounter_id,
+		battle_inventory.to_dict()
+	)
+
+func _clear_bounty_handoff() -> void:
+	BountyEncounterState.clear()
+
 func _on_combat_finished(winner:String) -> void:
 	if encounter_resolved: return
 	battle_result_locked = true
-	var narrative := NarrativeManager.new()
+	var narrative := _load_narrative_for_resolution()
 	if winner != "allies":
 		status_label.text = "战斗失败。可以返回重新准备。"
 		return
-	if not narrative.load():
+	if narrative == null:
 		status_label.text = "战斗胜利，但存档读取失败。"
 		return
 	if encounter_type == "normal" or encounter_type == "origin" or encounter_type == "shared":
@@ -294,12 +311,7 @@ func _on_combat_finished(winner:String) -> void:
 		elif encounter_type == "shared": _show_victory_summary("共享章节完成", str(definition.get("name", encounter_id)), applied.get("granted", []), next_step, continue_text)
 		else: _show_victory_summary("遭遇胜利", str(definition.get("name", encounter_id)), applied.get("granted", []), next_step, continue_text)
 	else:
-		var applied := BountyRewardService.resolve_defeat(
-			narrative,
-			bounty_manager,
-			encounter_id,
-			battle_inventory.to_dict()
-		)
+		var applied := _resolve_bounty_defeat(narrative)
 		if applied.is_empty():
 			bounty_settlement_pending = true
 			battle_result_locked = false
@@ -309,7 +321,7 @@ func _on_combat_finished(winner:String) -> void:
 				return_button.disabled = false
 			return
 		bounty_settlement_pending = false
-		BountyEncounterState.clear()
+		_clear_bounty_handoff()
 		encounter_resolved = true
 		_show_victory_summary("悬赏完成", str(applied.get("target_name",encounter_id)), applied.get("applied",{}).get("granted",[]), _get_victory_next_step(), _get_victory_button_text())
 
