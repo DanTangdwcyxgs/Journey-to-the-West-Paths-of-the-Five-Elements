@@ -440,7 +440,8 @@ Next implement END / chapter-completion feedback and regression, one presentatio
 
 ### Validation gate
 - Runtime suite expected entries: 48.
-- Exact-head Godot Runtime is pending; do not mark this batch complete until the run reports `RUNTIME_SUITE_PASS tests=48` and the new rumor rollback test passes.
+- PASS: implementation commit `30d02bdc2e35846021a67e4c5ab55d8e800f6630`, [Godot Runtime run 38129100649](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38129100649); log confirms `RUNTIME_SUITE_PASS tests=48`, the new rumor rollback test, and the expanded production rumor/bounty smoke all pass.
+- A docs-only follow-up records this result; keep the PR Draft until CI passes on that latest head.
 
 ### Handoff
-Continue from the exact-head CI result. If it passes, update this section and the development log with the run URL/result before creating or marking the PR ready. Keep optional bounty completion separate from canonical Shared chapter/timeline progression.
+The implementation head is validated; next confirm the docs-only follow-up CI, then update the PR body and mark it Ready for review. Keep optional bounty completion separate from canonical Shared chapter/timeline progression.

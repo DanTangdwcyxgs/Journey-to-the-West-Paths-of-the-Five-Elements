@@ -38,14 +38,14 @@ Rumor discovery is a persistent world-state transition. It must not be reported 
 - Runtime suite expected registered entries: 48.
 
 ## Godot Runtime status
-**PENDING** — this branch's exact-head GitHub Actions run must complete before claiming validation. Do not infer Runtime success from static inspection.
+**PASS** — exact implementation head `30d02bdc2e35846021a67e4c5ab55d8e800f6630`: [Godot Runtime run 38129100649](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38129100649) completed successfully with `RUNTIME_SUITE_PASS tests=48`. The log confirms both `PASS res://combat/test_world_map_rumor_save_failure_rollback.gd` and `PASS res://combat/test_world_map_rumor_bounty_return.gd`.
 
 ## Known issues
 - This regression injects the save result instead of simulating a partial filesystem write.
 - Existing rumor discovery supports the current data-driven rumor schema; it does not add a general quest journal or new bounty routing.
 
 ## Next step
-Confirm exact-head Godot Runtime, inspect the new regression's log, then continue auditing optional exploration pacing and the next vertical-slice interaction.
+The implementation head passed Runtime run 38129100649 (48/48); the documentation-only follow-up must also pass its own exact-head run before the PR is marked Ready for review. Then continue auditing optional exploration pacing and the next vertical-slice interaction.
 
 ## Handoff point
 Keep rumor discovery, heard-rumor markers, and bounty availability in one save transaction. Keep the mainline chapter/timeline authoritative and make optional objectives visibly optional.
