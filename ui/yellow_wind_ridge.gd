@@ -82,35 +82,47 @@ func _build_ui() -> void:
 	footer.add_child(shop)
 
 func _refresh() -> void:
+	var stages := ridge.get_stages(narrative)
 	var completed := 0
-	for stage in ridge.get_stages(narrative):
-		if bool(stage.get("completed", false)): completed += 1
+	var current_stage := ridge.get_current_stage(narrative)
+	for stage in stages:
+		if bool(stage.get("completed", false)):
+			completed += 1
+	if selected_stage_id.is_empty():
+		selected_stage_id = str(current_stage.get("id", ""))
 	status_label.text = "T%04d · 黄风岭进度 %d/4 · 已招募 %d/5" % [narrative.state.current_global_timeline, completed, narrative.state.recruited_characters.size()]
 	stage_list.clear()
-	for stage in ridge.get_stages(narrative):
+	for stage in stages:
 		var id := str(stage.get("id", ""))
 		var mark := "✓" if bool(stage.get("completed", false)) else ("▶" if id == selected_stage_id else "○")
-		stage_list.add_item("%s %s" % [mark, str(stage.get("name", id))])
-		if id == selected_stage_id: stage_list.select(stage_list.item_count - 1)
-	if selected_stage_id.is_empty():
-		selected_stage_id = str(ridge.get_current_stage(narrative).get("id", ""))
+		var label := "%s %s" % [mark, str(stage.get("name", id))]
+		if not bool(stage.get("available", false)):
+			label += " · 未解锁"
+		stage_list.add_item(label)
+		if id == selected_stage_id:
+			stage_list.select(stage_list.item_count - 1)
 	_render_stage(selected_stage_id)
 
 func _render_stage(stage_id: String) -> void:
-	for child in action_box.get_children(): child.queue_free()
-	var stage: Dictionary = ridge.get_stage(stage_id)
+	for child in action_box.get_children():
+		child.queue_free()
+	var stage: Dictionary = ridge.get_stage(stage_id, narrative)
 	if stage.is_empty():
 		detail_label.text = "黄风岭的道路已经走完。"
 		return
-	var completed := narrative.state.completed_milestones.has(str(stage.get("milestone", "")))
 	detail_label.text = "%s\n\n%s" % [str(stage.get("name", stage_id)), str(stage.get("description", ""))]
-	if completed:
-		detail_label.text += "\n\n已完成：风沙已经散去，这一段支线不会重复开启妖王战。"
+	if bool(stage.get("completed", false)):
+		detail_label.text += "\n\n已完成：这一段进度已记录。"
 		return
-	var type := str(stage.get("type", "EVENT"))
+	if not ridge.can_enter_stage(narrative, stage_id):
+		detail_label.text += "\n\n请先完成当前阶段，再继续前进。"
+		return
+	var type := str(stage.get("type", "EVENT")).to_upper()
 	if type == "CHOICE":
-		for choice in stage.get("choices", []):
-			if not choice is Dictionary: continue
+		for choice_variant in stage.get("choices", []):
+			if not choice_variant is Dictionary:
+				continue
+			var choice: Dictionary = choice_variant
 			var button := Button.new()
 			button.text = str(choice.get("label", choice.get("id", "选择")))
 			button.custom_minimum_size = Vector2(0, 50)
@@ -133,23 +145,69 @@ func _add_dungeon_button() -> void:
 	action_box.add_child(button)
 
 func _resolve_choice(stage: Dictionary, choice: Dictionary) -> void:
-	ridge.complete_stage(narrative, str(stage.get("id", "")))
-	narrative.state.add_world_rumor("YELLOW_RIDGE_%s" % str(choice.get("id", "CHOICE")))
-	narrative.save()
-	detail_label.text = "%s\n\n%s\n\n选择结果：%s" % [str(stage.get("name", "")), str(stage.get("description", "")), str(choice.get("result", ""))]
-	_refresh()
+	var stage_id := str(stage.get("id", ""))
+	var expected_choice_found := false
+	for choice_variant in stage.get("choices", []):
+		if choice_variant is Dictionary and str(choice_variant.get("id", "")) == str(choice.get("id", "")):
+			expected_choice_found = true
+			break
+	if not expected_choice_found:
+		status_label.text += " · 无效选择，未修改进度"
+		return
+	var choice_id := str(choice.get("id", "CHOICE"))
+	if _commit_stage(stage_id, "YELLOW_RIDGE_%s" % choice_id):
+		status_label.text += " · %s" % str(choice.get("result", ""))
 
 func _resolve_event(stage: Dictionary) -> void:
-	ridge.complete_stage(narrative, str(stage.get("id", "")))
-	narrative.state.add_world_rumor(str(stage.get("id", "")))
-	narrative.save()
+	var stage_id := str(stage.get("id", ""))
+	if str(stage.get("type", "")).to_upper() == "BOSS_GATE":
+		status_label.text += " · 请先完成黄风洞战斗"
+		return
+	_commit_stage(stage_id, stage_id)
+
+func _commit_stage(stage_id: String, rumor_id: String) -> bool:
+	if not ridge.can_enter_stage(narrative, stage_id):
+		status_label.text += " · 当前阶段已变化，请刷新后继续"
+		return false
+	var state_before: Dictionary = narrative.serialize().duplicate(true)
+	if ridge.complete_stage(narrative, stage_id).is_empty():
+		status_label.text += " · 当前阶段无法完成"
+		return false
+	if not rumor_id.is_empty():
+		narrative.state.add_world_rumor(rumor_id)
+	if not narrative.save():
+		narrative.restore_snapshot(state_before)
+		_refresh()
+		status_label.text += " · 保存失败，进度已回滚；可以重试"
+		return false
+	selected_stage_id = str(ridge.get_current_stage(narrative).get("id", ""))
 	_refresh()
+	return true
 
 func _enter_dungeon() -> void:
+	var state_before: Dictionary = narrative.serialize().duplicate(true)
+	if not ridge.open_gate(narrative):
+		status_label.text += " · 尚未到达黄风洞入口，不能进入"
+		return
+	if not narrative.save():
+		narrative.restore_snapshot(state_before)
+		_refresh()
+		status_label.text += " · 保存失败，洞口进度已回滚；可以重试"
+		return
+	_change_to_cave()
+
+func _change_to_cave() -> void:
 	get_tree().change_scene_to_file("res://ui/yellow_wind_cave.tscn")
 
 func _on_stage_selected(index: int) -> void:
 	var stages := ridge.get_stages(narrative)
-	if index < 0 or index >= stages.size(): return
-	selected_stage_id = str(stages[index].get("id", ""))
+	if index < 0 or index >= stages.size():
+		return
+	var requested_id := str(stages[index].get("id", ""))
+	if not ridge.can_enter_stage(narrative, requested_id):
+		selected_stage_id = str(ridge.get_current_stage(narrative).get("id", ""))
+		_refresh()
+		status_label.text += " · 请先完成当前阶段"
+		return
+	selected_stage_id = requested_id
 	_render_stage(selected_stage_id)

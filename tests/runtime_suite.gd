@@ -43,6 +43,7 @@ const TEST_SCRIPTS := [
 	"res://combat/test_story_move_save_failure_rollback.gd",
 	"res://combat/test_world_map_rumor_bounty_return.gd",
 	"res://combat/test_world_map_travel_save_failure_rollback.gd",
+	"res://combat/test_yellow_wind_ridge_cave_progression.gd",
 	"res://combat/test_main_menu_battle_resume_smoke.gd",
 	"res://combat/test_sound_manager_lifecycle.gd",
 	"res://combat/test_main_menu_contact.gd",

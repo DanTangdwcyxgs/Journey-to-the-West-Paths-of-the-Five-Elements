@@ -21,9 +21,17 @@ func _ready() -> void:
 	if rooms.is_empty():
 		get_tree().change_scene_to_file("res://ui/yellow_wind_ridge.tscn")
 		return
+	if not _has_gate_access():
+		get_tree().change_scene_to_file("res://ui/yellow_wind_ridge.tscn")
+		return
 	current_room_index = _recover_room_index()
 	_build_ui()
 	_refresh()
+
+func _has_gate_access() -> bool:
+	return narrative != null and narrative.state != null \
+		and "YELLOW_WIND_GATE_OPEN" in narrative.state.completed_milestones \
+		and YellowWindRidgeManager.new().is_available(narrative)
 
 func _load_data() -> void:
 	var file := FileAccess.open(DATA_PATH, FileAccess.READ)
@@ -116,6 +124,8 @@ func _build_ui() -> void:
 	footer.add_child(shop)
 
 func _refresh() -> void:
+	if rooms.is_empty():
+		return
 	var room: Dictionary = rooms[current_room_index]
 	if current_room_index == rooms.size() - 1 and _is_boss_defeated():
 		status_label.text = "黄风洞进度 · 妖王已败 · 地城出口已安全"
@@ -130,16 +140,19 @@ func _refresh() -> void:
 	_render_room()
 
 func _render_room() -> void:
-	for child in action_box.get_children(): child.queue_free()
+	for child in action_box.get_children():
+		child.queue_free()
 	var room: Dictionary = rooms[current_room_index]
 	if current_room_index == rooms.size() - 1 and _is_boss_defeated():
 		detail_label.text = "%s\n\n%s\n\n黄风妖王已经败退，风沙中的道路暂时恢复安全。" % [str(room.get("name", "")), str(room.get("description", ""))]
 		return
 	detail_label.text = "%s\n\n%s" % [str(room.get("name", "")), str(room.get("description", ""))]
-	var room_type := str(room.get("type", "EXPLORE"))
+	var room_type := str(room.get("type", "EXPLORE")).to_upper()
 	if room_type == "CHOICE":
-		for choice in room.get("choices", []):
-			if not choice is Dictionary: continue
+		for choice_variant in room.get("choices", []):
+			if not choice_variant is Dictionary:
+				continue
+			var choice: Dictionary = choice_variant
 			var button := Button.new()
 			button.text = str(choice.get("label", choice.get("id", "选择")))
 			button.custom_minimum_size = Vector2(0, 50)
@@ -173,24 +186,53 @@ func _mark_room_complete() -> void:
 func _advance_room() -> void:
 	if current_room_index >= rooms.size() - 1:
 		return
+	var previous_index := current_room_index
+	var state_before: Dictionary = narrative.serialize().duplicate(true)
 	_mark_room_complete()
 	current_room_index += 1
-	narrative.save()
+	if not narrative.save():
+		narrative.restore_snapshot(state_before)
+		current_room_index = previous_index
+		_refresh()
+		status_label.text += " · 保存失败，进度已回滚；可以重试"
+		return
 	_refresh()
 
 func _resolve_choice(choice: Dictionary) -> void:
+	var choices: Array = rooms[current_room_index].get("choices", [])
+	var choice_is_valid := false
+	for choice_variant in choices:
+		if choice_variant is Dictionary and str(choice_variant.get("id", "")) == str(choice.get("id", "")):
+			choice_is_valid = true
+			break
+	if not choice_is_valid:
+		status_label.text += " · 无效选择，未修改进度"
+		return
+	var previous_index := current_room_index
+	var state_before: Dictionary = narrative.serialize().duplicate(true)
 	_mark_room_complete()
 	narrative.state.add_world_rumor("YELLOW_WIND_CAVE_CHOICE_%s" % str(choice.get("id", "CHOICE")))
 	if current_room_index < rooms.size() - 1:
 		current_room_index += 1
-	narrative.save()
+	if not narrative.save():
+		narrative.restore_snapshot(state_before)
+		current_room_index = previous_index
+		_refresh()
+		status_label.text += " · 保存失败，进度已回滚；可以重试"
+		return
 	_refresh()
 
 func _enter_normal_encounter() -> void:
+	if not _has_gate_access() or str(rooms[current_room_index].get("type", "")).to_upper() != "ENCOUNTER":
+		return
 	if BountyEncounterState.start_encounter("normal", NORMAL_ENCOUNTER_ID, str(rooms[current_room_index].get("id", "SANDSTORM_HALL"))):
 		get_tree().change_scene_to_file("res://ui/battle_ui.tscn")
 
 func _enter_boss() -> void:
+	if not _has_gate_access() or str(rooms[current_room_index].get("type", "")).to_upper() != "BOSS":
+		return
+	if _is_boss_defeated():
+		return
 	if BountyEncounterState.start("BOUNTY_YELLOW_FANG", "YELLOW_WIND_THRONE"):
 		get_tree().change_scene_to_file("res://ui/battle_ui.tscn")
 

@@ -437,6 +437,15 @@ Wukong progression 修正后的完整 Runtime 已成功通过上一轮验证；�
 - 最终实现提交 `b4aa8ef0515354d12705cedd5715bd5321415e30` 的 Godot Runtime run [38119684898](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38119684898) 通过，输出 `RUNTIME_SUITE_PASS tests=44`；同一 SHA 的 Web Demo run [38119684880](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38119684880) build/deploy 均成功。中间实现提交 `85655409e38f84f851ec1c0568d1ab27f223bbce` 因测试代码 `if` 块缩进错误未通过；修正提交 `e83e07fd5d18660d92f9ea862f73444e3f1de161` 则暴露旧的最终断言仍要求 LONGMA-02 留在 available-memory 列表。最终回归已校正为 LONGMA-01 保持可回忆、LONGMA-02 从 available 移至 played，精确 SHA 全绿。
 - 下一步：从框架回归转向这条切片的体验节奏、互动区域与最终正式视觉资产评审；不要继续无明确玩家价值地叠加纯框架测试。
 
+### Round 58 — 2026-10-11：Yellow Wind Ridge / Cave Stage Gate and Save Rollback
+- 对照第一条产品 Vertical Slice 检查黄风岭/黄风洞后发现：UI 使用 `YellowWindRidgeManager.is_available()`、`get_current_stage()`、`get_stage()`，管理器原文件只有 `get_stages()` 与 `complete_stage()`，导致区域入口/显示缺少实际支持函数；列表也没拦截未来阶段选择。
+- 扩展 `YellowWindRidgeManager`：按当前地图位置 BLACK_WIND_NORTH_PATH、时间线 T120+、BAI_LONGMA_RECRUITED 开放支线；实现阶段状态/当前阶段/阶段可进入性；前三个阶段按定义顺序推进；洞口 milestone 代表“已打开入口”，但只有打败黄风妖王才让 Boss Gate 作为已完成阶段，保证战后仍可再次进入已打开的洞。
+- 黄风岭每个 Choice/Event 现在通过完整 NarrativeState snapshot + Save 提交；失败恢复状态、保留当前阶段并给出重试提示。进入黄风洞先提交 YELLOW_WIND_GATE_OPEN，只有保存成功才切场景。
+- 黄风洞检查 gate milestone 与当前位置后才允许进入；CAVE_MOUTH / SAND_ALTAR 的房间/选择进度也改成 save boundary 失败回滚，失败后房间和操作保持可重试。
+- 新增 SceneTree 回归验证阶段锁、真实 UI choice/event 按钮、Stage 入口 gate 的存档失败/重试、未开 gate 直接进洞被拒绝，以及 Cave room/choice 在保存失败后 NarrativeState 和房间游标回滚。
+- 本批 Runtime/Web Demo 精确 SHA 状态待 Actions 验证；suite 从 44 项增至 45 项。
+- 下一步：通过后检查洞内普通遭遇/妖王胜利与探索游标的同存档恢复，并继续打磨支线与 Shared 主线的返回节奏。
+
 ## 4. Wukong Origin 当前状态
 
 Production Sequence：`WUK-01~15` 全部存在。
