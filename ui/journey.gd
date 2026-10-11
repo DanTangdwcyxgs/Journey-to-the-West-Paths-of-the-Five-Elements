@@ -718,13 +718,14 @@ func _render_event_action(action: Dictionary) -> void:
 			primary_button.disabled = false
 
 func _describe_move_action(action: Dictionary) -> String:
-	var map_id := str(action.get("map_id", "")).strip_edges()
 	var marker_id := str(action.get("marker_id", "")).strip_edges()
 	var description := "队伍准备离开当前地点，沿着新的路线继续前行。"
-	if not map_id.is_empty():
-		description += "\n目标地图：" + map_id
 	if not marker_id.is_empty():
-		description += "\n目标路标：" + marker_id
+		var destination := WorldMapManager.new().get_node(marker_id)
+		var destination_name := str(destination.get("name", marker_id)).strip_edges()
+		if destination_name.is_empty():
+			destination_name = marker_id
+		description += "\n目的地：" + destination_name
 	return description
 
 func _set_dialogue(speaker: String, text: String, typewriter := true) -> void:

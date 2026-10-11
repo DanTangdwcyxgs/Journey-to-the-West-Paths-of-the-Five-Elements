@@ -429,3 +429,14 @@ Battle resolution remains service-owned. Victory-result presentation is complete
 
 ### Next handoff
 Next implement END / chapter-completion feedback and regression, one presentation slice at a time.
+
+
+## 16. 2026-10-11 Journey MOVE Destination Labels
+
+### Current batch
+- Journey story MOVE prompts resolve marker_id through WorldMapManager.get_node() and show the catalog's localized destination name instead of exposing internal map/marker IDs.
+- Regression: combat/test_journey_event_presentation.gd asserts “目的地：黑风山北道” and that BLACK_WIND_NORTH_PATH is absent from the player-facing prompt.
+- Exact-head Godot Runtime validation is pending until the workflow completes for this batch; do not infer a pass from previous commits.
+
+### Next handoff
+Review the short Shared-02 interlude and optional exploration signposting between the Five Elements Mountain opening and the Eagle Sorrow recruitment encounter. Keep canon chronology fixed, and keep the optional Yellow Wind bounty distinct from the planned full Yellow Wind Ridge mainline.
