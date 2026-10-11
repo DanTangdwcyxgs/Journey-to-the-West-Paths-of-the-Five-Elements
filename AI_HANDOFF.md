@@ -429,3 +429,19 @@ Battle resolution remains service-owned. Victory-result presentation is complete
 
 ### Next handoff
 Next implement END / chapter-completion feedback and regression, one presentation slice at a time.
+
+
+## 20. 2026-10-11 WorldMap Rumor Persistence / Optional Bounty Presentation
+
+### Implementation
+- Rumor discovery now snapshots NarrativeState before applying the heard-rumor and bounty-discovery changes. A failed save restores the snapshot, keeps the rumor available, and exposes retry feedback instead of silently consuming it.
+- WorldMap bounty rows use names from `data/world/bounties.json`, not internal IDs, and label these targets as optional with the explicit note “不推进西游主线”.
+- New regression: `combat/test_world_map_rumor_save_failure_rollback.gd`. Existing `combat/test_world_map_rumor_bounty_return.gd` also asserts the player-facing name and optional/mainline wording.
+
+### Validation gate
+- Runtime suite expected entries: 48.
+- PASS: implementation commit `30d02bdc2e35846021a67e4c5ab55d8e800f6630`, [Godot Runtime run 38129100649](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38129100649); log confirms `RUNTIME_SUITE_PASS tests=48`, the new rumor rollback test, and the expanded production rumor/bounty smoke all pass.
+- A docs-only follow-up records this result; keep the PR Draft until CI passes on that latest head.
+
+### Handoff
+The implementation head is validated; next confirm the docs-only follow-up CI, then update the PR body and mark it Ready for review. Keep optional bounty completion separate from canonical Shared chapter/timeline progression.

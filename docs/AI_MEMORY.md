@@ -582,3 +582,14 @@ Wukong、Tang、Longma、Bajie、Wujing 五条 Origin Route 均已完成首轮 S
 
 任何下一轮继续：
 `实现 → regression → Godot Runtime → development log → AI_MEMORY`。
+
+
+### Round 66 — 2026-10-11：WorldMap Rumor Save Rollback / Optional Bounty UI
+- 接手后先复核 `AI_HANDOFF.md`、开发日志索引、Development Rules、项目愿景/架构/生产规范/内容 Pipeline/章节 Bible，以及 WorldMap、rumor、bounty 数据和现有 SceneTree 回归。
+- 审查发现自由旅行已有 save-failure rollback，但 `WorldMapScreen._hear_rumor()` 修改已听传闻与悬赏发现后忽略 `narrative.save()` 结果，失败时仍刷新 UI，可能造成未提交状态留在内存、传闻消失且悬赏发现未持久化。
+- 同时发现 WorldMap 悬赏行显示内部 ID（如 `BOUNTY_YELLOW_FANG`），且没有在悬赏区明确标注它们属于可选内容。
+- 修改 rumor handler：保存前快照，保存失败恢复完整 NarrativeState、刷新后保留传闻并提供重试反馈；加载既有 `bounties.json` 的名称，在地图显示玩家可读名称并标明“可选悬赏（不推进西游主线）”。
+- 新增 save-failure / retry SceneTree 回归，并扩展生产 rumor→bounty→return→Shared-05 smoke 的 UI 文案断言。
+- 精确实现提交 `30d02bdc2e35846021a67e4c5ab55d8e800f6630` 的 Godot Runtime run [38129100649](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38129100649) 已通过，日志输出 `RUNTIME_SUITE_PASS tests=48`，并确认新建的 rumor rollback test 与扩展后的 production rumor→bounty smoke 均 PASS。
+- 后续仅追加验证记录的文档提交仍需针对最新 head 等待 CI；PR 在该 run 通过前保持 Draft。
+- 下一步：确认文档提交的 exact-head Runtime，再继续审查可选探索节奏和 vertical slice 的下一处实际交互。
