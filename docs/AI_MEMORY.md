@@ -306,7 +306,7 @@ Wukong progression 修正后的完整 Runtime 已成功通过上一轮验证；�
 - Identified a separate terminal-state persistence issue: generic BountyEncounterState.clear() preserves EventSession resume data, so it is not suitable for the final END boundary.
 - Added clear_completed_event_session(), used by Journey and Origin Journey END paths; failures to delete handoff files are visible in completion feedback.
 - Added smoke assertions that active and pending resume files are absent after WUK-02 post-battle END, and changed the shared battle bridge regression cleanup to discard temporary resume data because it stops before END.
-- Exact-head Runtime / Web Demo for implementation commit ea24dd2 are pending. Continue framework regressions without committing concept sheets as production assets.
+- Runtime run 38104663818 passed 35/35 for implementation commit ea24dd2; follow-up branch head Runtime run 38104713527 passed 35/35; Web Demo run 38104713524 passed build and deploy. Continue framework regressions without committing concept sheets as production assets.
 
 
 ## 4. Wukong Origin 当前状态
@@ -381,7 +381,7 @@ Shared-09：full pilgrimage / COIN_MEDIUM / timeline 170。
 ## 8. 当前产品任务地图
 
 ### P0 — Journey / SceneTree robustness
-MOVE / WAIT, battle victory feedback, Journey END, CJK font fallback, MainMenu → Journey → WUK-01 smoke, and finite PCM WAV SFX cleanup have passed their Runtime gates. The MainMenu → WUK-02 battle/resume test found a real double-advance issue; commit 959a32f fixes the victory resume and passed all 35 runtime test entries. The follow-up terminal cleanup commit ea24dd2 adds a dedicated clear path and asserts both active/pending resume files are absent after END; its exact-head Runtime/Web Demo are pending. Final PNG/WebP character art remains deferred while image generation is unavailable; do not commit concept sheets as final assets.
+MOVE / WAIT, battle victory feedback, Journey END, CJK font fallback, MainMenu → Journey → WUK-01 smoke, and finite PCM WAV SFX cleanup have passed their Runtime gates. The MainMenu → WUK-02 battle/resume test found a real double-advance issue; commit 959a32f fixes the victory resume and passed all 35 runtime test entries. The follow-up terminal cleanup commit ea24dd2 adds a dedicated clear path and asserts both active/pending resume files are absent after END. Runtime run 38104663818 passed 35/35; follow-up branch head Runtime run 38104713527 also passed 35/35, and Web Demo run 38104713524 passed build/deploy. Final PNG/WebP character art remains deferred while image generation is unavailable; do not commit concept sheets as final assets.
 
 ### P1 — Cross-route / SceneTree robustness
 Wukong、Tang、Longma、Bajie、Wujing 五条 Origin Route 均已完成首轮 Sequence 化，统一五路线质量门与 Origin → Shared handoff 回归已有记录。后续重点是完整 Main Menu → Journey → Sequence → Battle / END → Save 的 SceneTree 入口与恢复边界。

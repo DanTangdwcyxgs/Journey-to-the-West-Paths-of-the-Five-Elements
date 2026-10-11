@@ -32,14 +32,16 @@ Upgrade the existing MainMenu route-entry smoke into a real scene-switching test
 ## Tests
 - Initial Runtime run [38104441392](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38104441392) on commit 4102cab failed at the post-victory story-feedback assertion; the assertion revealed a production behavior issue and was not weakened.
 - Parent correction commit [959a32f](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/commit/959a32f06a389ce460d015d16192cb673c0240f2) passed Runtime run [38104519997](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38104519997) with RUNTIME_SUITE_PASS tests=35 and Web Demo run [38104519990](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38104519990).
-- Follow-up commit ea24dd2 adds END assertions that both active and pending resume files are absent. Its exact-head Runtime / Web Demo are pending while this log is updated.
+- Follow-up commit [ea24dd2](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/commit/ea24dd2c44315681a841522e706eea5ebcd2dbec) adds END assertions that both active and pending resume files are absent.
+- Runtime run [38104663818](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38104663818) passed RUNTIME_SUITE_PASS tests=35. The same smoke and test count passed on branch head 94a78cc in Runtime run [38104713527](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38104713527).
+- Web Demo build + deployment passed run [38104713524](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38104713524).
 
 ## Known issues
 - The test intentionally invokes the existing production victory handler with an "allies" winner instead of simulating every individual turn input. It validates the real handoff, battle scene, atomic resolver, return navigation, resume and save path; combat turn mechanics remain covered by their dedicated combat tests.
 - The full shared battle handoff still has its existing dedicated regressions. This new test targets an Origin route started from the actual MainMenu.
 
 ## Next step
-Check exact-head Runtime and Web Demo. If the new smoke passes, the project will have a directly verified MainMenu → Origin Battle → Resume → END/Save scene path; then move on to cross-reference validation or failure-path rollback, using a separate scoped regression.
+Continue cross-reference validation or failure-path rollback as a separate scoped regression. The real MainMenu → Origin Battle → Resume → END/Save scene path is now covered by a passing Runtime suite.
 
 ## Handoff point
 Narrative / Presentation SceneTree integration. Progression and atomic rewards stay in BattleResolutionService and OriginRouteManager.

@@ -36,12 +36,12 @@ The generic clear API has backward-compatible handoff semantics; changing it glo
 - AI_HANDOFF.md
 
 ## Tests
-- Runtime run 38104519997 passed 35 entries after fixing the double-advance issue.
-- Terminal assertions require the active and pending resume files to be absent after END.
-- Exact-head Runtime and Web Demo for the terminal-cleanup implementation commit ea24dd2 are pending.
+- Runtime run [38104663818](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38104663818) for implementation commit ea24dd2 passed with RUNTIME_SUITE_PASS tests=35.
+- The follow-up branch head passed Runtime run [38104713527](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38104713527), also 35/35; the real MainMenu battle-resume smoke and shared battle bridge both passed.
+- Web Demo build and deployment passed [38104713524](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38104713524).
 
 ## Godot Runtime status
-PENDING until Actions finish for the exact implementation SHA.
+PASS for the implementation and follow-up branch head: 35/35 Runtime test entries and successful Web Demo build/deploy, with Actions links recorded above.
 
 ## Known issues
 - Any other END call site must use clear_completed_event_session(); generic clear() intentionally preserves continuation by design.
