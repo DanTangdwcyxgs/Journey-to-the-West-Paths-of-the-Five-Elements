@@ -121,7 +121,7 @@ func _run_smoke() -> void:
 							_record(resumed_journey.event_session.sequence.get_id() == "SHARED-05-GAOJIAZHUANG-SEQUENCE", "the next story beat after the bounty should be Shared-05, not Shared-04")
 							_record(str(resumed_journey.event_session.get_action().get("kind", "")) == EventRunner.DIALOGUE, "Shared-05 should begin with the Gaojiazhuang arrival dialogue")
 							if resumed_journey.dialogue_revealing:
-							resumed_journey.call("_reveal_dialogue_immediately")
+								resumed_journey.call("_reveal_dialogue_immediately")
 							resumed_journey.primary_button.emit_signal("pressed")
 							await process_frame
 							_record(str(resumed_journey.event_session.get_action().get("kind", "")) == EventRunner.MOVE, "Shared-05 should next move the story location to Gaojiazhuang")
