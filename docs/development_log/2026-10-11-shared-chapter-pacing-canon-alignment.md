@@ -32,10 +32,10 @@ The previous bible could lead future work to implement content against the wrong
 ## Tests
 - Compared the chapter bible against the production Shared chapter catalog, sequence catalog and world map.
 - Documentation-only change; no runtime behavior or data was changed.
-- The implementation must continue to pass the existing Godot Runtime suite before merge; no new Runtime pass is claimed for this documentation batch.
+- The exact PR implementation head passed the existing Godot Runtime suite; this follow-up only records the observed result.
 
 ## Godot Runtime status
-**PENDING** — this documentation-only branch still requires its exact-head PR Runtime check. Previous main Runtime passes do not validate this new head.
+**PASS** — exact implementation head `6cdca5773bdca9ecc7dc4824a32e0e30e08d88e5` completed Godot Runtime run [38121480379](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38121480379), conclusion `success`; log confirms `RUNTIME_SUITE_PASS tests=47`. This verifies the PR head before this documentation-only status update.
 
 ## Known issues
 - The current production Shared-09 remains a short placeholder; the complete Yellow Wind Ridge story arc is not yet implemented as the Shared-09 sequence.

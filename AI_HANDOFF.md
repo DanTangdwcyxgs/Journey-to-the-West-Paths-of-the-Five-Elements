@@ -429,3 +429,10 @@ Battle resolution remains service-owned. Victory-result presentation and MOVE / 
 
 ### Next handoff
 Next implement END / chapter-completion feedback and regression, one presentation slice at a time.
+
+
+## 17. Shared Chapter Bible Alignment — Runtime Result
+
+- Exact implementation head 6cdca5773bdca9ecc7dc4824a32e0e30e08d88e5 passed Godot Runtime run 38121480379; the job log explicitly reports RUNTIME_SUITE_PASS tests=47.
+- PR #18 remains unmerged. The follow-up commit only records the already-observed result; its own CI must still complete before the PR is marked ready.
+- Continue with the separate Journey MOVE destination-label presentation regression on PR #19, then review the Shared-02 → Shared-03 pacing and exploration signposting.
