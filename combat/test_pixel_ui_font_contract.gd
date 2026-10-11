@@ -13,6 +13,7 @@ func _initialize() -> void:
 	await process_frame
 	_assert(hud.font != null, "PixelHUD should resolve a font without throwing when the bundled font is absent")
 	hud.queue_free()
+	await process_frame
 	print("ALL PIXEL UI FONT CONTRACT TESTS PASSED")
 	quit(0)
 

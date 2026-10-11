@@ -22,6 +22,11 @@ static func run_all() -> Dictionary:
 	assert(dialog.dialog_text.find("DanTangdwcyxgs") >= 0, "contact dialog should show WeChat id")
 	assert(dialog.ok_button_text == "复制微信号", "contact dialog should offer clipboard action")
 
+	# Detached Nodes do not free themselves when local references go out of scope.
+	# This static run_all() executes inside runtime_suite's long-lived SceneTree process.
+	dialog.free()
+	instance.free()
+
 	return {
 		"passed": true,
 		"developer_credit_verified": true,

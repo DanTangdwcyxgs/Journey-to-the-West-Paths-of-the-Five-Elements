@@ -261,7 +261,7 @@ Runner 输出的 `battle` 只生成 `EncounterHandoff` 数据，不直接启动 
 
 最高优先级：
 
-1. 视觉垂直切片仍是产品目标，但角色最终 PNG/WebP 暂受图像生成额度限制；不把概念展示图当正式资源。Journey END / 章节完成反馈已提交并通过 Runtime；CJK 字体加载已加入缺失资源回退，Runtime workflow 也会准备字体。当前下一步转向 Main Menu → Journey → Sequence → Battle / END → Save 的 SceneTree 入口回归，并单独排查 Resource/RID teardown 诊断。额度恢复后再通过 ArtAssetCatalog 替换五名主角和敌人占位 SVG，并做真实窗口截图验收。
+1. 视觉垂直切片仍是产品目标，但角色最终 PNG/WebP 暂受图像生成额度限制；不把概念展示图当正式资源。Journey END / 章节完成反馈已通过 Runtime，CJK 字体缺失错误已通过统一回退与 CI 字体准备解决。Runtime 仍有 teardown 诊断；当前优先清理测试中 detached Node 的生命周期并用新日志验证，再推进 Main Menu → Journey → Sequence → Battle / END → Save 的完整 SceneTree smoke。额度恢复后再通过 ArtAssetCatalog 替换主角和敌人占位 SVG。
 2. 增强 Main Menu → Journey → EventSequence → Battle / END → Save 的 SceneTree 入口和恢复 smoke coverage。
 3. 五条 Origin Route 的 EventSequence 迁移、统一质量门和 Origin → Shared handoff 已有实现；后续发现新 cross-reference / route-isolation 缺口时按具体回归补强。
 4. 非战斗 reward / move / wait 的副作用继续留在 RewardService / WorldActionService，不得移入 EventRunner。
