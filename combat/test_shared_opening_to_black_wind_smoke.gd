@@ -102,7 +102,9 @@ func _run_smoke() -> void:
 		for chapter_id in ["SHARED-01-FIVE-ELEMENTS", "SHARED-02-EARLY-PILGRIMAGE", "SHARED-03-EAGLE-SORROW", "SHARED-04-EARLY-DEMON-TALES"]:
 			_record(chapter_id in persisted.state.completed_shared_chapters, "%s should persist as a completed Shared chapter" % chapter_id)
 		_record("LONGMA" in persisted.state.recruited_characters, "Longma recruitment should persist at the end of the Shared arc")
-		_record("LONGMA-01" in persisted.state.available_memory_chapters and "LONGMA-02" in persisted.state.available_memory_chapters, "Longma memories should remain unlocked in the final save")
+		_record("LONGMA-01" in persisted.state.available_memory_chapters, "unplayed Longma memory should remain available in the final save")
+		_record("LONGMA-02" in persisted.state.played_memory_chapters, "completed LONGMA-02 should persist as played in the final save")
+		_record("LONGMA-02" not in persisted.state.available_memory_chapters, "completed LONGMA-02 should not remain in the available-memory list")
 
 	var final_scene: Node = current_scene
 	current_scene = null
