@@ -30,17 +30,19 @@ The standard runtime log only gives an aggregate ObjectDB warning. The previous 
 
 ## Tests
 - Runtime run [38103543718](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38103543718) passed 33/33 and its verbose step identified AudioStreamGeneratorPlayback:9223372175082259984 as the remaining ObjectDB instance.
-- Follow-up: SoundManager now explicitly stops the generated player and releases playback / stream references on _exit_tree; an isolated lifecycle regression is added. Confirm this exact commit's normal and verbose Runtime results, then remove the temporary verbose rerun.
+- The shutdown-reference cleanup in commit 1654929 did not remove the warning.
+- Replacing the always-playing generator with finite queued PCM WAV sounds in commit [ac5bb6f](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/commit/ac5bb6f09af81b1bbfa5fd8b387d6aa9b2191edb) passed Runtime run [38104194439](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38104194439), `RUNTIME_SUITE_PASS tests=34`; verbose output contained no ObjectDB leak entry. Web Demo run [38104194542](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38104194542) also passed.
+- The temporary verbose rerun was removed in the follow-up cleanup commit.
 
 ## Godot Runtime status
-PENDING until exact-head GitHub Actions captures the verbose ObjectDB details.
+**RESOLVED for the audio-generated ObjectDB warning on commit ac5bb6f.** The exact-head verbose trace contains no `ObjectDB instances leaked at exit`, no AudioStreamGeneratorPlayback object, no Canvas/TextServer RID leaks, and no `resources still in use` diagnostic.
 
 ## Remaining issues
-- The suspected source is AudioStreamGeneratorPlayback held by the global GameSfx autoload. The first lifecycle-cleanup attempt awaits exact-head CI to determine whether the warning is resolved.
-- The temporary verbose rerun still duplicates the suite and should be removed after validation.
+- No teardown leak diagnostics remain in the verified headless Runtime log.
+- If future audio changes add overlapping/long-running tracks, keep their resources finite or implement explicit pooling/teardown and regression coverage.
 
 ## Next step
-Check the verbose step's log for concrete class/object names and inspect only the responsible test or lifecycle boundary. Remove this temporary tracing step as soon as the diagnosis is captured.
+Continue SceneTree integration coverage for battle handoff / resume / END / Save.
 
 ## Handoff point
 Runtime harness / ObjectDB cleanup. Do not modify battle, story, reward, or save semantics unless the log identifies a concrete production owner.

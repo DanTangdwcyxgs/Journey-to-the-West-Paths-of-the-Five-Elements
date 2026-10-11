@@ -279,8 +279,17 @@ Wukong progression 修正后的完整 Runtime 已成功通过上一轮验证；�
 - 定向 verbose Runtime 日志确认剩余 ObjectDB 对象为 AudioStreamGeneratorPlayback，属于 ui/sound_manager.gd 中生成音效使用的 AudioStreamGenerator 播放对象，而非叙事或 UI 节点。
 - SoundManager 增加幂等 _release_audio_resources() 并在 _exit_tree() 调用：停止播放器、断开 stream、释放 playback/stream/播放器引用，并显式移除和释放生成的 AudioStreamPlayer 节点。
 - 新增 combat/test_sound_manager_lifecycle.gd，验证主动释放和 autoload GameSfx 实例的资源/节点引用；加入 tests/runtime_suite.gd，suite 扩展到 34 项。
-- 调试用 verbose Runtime 重跑暂时保留，用于确认 ObjectDB 泄漏是否消失；必须在修复验证后移除。
-- 本轮新提交 Runtime 与 Web Demo 状态待以精确 SHA 对应 Actions 核实。
+- 新架构提交 `ac5bb6f09af81b1bbfa5fd8b387d6aa9b2191edb` 的 Runtime run `38104194439` 成功（`RUNTIME_SUITE_PASS tests=34`），独立生命周期测试通过；verbose 日志没有 ObjectDB、AudioStreamGeneratorPlayback 或 RID 泄漏诊断。
+- Web Demo run `38104194542` 成功。已在验证后的 docs/workflow cleanup commit 中移除临时 verbose 重跑步骤，避免每次 CI 重复执行 34 项测试。
+- 下一步：继续更完整的 Main Menu → Journey → battle resume / END → Save SceneTree smoke；保持音频播放生命周期回归。
+
+
+### Round 38 — 2026-10-11：Audio Lifecycle Validation / CI Cleanup
+- 对提交 `ac5bb6f09af81b1bbfa5fd8b387d6aa9b2191edb` 的 Runtime run `38104194439` 验证 34/34 tests pass；verbose 日志筛选结果中没有 ObjectDB instances leaked、AudioStreamGeneratorPlayback 或资源/RID teardown 记录。
+- 同一提交的 Web Demo run `38104194542` 成功（build + deploy）。
+- 移除 `.github/workflows/godot-runtime.yml` 中仅用于一次诊断的 verbose 重跑，恢复每次 Runtime 只执行一次正式 suite 的轻量流程。
+- 更新 SoundManager 与 ObjectDB 诊断日志，明确记录第一次释放引用方案失败，及后续改为按需 PCM WAV/队列播放的有效修复，避免留下过时结论。
+- 下一步：继续补齐更完整的 SceneTree battle resume / END / Save 路径；图像生成额度恢复后再进入最终角色 PNG/WebP 资产批次。
 
 ---
 

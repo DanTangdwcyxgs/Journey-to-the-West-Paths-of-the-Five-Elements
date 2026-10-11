@@ -44,15 +44,3 @@ jobs:
 
       - name: Run headless runtime suite
         run: godot --headless --path . --script res://tests/runtime_suite.gd
-
-      - name: Trace remaining ObjectDB teardown warning
-        if: success()
-        run: |
-          set +e
-          godot --headless --verbose --path . --script res://tests/runtime_suite.gd > /tmp/runtime_verbose.log 2>&1
-          runtime_status=$?
-          set -e
-          echo "Verbose runtime suite exit: ${runtime_status}"
-          echo "Filtered teardown detail:"
-          grep -n -E -i -C 2 "ObjectDB instances leaked|Leaked instance|resources still in use|leaked at exit|ObjectDB.*leak" /tmp/runtime_verbose.log | tail -n 200 || true
-          exit "${runtime_status}"
