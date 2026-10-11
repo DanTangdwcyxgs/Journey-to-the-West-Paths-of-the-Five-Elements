@@ -50,7 +50,8 @@ func _on_combat_finished(winner: String) -> void:
 	if not event_resume.is_empty():
 		var session := NarrativeEventSession.resume_from_battle_record(active_record, narrative)
 		if session != null:
-			var next_action := session.resolve_battle(true)
+			# The restore factory already resolves a pending battle node into the next action.
+			var next_action: Dictionary = session.get_action()
 			if not next_action.is_empty():
 				if not BountyEncounterState.start_encounter(
 					encounter_type,
@@ -63,6 +64,8 @@ func _on_combat_finished(winner: String) -> void:
 					status_label.text = "战斗已结算，但事件恢复上下文保存失败。"
 					return
 				event_resumed = true
+			else:
+				BountyEncounterState.clear()
 		else:
 			BountyEncounterState.clear()
 	else:
