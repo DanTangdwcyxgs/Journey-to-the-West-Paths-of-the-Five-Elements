@@ -10,6 +10,7 @@
 
 ## 最新记录
 
+- [`2026-10-11 — Shared Recruitment to Memory SceneTree Smoke`](2026-10-11-shared-recruitment-memory-scene-smoke.md)
 - [`2026-10-11 — Read-Only Memory Playback Entry`](2026-10-11-memory-playback-entry.md)
 - [`2026-10-11 — EventSequence Chapter Namespace Metadata Consistency`](2026-10-11-event-sequence-namespace-metadata-consistency.md)
 - [`2026-10-11 — Shared Recruitment Battle SceneTree Smoke`](2026-10-11-shared-battle-scene-transition-smoke.md)

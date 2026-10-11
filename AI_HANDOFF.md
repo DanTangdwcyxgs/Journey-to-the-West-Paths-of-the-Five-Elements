@@ -329,7 +329,7 @@ Runner 输出的 `battle` 只生成 `EncounterHandoff` 数据，不直接启动 
 
 ### Batch B — Journey Presentation & Runtime
 
-Journey END / chapter-completion feedback、Main Menu → WUK-02 battle / resume / END / Save、完整 EventSequence production catalog 质量门、BattleResolutionService save-failure rollback、Shared-03 / Shared-05 / Shared-07 真实 SceneTree smoke 与 chapter namespace metadata consistency 均已通过对应 SHA 的 Runtime / Web Demo。Memory 回放已在精确提交 `fb7ece8f1af3f49aaeece9a31e3d1b62457df0eb` 通过 Godot Runtime run [38107309910](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38107309910)（37/37）与 Web Demo build/deploy run [38107309919](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38107309919)。下一步把 Shared-03 实际招募与 Memory 解锁/回放连入同一条 SceneTree regression。
+Journey END / chapter-completion feedback、Main Menu → WUK-02 battle / resume / END / Save、完整 EventSequence production catalog 质量门、BattleResolutionService save-failure rollback、Shared-03 / Shared-05 / Shared-07 真实 SceneTree smoke 与 chapter namespace metadata consistency 均已通过对应 SHA 的 Runtime / Web Demo。Memory 回放已在精确提交 `fb7ece8f1af3f49aaeece9a31e3d1b62457df0eb` 通过 Godot Runtime run [38107309910](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38107309910)（37/37）与 Web Demo build/deploy run [38107309919](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38107309919)。当前扩展 Shared-03 真实 SceneTree smoke，验证实际招募解锁、播放 LONGMA-02 历史对白、保存状态和不触发战斗。
 
 ### Batch C — Narrative execution services
 

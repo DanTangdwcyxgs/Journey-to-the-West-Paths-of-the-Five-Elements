@@ -117,6 +117,53 @@ func _run_smoke() -> void:
 			_record(str(spec["expected_recruit"]) in persisted_after_end.state.recruited_characters, "%s recruit should persist after END" % chapter_id)
 			_record(chapter_id in persisted_after_end.state.completed_shared_chapters, "%s should remain recorded as completed" % chapter_id)
 
+		if chapter_id == "SHARED-03-EAGLE-SORROW":
+			_record("LONGMA-01" in resumed_journey.narrative.state.available_memory_chapters, "actual Longma recruitment should unlock LONGMA-01 memory")
+			_record("LONGMA-02" in resumed_journey.narrative.state.available_memory_chapters, "actual Longma recruitment should unlock LONGMA-02 memory")
+			var memory_row_index := -1
+			for row_index in range(resumed_journey.list.get_item_count()):
+				if resumed_journey.list.get_item_text(row_index) == "回忆 · LONGMA-02":
+					memory_row_index = row_index
+					break
+			_record(memory_row_index >= 0, "the production Journey list should surface unlocked LONGMA-02 memory")
+			if memory_row_index >= 0:
+				resumed_journey.list.select(memory_row_index)
+				resumed_journey.call("_on_sidebar_item_selected", memory_row_index)
+				resumed_journey.call("_play_selected_memory")
+				_record(resumed_journey.memory_playback_session != null, "the unlocked memory should open through the production Journey button")
+				if resumed_journey.memory_playback_session != null:
+					var shared_context_before_memory: Dictionary = resumed_journey.narrative.state.snapshot_shared_context()
+					var narrative_before_memory: Dictionary = resumed_journey.narrative.serialize().duplicate(true)
+					_record(resumed_journey.dialogue_full_text.find("罪责落到身上") >= 0, "LONGMA-02 memory should begin at its canonical opening dialogue")
+					resumed_journey.call("_advance_primary")
+					_record(not resumed_journey.dialogue_revealing and resumed_journey.memory_playback_session.get_current_position() == 1, "memory input should reveal the current dialogue before advancing")
+					resumed_journey.call("_advance_primary")
+					_record(resumed_journey.memory_playback_session.get_current_position() == 2, "memory should advance to its post-battle dialogue without entering combat")
+					_record(resumed_journey.dialogue_full_text.find("真正的担当") >= 0, "LONGMA-02 memory should include its canonical aftermath dialogue")
+					_record(resumed_journey.primary_button.text == "完成回忆", "the last memory dialogue should expose explicit completion")
+					resumed_journey.call("_advance_primary")
+					resumed_journey.call("_advance_primary")
+					_record(resumed_journey.memory_playback_session == null, "memory completion should return to the Journey presentation")
+					_record(current_scene == resumed_journey, "read-only memory playback must not replace the Journey scene with BattleUI")
+					_record(resumed_journey.narrative.state.snapshot_shared_context() == shared_context_before_memory, "memory playback should preserve chapter, timeline, completed shared chapters and roster")
+					_record("LONGMA-02" not in resumed_journey.narrative.state.available_memory_chapters, "finished memory should leave the available list")
+					_record("LONGMA-02" in resumed_journey.narrative.state.played_memory_chapters, "finished memory should enter the played list")
+					var before_non_memory := narrative_before_memory.duplicate(true)
+					var after_non_memory := resumed_journey.narrative.serialize().duplicate(true)
+					before_non_memory.erase("available_memory_chapters")
+					before_non_memory.erase("played_memory_chapters")
+					after_non_memory.erase("available_memory_chapters")
+					after_non_memory.erase("played_memory_chapters")
+					_record(before_non_memory == after_non_memory, "Memory completion should only change the memory availability/played flags")
+					var memory_save := NarrativeManager.new()
+					_record(memory_save.load(), "finished Longma memory should leave a loadable save")
+					if memory_save.state != null:
+						_record("LONGMA-02" in memory_save.state.played_memory_chapters, "played-memory status should persist after reload")
+						_record(memory_save.state.current_shared_chapter == "SHARED-04-EARLY-DEMON-TALES", "memory save must preserve the post-Eagle-Sorrow shared chapter")
+					_record(memory_save.state.current_global_timeline == shared_context_before_memory.get("current_global_timeline"), "memory save must preserve global timeline")
+					_record(not FileAccess.file_exists(encounter_path), "memory playback must not create a new active battle handoff")
+					_record(not FileAccess.file_exists(resume_path), "memory playback must not create pending battle-resume data")
+
 		completed_cases += 1
 		if completed_cases < CASES.size():
 			resumed_journey.call("_back_to_menu")

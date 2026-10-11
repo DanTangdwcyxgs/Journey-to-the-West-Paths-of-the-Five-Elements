@@ -348,6 +348,13 @@ Wukong progression 修正后的完整 Runtime 已成功通过上一轮验证；�
 - 新增 `combat/test_memory_playback.gd` 并注册到 Runtime suite。精确提交 `fb7ece8f1af3f49aaeece9a31e3d1b62457df0eb` 的 Godot Runtime run [38107309910](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38107309910) 通过，输出 `PASS res://combat/test_memory_playback.gd` 与 `RUNTIME_SUITE_PASS tests=37`；同一 SHA 的 Web Demo build/deploy run [38107309919](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38107309919) 成功。
 - 下一步：串联 Wukong → Shared-03 鹰愁涧 → Longma 招募 → Memory 解锁/回放的端到端体验，再推进第一条完整可玩 Vertical Slice。
 
+### Round 46 — 2026-10-11：Shared-03 Recruitment → Memory End-to-End Regression
+- 扩展既有 Shared-03 / Shared-05 / Shared-07 production SceneTree smoke；Shared-03 成功返回 Journey 并完成 END 后，额外断言真实 BattleResolutionService 招募会解锁 `LONGMA-01` 与 `LONGMA-02`。
+- 测试通过生产 Journey sidebar 选择 LONGMA-02 并启动真实 MemoryPlaybackSession，逐字显示战前对白、前进到战后对白，再显式完成回忆。
+- 验证整个过程中没有切到 BattleUI、没有新建 active/pending battle handoff；共享章节、全球时间线、已完成章节与招募队伍完全不变。完成后仅 `available_memory_chapters` / `played_memory_chapters` 变化，且重载存档后已读标记和 Shared-04 当前章节仍正确。
+- 本批 Runtime / Web Demo 的精确提交状态待 Actions 验证；不以 Memory 单元回归的通过结果代替这一条招募端到端证据。
+- 下一步：通过后复核从 Wukong 起始到 Longma 招募的 Vertical Slice 其余缺口，优先处理真实探索/章节切换，不扩大到 Camp / Relationship 前先核实第一条产品样板的闭环程度。
+
 ## 4. Wukong Origin 当前状态
 
 Production Sequence：`WUK-01~15` 全部存在。
