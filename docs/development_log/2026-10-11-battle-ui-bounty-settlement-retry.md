@@ -39,17 +39,17 @@ The service-level transaction and the UI retry control form one player-facing re
 - The ordinary continue action after a successful settlement should leave the battle scene without another save, combat replay, or duplicate reward/journal entry.
 
 ## Godot Runtime status
-**PASS** — exact implementation commit `11ed7f160e3c7cf2dd8e6f6140b95aae1df18541`. Godot Runtime run [38129703559](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38129703559) passed with `PASS res://combat/test_battle_ui_bounty_settlement_retry.gd` and `RUNTIME_SUITE_PASS tests=48`.
+**PASS** — exact implementation commit `11ed7f160e3c7cf2dd8e6f6140b95aae1df18541` passed with `PASS res://combat/test_battle_ui_bounty_settlement_retry.gd` and `RUNTIME_SUITE_PASS tests=48` in run [38129703559](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38129703559). The merged main commit `79442c064362385afc41201a8458bf39efa9b199` passed the same 48-test suite in run [38129867693](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38129867693).
 
 ## Web Demo status
-**NOT RUN on the PR head** — `.github/workflows/web-demo.yml` runs on pushes to `main` and `workflow_dispatch`, not `pull_request`. This is not a pass claim; verify the Web Demo build/deploy on the main-branch push after merge.
+**PASS** — merged implementation commit `79442c064362385afc41201a8458bf39efa9b199`. Web Demo run [38129867663](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38129867663) passed the pre-export runtime suite, Web export, artifact upload, and Pages deployment. The deployment job reported success and published [the playable Web Demo](https://dantangdwcyxgs.github.io/Journey-to-the-West-Paths-of-the-Five-Elements/). The same main commit passed Godot Runtime run [38129867693](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38129867693) with `RUNTIME_SUITE_PASS tests=48`.
 
 ## Known issues
 - The battle victory itself is driven by the production engine signal rather than manually playing all turns; this test focuses on settlement/retry and scene-boundary behavior, not combat balance.
 - BountyManager status is still reconstructed from the battle journal/save context rather than serialized directly into NarrativeState; this batch intentionally does not redesign that compatibility boundary.
 
 ## Next step
-After the main-branch Web Demo build/deploy is verified, return to the planned vertical-slice experience review: pacing, interactive exploration, and final character PNG/WebP asset review.
+Main-branch Runtime and Web Demo build/deploy have now passed for the merged implementation. Next, return to the planned vertical-slice experience review: pacing, interactive exploration, and final character PNG/WebP asset review.
 
 ## Handoff point
 The production BattleUI retry control now has a dedicated SceneTree regression; use its exact Actions status as the gate before extending bounty rewards or adding more dungeon mechanics.
