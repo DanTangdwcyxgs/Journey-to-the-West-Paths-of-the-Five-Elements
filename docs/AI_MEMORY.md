@@ -340,6 +340,14 @@ Wukong progression 修正后的完整 Runtime 已成功通过上一轮验证；�
 - 实现提交 `3316ce96124ba7ff9e8a30f686e3d586b966a44a` 的 Godot Runtime run [38106312375](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38106312375) 通过，日志确认 `PASS res://combat/test_event_sequence_validator.gd` 和 `RUNTIME_SUITE_PASS tests=36`；同一 SHA 的 Web Demo run [38106312426](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38106312426) build 与 deploy 均成功。上一批 Shared 真实场景回归也已在 SHA `895ee2b3324aae7cde21a6a41b74c882dfae7227` 的 Runtime/Web Demo 完成验证。
 - 下一步：若通过，评估完整 Wukong → Eagle Sorrow → Longma → Memory 的可玩垂直切片与 Memory 入口。
 
+### Round 45 — 2026-10-11：Read-Only Memory Playback Entry
+- 自检发现 Journey 的 `list` 只声明为变量，却没有在动态 UI 中创建；`_play_selected_memory()` 检查的 `回忆:` 前缀也与 sidebar 使用的 `回忆 · ID` 不一致，所以已有 Memory unlock 数据没有可用播放入口。
+- 新增 `MemoryPlaybackSession`，仅沿对应 ORIGIN EventSequence 的主路径读取对白节点；选择、战斗、奖励、移动和世界动作节点只用于跳过到后续对白，不调用 EventRunner / BattleResolutionService，也不修改 NarrativeState。没有安全对白时回退到 Origin 章节摘要。
+- Journey 新增章节/回忆列表、选中回忆后启动播放、逐字阅读和明确完成动作；播放期间锁定队伍/地图/手动保存入口。只有显式完成才移入 played 列表并保存。
+- 存档失败会恢复回放前完整 NarrativeState，并保留最后一条对白供玩家重试；测试验证共享章节、completed chapters、招募队伍和全球时间线保持不变。
+- 新增 `combat/test_memory_playback.gd` 并注册到 Runtime suite；本批精确 SHA 的 Godot Runtime / Web Demo 状态待 Actions 验证。
+- 下一步：通过后串联 Wukong → Shared-03 鹰愁涧 → Longma 招募 → Memory 解锁/回放的端到端体验，再推进第一条完整可玩 Vertical Slice。
+
 ## 4. Wukong Origin 当前状态
 
 Production Sequence：`WUK-01~15` 全部存在。

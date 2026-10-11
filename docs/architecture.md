@@ -311,6 +311,13 @@ An optional or milestone-gated chapter focused on one character after recruitmen
 
 It may occur as a flashback, side route, personal quest or off-screen parallel story.
 
+## Memory / Flashback Playback
+
+Unlocked Origin memories are read-only presentations of past story content. Playback walks the matching ORIGIN EventSequence and presents dialogue nodes only; choice, battle, reward, move, wait and world-action nodes are skipped rather than executed. A chapter summary is the fallback when no safe dialogue path is available.
+
+The shared Journey chapter, completed shared chapters, recruited roster and global timeline must remain unchanged throughout playback. Completing a memory may move its ID from available to played, and that memory-flag change is only committed after a successful save. A save failure restores the pre-playback NarrativeState so the player can retry.
+
+
 ## Major Trial Chapter
 
 A major Journey to the West event such as White Bone Demon, Yellow Wind, Flaming Mountain or another large-scale mythological trial.

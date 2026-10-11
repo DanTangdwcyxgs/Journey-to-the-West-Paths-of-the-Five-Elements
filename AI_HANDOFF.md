@@ -267,7 +267,7 @@ Runner 输出的 `battle` 只生成 `EncounterHandoff` 数据，不直接启动 
 4. 非战斗 reward / move / wait 的副作用继续留在 RewardService / WorldActionService，不得移入 EventRunner。
 5. 逐步清理 BattleUI 旧 origin/shared 兼容结算职责与 BountyEncounterState，但不得破坏现有 Handoff + Resolution 兼容链。
 6. 当前核心叙事与恢复链稳定后推进 Camp / Relationship Prototype。
-7. 完成一个从角色起始路线到白龙马招募与 Memory 的完整 Vertical Slice。
+7. Memory 数据与招募解锁已存在，但此前 Journey 列表/点击入口未连通且会直接标记完成。本批正在补 read-only 对白回放、完成后保存与失败回滚；通过后再把 Memory 嵌入 Wukong → 鹰愁涧 → 白龙马招募的完整 Vertical Slice。
 
 ---
 
@@ -329,7 +329,7 @@ Runner 输出的 `battle` 只生成 `EncounterHandoff` 数据，不直接启动 
 
 ### Batch B — Journey Presentation & Runtime
 
-Journey END / chapter-completion feedback、Main Menu → WUK-02 battle / resume / END / Save、完整 EventSequence production catalog 质量门及 BattleResolutionService save-failure rollback regression 均已通过对应 SHA 的 Runtime / Web Demo。Shared-03 / Shared-05 / Shared-07 三场招募战的真实 SceneTree smoke 已通过 Runtime run [38106171552](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38106171552)（36/36，包含新 smoke）和 Web Demo run [38106171496](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38106171496)。chapter metadata 与 EventSequence namespace 的显式一致性校验已在提交 `3316ce96124ba7ff9e8a30f686e3d586b966a44a` 通过 Runtime run [38106312375](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38106312375)（36/36）与 Web Demo run [38106312426](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38106312426)。下一步评估 Wukong → Eagle Sorrow → Longma → Memory 的可玩垂直切片及 Memory 进入路径。
+Journey END / chapter-completion feedback、Main Menu → WUK-02 battle / resume / END / Save、完整 EventSequence production catalog 质量门、BattleResolutionService save-failure rollback、Shared-03 / Shared-05 / Shared-07 真实 SceneTree smoke 与 chapter namespace metadata consistency 均已通过对应 SHA 的 Runtime / Web Demo。当前 Memory 回放功能是本轮实现批次：旧入口未实际建立 ItemList 且点击处理器前缀不匹配，本批新增只读对白回放和存档失败回滚；本批精确提交 CI 完成前保持 Pending。
 
 ### Batch C — Narrative execution services
 

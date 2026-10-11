@@ -33,6 +33,7 @@ const TEST_SCRIPTS := [
 	"res://combat/test_shared_journey_battles.gd",
 	"res://combat/test_battle_resolution_service.gd",
 	"res://combat/test_journey_event_presentation.gd",
+	"res://combat/test_memory_playback.gd",
 	"res://combat/test_pixel_ui_font_contract.gd",
 	"res://combat/test_main_menu_journey_entry.gd",
 	"res://combat/test_main_menu_battle_resume_smoke.gd",

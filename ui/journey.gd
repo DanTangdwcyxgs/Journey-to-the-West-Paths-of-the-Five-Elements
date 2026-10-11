@@ -11,6 +11,8 @@ var origin_events := OriginEventManager.new()
 var shared_events := SharedEventManager.new()
 var party := PartyManager.new()
 var event_session: NarrativeEventSession
+var memory_playback_session: MemoryPlaybackSession
+var memory_playback_state_snapshot: Dictionary = {}
 var title_label: Label
 var phase_label: Label
 var chapter_label: Label
@@ -124,8 +126,16 @@ func _build_ui() -> void:
 	chapter_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	header.add_child(chapter_label)
 
+	var sidebar_title := _label("章节进度 / 可回忆", 12, MUTED)
+	root.add_child(sidebar_title)
+	list = ItemList.new()
+	list.name = "JourneyChapterMemoryList"
+	list.custom_minimum_size = Vector2(0, 88)
+	list.item_selected.connect(_on_sidebar_item_selected)
+	root.add_child(list)
+
 	var spacer := Control.new()
-	spacer.custom_minimum_size = Vector2(0, 250)
+	spacer.custom_minimum_size = Vector2(0, 78)
 	spacer.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	root.add_child(spacer)
 
@@ -164,7 +174,8 @@ func _build_ui() -> void:
 	dialogue_root.add_child(action_row)
 
 	memory_button = Button.new()
-	memory_button.text = "回忆"
+	memory_button.text = "播放回忆"
+	memory_button.disabled = true
 	memory_button.custom_minimum_size = Vector2(90, 36)
 	memory_button.pressed.connect(_play_selected_memory)
 	action_row.add_child(memory_button)
@@ -223,6 +234,9 @@ func _current_route() -> Array:
 	return origin.get_chapters(narrative.state.starting_character)
 
 func _advance_primary() -> void:
+	if memory_playback_session != null:
+		_advance_memory_playback()
+		return
 	if event_session != null:
 		_advance_event_session()
 		return
@@ -418,19 +432,116 @@ func _memory_preview(character_id: String) -> Array[String]:
 		result.append(str(chapters[i].get("id", "")))
 	return result
 
+func _on_sidebar_item_selected(index: int) -> void:
+	if memory_playback_session != null or memory_button == null or list == null:
+		return
+	var row := list.get_item_text(index)
+	var is_memory := not _memory_id_from_row(row).is_empty()
+	memory_button.disabled = not is_memory
+	memory_button.text = "播放回忆" if is_memory else "回忆"
+
+func _memory_id_from_row(row: String) -> String:
+	var prefix := "回忆 · "
+	if not row.begins_with(prefix):
+		return ""
+	var memory_id := row.substr(prefix.length()).strip_edges()
+	var title_separator := memory_id.find(" · ")
+	if title_separator >= 0:
+		memory_id = memory_id.substr(0, title_separator).strip_edges()
+	return memory_id
+
 func _play_selected_memory() -> void:
+	if memory_playback_session != null or list == null:
+		return
 	var selected := list.get_selected_items()
 	if selected.is_empty():
 		return
-	var row := list.get_item_text(selected[0])
-	if not row.begins_with("回忆:"):
+	var memory_id := _memory_id_from_row(list.get_item_text(selected[0]))
+	if memory_id.is_empty() or not narrative.can_enter_memory(memory_id):
 		return
-	var memory_id := row.replace("回忆: ", "").replace(" [可回忆]", "")
-	if narrative.can_enter_memory(memory_id):
-		narrative.begin_memory(memory_id)
-		narrative.finish_memory(memory_id)
-		narrative.save()
+
+	var starting_snapshot := narrative.serialize().duplicate(true)
+	var playback := MemoryPlaybackSession.new()
+	if not playback.start(narrative, memory_id):
+		phase_label.text = "这段回忆暂时无法打开。"
+		return
+
+	memory_playback_state_snapshot = starting_snapshot
+	memory_playback_session = playback
+	_clear_choices()
+	_set_memory_playback_controls(true)
+	_render_memory_playback_entry()
+
+func _set_memory_playback_controls(playing: bool) -> void:
+	if memory_button != null:
+		memory_button.disabled = playing
+	if party_button != null:
+		party_button.disabled = playing
+	if world_button != null:
+		world_button.disabled = playing
+	if save_button != null:
+		save_button.disabled = playing
+	if primary_button != null:
+		primary_button.disabled = false
+
+func _render_memory_playback_entry() -> void:
+	if memory_playback_session == null:
+		return
+	var entry := memory_playback_session.get_current_entry()
+	if entry.is_empty():
+		phase_label.text = "回忆内容为空，无法继续。"
+		return
+	phase_label.text = "人物回忆 · %s · %d/%d" % [
+		memory_playback_session.chapter_title,
+		memory_playback_session.get_current_position(),
+		memory_playback_session.get_total_entries(),
+	]
+	chapter_label.text = "回忆 · %s" % memory_playback_session.chapter_id
+	event_meta_label.text = "历史回放 · 不执行选择、战斗或奖励"
+	_set_dialogue(str(entry.get("speaker", "旁白")), str(entry.get("text", "")))
+	primary_button.text = "完成回忆" if memory_playback_session.is_last_entry() else "继续回忆"
+	primary_button.disabled = false
+
+func _advance_memory_playback() -> void:
+	if memory_playback_session == null:
+		return
+	if dialogue_revealing:
+		_reveal_dialogue_immediately()
+		return
+	if not memory_playback_session.is_last_entry():
+		if memory_playback_session.advance():
+			_render_memory_playback_entry()
+		return
+	_finish_memory_playback()
+
+func _finish_memory_playback() -> void:
+	if memory_playback_session == null:
+		return
+	if not memory_playback_session.shared_context_unchanged():
+		var changed_title := memory_playback_session.chapter_title
+		memory_playback_session = null
+		memory_playback_state_snapshot.clear()
+		_set_memory_playback_controls(false)
 		_refresh()
+		phase_label.text = "回忆期间西游状态发生变化，未记录本次回放：%s" % changed_title
+		return
+
+	var chapter_id := memory_playback_session.chapter_id
+	var chapter_title := memory_playback_session.chapter_title
+	if not narrative.finish_memory(chapter_id):
+		phase_label.text = "这段回忆已不在可回忆列表中。"
+		return
+	if not narrative.save():
+		narrative.restore_snapshot(memory_playback_state_snapshot)
+		phase_label.text = "保存失败，回忆尚未完成；再按一次重试。"
+		primary_button.text = "重试保存"
+		return
+
+	memory_playback_session = null
+	memory_playback_state_snapshot.clear()
+	_set_memory_playback_controls(false)
+	_refresh()
+	phase_label.text = "回忆完成 · %s · 西游进度未改变" % chapter_title
 
 func _open_party() -> void:
 	get_tree().change_scene_to_file("res://ui/party_screen.tscn")
@@ -528,6 +639,9 @@ func _refresh_sidebar() -> void:
 	if list == null:
 		return
 	list.clear()
+	if memory_button != null:
+		memory_button.disabled = true
+		memory_button.text = "播放回忆"
 	for chapter in _current_route():
 		var id := str(chapter.get("id", ""))
 		var chapter_title := str(chapter.get("title", ""))

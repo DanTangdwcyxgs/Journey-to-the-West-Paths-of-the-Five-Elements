@@ -5,6 +5,9 @@ extends JourneyScreen
 ## All non-migrated Origin chapters continue through JourneyScreen's legacy path.
 
 func _advance_primary() -> void:
+	if memory_playback_session != null:
+		super._advance_primary()
+		return
 	if event_session != null:
 		super._advance_primary()
 		return
