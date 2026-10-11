@@ -381,7 +381,7 @@ Wukong progression 修正后的完整 Runtime 已成功通过上一轮验证；�
 - 在成功路径集成测试通过后补上负向事务回归，使用 `SaveFailingNarrativeManager` 强制 Journey MOVE 的 save() 返回失败。
 - 通过生产 Shared-04 EventSequence 的 departure dialogue 进入 MOVE 节点，启动真实 Journey UI 移动过渡。
 - 断言保存失败后 NarrativeState 与原始 world location 完全恢复、当前位置仍为 FIVE_ELEMENTS_MOUNTAIN、EventSession 游标仍停留在 MOVE，且过渡锁解除、主按钮显示“重试移动”。
-- Shared-04 MOVE → WorldMap 成功路径已通过提交 `0aa7d6bffb22c03d05f51d95a09ee3e57f1927d5` 的 Runtime 40/40 和 Web Demo build/deploy；本次新增加载失败回归的精确 SHA 结果待 Actions。
+- Shared-04 MOVE → WorldMap 成功路径已通过提交 `0aa7d6bffb22c03d05f51d95a09ee3e57f1927d5` 的 Runtime 40/40 和 Web Demo build/deploy；保存失败回滚也已在提交 `1b84b1abcf668b9d2d96412822fa00c7a43a9ecc` 通过 Runtime [38116864150](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38116864150)（41/41）和 Web Demo [38116864144](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38116864144) build/deploy。
 - Shared-04 Story MOVE save-failure rollback 的精确提交 `1b84b1abcf668b9d2d96412822fa00c7a43a9ecc` 的 Runtime run [38116864150](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38116864150) 通过并输出 `PASS res://combat/test_story_move_save_failure_rollback.gd`、`RUNTIME_SUITE_PASS tests=41`；Web Demo run [38116864144](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38116864144) build/deploy 成功。
 - 下一步：把可选探索/传闻/悬赏战的真实 UI 分支接入回归，并确认它不会推进共享主线或全球时间线。
 
@@ -413,7 +413,7 @@ Wukong progression 修正后的完整 Runtime 已成功通过上一轮验证；�
 - 新增 `combat/test_shared_opening_to_black_wind_smoke.gd`，从 Wukong Origin 完成后的 canonical Shared-01 存档，通过真实 MainMenu Continue 进入 Journey。
 - 测试按生产 EventSequence / Journey UI 依次完成 Shared-01（五行山 MOVE / Trust Wukong）、Shared-02（Keep Moving）、Shared-03（鹰愁涧 MOVE / Longma choice / 生产 BattleUI victory / 回到战后对话并 END）、Shared-04（黑风山北道 MOVE / wait / END）。
 - 每条 Story MOVE 都必须保存并经 NarrativeManager 重载确认；最终 save 需停在 Shared-05，保留 Shared-01..04 完成记录，global timeline 推进、Longma 已招募且 LONGMA-01/02 回忆解锁，WorldMap current location = BLACK_WIND_NORTH_PATH。
-- 上一批五个主线 MOVE markers 在 commit `5e0e11ca890e1469e8b88fd2121c55c10e6f32d4` 已通过 Runtime 42/42 与 Web Demo build/deploy；本批单存档 arc smoke 精确 SHA 的 Runtime / Web Demo 结果待 Actions。
+- 上一批五个主线 MOVE markers 在 commit `5e0e11ca890e1469e8b88fd2121c55c10e6f32d4` 通过 Runtime 42/42 与 Web Demo build/deploy。本批精确提交 `7b1b08a83448419f9cbd867cd15b7dd1f5905a06` 的 Runtime run [38118079231](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38118079231) 通过并记录 `PASS res://combat/test_shared_opening_to_black_wind_smoke.gd`、`RUNTIME_SUITE_PASS tests=43`；同一 SHA 的 Web Demo run [38118079238](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38118079238) build/deploy 均成功。
 - 下一步：通过后继续确认可选探索/悬赏返回后从 Shared-04/05 接续时不会丢失主线章节游标，再进入纵向切片的节奏/演出评审。
 
 ## 4. Wukong Origin 当前状态

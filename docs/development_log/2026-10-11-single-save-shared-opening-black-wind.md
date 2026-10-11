@@ -39,7 +39,7 @@ The player experiences these chapters as one connected journey; testing each cha
 - Expected Runtime suite entries: 43.
 
 ## Godot Runtime status
-**PENDING** — only mark green after the exact implementation SHA passes Runtime and Web Demo.
+**PASS** — exact implementation commit `7b1b08a83448419f9cbd867cd15b7dd1f5905a06`. Godot Runtime run [38118079231](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38118079231) passed with `PASS res://combat/test_shared_opening_to_black_wind_smoke.gd` and `RUNTIME_SUITE_PASS tests=43`. Web Demo run [38118079238](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38118079238) build and deploy both passed.
 
 ## Known issues
 - Origin WUK-01..WUK-15 are seeded with the canonical manager progression rather than replayed through the full Origin UI; production WUK-15 END → Shared-01 is separately covered by its SceneTree smoke.
