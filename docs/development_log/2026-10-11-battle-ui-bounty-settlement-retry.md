@@ -39,17 +39,17 @@ The service-level transaction and the UI retry control form one player-facing re
 - The ordinary continue action after a successful settlement should leave the battle scene without another save, combat replay, or duplicate reward/journal entry.
 
 ## Godot Runtime status
-**PENDING** — this new regression must pass on the exact implementation SHA before being marked complete. The previous 47/47 Runtime result validates only the parent code, not this new UI test.
+**PASS** — exact implementation commit `11ed7f160e3c7cf2dd8e6f6140b95aae1df18541`. Godot Runtime run [38129703559](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38129703559) passed with `PASS res://combat/test_battle_ui_bounty_settlement_retry.gd` and `RUNTIME_SUITE_PASS tests=48`.
 
 ## Web Demo status
-**PENDING** — verify build/deploy for the exact implementation SHA. The runtime UI path is exercised by the headless Godot suite; Web Demo also serves as an export/build regression.
+**NOT RUN on the PR head** — `.github/workflows/web-demo.yml` runs on pushes to `main` and `workflow_dispatch`, not `pull_request`. This is not a pass claim; verify the Web Demo build/deploy on the main-branch push after merge.
 
 ## Known issues
 - The battle victory itself is driven by the production engine signal rather than manually playing all turns; this test focuses on settlement/retry and scene-boundary behavior, not combat balance.
 - BountyManager status is still reconstructed from the battle journal/save context rather than serialized directly into NarrativeState; this batch intentionally does not redesign that compatibility boundary.
 
 ## Next step
-After exact-SHA Runtime and Web Demo validation, return to the planned vertical-slice experience review: pacing, interactive exploration, and final character PNG/WebP asset review.
+After the main-branch Web Demo build/deploy is verified, return to the planned vertical-slice experience review: pacing, interactive exploration, and final character PNG/WebP asset review.
 
 ## Handoff point
 The production BattleUI retry control now has a dedicated SceneTree regression; use its exact Actions status as the gate before extending bounty rewards or adding more dungeon mechanics.
