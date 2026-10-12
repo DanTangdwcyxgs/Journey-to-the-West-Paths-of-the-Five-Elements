@@ -36,17 +36,17 @@ The mainline and optional targets intentionally share the generic bounty battle 
 - Expected Runtime suite entries: 50.
 
 ## Godot Runtime status
-PENDING — validate the exact new branch head. The prior branch head is not sufficient evidence for this change.
+**PASS** — exact test/implementation head `911be5faad001551b330675cf6208b556ac9d82f`; [Godot Runtime run 38194393891](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38194393891) passed with `RUNTIME_SUITE_PASS tests=50` and `PASS res://combat/test_yellow_wind_king_settlement_retry.gd`.
 
 ## Web Demo status
-PENDING — check the workflow result for the exact new branch head; the latest implementation-only changes require fresh validation.
+**NOT RUN on this feature branch** — the pull-request workflow runs Godot Runtime but not the Web Demo build/deploy workflow. Verify Web Demo only after an authorized merge/main-branch push.
 
 ## Known issues
 - This test drives the production victory callback after setting a deterministic post-combat inventory; it validates settlement boundaries, not battle balance or turn-by-turn combat.
 - Final character PNG/WebP assets remain separate art work and are not substituted with placeholder SVGs.
 
 ## Next step
-After the exact head passes Runtime, recheck the full PR diff and validate the PR head. Do not merge PR #25. Then return to the product-facing vertical-slice audit: Shared-02 → optional exploration → Shared-03 pacing, region entry / interactions, and final character art review.
+Runtime is green for exact test/implementation SHA `911be5faad001551b330675cf6208b556ac9d82f`. Recheck the full PR #25 diff and the newest branch-head Actions after this documentation-only follow-up. Do not merge PR #25. Then return to the product-facing vertical-slice audit: Shared-02 → optional exploration → Shared-03 pacing, region entry / interactions, and final character art review.
 
 ## Handoff point
 Use this regression as the mainline-specific complement to the existing Cave roundtrip and optional bounty retry tests. Preserve the ID boundary: BOUNTY_YELLOW_FANG is optional; YELLOW_WIND_KING alone completes the Yellow Wind Ridge gate. The next agent starts by reading this file and the current exact-head Actions result.

@@ -528,11 +528,11 @@ Inspect the exact-head CI logs. If both the production cave roundtrip and WorldM
 - Runtime suite expected entries: 50.
 
 ### Validation gate
-- Current branch before this batch was 0a39e14dca4c6aae7ff44365d959434790c008cb and passed Runtime run [38193702378](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38193702378), but that result does not cover the new test.
-- Exact new head must pass Runtime. Do not mark pending validation as success.
+- Test/implementation SHA `911be5faad001551b330675cf6208b556ac9d82f` passed exact-head Godot Runtime run [38194393891](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38194393891): `PASS res://combat/test_yellow_wind_king_settlement_retry.gd` and `RUNTIME_SUITE_PASS tests=50`.
+- The first test-only commit had one brittle assertion about the initial button label; it was corrected, and the result above applies to the corrected SHA. Web Demo is not run by the PR workflow; do not claim a feature-branch deploy.
 - PR #25 stays open; do not merge without explicit user permission.
 
 ### Next Agent
-1. Check the exact branch-head Runtime result and inspect the full diff for regressions.
-2. If Runtime is green, keep the mainline/optional target IDs separate and proceed to the player-facing review of Shared-02 → optional rumors → Shared-03.
-3. Continue region-entry / interactive exploration and final character PNG/WebP asset review without introducing unrelated Camp/Relationship work.
+1. Inspect the full PR #25 diff and check the latest branch-head Actions after the documentation-only follow-up; the tested code SHA `911be5faad001551b330675cf6208b556ac9d82f` is green at Runtime 50/50.
+2. Preserve the separation of optional and mainline target IDs. Do not merge PR #25 without explicit user permission.
+3. Continue the player-facing review of Shared-02 → optional rumors → Shared-03, then region-entry / interactive exploration and final character PNG/WebP asset review. Do not start unrelated Camp/Relationship work.
