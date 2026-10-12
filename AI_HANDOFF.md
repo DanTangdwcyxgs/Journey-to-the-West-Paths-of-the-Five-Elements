@@ -517,11 +517,11 @@ Shared-02 completes at timeline `105`, but the WorldMap node `EAGLE_SORROW` and 
 
 ### Change
 - Lower only the optional exploration availability thresholds for the Eagle Sorrow map node and Yellow Fang rumor to timeline 105. Shared-03's canonical chapter and recruitment milestone remain at timeline 110.
-- Add a production WorldMap SceneTree regression from the real post-Shared-02 state: travel to Eagle Sorrow, hear/discover the optional rumor, verify the bounty affordance, save/reload, and assert Shared-03, timeline 105, and completed chapter history are unchanged.
+- Add a production WorldMap SceneTree regression from the real post-Shared-02 state: travel to Eagle Sorrow, hear/discover the optional rumor, launch and win the actual optional bounty battle, return to WorldMap, save/reload, and assert Shared-03, timeline 105, and completed chapter history are unchanged.
 - Update the static WorldMap manager regression to use the post-Shared-02 timeline before testing Eagle Sorrow access.
 
 ### Validation
-- This batch's new exact head must pass Godot Runtime; do not reuse earlier 49/50-test results as evidence for the new test.
+- PASS: exact test head `529a9d2a2a24da5d55082078fcd3bc9e2aa515f8`, [Godot Runtime 38209253477](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38209253477), `RUNTIME_SUITE_PASS tests=51`. The preceding access-only head `77e2132308efe61ea2afe364e88ada05b612c6d7` also passed 51/51 in [38209146632](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38209146632). Do not reuse these results as validation of any later SHA.
 - PR #25 remains open and unmerged. No Web Demo run is claimed for the feature branch.
 
 ### Next
