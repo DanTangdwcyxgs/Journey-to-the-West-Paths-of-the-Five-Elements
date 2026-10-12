@@ -612,3 +612,11 @@ Wukong、Tang、Longma、Bajie、Wujing 五条 Origin Route 均已完成首轮 S
 - 关键身份规则：`BOUNTY_YELLOW_FANG` 是可选黄牙老妖，`YELLOW_WIND_KING` 是主线黄风妖王；任何阶段、handoff、击败日志和 gate 判定不得重新混用这两个 ID。PR #25 未合并前 main 仍可能保留旧实现，审计应以 PR 分支为准。
 - 本次为文档交接更新，不声称新 head 已通过 CI；提交后必须检查精确新 SHA 的 Runtime 结果。PR #25 保持未合并。
 - 下一步：按 `AI_HANDOFF.md` 第 16 节执行黄风岭阶段 / Save-Load regression audit，完成后继续更新开发日志、索引、AI_MEMORY 与 handoff。
+
+
+### Round 69 — 2026-10-12: Yellow Wind King settlement rollback and resume audit
+- Audited PR #25 after splitting optional BOUNTY_YELLOW_FANG from the mainline YELLOW_WIND_KING. The existing production cave roundtrip covers prior optional-bounty victory, normal encounter, mainline boss, and scene return, but retry-on-save-failure coverage used only the optional bounty identity.
+- Added a production BattleUI SceneTree regression that forces the first YELLOW_WIND_KING settlement save to fail, asserts exact NarrativeState/BountyManager rollback and no gate completion, then presses the real retry button and checks a single mainline journal entry while preserving the independent optional bounty.
+- The test then performs a fresh NarrativeManager load and reloads the production Cave and Ridge screens, confirming final room cursor, Ridge 4/4 completion, and unchanged Shared chapter, global timeline, and roster.
+- Expected Runtime suite count is 50. The exact new branch head must pass Godot Runtime before this batch is marked validated; do not merge PR #25.
+- Next step: check exact-head CI and re-review the PR diff, then return to player-facing Shared-02 → optional exploration → Shared-03 pacing, region interactions, and final character asset review.

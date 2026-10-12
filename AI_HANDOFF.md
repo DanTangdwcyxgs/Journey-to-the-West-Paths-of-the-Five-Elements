@@ -517,3 +517,22 @@ Inspect the exact-head CI logs. If both the production cave roundtrip and WorldM
 - 阶段 / gate / 房间游标在胜利、失败、保存失败和重新加载后没有可复现的不一致。
 - 新增或更新的回归测试覆盖已确认边界；精确 head Runtime CI 有结果。
 - 开发日志、索引、长期记忆和本文件互相指向一致。
+
+
+## 19. 2026-10-12 Yellow Wind King Settlement / Save-Resume Audit
+
+### Implementation
+- Added a production BattleUI SceneTree test for YELLOW_WIND_KING settlement save failure, retry, distinct journal identity, and Ridge gate completion.
+- The fixture begins with BOUNTY_YELLOW_FANG already defeated so its optional history must survive the failed mainline transaction and the successful retry.
+- The test reloads the save through a fresh NarrativeManager and the production Cave → Ridge screens; it asserts final room/stage state and preserves the fixed Shared chapter, timeline, and roster.
+- Runtime suite expected entries: 50.
+
+### Validation gate
+- Current branch before this batch was 0a39e14dca4c6aae7ff44365d959434790c008cb and passed Runtime run [38193702378](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38193702378), but that result does not cover the new test.
+- Exact new head must pass Runtime. Do not mark pending validation as success.
+- PR #25 stays open; do not merge without explicit user permission.
+
+### Next Agent
+1. Check the exact branch-head Runtime result and inspect the full diff for regressions.
+2. If Runtime is green, keep the mainline/optional target IDs separate and proceed to the player-facing review of Shared-02 → optional rumors → Shared-03.
+3. Continue region-entry / interactive exploration and final character PNG/WebP asset review without introducing unrelated Camp/Relationship work.
