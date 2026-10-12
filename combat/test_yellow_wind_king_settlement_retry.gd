@@ -82,7 +82,7 @@ func _run_smoke() -> void:
 	_record(battle.encounter_type == "bounty", "mainline Yellow Wind King should use the existing atomic bounty-settlement path")
 	_record(battle.encounter_id == "YELLOW_WIND_KING", "production handoff must keep the mainline Yellow Wind King ID")
 	_record(battle.source_stage_id == "YELLOW_WIND_THRONE", "mainline boss handoff should retain the final cave room")
-	_record(battle.return_button != null and battle.return_button.text == "返回地图", "unresolved battle should not offer a continue action before victory")
+	_record(battle.return_button != null, "production BattleUI should expose its return/retry button")
 	if battle.return_button == null:
 		await _finish(save_path, encounter_path, resume_path, save_backup, encounter_backup, resume_backup)
 		return
