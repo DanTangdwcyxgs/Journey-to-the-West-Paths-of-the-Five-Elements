@@ -59,6 +59,30 @@ func _run_smoke() -> void:
 			_record(not world_map.bounty_button.disabled, "the discovered optional bounty should be challengeable at Eagle Sorrow")
 			_record(world_map.bounty_label.text.find("不推进西游主线") >= 0, "the UI should keep the optional bounty explicitly separate from mainline progression")
 
+			var optional_challenge_button := world_map.bounty_button
+			optional_challenge_button.emit_signal("pressed")
+			var battle := await _wait_for_battle()
+			_record(battle != null, "the optional bounty should launch the production BattleUI before Shared-03")
+			if battle != null:
+				_record(battle.encounter_type == "bounty", "the early optional fight should use the bounty resolution path")
+				_record(battle.encounter_id == "BOUNTY_YELLOW_FANG", "the early optional fight should retain the optional Yellow Fang ID")
+				battle.call_deferred("_on_combat_finished", "allies")
+				for _frame in range(12):
+					await process_frame
+					if battle.encounter_resolved:
+						break
+				_record(battle.encounter_resolved, "the optional bounty should resolve through the production victory callback")
+				_record(battle.return_button != null and battle.return_button.text == "返回地图", "the optional fight should return to WorldMap, not advance Journey")
+				if battle.return_button != null:
+					battle.return_button.emit_signal("pressed")
+					world_map = await _wait_for_world_map()
+					_record(world_map != null, "optional bounty victory should return to the production WorldMap")
+					if world_map != null:
+						_record(str(world_map.narrative.state.get_world_state().get("current_location", "")) == "EAGLE_SORROW", "optional bounty return should preserve Eagle Sorrow")
+						_record(world_map.narrative.state.current_global_timeline == 105, "optional bounty victory before Shared-03 must not advance the global timeline")
+						_record(world_map.narrative.state.current_shared_chapter == "SHARED-03-EAGLE-SORROW", "optional bounty victory must leave Shared-03 as the next canonical chapter")
+						_record("BOUNTY_YELLOW_FANG" in world_map.narrative.state.get_journey_log().get("defeated_targets", []), "optional bounty victory should record only its own defeated-target ID")
+
 			var persisted := NarrativeManager.new()
 			_record(persisted.load(), "the early optional exploration should leave a reloadable save")
 			if persisted.state != null:
@@ -90,6 +114,20 @@ func _find_node(world_map: WorldMapScreen, label: String) -> int:
 		if world_map.node_list.get_item_text(index).find(label) >= 0:
 			return index
 	return -1
+
+func _wait_for_battle() -> BattleUI:
+	for _frame in range(45):
+		await process_frame
+		if current_scene is BattleUI:
+			return current_scene as BattleUI
+	return null
+
+func _wait_for_world_map() -> WorldMapScreen:
+	for _frame in range(45):
+		await process_frame
+		if current_scene is WorldMapScreen:
+			return current_scene as WorldMapScreen
+	return null
 
 func _capture_file(path: String) -> Dictionary:
 	var existed: bool = FileAccess.file_exists(path)
