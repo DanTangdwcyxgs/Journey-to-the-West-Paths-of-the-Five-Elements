@@ -64,6 +64,13 @@
           "type": "dialogue",
           "speaker": "孙悟空",
           "text": "走吧。俺老孙先护着师父赶路。等真正遇上妖怪，再看这一路要打多少架。",
+          "next": "exploration_signpost"
+        },
+        {
+          "id": "exploration_signpost",
+          "type": "dialogue",
+          "speaker": "孙悟空",
+          "text": "师父，若想先打听沿途传闻，也可以打开地图看看附近去处；不过鹰愁涧还在前头，咱们别耽搁太久。",
           "next": "finish"
         },
         {

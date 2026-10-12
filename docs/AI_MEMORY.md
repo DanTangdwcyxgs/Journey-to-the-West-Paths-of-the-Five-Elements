@@ -468,6 +468,14 @@ Wukong progression 修正后的完整 Runtime 已成功通过上一轮验证；�
 - 精确实现提交 `11ed7f160e3c7cf2dd8e6f6140b95aae1df18541` 的 Runtime run [38129703559](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38129703559) 已通过，输出 `PASS res://combat/test_battle_ui_bounty_settlement_retry.gd` 与 `RUNTIME_SUITE_PASS tests=48`。PR #23 随后合并为 main commit `79442c064362385afc41201a8458bf39efa9b199`；该主分支提交的 Runtime run [38129867693](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38129867693) 再次通过 48/48，Web Demo run [38129867663](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38129867663) 的 build、export、artifact upload 和 Pages deploy 全部成功，部署地址为 https://dantangdwcyxgs.github.io/Journey-to-the-West-Paths-of-the-Five-Elements/。
 - 下一步：Runtime 与 Web Demo 的主分支验证已通过；转回 Vertical Slice 的探索节奏、互动区域和正式角色视觉资产评审，继续遵守战斗结算由 Service 原子提交、Presentation 不拥有规则的边界。
 
+### Round 62 — 2026-10-12：Shared Opening Exploration Signposting / WorldMap Atomicity
+- 审查第一条 WUK-15 → Shared-01..04 → Longma Memory 纵向切片后，发现 Shared-02 序列结束前没有提示可选地图传闻；Journey MOVE 仍显示内部 marker ID；活动 EventSequence 期间可切走并丢失内存中的 Runner；WorldMap 听传闻改了 NarrativeState 却忽略 save() 失败，悬赏名称还暴露内部 ID。
+- Shared-02 增加短的悟空 signpost，明确“地图/传闻可选，鹰愁涧仍是下一主线”；Journey MOVE 使用 WorldMapManager 的正式地点名；活动序列锁住队伍/地图/保存/返回菜单，序列结束时释放，空 action 出错状态仍可退出。
+- WorldMap 加载 bounties.json 的显示名，明确“可选悬赏（不推进西游主线）”；传闻发现前做完整 NarrativeState snapshot，save 失败回滚并留下可重试传闻。
+- 增加/扩展 Shared EventRunner、Journey Presentation、WorldMap rumor→bounty→return 回归与新 rumor save-failure regression；Runtime suite 预期 49 项。
+- 当前集成分支 Runtime/Web Demo 状态需以本轮精确 SHA 结果为准；此前分散分支的成功结果不可替代合并集成验证。
+- 下一步：验证完整集成后，实际检查 Shared-02 → optional exploration → Shared-03 的节奏与可达性，再推进区域进入/互动探索和正式角色 PNG/WebP 评审。
+
 ## 4. Wukong Origin 当前状态
 
 Production Sequence：`WUK-01~15` 全部存在。
