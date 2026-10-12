@@ -118,6 +118,9 @@ func _run_smoke() -> void:
 							if after_boss.state != null:
 								_record("YELLOW_WIND_KING" in after_boss.state.get_journey_log().get("defeated_targets", []), "mainline Yellow Wind King defeat should persist under its own battle journal ID")
 								_record("YELLOW_WIND_GATE_OPEN" in after_boss.state.completed_milestones, "boss victory should retain the cave's opened-gate milestone")
+								var ridge_after_boss := YellowWindRidgeManager.new()
+								_record(bool(ridge_after_boss.get_stage("YELLOW_WIND_GATE", after_boss).get("completed", false)), "mainline boss victory should complete the Yellow Wind Ridge gate under its own ID")
+								_record("BOUNTY_YELLOW_FANG" in after_boss.state.get_journey_log().get("defeated_targets", []), "the prior optional bounty journal entry should remain separate and intact")
 								_record(after_boss.state.current_shared_chapter == shared_chapter_before, "boss victory must not advance the Shared chapter")
 								_record(after_boss.state.current_global_timeline == timeline_before, "boss victory must not advance global chronology")
 								_record(after_boss.state.completed_shared_chapters == completed_shared_before, "boss victory must not alter the completed Shared chapter history")

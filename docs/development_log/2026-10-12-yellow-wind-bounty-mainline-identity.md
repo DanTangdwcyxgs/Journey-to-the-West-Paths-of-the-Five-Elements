@@ -12,6 +12,7 @@ Ensure an optional early bounty cannot mark the later Yellow Wind Cave mainline 
 - Kept `BOUNTY_YELLOW_FANG` as the optional bounty identity and renamed its player-facing title to “黄牙老妖”.
 - Added a distinct `YELLOW_WIND_KING` mainline boss definition, named “黄风妖王”, with its own encounter/journal ID and mainline status.
 - Changed the cave's defeat gate and boss handoff to use `YELLOW_WIND_KING`; optional bounty completion no longer closes the cave boss gate.
+- Updated `YellowWindRidgeManager` and its stage metadata to use the same mainline boss ID, so the regional gate is marked complete only by the mainline boss defeat. The cave roundtrip now asserts Ridge stage completion and preservation of the optional bounty record.
 - Extended the production cave battle roundtrip fixture to start with the optional bounty already defeated, assert the mainline boss remains available, and assert mainline victory records only `YELLOW_WIND_KING`.
 - Updated the WorldMap production smoke to assert the optional bounty is displayed as “黄牙老妖”.
 
@@ -40,13 +41,13 @@ A side objective and a canonical story boss are separate gameplay facts even if 
 - WorldMap rumor-to-bounty smoke verifies the optional target's correct name.
 
 ## Godot Runtime status
-**PASS** — implementation head `e572f2b6149100a7d37ade917ecc9e74c14e4de0`; [Godot Runtime run 38193002843](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38193002843) reports `RUNTIME_SUITE_PASS tests=49`. Logs confirm `test_world_map_rumor_bounty_return.gd`, `test_yellow_wind_cave_battle_roundtrip.gd`, and `test_battle_ui_bounty_settlement_retry.gd` all pass. A docs-only follow-up must also pass its exact-head Runtime before marking the PR ready.
+**PASS for intermediate head only** — implementation head `e572f2b6149100a7d37ade917ecc9e74c14e4de0`; [Godot Runtime run 38193002843](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38193002843) reports `RUNTIME_SUITE_PASS tests=49`. A subsequent audit found `YellowWindRidgeManager` still read the optional bounty ID, so the latest follow-up changes that manager and adds a regression assertion; the current head must pass its own Runtime before this batch is complete.
 
 ## Web Demo status
 Not run on feature branches by workflow design; check the main branch after merge.
 
 ## First validation attempt
-- Run [38192876862](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38192876862) failed: the boss-button assertion ran in the preceding normal encounter room, and the existing bounty-settlement retry test still expected the old optional target name “黄风妖王”. The production WorldMap bounty test and bounty reward atomicity test passed. Both assertions were corrected in the follow-up commit; the new exact head still requires Runtime validation.
+- Run [38192876862](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38192876862) failed: the boss-button assertion ran in the preceding normal encounter room, and the existing bounty-settlement retry test still expected the old optional target name “黄风妖王”. The production WorldMap bounty test and bounty reward atomicity test passed. Both assertions were corrected in the follow-up commit; the subsequent exact head passed Runtime; a follow-up review then found the regional Ridge manager still referenced the legacy optional ID, so this additional fix and assertion must also pass its own exact-head Runtime.
 
 ## Known issues
 - Existing saves that already contain `BOUNTY_YELLOW_FANG` as defeated will now correctly treat only the optional target as defeated. A mainline boss defeated in an older save under the shared legacy ID may require a migration if such saves exist in active use.
