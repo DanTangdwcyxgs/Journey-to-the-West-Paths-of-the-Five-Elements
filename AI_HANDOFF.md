@@ -526,3 +526,11 @@ Shared-02 completes at timeline `105`, but the WorldMap node `EAGLE_SORROW` and 
 
 ### Next
 Runtime has now verified the post-Shared-02 detour and that Journey resumes at Shared-03. Next, do the player-facing visual review and prepare final character asset delivery: the repository has six character SVG placeholders and no `assets/art/characters/final/` PNG/WebP assets. Follow `docs/visual_reference/README.md`; do not treat placeholders as final art.
+
+
+## 2026-10-12 Visual Asset Source Audit (PR #25)
+
+- Audited the six character SVG placeholders and the catalog / visual contract tests. They remain geometric placeholders; automated tests check resource loading and environment-layer markers, not visual quality.
+- Five humanoid placeholders use a 32×48 logical viewBox; Longma uses a horizontal 40×32 viewBox. Review actual in-game scale rather than forcing Longma into a humanoid frame.
+- No final character PNG/WebP or player-facing screenshot artifact is present in the reviewed branch. This was source inspection only, not a screenshot acceptance pass.
+- Delivery and review requirements are recorded in `docs/development_log/2026-10-12-character-asset-source-audit.md`. Next: deliver six separate transparent pixel-art assets, then run exact-head Runtime/Web Demo validation and inspect actual Journey/battle screenshots. Keep SVG fallbacks; do not merge PR #25 without explicit permission.
