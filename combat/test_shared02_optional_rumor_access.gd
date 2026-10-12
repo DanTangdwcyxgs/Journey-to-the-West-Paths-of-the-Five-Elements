@@ -23,6 +23,7 @@ func _run_smoke() -> void:
 	fixture.encounter_character("TANG")
 	fixture.encounter_character("WUKONG")
 	fixture.state.record_milestone("WUKONG_RECRUITED", 100)
+	fixture.state.mark_route_complete("WUKONG")
 	fixture.state.current_global_timeline = 105
 	fixture.state.set_current_shared_chapter("SHARED-03-EAGLE-SORROW")
 	fixture.state.completed_shared_chapters = ["SHARED-01-FIVE-ELEMENTS", "SHARED-02-EARLY-PILGRIMAGE"]
