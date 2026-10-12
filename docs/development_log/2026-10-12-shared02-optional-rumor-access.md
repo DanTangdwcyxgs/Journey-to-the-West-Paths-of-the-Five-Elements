@@ -10,7 +10,7 @@ Shared-02 commits timeline 105. The production Shared-02 sequence tells players 
 - Set the Eagle Sorrow exploration node threshold to timeline 105.
 - Set only the optional Yellow Fang rumor threshold to timeline 105.
 - Kept Shared-03 chapter/recruitment chronology at timeline 110.
-- Added `combat/test_shared02_optional_rumor_access.gd`, which opens the production WorldMap from a saved post-Shared-02 fixture, travels using the real map control, hears the rumor, verifies bounty discovery and optional labeling, launches and wins the real optional bounty battle, returns to WorldMap, then reloads the save and checks Shared-03/timeline/completed chapters remain unchanged.
+- Added `combat/test_shared02_optional_rumor_access.gd`, which opens the production WorldMap from a saved post-Shared-02 fixture, travels using the real map control, hears the rumor, verifies bounty discovery and optional labeling, launches and wins the real optional bounty battle, returns to WorldMap, reloads the save, then returns to Journey and verifies Continue starts `SHARED-03-EAGLE-SORROW-SEQUENCE`.
 - Updated `scripts/world/test_world_map_manager.gd` to use timeline 105 before checking Eagle Sorrow reachability.
 
 ## Why
@@ -32,4 +32,4 @@ The map affordance and narrative promise should match. This is an optional side 
 - Web Demo is not run by this PR workflow; no feature-branch deployment claim is made.
 
 ## Next
-After CI, verify the real optional bounty battle and return flow before Shared-03; then review final character art requirements. Existing character SVGs are placeholder assets; final PNG/WebP character art remains open.
+Next, perform player-facing screenshot review and final character asset delivery. The repository currently contains six character SVG placeholders and no `assets/art/characters/final/` PNG/WebP assets. `ArtAssetCatalog` already supports final PNG/WebP overrides; use `docs/visual_reference/README.md` as the acceptance checklist.
