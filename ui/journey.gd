@@ -29,6 +29,7 @@ var memory_button: Button
 var party_button: Button
 var world_button: Button
 var save_button: Button
+var back_button: Button
 var dialogue_full_text := ""
 var dialogue_visible_characters := 0
 var dialogue_revealing := false
@@ -214,11 +215,11 @@ func _build_ui() -> void:
 	save_button.custom_minimum_size = Vector2(76, 30)
 	save_button.pressed.connect(_save)
 	utility.add_child(save_button)
-	var back := Button.new()
-	back.text = "返回"
-	back.custom_minimum_size = Vector2(76, 30)
-	back.pressed.connect(_back_to_menu)
-	utility.add_child(back)
+	back_button = Button.new()
+	back_button.text = "返回"
+	back_button.custom_minimum_size = Vector2(76, 30)
+	back_button.pressed.connect(_back_to_menu)
+	utility.add_child(back_button)
 	var route_status := _label("个人序章 → 共享西游", 12, MUTED)
 	route_status.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	route_status.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
@@ -491,14 +492,14 @@ func _play_selected_memory() -> void:
 func _set_memory_playback_controls(playing: bool) -> void:
 	if memory_button != null:
 		memory_button.disabled = playing
-	if party_button != null:
-		party_button.disabled = playing
-	if world_button != null:
-		world_button.disabled = playing
-	if save_button != null:
-		save_button.disabled = playing
+	_set_event_navigation_locked(playing)
 	if primary_button != null:
 		primary_button.disabled = false
+
+func _set_event_navigation_locked(locked: bool) -> void:
+	for button in [party_button, world_button, save_button, back_button]:
+		if button != null:
+			button.disabled = locked
 
 func _render_memory_playback_entry() -> void:
 	if memory_playback_session == null:
@@ -668,10 +669,14 @@ func _refresh_sidebar() -> void:
 
 func _render_event_action(action: Dictionary) -> void:
 	if action.is_empty():
+		_set_event_navigation_locked(false)
 		chapter_label.text = "剧情运行失败"
 		_set_dialogue("", event_session.runner.get_error() if event_session != null else "未知错误", false)
 		primary_button.disabled = true
 		return
+	_set_event_navigation_locked(true)
+	if memory_button != null:
+		memory_button.disabled = true
 	var kind := str(action.get("kind", ""))
 	chapter_label.text = str(action.get("node_id", ""))
 	event_meta_label.text = "序列 %s · 节点 %s" % [str(action.get("sequence_id", "")), str(action.get("node_id", ""))]
@@ -718,13 +723,14 @@ func _render_event_action(action: Dictionary) -> void:
 			primary_button.disabled = false
 
 func _describe_move_action(action: Dictionary) -> String:
-	var map_id := str(action.get("map_id", "")).strip_edges()
 	var marker_id := str(action.get("marker_id", "")).strip_edges()
 	var description := "队伍准备离开当前地点，沿着新的路线继续前行。"
-	if not map_id.is_empty():
-		description += "\n目标地图：" + map_id
 	if not marker_id.is_empty():
-		description += "\n目标路标：" + marker_id
+		var destination := WorldMapManager.new().get_node(marker_id)
+		var destination_name := str(destination.get("name", marker_id)).strip_edges()
+		if destination_name.is_empty():
+			destination_name = marker_id
+		description += "\n目的地：" + destination_name
 	return description
 
 func _set_dialogue(speaker: String, text: String, typewriter := true) -> void:
@@ -755,6 +761,7 @@ func _render_event_choices(action: Dictionary) -> void:
 		choice_box.add_child(button)
 
 func _render_route_or_shared() -> void:
+	_set_event_navigation_locked(false)
 	if narrative.state.route_progress.get(narrative.state.starting_character, NarrativeState.ROUTE_LOCKED) == NarrativeState.ROUTE_COMPLETE:
 		phase_label.text = "共享旅途 · 队伍 %d/5" % party.roster.size()
 		var chapter := SharedJourneyManager.get_chapter(narrative.state.current_shared_chapter)

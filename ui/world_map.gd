@@ -3,6 +3,7 @@ extends Control
 
 var narrative := NarrativeManager.new()
 var world := WorldMapManager.new()
+var bounty_definitions: Dictionary = {}
 var node_list: ItemList
 var rumor_list: ItemList
 var detail_label: Label
@@ -21,8 +22,24 @@ func _ready() -> void:
 		return
 	world.ensure_initialized(narrative)
 	narrative.save()
+	_load_bounty_definitions()
 	_build_ui()
 	_refresh()
+
+func _load_bounty_definitions() -> void:
+	var file := FileAccess.open("res://data/world/bounties.json", FileAccess.READ)
+	if file == null:
+		push_error("WorldMapScreen failed to open bounty definitions")
+		return
+	var parsed = JSON.parse_string(file.get_as_text())
+	if not parsed is Dictionary:
+		push_error("WorldMapScreen invalid bounty definitions")
+		return
+	for entry in parsed.get("bounties", []):
+		if entry is Dictionary:
+			var bounty_id := str(entry.get("id", ""))
+			if bounty_id != "":
+				bounty_definitions[bounty_id] = entry.duplicate(true)
 
 func _build_ui() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -133,9 +150,9 @@ func _render_node(node: Dictionary) -> void:
 	detail_label.text = "%s\n\n%s\n\n节点时间：T%03d\n连接：%s" % [str(node.get("name",node_id)),str(node.get("description","")),int(node.get("timeline",0)),"、".join(node.get("connections",[]))]
 	var bounty_lines:Array[String] = []; var challengeable := false
 	for bounty_id in bounties:
-		var bid := str(bounty_id); var discovered: bool = bid in state.get("discovered_bounties",[]); var defeated: bool = bid in narrative.state.journey_log.get("defeated_targets",[]); var mark := "✓" if defeated else ("!" if discovered else "?"); bounty_lines.append("%s %s" % [mark,bid])
+		var bid := str(bounty_id); var discovered: bool = bid in state.get("discovered_bounties",[]); var defeated: bool = bid in narrative.state.journey_log.get("defeated_targets",[]); var mark := "✓" if defeated else ("!" if discovered else "?"); var bounty_definition: Dictionary = bounty_definitions.get(bid, {}); var bounty_name := str(bounty_definition.get("name", bid)); bounty_lines.append("%s %s" % [mark,bounty_name])
 		if discovered and not defeated and node_id == current and bid == "BOUNTY_YELLOW_FANG": selected_bounty_id = bid; challengeable = true
-	bounty_label.text = "悬赏：%s\n" % ("、".join(bounty_lines) if not bounty_lines.is_empty() else "暂无")
+	bounty_label.text = "可选悬赏（不推进西游主线）：%s\n" % ("、".join(bounty_lines) if not bounty_lines.is_empty() else "暂无")
 	if node_id == current: bounty_label.text += "你正在这里，可以先和当地人打听传闻。"
 	bounty_button.disabled = not challengeable
 	if not challengeable and not bounties.is_empty(): bounty_label.text += "\n当前没有可直接接战的已发现悬赏。"
@@ -170,9 +187,16 @@ func _hear_rumor() -> void:
 	if selected.is_empty(): return
 	var rumors:Array = world.get_rumors_at_current_location(narrative)
 	if selected[0] >= rumors.size(): return
+	var state_before_rumor: Dictionary = narrative.serialize().duplicate(true)
 	var rumor:Dictionary = world.hear_rumor(narrative,str(rumors[selected[0]].get("id","")))
 	if rumor.is_empty(): return
-	narrative.save(); _refresh(); status_label.text += " · 已获得情报：%s" % str(rumor.get("reward_intel",""))
+	if not narrative.save():
+		narrative.restore_snapshot(state_before_rumor)
+		_refresh()
+		status_label.text += " · 保存失败，传闻发现已回滚；可以重试"
+		return
+	_refresh()
+	status_label.text += " · 已获得情报：%s" % str(rumor.get("reward_intel",""))
 
 func _enter_yellow_wind_ridge() -> void:
 	if not YellowWindRidgeManager.new().is_available(narrative): return

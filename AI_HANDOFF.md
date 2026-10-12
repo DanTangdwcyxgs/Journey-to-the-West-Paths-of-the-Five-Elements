@@ -444,3 +444,19 @@ Next implement END / chapter-completion feedback and regression, one presentatio
 
 ### Handoff
 Exact implementation SHA and merged main SHA both pass Runtime; the merged main SHA also passes Web Demo build/deploy. Next, return to the vertical-slice experience review: pacing, interactive exploration, and final character asset review.
+
+
+## 18. 2026-10-12 Shared Opening Exploration Affordances
+
+### Implementation
+- Shared-02 sequence now points players toward optional map rumors while retaining Eagle Sorrow as the next canonical destination.
+- Journey MOVE uses localized WorldMap node names; active EventSequence controls lock scene exits until the sequence returns to the route/shared overview, with an escape path for invalid/empty actions.
+- WorldMap displays localized bounty titles and explicit optional/mainline separation. Rumor discovery is a save transaction with complete NarrativeState rollback and retry feedback.
+- New/expanded regression coverage registered at 49 Runtime suite entries.
+
+### Validation gate
+- Runtime: PENDING for this combined implementation SHA.
+- Web Demo: PR workflow does not run on pull_request; verify build/export/deploy for the main-branch implementation push.
+
+### Handoff
+After exact-SHA validation, review Shared-02 → optional rumor exploration → Shared-03 experience, then continue region-entry / interactive exploration and final character asset review. Do not alter fixed Journey chronology or present an optional bounty as the mainline Yellow Wind Ridge arc.
