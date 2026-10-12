@@ -631,3 +631,11 @@ Wukong、Tang、Longma、Bajie、Wujing 五条 Origin Route 均已完成首轮 S
 - PASS: latest regression head `ae921d076cedfec500f6eb7e16f57f2ef147d3a5`, [Runtime 38209609249](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38209609249) reported `PASS res://combat/test_shared02_optional_rumor_access.gd` and `RUNTIME_SUITE_PASS tests=51`. The test verifies the production map/rumor, optional BattleUI victory and return, and reopening Journey into the canonical Shared-03 sequence. An intermediate test head failed because the fixture left Wukong's Origin route incomplete; the fixture was corrected before this pass. PR #25 remains unmerged; Web Demo is not claimed on this feature branch.
 - Asset review: repository tree contains six character SVG placeholders and no `assets/art/characters/final/` PNG/WebP files. `ArtAssetCatalog` already resolves final PNG → WebP → SVG, so final art can be added without gameplay code changes. See `docs/visual_reference/README.md` for the visual quality gate.
 - Next: conduct visual screenshot review and deliver final transparent-background pixel character PNG/WebP assets when image-generation/asset delivery is available; do not promote placeholder SVGs to final art.
+
+
+### Round 71 — 2026-10-12: Character Asset Source Audit and Delivery Gate
+- Reviewed all six character SVG placeholders, the `ArtAssetCatalog` fallback order, visual asset contract tests, and existing AI art delivery/pipeline specifications on PR #25.
+- Confirmed automated checks establish resource loadability and environment layer markers only; they cannot establish character-art quality or player-facing visual acceptance.
+- Recorded the framing difference between five 32×48 logical humanoid canvases and Longma's horizontal 40×32 canvas as a composition-review point, not a reason to force the dragon-horse into a humanoid frame.
+- No final PNG/WebP or screenshot artifact was present. This was source inspection only; no new runtime or screenshot pass is claimed.
+- Added `docs/development_log/2026-10-12-character-asset-source-audit.md`. Next: deliver six separate transparent final character assets, then run exact-head Runtime/Web Demo validation and inspect Journey/battle screenshots.
