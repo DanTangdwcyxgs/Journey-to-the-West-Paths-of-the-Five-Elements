@@ -67,7 +67,7 @@ func _run_smoke() -> void:
 			await process_frame
 			_record("BOUNTY_YELLOW_FANG" in world_map.narrative.state.get_world_state().get("discovered_bounties", []), "hearing the rumor should persist discovery of Yellow Fang")
 		_record(not world_map.bounty_button.disabled, "discovered Yellow Fang should become challengeable at Eagle Sorrow")
-		_record(world_map.bounty_label.text.find("黄风妖王") >= 0, "WorldMap should show the player-facing bounty name rather than its internal ID")
+		_record(world_map.bounty_label.text.find("黄牙老妖") >= 0, "WorldMap should show the player-facing bounty name rather than its internal ID")
 		_record(world_map.bounty_label.text.find("不推进西游主线") >= 0, "WorldMap should explicitly mark bounties as optional and separate from mainline progression")
 
 		var narrative_before_bounty: Dictionary = world_map.narrative.serialize().duplicate(true)

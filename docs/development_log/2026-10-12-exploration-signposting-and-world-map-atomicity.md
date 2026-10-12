@@ -47,10 +47,10 @@ Optional exploration should be discoverable without feeling mandatory or interru
 - Expected registered Runtime suite entries: 49.
 
 ## Godot Runtime status
-**PENDING** — verify the exact implementation SHA. Do not treat prior branch CI as validation of this combined integration.
+**PASS** — merged main SHA `3c9ace36750c2aa4a009a0b63b66673a78cab1ea`; [Godot Runtime 38190663833](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38190663833) reported `RUNTIME_SUITE_PASS tests=49`.
 
 ## Web Demo status
-**PENDING** — this PR workflow does not run Web Demo for pull requests. Validate build/export/deploy on the main-branch push after merge.
+**PASS** — [Web Demo 38190663847](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38190663847) passed build, export, and deploy on the merged main SHA.
 
 ## Known issues
 - Rumor rollback is covered with an injected save result rather than a partial filesystem-write failure.

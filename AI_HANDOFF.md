@@ -455,8 +455,26 @@ Exact implementation SHA and merged main SHA both pass Runtime; the merged main 
 - New/expanded regression coverage registered at 49 Runtime suite entries.
 
 ### Validation gate
-- Runtime: PENDING for this combined implementation SHA.
-- Web Demo: PR workflow does not run on pull_request; verify build/export/deploy for the main-branch implementation push.
+- PASS: merged main SHA `3c9ace36750c2aa4a009a0b63b66673a78cab1ea`, Godot Runtime [38190663833](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38190663833) reports `RUNTIME_SUITE_PASS tests=49`.
+- PASS: Web Demo [38190663847](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38190663847) passed build/export/deploy.
 
 ### Handoff
 After exact-SHA validation, review Shared-02 → optional rumor exploration → Shared-03 experience, then continue region-entry / interactive exploration and final character asset review. Do not alter fixed Journey chronology or present an optional bounty as the mainline Yellow Wind Ridge arc.
+
+
+## 19. 2026-10-12 Optional Yellow Fang vs Mainline Yellow Wind King
+
+### Finding
+The optional Eagle Sorrow rumor bounty and the Yellow Wind Cave mainline boss both used `BOUNTY_YELLOW_FANG`. Because the cave gate read the shared defeated-target journal, completing the optional bounty first could suppress the required mainline boss.
+
+### Change
+- `BOUNTY_YELLOW_FANG` remains the optional “黄牙老妖”.
+- `YELLOW_WIND_KING` is a distinct mainline boss definition and battle/journal ID, displayed as “黄风妖王”.
+- Cave availability now depends only on the mainline boss ID.
+- Regression starts the cave with the optional bounty already defeated, proves the mainline boss remains challengeable, and verifies the mainline victory records `YELLOW_WIND_KING` separately.
+
+### Validation
+- Pending exact feature-head Godot Runtime. The prior merged main SHA passed 49/49 Runtime and Web Demo, but that does not validate this change.
+
+### Handoff
+Inspect the exact-head CI logs. If both the production cave roundtrip and WorldMap rumor-to-bounty test pass, record the CI result and mark the PR ready. Consider a save migration only if production telemetry or fixtures show existing saves used the shared ID to record a previously defeated mainline boss.

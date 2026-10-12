@@ -597,3 +597,10 @@ Wukong、Tang、Longma、Bajie、Wujing 五条 Origin Route 均已完成首轮 S
 
 任何下一轮继续：
 `实现 → regression → Godot Runtime → development log → AI_MEMORY`。
+
+
+### Round 67 — 2026-10-12：Separate Yellow Fang Optional Bounty from Mainline Boss
+- 用户更新后重新检查 main：PR #24 已合并为 `3c9ace36750c2aa4a009a0b63b66673a78cab1ea`；精确 SHA 的 Godot Runtime [38190663833](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38190663833) 输出 `RUNTIME_SUITE_PASS tests=49`，Web Demo [38190663847](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38190663847) build/export/deploy 成功。
+- 复审用户之前担心的主线/悬赏身份冲突，确认问题仍存在：可选传闻触发的 `BOUNTY_YELLOW_FANG` 与黄风洞主线 Boss 共用同一击败 ID，先完成悬赏会让黄风妖王入口被判为已击败。
+- 修复方向：保留 `BOUNTY_YELLOW_FANG` 为可选黄牙老妖；新增独立 `YELLOW_WIND_KING` 主线定义，并将黄风洞 gate/handoff/日志改用主线 ID；扩展生产 cave roundtrip，在预先击败可选悬赏的状态下验证主线 Boss 仍可挑战。
+- 本轮 Runtime 尚待当前 feature head CI，不能用前一批 49/49 代替。

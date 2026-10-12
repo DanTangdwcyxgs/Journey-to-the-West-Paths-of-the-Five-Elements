@@ -53,7 +53,7 @@ func _recover_room_index() -> int:
 	return clampi(index, 0, rooms.size() - 1)
 
 func _is_boss_defeated() -> bool:
-	return "BOUNTY_YELLOW_FANG" in narrative.state.get_journey_log().get("defeated_targets", [])
+	return "YELLOW_WIND_KING" in narrative.state.get_journey_log().get("defeated_targets", [])
 
 func _is_room_complete(room_index: int) -> bool:
 	if room_index < 0 or room_index >= rooms.size():
@@ -233,7 +233,7 @@ func _enter_boss() -> void:
 		return
 	if _is_boss_defeated():
 		return
-	if BountyEncounterState.start("BOUNTY_YELLOW_FANG", "YELLOW_WIND_THRONE"):
+	if BountyEncounterState.start("YELLOW_WIND_KING", "YELLOW_WIND_THRONE"):
 		get_tree().change_scene_to_file("res://ui/battle_ui.tscn")
 
 func _on_room_selected(index: int) -> void:

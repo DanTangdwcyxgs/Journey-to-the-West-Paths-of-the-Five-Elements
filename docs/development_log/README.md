@@ -10,6 +10,8 @@
 
 ## 最新记录
 
+- [`2026-10-12 — Separate Optional Yellow Fang Bounty from Mainline Yellow Wind King`](2026-10-12-yellow-wind-bounty-mainline-identity.md)
+
 - [`2026-10-12 — Shared Opening Exploration Signposting and WorldMap Atomicity`](2026-10-12-exploration-signposting-and-world-map-atomicity.md)
 - [`2026-10-11 — Production BattleUI Bounty Settlement Retry`](2026-10-11-battle-ui-bounty-settlement-retry.md)
 - [`2026-10-11 — Atomic Bounty Settlement and Retry`](2026-10-11-bounty-settlement-atomic-retry.md)

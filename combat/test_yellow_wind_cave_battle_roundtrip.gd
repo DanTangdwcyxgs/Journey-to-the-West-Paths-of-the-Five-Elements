@@ -37,6 +37,7 @@ func _run_smoke() -> void:
 		if chapter_id not in fixture.state.completed_shared_chapters:
 			fixture.state.completed_shared_chapters.append(chapter_id)
 	fixture.state.set_inventory({"currencies": {"COIN": 0}, "items": {}})
+	fixture.state.journey_log["defeated_targets"].append("BOUNTY_YELLOW_FANG")
 	fixture.state.add_world_node_visit("BLACK_WIND_NORTH_PATH")
 	fixture.state.add_world_rumor(YellowWindCaveScreen.PROGRESS_PREFIX + "CAVE_MOUTH")
 	fixture.state.add_world_rumor(YellowWindCaveScreen.PROGRESS_PREFIX + "SAND_ALTAR")
@@ -58,6 +59,8 @@ func _run_smoke() -> void:
 	if cave != null:
 		_record(cave.current_room_index == 2, "saved CAVE_MOUTH and SAND_ALTAR progress should resume at SANDSTORM_HALL")
 		_record(cave._has_gate_access(), "the saved gate milestone should authorize cave entry")
+		_record(not cave._is_boss_defeated(), "an already-defeated optional Yellow Fang bounty must not mark the mainline Yellow Wind King as defeated")
+		_record(_find_button(cave.action_box, "进入黄风妖王战场") != null, "the mainline boss must remain challengeable after the optional bounty was defeated first")
 
 		var normal_button := _find_button(cave.action_box, "迎击风沙妖兵")
 		_record(normal_button != null, "SANDSTORM_HALL should expose the production normal-encounter button")
@@ -100,7 +103,7 @@ func _run_smoke() -> void:
 						_record(boss_battle != null, "boss gate should transition into production BattleUI")
 						if boss_battle != null:
 							_record(boss_battle.encounter_type == "bounty", "Yellow Wind King should use the bounty resolution path")
-							_record(boss_battle.encounter_id == "BOUNTY_YELLOW_FANG", "boss handoff should keep the canonical bounty ID")
+							_record(boss_battle.encounter_id == "YELLOW_WIND_KING", "boss handoff should keep the canonical bounty ID")
 							_record(boss_battle.source_stage_id == "YELLOW_WIND_THRONE", "boss handoff should retain the cave room return target")
 							boss_battle.call_deferred("_on_combat_finished", "allies")
 							await process_frame
@@ -112,7 +115,7 @@ func _run_smoke() -> void:
 							var after_boss := NarrativeManager.new()
 							_record(after_boss.load(), "boss victory should leave a loadable narrative save")
 							if after_boss.state != null:
-								_record("BOUNTY_YELLOW_FANG" in after_boss.state.get_journey_log().get("defeated_targets", []), "Yellow Wind King defeat should persist in the battle journal")
+								_record("YELLOW_WIND_KING" in after_boss.state.get_journey_log().get("defeated_targets", []), "mainline Yellow Wind King defeat should persist under its own battle journal ID")
 								_record("YELLOW_WIND_GATE_OPEN" in after_boss.state.completed_milestones, "boss victory should retain the cave's opened-gate milestone")
 								_record(after_boss.state.current_shared_chapter == shared_chapter_before, "boss victory must not advance the Shared chapter")
 								_record(after_boss.state.current_global_timeline == timeline_before, "boss victory must not advance global chronology")
