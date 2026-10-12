@@ -534,3 +534,12 @@ Runtime has now verified the post-Shared-02 detour and that Journey resumes at S
 - Five humanoid placeholders use a 32×48 logical viewBox; Longma uses a horizontal 40×32 viewBox. Review actual in-game scale rather than forcing Longma into a humanoid frame.
 - No final character PNG/WebP or player-facing screenshot artifact is present in the reviewed branch. This was source inspection only, not a screenshot acceptance pass.
 - Delivery and review requirements are recorded in `docs/development_log/2026-10-12-character-asset-source-audit.md`. Next: deliver six separate transparent pixel-art assets, then run exact-head Runtime/Web Demo validation and inspect actual Journey/battle screenshots. Keep SVG fallbacks; do not merge PR #25 without explicit permission.
+
+
+## 17. 2026-10-12 Art Catalog Runtime Contract
+
+- `combat/test_visual_asset_contract.gd` now checks the actual production `ArtAssetCatalog` resolution path for all six character IDs and scene textures.
+- Character resolution is asserted as final PNG → final WebP → SVG fallback based on files present. Final art remains optional; do not rename placeholders or add unrelated status/infographic images as character assets.
+- Existing SVG environment layer markers remain checked. These tests prove resource/path contracts only, not art quality or visual acceptance.
+- New log: `docs/development_log/2026-10-12-art-catalog-runtime-contract.md`. Exact-head Runtime must be checked after the update; no new Runtime pass is claimed until Actions confirms it.
+- Pending: six separate transparent final character assets and actual Journey/battle screenshot review. Continue non-art production regression work meanwhile.

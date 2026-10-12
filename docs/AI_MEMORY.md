@@ -639,3 +639,11 @@ Wukong、Tang、Longma、Bajie、Wujing 五条 Origin Route 均已完成首轮 S
 - Recorded the framing difference between five 32×48 logical humanoid canvases and Longma's horizontal 40×32 canvas as a composition-review point, not a reason to force the dragon-horse into a humanoid frame.
 - No final PNG/WebP or screenshot artifact was present. This was source inspection only; no new runtime or screenshot pass is claimed.
 - Added `docs/development_log/2026-10-12-character-asset-source-audit.md`. Next: deliver six separate transparent final character assets, then run exact-head Runtime/Web Demo validation and inspect Journey/battle screenshots.
+
+
+### Round 72 — 2026-10-12: Runtime Art Catalog Contract
+- Updated the visual asset contract regression to load character and scene textures through production `ArtAssetCatalog` rather than bypassing final-asset resolution.
+- Added assertions for the real resolved path priority: final PNG, then final WebP, then SVG fallback, while leaving absent final files optional.
+- Kept environmental SVG layer-marker checks and documented that automated loadability is not visual acceptance. No irrelevant status infographic was added to game assets.
+- Added `docs/development_log/2026-10-12-art-catalog-runtime-contract.md` and updated the development-log index. Runtime status is pending exact-head CI; previous successful runs do not validate this new test.
+- Next: inspect exact-head Actions, then continue non-art vertical-slice robustness work while six final transparent character assets remain pending generation.
