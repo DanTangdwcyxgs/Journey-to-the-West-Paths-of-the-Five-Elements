@@ -10,6 +10,8 @@
 
 ## 最新记录
 
+- [`2026-10-12 — Character Asset Source Audit and Delivery Gate`](2026-10-12-character-asset-source-audit.md)
+
 - [`2026-10-12 — Yellow Wind King Settlement Rollback and Resume Audit`](2026-10-12-yellow-wind-king-settlement-rollback.md)
 - [`2026-10-12 — Agent Handoff: Yellow Wind Ridge Stage and Save/Resume Audit`](2026-10-12-agent-handoff-yellow-wind-ridge-save-audit.md)
 
