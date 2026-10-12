@@ -91,6 +91,21 @@ func _run_smoke() -> void:
 				_record(persisted.state.completed_shared_chapters == expected_completed, "optional rumor discovery must not complete or skip Shared-03")
 				_record(str(persisted.state.get_world_state().get("current_location", "")) == "EAGLE_SORROW", "Eagle Sorrow location should survive save reload")
 
+			var return_to_journey := _find_button_by_text(world_map, "返回行程")
+			_record(return_to_journey != null, "WorldMap should offer Return to Journey after the optional bounty")
+			if return_to_journey != null:
+				return_to_journey.emit_signal("pressed")
+				var journey := await _wait_for_journey()
+				_record(journey != null, "returning from the optional detour should reopen production Journey")
+				if journey != null:
+					_record(journey.narrative.state.current_shared_chapter == "SHARED-03-EAGLE-SORROW", "Journey should resume at canonical Shared-03 after the optional detour")
+					_record(journey.narrative.state.current_global_timeline == 105, "Journey resume should keep the timeline at 105 until the recruitment battle")
+					journey.primary_button.emit_signal("pressed")
+					await process_frame
+					_record(journey.event_session != null, "Journey Continue should start the canonical Shared-03 sequence")
+					if journey.event_session != null:
+						_record(journey.event_session.sequence.get_id() == "SHARED-03-EAGLE-SORROW-SEQUENCE", "the next story sequence after the optional detour should be Shared-03")
+
 	var active_scene: Node = current_scene
 	current_scene = null
 	if is_instance_valid(active_scene):
@@ -127,6 +142,23 @@ func _wait_for_world_map() -> WorldMapScreen:
 		await process_frame
 		if current_scene is WorldMapScreen:
 			return current_scene as WorldMapScreen
+	return null
+
+func _find_button_by_text(parent: Node, target_text: String) -> Button:
+	for child in parent.get_children():
+		var button := child as Button
+		if button != null and button.text == target_text:
+			return button
+		var nested: Button = _find_button_by_text(child, target_text)
+		if nested != null:
+			return nested
+	return null
+
+func _wait_for_journey() -> JourneyScreen:
+	for _frame in range(45):
+		await process_frame
+		if current_scene is JourneyScreen:
+			return current_scene as JourneyScreen
 	return null
 
 func _capture_file(path: String) -> Dictionary:
