@@ -40,7 +40,7 @@ A side objective and a canonical story boss are separate gameplay facts even if 
 - WorldMap rumor-to-bounty smoke verifies the optional target's correct name.
 
 ## Godot Runtime status
-**PENDING** — the exact feature-branch head must pass Godot Runtime before this batch is considered complete.
+**PASS** — implementation head `e572f2b6149100a7d37ade917ecc9e74c14e4de0`; [Godot Runtime run 38193002843](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38193002843) reports `RUNTIME_SUITE_PASS tests=49`. Logs confirm `test_world_map_rumor_bounty_return.gd`, `test_yellow_wind_cave_battle_roundtrip.gd`, and `test_battle_ui_bounty_settlement_retry.gd` all pass. A docs-only follow-up must also pass its exact-head Runtime before marking the PR ready.
 
 ## Web Demo status
 Not run on feature branches by workflow design; check the main branch after merge.
@@ -52,4 +52,4 @@ Not run on feature branches by workflow design; check the main branch after merg
 - Existing saves that already contain `BOUNTY_YELLOW_FANG` as defeated will now correctly treat only the optional target as defeated. A mainline boss defeated in an older save under the shared legacy ID may require a migration if such saves exist in active use.
 
 ## Next step
-Run exact-head Godot Runtime, inspect the two affected SceneTree tests, then update the handoff and PR validation record before marking it ready.
+Implementation head passed Runtime. Confirm the docs-only follow-up head passes Runtime, then update the PR validation record and mark it Ready for review.
