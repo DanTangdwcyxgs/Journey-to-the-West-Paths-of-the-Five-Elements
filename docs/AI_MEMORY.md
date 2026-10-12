@@ -604,3 +604,11 @@ Wukong、Tang、Longma、Bajie、Wujing 五条 Origin Route 均已完成首轮 S
 - 复审用户之前担心的主线/悬赏身份冲突，确认问题仍存在：可选传闻触发的 `BOUNTY_YELLOW_FANG` 与黄风洞主线 Boss 共用同一击败 ID，先完成悬赏会让黄风妖王入口被判为已击败。
 - 修复方向：保留 `BOUNTY_YELLOW_FANG` 为可选黄牙老妖；新增独立 `YELLOW_WIND_KING` 主线定义，并将黄风洞 gate/handoff/日志改用主线 ID；扩展生产 cave roundtrip，在预先击败可选悬赏的状态下验证主线 Boss 仍可挑战。
 - 首次 exact-head Runtime [38192876862](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38192876862) 暴露两个断言时机/文案问题；修复后 `e572f2b6149100a7d37ade917ecc9e74c14e4de0` 的 Runtime [38193002843](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38193002843) 通过 `RUNTIME_SUITE_PASS tests=49`。继续审查发现 `YellowWindRidgeManager.BOSS_TARGET_ID` 和 Ridge stage metadata 仍指向旧的可选悬赏 ID；现已改为 `YELLOW_WIND_KING` 并新增区域 gate 完成断言，最新 head 必须重新通过 Runtime。
+
+
+### Round 68 — 2026-10-12：Agent Handoff — Yellow Wind Ridge Stage / Save-Resume Audit
+- 检查 PR #25 分支当前状态：`c180b4351dd4c474209984d3323b1e3a01aed1ab` 仍是独立可审查分支；PR 未合并。该精确 head Runtime [38193241086](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38193241086) 通过 `RUNTIME_SUITE_PASS tests=49`。
+- 将下一位 Agent 的明确任务写入 `AI_HANDOFF.md`：审计黄风岭阶段选择、洞口 gate、黄风洞房间恢复、主线 Boss 完成、存档失败回滚和保存重载一致性；先检查现有管理器/存档边界和生产 SceneTree 测试，只有可复现问题才改代码。
+- 关键身份规则：`BOUNTY_YELLOW_FANG` 是可选黄牙老妖，`YELLOW_WIND_KING` 是主线黄风妖王；任何阶段、handoff、击败日志和 gate 判定不得重新混用这两个 ID。PR #25 未合并前 main 仍可能保留旧实现，审计应以 PR 分支为准。
+- 本次为文档交接更新，不声称新 head 已通过 CI；提交后必须检查精确新 SHA 的 Runtime 结果。PR #25 保持未合并。
+- 下一步：按 `AI_HANDOFF.md` 第 16 节执行黄风岭阶段 / Save-Load regression audit，完成后继续更新开发日志、索引、AI_MEMORY 与 handoff。

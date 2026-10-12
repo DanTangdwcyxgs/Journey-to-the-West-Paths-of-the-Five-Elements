@@ -478,3 +478,42 @@ The optional Eagle Sorrow rumor bounty and the Yellow Wind Cave mainline boss bo
 
 ### Handoff
 Inspect the exact-head CI logs. If both the production cave roundtrip and WorldMap rumor-to-bounty test pass, record the CI result and mark the PR ready. Consider a save migration only if production telemetry or fixtures show existing saves used the shared ID to record a previously defeated mainline boss.
+
+
+## 16. 2026-10-12 当前接手指令：黄风岭阶段 / 存档恢复审计（优先执行）
+
+> **Agent 必读：此处是下一项工作的明确入口。先在 PR #25 分支继续，不要切回 main，也不要合并 PR。**
+
+### 当前仓库状态
+- PR #25：`codex/separate-yellow-wind-bounty-from-main-boss-2026-10-12`，当前实现 head 为 `c180b4351dd4c474209984d3323b1e3a01aed1ab`；PR 仍 open、Ready for review、未合并。
+- 该精确 head 的 Runtime CI [38193241086](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38193241086) 已通过，日志包含 `RUNTIME_SUITE_PASS tests=49`。本次接手文档更新会产生新 head；必须再次确认新 head 的 CI，不能沿用旧 SHA 的结果。
+- PR #25 把可选 `BOUNTY_YELLOW_FANG`（黄牙老妖）与主线 `YELLOW_WIND_KING`（黄风妖王）分离。PR 未合并前，main 仍可能包含旧身份冲突；在 PR 分支审计时不要把 main 上的旧引用误报成当前分支缺陷。
+
+### 下一批任务：只审计并修复可复现的状态不一致
+1. 先检查 `DEVELOPMENT_RULES.md`、`docs/AI_MEMORY.md`、`docs/development_log/README.md` 和最新开发日志，再阅读以下实现与测试：
+   - `scripts/world/yellow_wind_ridge_manager.gd`
+   - `data/world/yellow_wind_ridge.json`
+   - `ui/yellow_wind_ridge.gd`
+   - `ui/yellow_wind_cave.gd`
+   - `scripts/world/test_yellow_wind_ridge.gd`
+   - `scripts/world/test_yellow_wind_cave_progress.gd`
+   - `combat/test_yellow_wind_ridge_cave_progression.gd`
+   - `combat/test_yellow_wind_cave_battle_roundtrip.gd`
+   - `scripts/narrative/narrative_manager.gd` 与实际 Save/Load 序列化实现。
+2. 明确检查以下边界：阶段可用性与首个未完成阶段；洞口 milestone 和当前位置前置条件；普通遭遇胜利后恢复房间；主线 Boss 胜利后 gate 完成；先完成可选悬赏不会完成主线；保存失败时 NarrativeState、阶段游标和 handoff 是否一致；退出场景再进入 / 重新加载存档后是否恢复同一进度。
+3. 先写/扩展 production SceneTree regression，至少覆盖“进入黄风岭 → 开门 → 进黄风洞 → 普通遭遇胜利并返回 → 主线 Boss 胜利 → 返回黄风岭 → 保存/重载 → 阶段仍完成”，并覆盖可选黄牙老妖已先被击败的前置状态。只有发现具体可复现缺陷才改生产代码。
+4. 保持分层：`YellowWindRidgeManager` 管阶段规则；`NarrativeState` 是世界事实来源；`NarrativeManager.save()/restore_snapshot()` 负责持久化/回滚；UI 只展示状态并发起操作。不要把阶段规则复制到 UI，也不要让可选悬赏推进 Shared chapter 或全局时间线。
+5. 运行针对性测试并等待最新提交 SHA 的 Godot Runtime CI。若修改影响 Web Demo 的主分支部署流程，合并后再验证 main 的 Web Demo；不要把 PR workflow 未执行写成通过。
+6. 完成后更新独立 development log、log index、`docs/AI_MEMORY.md` Round、`AI_HANDOFF.md`。若没有发现可复现缺陷，也要记录审计范围、实际验证项、未覆盖边界和下一步，不要为了“有代码改动”而造问题。
+
+### 明确不做
+- 未经用户明确要求，不合并 PR #25。
+- 不顺手扩展 Camp / Relationship，不在本批重构通用 Handoff。
+- 不把概念图当正式 PNG/WebP 角色资源。
+- 不宣称手工审阅等同于 Runtime 通过；每条验证都绑定精确 SHA 与 Actions run。
+
+### 本批完成标准
+- 可选悬赏与主线 Boss 的身份、击败日志、阶段完成标记始终独立。
+- 阶段 / gate / 房间游标在胜利、失败、保存失败和重新加载后没有可复现的不一致。
+- 新增或更新的回归测试覆盖已确认边界；精确 head Runtime CI 有结果。
+- 开发日志、索引、长期记忆和本文件互相指向一致。

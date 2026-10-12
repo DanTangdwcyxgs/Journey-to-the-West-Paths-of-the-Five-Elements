@@ -10,6 +10,8 @@
 
 ## 最新记录
 
+- [`2026-10-12 — Agent Handoff: Yellow Wind Ridge Stage and Save/Resume Audit`](2026-10-12-agent-handoff-yellow-wind-ridge-save-audit.md)
+
 - [`2026-10-12 — Separate Optional Yellow Fang Bounty from Mainline Yellow Wind King`](2026-10-12-yellow-wind-bounty-mainline-identity.md)
 
 - [`2026-10-12 — Shared Opening Exploration Signposting and WorldMap Atomicity`](2026-10-12-exploration-signposting-and-world-map-atomicity.md)
