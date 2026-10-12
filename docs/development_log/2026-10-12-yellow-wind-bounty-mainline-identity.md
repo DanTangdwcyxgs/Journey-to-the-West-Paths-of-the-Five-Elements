@@ -45,6 +45,9 @@ A side objective and a canonical story boss are separate gameplay facts even if 
 ## Web Demo status
 Not run on feature branches by workflow design; check the main branch after merge.
 
+## First validation attempt
+- Run [38192876862](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38192876862) failed: the boss-button assertion ran in the preceding normal encounter room, and the existing bounty-settlement retry test still expected the old optional target name “黄风妖王”. The production WorldMap bounty test and bounty reward atomicity test passed. Both assertions were corrected in the follow-up commit; the new exact head still requires Runtime validation.
+
 ## Known issues
 - Existing saves that already contain `BOUNTY_YELLOW_FANG` as defeated will now correctly treat only the optional target as defeated. A mainline boss defeated in an older save under the shared legacy ID may require a migration if such saves exist in active use.
 

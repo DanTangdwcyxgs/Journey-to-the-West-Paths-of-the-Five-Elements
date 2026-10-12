@@ -60,7 +60,6 @@ func _run_smoke() -> void:
 		_record(cave.current_room_index == 2, "saved CAVE_MOUTH and SAND_ALTAR progress should resume at SANDSTORM_HALL")
 		_record(cave._has_gate_access(), "the saved gate milestone should authorize cave entry")
 		_record(not cave._is_boss_defeated(), "an already-defeated optional Yellow Fang bounty must not mark the mainline Yellow Wind King as defeated")
-		_record(_find_button(cave.action_box, "进入黄风妖王战场") != null, "the mainline boss must remain challengeable after the optional bounty was defeated first")
 
 		var normal_button := _find_button(cave.action_box, "迎击风沙妖兵")
 		_record(normal_button != null, "SANDSTORM_HALL should expose the production normal-encounter button")
@@ -93,6 +92,8 @@ func _run_smoke() -> void:
 				_record(cave != null, "Continue Exploration should return to the production cave scene")
 				if cave != null:
 					_record(cave.current_room_index == 3, "normal victory should resume at YELLOW_WIND_THRONE")
+					_record(not cave._is_boss_defeated(), "optional bounty victory must not mark the mainline Yellow Wind King defeated")
+					_record(_find_button(cave.action_box, "进入黄风妖王战场") != null, "the mainline boss must remain challengeable after the optional bounty was defeated first")
 					_record(str(cave.rooms[cave.current_room_index].get("id", "")) == "YELLOW_WIND_THRONE", "cave room cursor should point at the canonical boss room")
 
 					var boss_button := _find_button(cave.action_box, "进入黄风妖王战场")
