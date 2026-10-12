@@ -508,3 +508,21 @@ Next: inspect the current PR diff and newest branch-head Actions; then review Sh
 1. Inspect the full PR #25 diff and check the latest branch-head Actions after the documentation-only follow-up; the tested code SHA `911be5faad001551b330675cf6208b556ac9d82f` is green at Runtime 50/50.
 2. Preserve the separation of optional and mainline target IDs. Do not merge PR #25 without explicit user permission.
 3. Continue the player-facing review of Shared-02 → optional rumors → Shared-03, then region-entry / interactive exploration and final character PNG/WebP asset review. Do not start unrelated Camp/Relationship work.
+
+
+## 21. 2026-10-12 Shared-02 Optional Exploration Access — Regression Added
+
+### Finding
+Shared-02 completes at timeline `105`, but the WorldMap node `EAGLE_SORROW` and its `RUMOR_YELLOW_FANG` both required timeline `110`. The Shared-02 dialogue explicitly invites the player to open the map and hear rumors before continuing to Eagle Sorrow. That promise was unreachable at timeline 105: the map hid the destination and the rumor.
+
+### Change
+- Lower only the optional exploration availability thresholds for the Eagle Sorrow map node and Yellow Fang rumor to timeline 105. Shared-03's canonical chapter and recruitment milestone remain at timeline 110.
+- Add a production WorldMap SceneTree regression from the real post-Shared-02 state: travel to Eagle Sorrow, hear/discover the optional rumor, verify the bounty affordance, save/reload, and assert Shared-03, timeline 105, and completed chapter history are unchanged.
+- Update the static WorldMap manager regression to use the post-Shared-02 timeline before testing Eagle Sorrow access.
+
+### Validation
+- This batch's new exact head must pass Godot Runtime; do not reuse earlier 49/50-test results as evidence for the new test.
+- PR #25 remains open and unmerged. No Web Demo run is claimed for the feature branch.
+
+### Next
+After exact-head CI passes, manually inspect the playable Shared-02 → optional rumor/bounty → Shared-03 sequence and the map affordances at timeline 105/110. Then review character asset readiness: current five character files are placeholder pixel SVGs used by the asset contract; PNG/WebP final art remains outstanding. Do not treat placeholder SVGs as final art or generate concept sheets as production assets.

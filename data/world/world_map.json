@@ -13,7 +13,7 @@
     {
       "id": "EAGLE_SORROW",
       "name": "鹰愁涧",
-      "timeline": 110,
+      "timeline": 105,
       "type": "STORY",
       "description": "白龙马身份与取经职责交汇之地，也是第一处允许玩家偏离主线短暂探索的区域。",
       "connections": ["FIVE_ELEMENTS_MOUNTAIN", "BLACK_WIND_NORTH_PATH"],

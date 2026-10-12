@@ -621,3 +621,12 @@ Wukong、Tang、Longma、Bajie、Wujing 五条 Origin Route 均已完成首轮 S
 - Runtime PASS on test/implementation SHA `911be5faad001551b330675cf6208b556ac9d82f`: run [38194393891](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38194393891) reported `PASS res://combat/test_yellow_wind_king_settlement_retry.gd` and `RUNTIME_SUITE_PASS tests=50`. Initial test commit `eeee1058104d90d2a08530e35fb19027fcdb587c` caught one incorrect assumption about the pre-victory button label; this was corrected before the passing run.
 - Web Demo is not run by the PR workflow; do not report it as passed on this branch. PR #25 remains unmerged.
 - Next step: inspect the full PR diff and newest branch-head Actions after the documentation-only follow-up, then return to player-facing Shared-02 → optional exploration → Shared-03 pacing, region interactions, and final character asset review.
+
+
+### Round 70 — 2026-10-12: Make Shared-02 Optional Rumor Detour Actually Reachable
+- Player-facing review found a mismatch between the Shared-02 signpost and WorldMap gates: Shared-02 commits timeline 105, while both the Eagle Sorrow map node and Yellow Fang rumor required timeline 110. The dialogue invited optional rumor exploration before Eagle Sorrow, but the player could not reach that node until after the canonical Shared-03 recruitment battle.
+- Lowered the Eagle Sorrow exploration node and optional Yellow Fang rumor thresholds to 105 only. Shared-03's canonical chapter/recruitment milestone remains at 110; optional discovery does not advance the chapter, timeline, or roster.
+- Added `combat/test_shared02_optional_rumor_access.gd` to the production Runtime suite. It exercises the real WorldMap travel and rumor controls from a saved post-Shared-02 fixture, then reloads the save and checks the canonical Shared-03 state is unchanged.
+- Updated `scripts/world/test_world_map_manager.gd` so its static assertion uses the actual post-Shared-02 timeline. This old static test is not itself registered in Runtime; the new SceneTree test is.
+- Exact-head Runtime is pending until CI reports the new branch SHA. PR #25 remains unmerged; Web Demo is not claimed on this feature branch.
+- Next: verify the real optional bounty battle/return before Shared-03 and review final character asset status; current character art files are placeholder SVG, not final PNG/WebP.

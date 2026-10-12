@@ -15,6 +15,7 @@ static func run() -> void:
 	assert(world.can_visit(manager, "FIVE_ELEMENTS_MOUNTAIN"))
 	assert(world.visit(manager, "FIVE_ELEMENTS_MOUNTAIN"))
 	assert(world.get_current_location(manager) == "FIVE_ELEMENTS_MOUNTAIN")
+	state.current_global_timeline = 105 # Shared-02 is complete; optional Eagle Sorrow rumor access must be available before Shared-03.
 	assert(world.can_visit(manager, "EAGLE_SORROW"))
 	assert(world.visit(manager, "EAGLE_SORROW"))
 
