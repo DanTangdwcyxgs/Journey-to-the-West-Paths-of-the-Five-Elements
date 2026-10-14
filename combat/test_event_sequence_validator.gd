@@ -119,6 +119,35 @@ static func run_all() -> Dictionary:
 	assert(not origin_missing_route_result.get("valid", true))
 	assert("missing source_route_id" in str(origin_missing_route_result.get("errors", [])))
 
+	var valid_move_result := EventSequenceValidator.validate(_move_sequence(
+		"TEST-MOVE-VALID", "WORLD_MAP", "EAGLE_SORROW"
+	))
+	assert(valid_move_result.get("valid", false), "a move to a real WorldMap marker should pass: %s" % str(valid_move_result.get("errors", [])))
+
+	var missing_marker_result := EventSequenceValidator.validate(_move_sequence(
+		"TEST-MOVE-MISSING-MARKER", "WORLD_MAP", "", true, false
+	))
+	assert(not missing_marker_result.get("valid", true), "a move without marker_id must be rejected")
+	assert("move node missing marker_id" in str(missing_marker_result.get("errors", [])))
+
+	var unknown_marker_result := EventSequenceValidator.validate(_move_sequence(
+		"TEST-MOVE-UNKNOWN-MARKER", "WORLD_MAP", "MISSING_WORLD_NODE"
+	))
+	assert(not unknown_marker_result.get("valid", true), "a move to an unknown WorldMap marker must be rejected")
+	assert("world map marker not found" in str(unknown_marker_result.get("errors", [])))
+
+	var missing_map_result := EventSequenceValidator.validate(_move_sequence(
+		"TEST-MOVE-MISSING-MAP", "", "EAGLE_SORROW", false, true
+	))
+	assert(not missing_map_result.get("valid", true), "a move without map_id must be rejected")
+	assert("move node missing map_id" in str(missing_map_result.get("errors", [])))
+
+	var unsupported_map_result := EventSequenceValidator.validate(_move_sequence(
+		"TEST-MOVE-UNSUPPORTED-MAP", "DUNGEON_MAP", "EAGLE_SORROW"
+	))
+	assert(not unsupported_map_result.get("valid", true), "a move to an unregistered map must be rejected")
+	assert("unsupported move map_id" in str(unsupported_map_result.get("errors", [])))
+
 	return {
 		"passed": true,
 		"production_sequences_validated": validated_count,
@@ -132,3 +161,28 @@ static func run_all() -> Dictionary:
 		"namespace_metadata_consistency_checked": true,
 		"chapter_metadata_mismatches_rejected": true,
 	}
+
+static func _move_sequence(
+	sequence_id: String,
+	map_id: String,
+	marker_id: String,
+	include_map: bool = true,
+	include_marker: bool = true
+) -> EventSequenceDefinition:
+	var move_node: Dictionary = {
+		"id": "move",
+		"type": "move",
+		"next": "end",
+	}
+	if include_map:
+		move_node["map_id"] = map_id
+	if include_marker:
+		move_node["marker_id"] = marker_id
+	return EventSequenceDefinition.new({
+		"id": sequence_id,
+		"chapter_id": "SHARED-03-EAGLE-SORROW",
+		"namespace": "SHARED",
+		"start": "move",
+		"nodes": [move_node, {"id": "end", "type": "end"}],
+	})
+
