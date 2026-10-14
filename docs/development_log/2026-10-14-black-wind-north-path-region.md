@@ -5,7 +5,7 @@ Add the next coherent optional exploration region after Longma joins the shared 
 
 ## Starting point
 - Main baseline: `395233d8bcaf13aa9022c33903ab03a75c5a83ae`.
-- Exact main Runtime run [385?](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions) was green for the baseline commit, and Web Demo run [38498039390](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38498039390) passed build/export/Pages deployment.
+- Main baseline Runtime run [38498039387](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38498039387) completed successfully, and Web Demo run [38498039390](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38498039390) passed build/export/Pages deployment.
 - Existing generic region exploration had definitions for Eagle Sorrow and Five Elements Mountain only. The shared chapter catalog identifies `SHARED-04-EARLY-DEMON-TALES` at timeline 120 after `BAI_LONGMA_RECRUITED`; the map already contains `BLACK_WIND_NORTH_PATH`.
 
 ## Changes
