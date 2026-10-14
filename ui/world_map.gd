@@ -14,6 +14,7 @@ var rumor_button: Button
 var bounty_button: Button
 var ridge_button: Button
 var region_button: Button
+var region_hint_label: Label
 var bounty_label: Label
 var selected_node_id := ""
 var selected_bounty_id := ""
@@ -108,6 +109,10 @@ func _build_ui() -> void:
 	region_button.custom_minimum_size = Vector2(0, 46)
 	region_button.pressed.connect(_enter_region_exploration)
 	center.add_child(region_button)
+	region_hint_label = Label.new()
+	region_hint_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	region_hint_label.add_theme_font_size_override("font_size", 14)
+	center.add_child(region_hint_label)
 	bounty_button = Button.new()
 	bounty_button.text = "接受悬赏并出战"
 	bounty_button.custom_minimum_size = Vector2(0, 46)
@@ -152,7 +157,12 @@ func _refresh() -> void:
 	var region: Dictionary = region_exploration.get_region_for_location(current)
 	region_button.visible = not region.is_empty()
 	region_button.text = "进入区域：%s" % str(region.get("name", ""))
-	region_button.disabled = region.is_empty() or not region_exploration.can_enter(narrative, str(region.get("id", "")))
+	var region_id := str(region.get("id", ""))
+	var region_block_reason := region_exploration.get_entry_block_reason(narrative, region_id)
+	region_button.disabled = not region_block_reason.is_empty()
+	region_button.tooltip_text = region_block_reason if not region_block_reason.is_empty() else "调查地点线索并记录旅途见闻；不推进西游主线。"
+	region_hint_label.visible = not region.is_empty()
+	region_hint_label.text = region_block_reason if not region_block_reason.is_empty() else "可选探索：调查并记录线索，不推进西游主线。"
 
 func _render_node(node: Dictionary) -> void:
 	selected_bounty_id = ""
