@@ -701,3 +701,13 @@ Wukong、Tang、Longma、Bajie、Wujing 五条 Origin Route 均已完成首轮 S
 - First CI attempt `c10d46cb7c2056017ef4f9481591de0cd93eafff` failed because the validator required `TYPE_INT`; Godot's JSON parser yields numeric floating-point variants for the production timeline fields. Corrected the check to accept non-negative whole-number int/float values while rejecting fractional/negative gates.
 - PASS: validator-fix head `22e83daf31ca7176dc9d120595306e9bdab092ad`, Runtime [38502403071](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38502403071), `PASS res://combat/test_region_content_validator.gd`, `RUNTIME_SUITE_PASS tests=53`. Latest expanded-test head `da48a2b8fd4e00df8dd4d3ba1c1a47ce33b582aa`, Runtime [38502420049](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38502420049), same 53/53 pass.
 - Development log: `docs/development_log/2026-10-14-region-content-validation.md`. Next: inspect the existing JourneyLog and implement a player-facing index for discovered region notes without creating a second persistence authority. PR #29 remains open and unmerged.
+
+
+### Round 80 — 2026-10-14：Discovered Region Notes Journal
+- 复核 PR #29 的最新 Runtime：提交 `826eedcd621f262ea451799bfb4a7e78c35c0602` 对应 Godot Runtime [38502606214](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38502606214) 完成且成功，旧 suite 为 53/53。
+- 先检查 `scripts/world/journey_log.gd`、`NarrativeState.world_state.discovered_region_points`、区域管理器与存档序列化。既有 JourneyLog 记录战斗与世界效果，不是区域线索的权威来源；发现 ID 已经由 NarrativeState 持久化。
+- 新增 `RegionExplorationManager.get_discovered_notes()` 只读聚合器，从区域目录补齐已发现点的名称、描述、结果与区域标签，不返回未发现点，避免重复保存或提前泄露线索。
+- 新增 `ui/region_notes_log.gd/.tscn` 和 WorldMap「旅途见闻」入口；列表/详情为空时显示指引，查阅过程不写状态。
+- 新增 `combat/test_region_notes_log.gd`，注册到 Runtime suite；覆盖跨区域聚合、隐藏未发现线索、存档 round-trip、UI 列表/详情与空状态，以及查看时不得修改 timeline / chapter / recruitment / state。
+- 当前提交的 Godot Runtime 尚待验证；仅当最新 exact-head Workflow 完成成功后，才能记录通过。没有宣称 Web Demo 部署、截图验收或最终角色 PNG/WebP 已完成。
+- 下一步：检查该实现 head 的完整 Godot Runtime 日志并修正失败；随后将最新 CI 结果写回本日志与 PR #29，检查文档同步 head，保持 PR 未合并。

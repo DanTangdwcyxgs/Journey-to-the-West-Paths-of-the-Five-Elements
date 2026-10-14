@@ -15,6 +15,7 @@ var bounty_button: Button
 var ridge_button: Button
 var region_button: Button
 var region_hint_label: Label
+var notes_button: Button
 var bounty_label: Label
 var selected_node_id := ""
 var selected_bounty_id := ""
@@ -137,6 +138,12 @@ func _build_ui() -> void:
 	var camp := Button.new(); camp.text = "营地休整"; camp.pressed.connect(_rest_at_camp); footer.add_child(camp)
 	var shop := Button.new(); shop.text = "补给商店"; shop.pressed.connect(func(): get_tree().change_scene_to_file("res://ui/shop.tscn")); footer.add_child(shop)
 	var party := Button.new(); party.text = "队伍编成"; party.pressed.connect(func(): get_tree().change_scene_to_file("res://ui/party_screen.tscn")); footer.add_child(party)
+	notes_button = Button.new()
+	notes_button.name = "RegionNotesButton"
+	notes_button.text = "旅途见闻"
+	notes_button.tooltip_text = "回看已经发现的区域线索"
+	notes_button.pressed.connect(_open_region_notes)
+	footer.add_child(notes_button)
 	var journey := Button.new(); journey.text = "返回行程"; journey.pressed.connect(func(): get_tree().change_scene_to_file("res://ui/journey.tscn")); footer.add_child(journey)
 	var menu := Button.new(); menu.text = "主菜单"; menu.pressed.connect(func(): get_tree().change_scene_to_file("res://ui/main_menu.tscn")); footer.add_child(menu)
 
@@ -222,6 +229,10 @@ func _hear_rumor() -> void:
 func _enter_yellow_wind_ridge() -> void:
 	if not YellowWindRidgeManager.new().is_available(narrative): return
 	get_tree().change_scene_to_file("res://ui/yellow_wind_ridge.tscn")
+
+func _open_region_notes() -> void:
+	get_tree().change_scene_to_file("res://ui/region_notes_log.tscn")
+
 
 func _enter_region_exploration() -> void:
 	var current := world.get_current_location(narrative)

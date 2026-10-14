@@ -627,3 +627,24 @@ Runtime has now verified the post-Shared-02 detour and that Journey resumes at S
 1. Check the exact-head Runtime after this documentation synchronization.
 2. Inspect `scripts/world/journey_log.gd` plus current history / journal UI before implementing a player-facing review list for discovered region clues. Reuse the flat persisted discovery list; do not duplicate persistence or let optional clues advance the mainline.
 3. Preserve PR #29's unmerged state unless the user explicitly authorizes merge. Character PNG/WebP production and actual visual acceptance remain separate pending work.
+
+
+## 26. 2026-10-14 Discovered Region Notes Journal (PR #29 continuation)
+
+### Implementation
+- Branch: `feature/black-wind-region-exploration-2026-10-14`; PR #29 stays open and must not be merged without explicit user permission.
+- Rechecked the previous exact-head baseline: `826eedcd621f262ea451799bfb4a7e78c35c0602`, Godot Runtime [38502606214](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38502606214), success at 53/53.
+- Architecture review: `scripts/world/journey_log.gd` records battles and world effects; region discoveries remain facts in `NarrativeState.world_state.discovered_region_points`. Do not duplicate this persistence.
+- Added `RegionExplorationManager.get_discovered_notes()` as a read-only region-catalog projection. The journal only exposes discovered IDs and derives their display fields from `data/world/regions.json`.
+- Added `ui/region_notes_log.gd` / `.tscn` and a `旅途见闻` button on WorldMap, with list/detail, an empty state, and a return-to-map action.
+- Added `combat/test_region_notes_log.gd` and registered it in `tests/runtime_suite.gd`; suite now expects 54 test entries.
+- Development log: `docs/development_log/2026-10-14-region-notes-index.md`; architecture and log index are updated.
+
+### Validation Gate
+- The first implementation commit's Runtime is pending at the time of this handoff edit. Do not report a pass until the exact commit is complete and its logs contain the expected suite marker.
+- No Web Demo deployment, final-art delivery, or screenshot acceptance is claimed.
+
+### Next Agent
+1. Verify the exact implementation commit's Godot Runtime, including `PASS res://combat/test_region_notes_log.gd` and `RUNTIME_SUITE_PASS tests=54`; correct failures and rerun if needed.
+2. Record the actual run ID and exact tested SHA in the development log; then verify the documentation-sync head and update PR #29’s description with the latest exact-head Runtime.
+3. Keep PR #29 open/unmerged. Final character PNG/WebP assets and actual visual screenshot acceptance remain separate deliverables.

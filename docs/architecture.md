@@ -686,6 +686,8 @@ Origin/Shared EventSequence 的 `MOVE` 是主线世界位置变更，不只是�
 - Region exploration is optional content: it must not mutate `current_shared_chapter`, `current_global_timeline`, `completed_shared_chapters`, or `recruited_characters`. Additional map locations should be added through data plus regression tests before claiming region coverage.
 
 
+- `RegionExplorationManager.get_discovered_notes()` projects discovered clues into a read-only journal view using the persisted flat point-ID list. `ui/region_notes_log.tscn` shows only discovered entries and is reachable from WorldMap; opening or browsing it never writes state or advances the canonical Journey.
+
 ## Region Content Validation Contract (2026-10-14)
 
 - `RegionContentValidator.validate_payload()` validates `data/world/regions.json` against `data/world/world_map.json` in the Godot Runtime content-contract test.

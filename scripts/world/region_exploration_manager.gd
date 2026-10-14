@@ -81,6 +81,31 @@ func get_discovered_point_ids(narrative: NarrativeManager) -> Array[String]:
 		result.append(str(point_id))
 	return result
 
+## Returns a read-only journal projection of discovered clues across every region.
+## Undiscovered points are deliberately omitted so the journal does not reveal hidden content.
+func get_discovered_notes(narrative: NarrativeManager) -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	if narrative == null:
+		return result
+	var discovered_ids := get_discovered_point_ids(narrative)
+	if discovered_ids.is_empty():
+		return result
+	for region_value in regions.values():
+		if not region_value is Dictionary:
+			continue
+		var region: Dictionary = region_value
+		var region_id := str(region.get("id", ""))
+		for point in get_points(region_id):
+			var point_id := str(point.get("id", ""))
+			if point_id == "" or point_id not in discovered_ids:
+				continue
+			var note := point.duplicate(true)
+			note["region_id"] = region_id
+			note["region_name"] = str(region.get("name", region_id))
+			result.append(note)
+	return result
+
+
 func is_discovered(narrative: NarrativeManager, point_id: String) -> bool:
 	return point_id in get_discovered_point_ids(narrative)
 
