@@ -10,6 +10,7 @@ var point_list: ItemList
 var point_detail: Label
 var status_label: Label
 var inspect_button: Button
+var return_button: Button
 var selected_point_id: String = ""
 
 func _ready() -> void:
@@ -109,7 +110,7 @@ func _build_ui() -> void:
 	footer.add_theme_constant_override("separation", 8)
 	root.add_child(footer)
 
-	var return_button := Button.new()
+	return_button = Button.new()
 	return_button.text = "返回世界地图"
 	return_button.custom_minimum_size = Vector2(220, 48)
 	return_button.pressed.connect(_return_to_world_map)
