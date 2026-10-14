@@ -543,3 +543,22 @@ Runtime has now verified the post-Shared-02 detour and that Journey resumes at S
 - Existing SVG environment layer markers remain checked. These tests prove resource/path contracts only, not art quality or visual acceptance.
 - New log: `docs/development_log/2026-10-12-art-catalog-runtime-contract.md`. Exact-head Runtime must be checked after the update; no new Runtime pass is claimed until Actions confirms it.
 - Pending: six separate transparent final character assets and actual Journey/battle screenshot review. Continue non-art production regression work meanwhile.
+
+
+## Current Handoff — 2026-10-14: Shared-02 Optional Exploration Rebase
+
+### Confirmed operations
+- PR #25 (optional Yellow Fang bounty vs. mainline Yellow Wind King, plus timeline-105 optional Eagle Sorrow access) was merged by squash after owner authorization. Merge commit: 9c8ca5742ef32af72d480c06e8f5a6e20196e12a.
+- The old PR #26 head cefaf8e5283accf5c8d9808f1698e75ad2363731 failed Runtime because its test ran against pre-PR-25 main; the first failing assertion correctly exposed that Eagle Sorrow was unavailable after Shared-02. Do not weaken the assertion.
+- The PR #26 production SceneTree smoke and its docs have been rebased onto the merged main state. New exact-head Runtime validation is the current gate; do not cite old SHA results as validation of the rebased code.
+
+### Required next actions
+1. Check the newest Godot Runtime workflow for the current PR #26 head. Expected suite size is 50 entries after PR #25.
+2. If Runtime passes, inspect the job log for the full RUNTIME_SUITE_PASS tests=50 line, mark PR #26 ready, and merge it using the verified current head SHA.
+3. After merge, validate the exact main commit's Runtime and Web Demo build/export/deploy. Record the actual run IDs and conclusions in the development log and AI memory.
+4. Resume the vertical-slice review: region entry / interactive exploration, then the six final transparent character PNG/WebP assets and actual Journey/battle screenshot review.
+
+### Non-negotiable constraints
+- Optional rumor/bounty must not advance canonical Shared chronology or change recruitment.
+- Do not mark a queued, in_progress, pending, stale or failed workflow as passed.
+- Keep the historical failure visible and record the final validated SHA and the next-agent entry point after the run completes.
