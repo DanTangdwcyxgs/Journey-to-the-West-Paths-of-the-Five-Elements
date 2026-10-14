@@ -294,7 +294,7 @@ A sequence is not considered production-ready unless:
 - runtime regression passes;
 - Godot headless CI passes.
 
-Current limitation: the quality gate does not yet validate every presentation asset or map marker referenced by `move` nodes.
+EventSequenceValidator also validates move node references: the supported map ID must be WORLD_MAP, and each marker_id must resolve to a node in data/world/world_map.json. Missing map IDs, missing marker IDs, unsupported map IDs and unknown markers reject the sequence before it enters the runtime catalog. Broader presentation-asset validation remains a separate future quality gate.
 
 ---
 
