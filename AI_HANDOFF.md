@@ -600,10 +600,30 @@ Runtime has now verified the post-Shared-02 detour and that Journey resumes at S
 - Extended the production `combat/test_region_exploration.gd` path to verify locked-state feedback and successful re-enablement after restoring the required state.
 
 ### Validation gate
-- Feature code/test SHA: `e50f7089ce18c598f513643149cd31a20eff56e3`. Its exact-head Godot Runtime workflow was queued/in progress while this section was authored. Check the newest PR-head Runtime for `PASS res://combat/test_region_exploration.gd` and `RUNTIME_SUITE_PASS tests=52`; update the log with the exact run before treating this task as complete.
+- PASS: feature code/test SHA `e50f7089ce18c598f513643149cd31a20eff56e3`, Runtime [38501453314](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38501453314), `PASS res://combat/test_region_exploration.gd`, `RUNTIME_SUITE_PASS tests=52). Final documentation-sync SHA `fcba52ed18c3d65c24ac220d46d78d819f852ee3` passed Runtime [38501734471](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38501734471) at 52/52.
 - No Web Demo deployment, visual screenshot acceptance, or image generation is claimed.
 
 ### Next Agent
 1. Inspect the latest PR #29 head and Runtime. Fix any syntax/fixture/assertion failures and rerun the exact head.
 2. Preserve the fixed Journey timeline, the timeline and milestone gates, and the clue-only / no-chapter-progression contract.
 3. Keep PR #29 open unless the user explicitly authorizes merge. After validation, choose a further non-art gameplay polish or resume the separate final character asset/screenshot task.
+
+
+## 25. 2026-10-14 Region Content Catalog Validation
+
+### Implementation
+- Added `scripts/world/region_content_validator.gd`; `validate_payload(region_payload, world_map_payload)` provides a reusable CI content contract without adding per-region runtime logic.
+- Added `combat/test_region_content_validator.gd` and registered it in `tests/runtime_suite.gd`. Runtime suite count is now 53.
+- Contract catches duplicated/blank world-map IDs, region IDs, duplicate region ownership of a location, unknown region locations, empty titles/descriptions, invalid timeline gates, invalid/duplicate milestones, empty clue arrays, global clue-ID collisions, and missing player-facing clue fields.
+- Point IDs must be globally unique because `NarrativeState.world_state.discovered_region_points` stores a flat list without a region namespace.
+
+### Validation gate
+- First attempt `c10d46cb7c2056017ef4f9481591de0cd93eafff` failed at Runtime [38502308548](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38502308548): valid JSON timeline numbers were represented as floating-point values, but the validator only accepted `TYPE_INT`. This assumption was fixed; negative and fractional values remain invalid.
+- PASS: validator fix/test head `22e83daf31ca7176dc9d120595306e9bdab092ad`, Runtime [38502403071](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38502403071), `PASS res://combat/test_region_content_validator.gd`, `RUNTIME_SUITE_PASS tests=53`.
+- PASS: expanded negative-test head `da48a2b8fd4e00df8dd4d3ba1c1a47ce33b582aa`, Runtime [38502420049](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38502420049), also at 53/53.
+- No image generation, Web Demo deploy or visual screenshot acceptance is claimed. PR #29 stays open and unmerged.
+
+### Next Agent
+1. Check the exact-head Runtime after this documentation synchronization.
+2. Inspect `scripts/world/journey_log.gd` plus current history / journal UI before implementing a player-facing review list for discovered region clues. Reuse the flat persisted discovery list; do not duplicate persistence or let optional clues advance the mainline.
+3. Preserve PR #29's unmerged state unless the user explicitly authorizes merge. Character PNG/WebP production and actual visual acceptance remain separate pending work.

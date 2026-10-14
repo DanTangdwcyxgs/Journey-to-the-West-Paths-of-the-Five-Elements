@@ -34,7 +34,7 @@ Make locked optional regions understandable from WorldMap: when a region is not 
 
 ## Validation
 - Feature implementation/test head: `e50f7089ce18c598f513643149cd31a20eff56e3`.
-- PASS: code/test head `e50f7089ce18c598f513643149cd31a20eff56e3`; Godot Runtime [38501453314](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38501453314) completed successfully. The job log confirms `PASS res://combat/test_region_exploration.gd` and `RUNTIME_SUITE_PASS tests=52`. Documentation-sync head `624215981a68ac30ae8af8dad8f05c6ea93887cc` contains only log/index/architecture/memory/handoff changes and needs its own exact-head Runtime check.
+- PASS: code/test head `e50f7089ce18c598f513643149cd31a20eff56e3`; Godot Runtime [38501453314](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38501453314) completed successfully. The job log confirms `PASS res://combat/test_region_exploration.gd` and `RUNTIME_SUITE_PASS tests=52`. Documentation-sync head `624215981a68ac30ae8af8dad8f05c6ea93887cc` passed Runtime [38501558456](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38501558456) at 52/52. Follow-up result-sync head `a19983a8155fe590f6654a290d41ea37185da8b0` passed Runtime [38501605740](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38501605740), and the final record-sync head `fcba52ed18c3d65c24ac220d46d78d819f852ee3` passed Runtime [38501734471](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38501734471).
 - The branch is still part of PR #29. No main-branch merge, image generation, Web Demo deployment, or screenshot acceptance is claimed.
 
 ## Known limitations
@@ -42,7 +42,6 @@ Make locked optional regions understandable from WorldMap: when a region is not 
 - Region exploration remains clue-only and does not award items or progress story flags.
 
 ## Next step / Agent handoff
-1. Check the latest PR-head Godot Runtime after this result-recording documentation commit; code/test head `e50f7089ce18c598f513643149cd31a20eff56e3` and docs-sync heads `624215981a68ac30ae8af8dad8f05c6ea93887cc` and `a19983a8155fe590f6654a290d41ea37185da8b0` are all green at 52/52.
-2. If the exact newest head fails, inspect the actual job and correct only the root cause.
-3. Inspect the Web Demo path only if a demo build/deploy is explicitly run.
-3. Keep PR #29 open unless the user explicitly authorizes merge. Continue with non-art gameplay polish or the outstanding visual review once this gate-feedback change is validated.
+1. Final PR #29 head `fcba52ed18c3d65c24ac220d46d78d819f852ee3` passed Runtime [38501734471](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38501734471) at 52/52.
+2. Region entry feedback is complete; the next non-art task is a player-facing review list for discovered clue notes, after inspecting the existing JourneyLog architecture.
+3. Keep PR #29 open unless the user explicitly authorizes merge. No Web Demo deployment or screenshot acceptance is claimed.

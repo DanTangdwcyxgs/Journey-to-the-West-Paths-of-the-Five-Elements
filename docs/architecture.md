@@ -684,3 +684,13 @@ Origin/Shared EventSequence 的 `MOVE` 是主线世界位置变更，不只是�
 - Persistent region-point facts are stored through the explicit `NarrativeState.record_region_point_discovered()` API under `world_state.discovered_region_points`; that field must be present in new-game defaults, world-state replacement, serialization and load migration.
 - The UI commits a clue in one save transaction. If saving fails, restore the complete serialized NarrativeState and leave the same point retryable.
 - Region exploration is optional content: it must not mutate `current_shared_chapter`, `current_global_timeline`, `completed_shared_chapters`, or `recruited_characters`. Additional map locations should be added through data plus regression tests before claiming region coverage.
+
+
+## Region Content Validation Contract (2026-10-14)
+
+- `RegionContentValidator.validate_payload()` validates `data/world/regions.json` against `data/world/world_map.json` in the Godot Runtime content-contract test.
+- Region location IDs must resolve to real WorldMap nodes; only one region may claim each location because runtime lookup uses location-to-region resolution.
+- Region IDs, WorldMap node IDs and clue IDs must be unique. Clue IDs are globally unique because the persisted discovery list is flat and does not scope IDs by region.
+- Required timeline gates must be non-negative whole numbers. The validator accepts integer and integral floating-point variants because the JSON parser can return timeline numerics as floats; fractional and negative values are rejected.
+- Milestone lists must be well-shaped with non-empty, non-repeated keys. Regions require at least one point, and every clue requires a stable ID, name, description and result text.
+- `combat/test_region_content_validator.gd` covers the production catalog plus malformed negative fixtures and is included in `tests/runtime_suite.gd`; the content contract is enforced by CI rather than on each player-facing screen entry.
