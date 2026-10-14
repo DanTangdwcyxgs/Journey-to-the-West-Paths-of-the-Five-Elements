@@ -10,6 +10,7 @@
 
 ## 最新记录
 
+- [2026-10-14 — EventSequence MOVE Map Reference Validation](2026-10-14-event-sequence-move-reference-validation.md)
 - [2026-10-14 — Region Exploration Completion Feedback](2026-10-14-region-completion-feedback.md)
 - [2026-10-14 — Region Discovery Progress Feedback](2026-10-14-region-discovery-progress-feedback.md)
 
