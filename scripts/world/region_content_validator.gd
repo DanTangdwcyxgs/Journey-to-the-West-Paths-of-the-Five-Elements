@@ -69,7 +69,13 @@ static func validate_payload(region_payload: Variant, world_map_payload: Variant
 		_require_text(region_data, "description", "Region %s" % _display_id(region_id, index), errors)
 
 		var timeline: Variant = region_data.get("required_timeline", null)
-		if typeof(timeline) != TYPE_INT or int(timeline) < 0:
+		var valid_timeline := false
+		if typeof(timeline) == TYPE_INT:
+			valid_timeline = int(timeline) >= 0
+		elif typeof(timeline) == TYPE_FLOAT:
+			var timeline_value := float(timeline)
+			valid_timeline = timeline_value >= 0.0 and timeline_value == floor(timeline_value)
+		if not valid_timeline:
 			errors.append("Region %s must have a non-negative integer required_timeline." % _display_id(region_id, index))
 
 		var milestones: Variant = region_data.get("required_milestones", null)
