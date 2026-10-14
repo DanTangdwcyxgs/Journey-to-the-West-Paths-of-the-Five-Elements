@@ -90,6 +90,15 @@ func _run_smoke() -> void:
 		complete_fixture.state.record_region_point_discovered(str(clue.get("id", "")))
 	var completed_progress := region_manager.get_discovery_progress(complete_fixture, "EAGLE_SORROW")
 	_record(int(completed_progress.get("discovered", -1)) == 3 and int(completed_progress.get("remaining", -1)) == 0 and bool(completed_progress.get("complete", false)), "a region should report completion only after every authored clue is discovered")
+	var completed_screen := IsolatedRegionExplorationScreen.new()
+	completed_screen.narrative = complete_fixture
+	root.add_child(completed_screen)
+	await process_frame
+	_record(completed_screen.status_label.text.contains("本区域线索已全部记录"), "the region screen should show an explicit completion message after all clues are found")
+	_record(completed_screen.status_label.text.contains("旅途见闻"), "the completion message should point players to the discovered-notes journal")
+	_record(completed_screen.status_label.text.contains("不会推进西游主线"), "region completion feedback must not imply main-story completion")
+	completed_screen.queue_free()
+	await process_frame
 	var early_timeline := NarrativeManager.new()
 	early_timeline.state = NarrativeState.from_dict(fixture.serialize())
 	early_timeline.state.current_global_timeline = 104
