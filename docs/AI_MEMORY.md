@@ -727,3 +727,11 @@ Wukong、Tang、Longma、Bajie、Wujing 五条 Origin Route 均已完成首轮 S
 - 扩展现有生产 SceneTree 测试 combat/test_region_exploration.gd，通过全线索已发现的 fixture 实例化真实区域 screen，断言完成提示、日志导航指引和不推进主线文案；测试套件项数保持 54。
 - 已新增 docs/development_log/2026-10-14-region-completion-feedback.md 并更新架构说明、日志索引与本接手文件。实现/文档 head `43951fa76b45e37dee5f8ed5902b3edc17a55227` 的 Godot Runtime [38521895114](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38521895114) 完成成功，日志包含 `PASS res://combat/test_region_exploration.gd` 与 `RUNTIME_SUITE_PASS tests=54`。该结果只适用于精确 SHA `43951fa...`；本轮结果记录本身会产生新的文档同步 head，仍需单独确认。
 - 未宣称 Web Demo 部署、最终美术或截图验收完成。下一步验证最新 PR #29 exact-head Runtime；PR #29 保持 open/unmerged，除非用户明确授权合并。
+
+### Round 83 — 2026-10-14: EventSequence MOVE Map Reference Validation
+- 按内容流水线的显式缺口，审查 EventSequenceValidator、EventSequenceDefinition、EventRunner、WorldActionService.apply_move() 及生产 world_map.json。发现 move 节点缺少 marker_id 时，执行层可能回退把 map_id 当作当前位置写入 NarrativeState；原 cross-reference validator 没有预先拒绝这类坏内容。
+- 在 EventSequenceValidator.validate() 增加 MOVE 引用校验：只接受当前实现的 WORLD_MAP map_id；要求非空 marker_id；marker 必须存在于 WorldMapManager.nodes。这不改变运行时动作执行，只在内容载入前拦截无效序列。
+- 在现有 combat/test_event_sequence_validator.gd 中新增有效标记、缺少 marker、未知 marker、缺少 map_id、不支持 map_id 五种回归断言；没有新加独立测试入口，Runtime suite 仍为 54 项。
+- PASS：实现/测试 SHA daa33bb02411173170912eedd037e6dbf1e226f8 的 Godot Runtime [38522405623](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38522405623) 完成成功，日志含 PASS res://combat/test_event_sequence_validator.gd 和 RUNTIME_SUITE_PASS tests=54。后续文档同步提交的 exact-head Runtime 仍待确认。
+- 已更新 docs/architecture.md、docs/content_pipeline.md、本开发日志索引与 AI_HANDOFF.md。没有声称 Web Demo 部署或视觉验收。
+- 下一步：确认文档同步后的最新 PR #29 head 对应 Runtime 成功，再将最终 SHA/run 写入开发日志与 PR 描述。PR #29 保持 open/unmerged，除非用户明确授权合并。
