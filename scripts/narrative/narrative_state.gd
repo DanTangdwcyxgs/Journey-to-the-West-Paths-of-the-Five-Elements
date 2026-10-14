@@ -65,7 +65,8 @@ func initialize_for_start(character_id: String, initial_timeline: int = 0) -> vo
 		"visited_nodes": [],
 		"discovered_nodes": [],
 		"heard_rumors": [],
-		"discovered_bounties": []
+		"discovered_bounties": [],
+		"discovered_region_points": []
 	}
 	route_progress.clear()
 	for id in CHARACTER_IDS:
@@ -300,6 +301,7 @@ static func from_dict(data: Dictionary) -> NarrativeState:
 		"discovered_nodes": _string_array(raw_world.get("discovered_nodes", [])),
 		"heard_rumors": _string_array(raw_world.get("heard_rumors", [])),
 		"discovered_bounties": _string_array(raw_world.get("discovered_bounties", [])),
+		"discovered_region_points": _string_array(raw_world.get("discovered_region_points", [])),
 	}
 	for id in CHARACTER_IDS:
 		if not restored.route_progress.has(id):
