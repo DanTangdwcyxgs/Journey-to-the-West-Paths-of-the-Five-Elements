@@ -24,7 +24,7 @@ Add the next coherent optional exploration region after Longma joins the shared 
 
 ## Validation
 - Implementation head: `c2379b19e72d768957f4f70a206fe393bc8981e8`.
-- Exact-head Godot Runtime run [38500154155](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38500154155) was launched for the PR; its final result must be checked before declaring this batch validated. Do not treat baseline-main green checks as validation for the new code.
+- PASS: exact implementation/test SHA `c2379b19e72d768957f4f70a206fe393bc8981e8`; Godot Runtime run [38500154155](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38500154155) completed successfully. The job log confirms `PASS res://combat/test_region_exploration.gd` and `RUNTIME_SUITE_PASS tests=52`. The subsequent log/index/AI-memory/handoff-only commits must be checked against the newest PR-head Runtime before treating the final PR head as green.
 - The PR workflow runs Godot Runtime. Web Demo is not claimed for this unmerged feature branch.
 - No local Godot execution or visual screenshot review is claimed.
 
@@ -33,6 +33,6 @@ Add the next coherent optional exploration region after Longma joins the shared 
 - Final transparent character PNG/WebP assets and player-facing screenshot acceptance remain separate pending work.
 
 ## Next step / Agent handoff
-1. Check the newest PR #29 Godot Runtime status and job log against the exact current head.
-2. If it fails, fix the root cause and re-run the exact-head Runtime. If it passes, record the confirmed run in this log and handoff.
+1. Confirm the newest PR #29 Godot Runtime status and job log against the exact current head; the implementation/test head above is green at 52/52.
+2. If the current documentation-sync head fails, isolate whether it is an environment/docs issue or a regression, fix it, and rerun the exact-head Runtime.
 3. Do not merge PR #29 without explicit user permission. Continue with a narrative-coherent region or non-art interaction improvement only after reviewing the current branch and latest validation.
