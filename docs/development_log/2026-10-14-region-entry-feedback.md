@@ -42,7 +42,7 @@ Make locked optional regions understandable from WorldMap: when a region is not 
 - Region exploration remains clue-only and does not award items or progress story flags.
 
 ## Next step / Agent handoff
-1. Inspect CI for the newest documentation-sync branch head `624215981a68ac30ae8af8dad8f05c6ea93887cc`; the code/test head is confirmed green at 52/52.
-2. If the exact documentation-sync head passes Runtime, record the run. If it fails, inspect the exact job and correct only the actual root cause.
+1. Check the latest PR-head Godot Runtime after this result-recording documentation commit; code/test head `e50f7089ce18c598f513643149cd31a20eff56e3` and docs-sync heads `624215981a68ac30ae8af8dad8f05c6ea93887cc` and `a19983a8155fe590f6654a290d41ea37185da8b0` are all green at 52/52.
+2. If the exact newest head fails, inspect the actual job and correct only the root cause.
 3. Inspect the Web Demo path only if a demo build/deploy is explicitly run.
 3. Keep PR #29 open unless the user explicitly authorizes merge. Continue with non-art gameplay polish or the outstanding visual review once this gate-feedback change is validated.
