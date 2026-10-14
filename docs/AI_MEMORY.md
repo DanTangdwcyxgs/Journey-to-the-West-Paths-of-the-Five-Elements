@@ -647,3 +647,11 @@ Wukong、Tang、Longma、Bajie、Wujing 五条 Origin Route 均已完成首轮 S
 - Kept environmental SVG layer-marker checks and documented that automated loadability is not visual acceptance. No irrelevant status infographic was added to game assets.
 - Added `docs/development_log/2026-10-12-art-catalog-runtime-contract.md` and updated the development-log index. Runtime status is pending exact-head CI; previous successful runs do not validate this new test.
 - Next: inspect exact-head Actions, then continue non-art vertical-slice robustness work while six final transparent character assets remain pending generation.
+
+
+### Round 73 — 2026-10-14：Shared-02 Optional Exploration Integration Rebase
+- 按负责人授权，先合并已有 Godot Runtime 通过的 PR #25：squash commit 9c8ca5742ef32af72d480c06e8f5a6e20196e12a。该变更把鹰愁涧地图节点与黄牙传闻的可选开放时间调整为 timeline 105，同时保留 Shared-03 的 canonical 主线里程碑 110。
+- 原 PR #26 head cefaf8e5283accf5c8d9808f1698e75ad2363731 的精确 SHA Runtime 失败；首个失败断言是 Shared-02 后鹰愁涧应可达。失败发生时 PR #26 仍基于旧 main，未包含 PR #25 的 timeline 修正，因此不能通过放松断言来处理。
+- 已将原有生产 SceneTree smoke 改动重放到 PR #25 合并后的 main 基点，并继续覆盖同存档 Shared-02 → WorldMap → 鹰愁涧 → 黄牙传闻 → 返回 Journey → Shared-03 / 白龙马战斗；不改变固定世界时间线、招募队伍或章节历史。
+- PR #25 新增的主线结算回归使集成 Runtime suite 预期入口数为 50；本次 rebase 后的精确 head Runtime 尚待 GitHub Actions 验证。旧 SHA 的失败记录保留，不冒称通过。
+- 下一步：检查 PR 分支同步后的最新精确 SHA Runtime 日志；通过后将 PR #26 标为 ready 并合并，再确认新 main SHA 的 Runtime 与 Web Demo build/export/deploy。随后继续区域进入/互动探索与正式角色 PNG/WebP 评审。
