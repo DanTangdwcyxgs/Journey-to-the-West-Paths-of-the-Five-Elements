@@ -666,3 +666,20 @@ Runtime has now verified the post-Shared-02 detour and that Journey resumes at S
 1. The progress-feedback implementation and its docs-sync head are both green at 54/54.
 2. Re-read the main Vertical Slice task list and choose the next non-art gap with a clear runtime-testable acceptance contract; don't add another region unless the canonical route justifies it.
 3. Keep PR #29 open/unmerged absent explicit approval. Final transparent character PNG/WebP assets and visual screenshot acceptance remain separate deliverables.
+
+## 28. 2026-10-14 Region Exploration Completion Feedback (PR #29 continuation)
+
+### Change
+- Region screen progress now shares RegionExplorationManager.get_discovery_progress() with WorldMap; an unfinished area shows remaining clues, and a fully discovered area gives an explicit completed message plus 「旅途见闻」 review guidance.
+- Wrapped the status label for narrower viewports.
+- Extended combat/test_region_exploration.gd using a complete persisted-state fixture and production region screen. It verifies completion copy, journal guidance, and wording that protects the fixed main story. The suite remains 54 entries.
+- Architecture contract and development log are updated in docs/architecture.md and docs/development_log/2026-10-14-region-completion-feedback.md.
+
+### Validation gate
+- Pending: inspect the exact current PR-head Godot Runtime workflow. Require PASS res://combat/test_region_exploration.gd and RUNTIME_SUITE_PASS tests=54 before claiming success.
+- No Web Demo deployment, final character PNG/WebP delivery, or actual screenshot acceptance is claimed.
+
+### Next Agent
+1. Check the latest Runtime run for the exact head and examine the region-test result; repair any failure at its cause.
+2. On pass, add the run ID and exact SHA to the development log / AI memory, then confirm the docs-sync head's Runtime too.
+3. Keep PR #29 open/unmerged unless the user explicitly authorizes merge. Final character PNG/WebP assets and screenshot review remain separate work items.
