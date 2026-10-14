@@ -43,7 +43,10 @@ The SceneTree regression exercises:
 - Base main SHA: `74c011680cc7a76afa478747475c9e3e8a0a40b2`.
 - Base Godot Runtime [38495397569](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38495397569) passed with `RUNTIME_SUITE_PASS tests=51`.
 - Base Web Demo [38495397529](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38495397529) passed build, Web export, Pages artifact upload and deployment. Published URL: https://dantangdwcyxgs.github.io/Journey-to-the-West-Paths-of-the-Five-Elements/
-- Feature branch now contains new production UI and a registered SceneTree regression, so the expected suite becomes 52 entries. Exact-head Runtime is **pending**; no local Godot run is claimed and no feature-branch deploy is claimed.
+- Feature branch contains the production UI and registered SceneTree regression; expected suite is 52 entries. Base main Runtime / Web Demo are verified above; no feature-branch Web Demo deploy is claimed.
+- Initial code head `842dccc14d7592574d98a2d471a830454067de05` failed during fixture setup: `NarrativeState.set_shared_chapter()` did not exist, and the child test hit its watchdog because the coroutine stopped before calling `quit()`. Fixed the API call to `set_current_shared_chapter()` and added diagnostic stage markers, a 45-second watchdog, and restoration of backed-up save/encounter files before watchdog exit. Failed run: [38496663446](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38496663446).
+- Current implementation head `533ffa9eb989676a4cefc1e0bc9d85f81188cbce` passed exact-SHA Runtime [38496887862](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38496887862); the job log confirms `PASS res://combat/test_region_exploration.gd` and `RUNTIME_SUITE_PASS tests=52`. No local Godot execution is claimed.
+- Older heads `2a1dbc12d9f525e14f3c0fedc135f09af2d7e084` and `4d0a13a063ee5683b0e2cb9ab123579327db7be8` still show in-progress status and are stale; they are not evidence for or against this latest SHA.
 
 ## Known limitations
 - Only Eagle Sorrow is configured as a region in this slice. Expand to other locations through data-driven definitions and content review rather than adding per-region one-off code.
@@ -51,7 +54,7 @@ The SceneTree regression exercises:
 - No screenshot/pixel-art acceptance pass was run. Existing final transparent character PNG/WebP assets remain pending and SVG placeholders are not final art.
 
 ## Next step
-Open a PR for this branch and inspect the latest exact-head Godot Runtime. Require `PASS res://combat/test_region_exploration.gd` and `RUNTIME_SUITE_PASS tests=52`; fix any failures in the implementation/test rather than weakening invariant assertions. If green, merge and verify the merged main SHA's Runtime plus Web Demo build/export/deploy.
+PR #27 is open as Draft at https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/pull/27. The implementation head above is green at 52/52, but this documentation update creates a new head: require its exact-SHA Runtime to confirm `PASS res://combat/test_region_exploration.gd` and `RUNTIME_SUITE_PASS tests=52`. Then mark Ready, merge only the verified head, and validate merged main Runtime + Web Demo build/export/deploy.
 
 ## Handoff point
 Start at the current PR head and its newest Runtime run. The key files are `ui/region_exploration.gd`, `scripts/world/region_exploration_manager.gd`, `scripts/narrative/narrative_state.gd`, and `combat/test_region_exploration.gd`. Keep optional region exploration separate from the fixed Shared chronology. After CI validation, continue region interaction/signposting and actual player-facing screenshot review, then deliver six separate final transparent pixel-art character assets through `ArtAssetCatalog`.

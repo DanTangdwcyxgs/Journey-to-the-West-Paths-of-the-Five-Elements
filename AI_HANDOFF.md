@@ -555,13 +555,15 @@ Runtime has now verified the post-Shared-02 detour and that Journey resumes at S
 ### Current feature work
 - Active branch: `feature/eagle-sorrow-region-exploration-2026-10-14`.
 - Adds one data-driven Eagle Sorrow region with three interactive clues; an entry button on WorldMap; a reusable region screen; persistent `discovered_region_points` via NarrativeState; and atomic save/rollback/retry.
-- Registered a new SceneTree test: `combat/test_region_exploration.gd`. Expected full suite count is 52. This feature branch's exact-head Runtime result is pending; do not infer success from the 51-test main run.
+- Registered a new SceneTree test: `combat/test_region_exploration.gd`. Exact implementation head `533ffa9eb989676a4cefc1e0bc9d85f81188cbce` passed Runtime [38496887862](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38496887862) with `PASS res://combat/test_region_exploration.gd` and `RUNTIME_SUITE_PASS tests=52`.
+- Initial head `842dccc14d7592574d98a2d471a830454067de05` failed because the fixture called nonexistent `NarrativeState.set_shared_chapter()`. Corrected it to `set_current_shared_chapter()`, added stage logging and a 45-second watchdog that restores the three test save files on timeout. Failed run [38496663446](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38496663446) is historical evidence, not a pass.
+- Older heads `2a1dbc12d9f525e14f3c0fedc135f09af2d7e084` and `4d0a13a063ee5683b0e2cb9ab123579327db7be8` remain displayed as in-progress stale runs; do not treat them as current validation.
 - The feature log is `docs/development_log/2026-10-14-eagle-sorrow-region-exploration.md`; project memory is updated in Round 74. The implementation is intentionally restricted to optional discovery and must not grant rewards or advance mainline state.
 
 ### Required next actions
-1. Review the active feature branch diff, especially `scripts/narrative/narrative_state.gd`, `scripts/world/region_exploration_manager.gd`, `ui/region_exploration.gd`, `ui/world_map.gd`, and `combat/test_region_exploration.gd`.
-2. Open a PR; require the newest exact-head Runtime to report both `PASS res://combat/test_region_exploration.gd` and `RUNTIME_SUITE_PASS tests=52`. If it fails, fix the implementation/test; do not relax chronology or rollback assertions.
-3. If exact-head Runtime succeeds, merge and validate that merged main SHA's Runtime plus Web Demo build/export/deploy, then record exact run IDs and results.
+1. PR #27 is already open as Draft: https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/pull/27. The current code head passed 52/52; this documentation update creates a new head, so check that new exact-head Runtime before marking Ready.
+2. Keep all chronology, location-gate and save-rollback assertions intact. If the final head fails, fix implementation/test rather than weakening invariants.
+3. If final exact-head Runtime succeeds, mark PR #27 Ready, merge with the verified head SHA, then validate merged main Runtime plus Web Demo build/export/deploy and record actual run IDs.
 4. Continue expanding data-driven region interactions after this one-location slice proves stable, then conduct player-facing screenshot review and deliver six separate final transparent character PNG/WebP assets through `ArtAssetCatalog`.
 
 ### Non-negotiable constraints
