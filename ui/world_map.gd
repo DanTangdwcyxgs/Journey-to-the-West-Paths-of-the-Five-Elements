@@ -3,6 +3,7 @@ extends Control
 
 var narrative := NarrativeManager.new()
 var world := WorldMapManager.new()
+var region_exploration := RegionExplorationManager.new()
 var bounty_definitions: Dictionary = {}
 var node_list: ItemList
 var rumor_list: ItemList
@@ -12,6 +13,7 @@ var travel_button: Button
 var rumor_button: Button
 var bounty_button: Button
 var ridge_button: Button
+var region_button: Button
 var bounty_label: Label
 var selected_node_id := ""
 var selected_bounty_id := ""
@@ -101,6 +103,11 @@ func _build_ui() -> void:
 	ridge_button.custom_minimum_size = Vector2(0, 48)
 	ridge_button.pressed.connect(_enter_yellow_wind_ridge)
 	center.add_child(ridge_button)
+	region_button = Button.new()
+	region_button.text = "进入区域探索"
+	region_button.custom_minimum_size = Vector2(0, 46)
+	region_button.pressed.connect(_enter_region_exploration)
+	center.add_child(region_button)
 	bounty_button = Button.new()
 	bounty_button.text = "接受悬赏并出战"
 	bounty_button.custom_minimum_size = Vector2(0, 46)
@@ -142,6 +149,10 @@ func _refresh() -> void:
 	_refresh_rumors()
 	travel_button.disabled = selected_node_id.is_empty() or selected_node_id == current
 	ridge_button.disabled = current != "BLACK_WIND_NORTH_PATH" or not YellowWindRidgeManager.new().is_available(narrative)
+	var region: Dictionary = region_exploration.get_region_for_location(current)
+	region_button.visible = not region.is_empty()
+	region_button.text = "进入区域：%s" % str(region.get("name", ""))
+	region_button.disabled = region.is_empty() or not region_exploration.can_enter(narrative, str(region.get("id", "")))
 
 func _render_node(node: Dictionary) -> void:
 	selected_bounty_id = ""
@@ -201,6 +212,18 @@ func _hear_rumor() -> void:
 func _enter_yellow_wind_ridge() -> void:
 	if not YellowWindRidgeManager.new().is_available(narrative): return
 	get_tree().change_scene_to_file("res://ui/yellow_wind_ridge.tscn")
+
+func _enter_region_exploration() -> void:
+	var current := world.get_current_location(narrative)
+	var region: Dictionary = region_exploration.get_region_for_location(current)
+	var region_id := str(region.get("id", ""))
+	if region_id == "" or not region_exploration.can_enter(narrative, region_id):
+		status_label.text = "当前地点暂时没有可进入的区域探索。"
+		return
+	if not narrative.save():
+		status_label.text = "保存失败，暂时无法进入区域探索；可以重试。"
+		return
+	get_tree().change_scene_to_file("res://ui/region_exploration.tscn")
 
 func _challenge_bounty() -> void:
 	if selected_bounty_id.is_empty(): return
