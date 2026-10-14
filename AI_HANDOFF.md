@@ -589,3 +589,21 @@ Runtime has now verified the post-Shared-02 detour and that Journey resumes at S
 1. Inspect the newest PR #29 Runtime run for the exact latest PR head and review logs for `test_region_exploration.gd`.
 2. If it fails, fix the underlying fixture/path issue and rerun. If it passes, preserve the exact SHA/run in the development log.
 3. Do not merge PR #29 without explicit user permission. Keep final character PNG/WebP assets and screenshot review as separate outstanding work.
+
+
+## 23. 2026-10-14 Region Entry Requirement Feedback (PR #29 continuation)
+
+### Implementation
+- Added `RegionExplorationManager.get_entry_block_reason()` as the single source for both region-entry eligibility and the player's explanation. `can_enter()` now returns whether that reason is empty.
+- WorldMap presents inline explanatory text and a tooltip for region entries: current-location/timeline/milestone locks explain the exact missing prerequisite; available regions explain that they are optional clue investigations and do not progress the main story.
+- Added friendly text for Wukong, Longma, Bajie, Wujing recruitment and full-party milestones; no internal milestone key is presented to players.
+- Extended the production `combat/test_region_exploration.gd` path to verify locked-state feedback and successful re-enablement after restoring the required state.
+
+### Validation gate
+- Feature code/test SHA: `e50f7089ce18c598f513643149cd31a20eff56e3`. Its exact-head Godot Runtime workflow was queued/in progress while this section was authored. Check the newest PR-head Runtime for `PASS res://combat/test_region_exploration.gd` and `RUNTIME_SUITE_PASS tests=52`; update the log with the exact run before treating this task as complete.
+- No Web Demo deployment, visual screenshot acceptance, or image generation is claimed.
+
+### Next Agent
+1. Inspect the latest PR #29 head and Runtime. Fix any syntax/fixture/assertion failures and rerun the exact head.
+2. Preserve the fixed Journey timeline, the timeline and milestone gates, and the clue-only / no-chapter-progression contract.
+3. Keep PR #29 open unless the user explicitly authorizes merge. After validation, choose a further non-art gameplay polish or resume the separate final character asset/screenshot task.

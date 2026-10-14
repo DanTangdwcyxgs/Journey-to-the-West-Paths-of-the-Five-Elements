@@ -680,7 +680,7 @@ Origin/Shared EventSequence 的 `MOVE` 是主线世界位置变更，不只是�
 ## Region Exploration Runtime Contract (2026-10-14)
 
 - Region definitions live in `data/world/regions.json`; content IDs are stable and unique, and each region declares its map location, timeline gate, required milestones and points of interest.
-- `RegionExplorationManager` owns read-only catalog lookup, entry gates and validated discovery decisions. The screen does not invent progression rules or update the canonical chapter timeline.
+- `RegionExplorationManager` owns read-only catalog lookup, entry gates and validated discovery decisions. `get_entry_block_reason()` is the single source for both `can_enter()` and player-facing lock explanations; the screen must not duplicate timeline/milestone rules. The screen does not invent progression rules or update the canonical chapter timeline.
 - Persistent region-point facts are stored through the explicit `NarrativeState.record_region_point_discovered()` API under `world_state.discovered_region_points`; that field must be present in new-game defaults, world-state replacement, serialization and load migration.
 - The UI commits a clue in one save transaction. If saving fails, restore the complete serialized NarrativeState and leave the same point retryable.
 - Region exploration is optional content: it must not mutate `current_shared_chapter`, `current_global_timeline`, `completed_shared_chapters`, or `recruited_characters`. Additional map locations should be added through data plus regression tests before claiming region coverage.

@@ -685,3 +685,11 @@ Wukong、Tang、Longma、Bajie、Wujing 五条 Origin Route 均已完成首轮 S
 - Extended the existing production SceneTree smoke for timeline/recruitment gates, actual WorldMap travel and region entry, discovery save/reload, return navigation, and unchanged Shared chapter/timeline/completion/roster facts during discovery. The original Eagle Sorrow rollback/retry fixture is restored before its checks.
 - PASS: exact code/test head `c2379b19e72d768957f4f70a206fe393bc8981e8`, Runtime run [38500154155](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38500154155), job log confirms `RUNTIME_SUITE_PASS tests=52`. Documentation-sync head `32e24b6eb251a12c8fe2f7aaa5d580935a23de48` also passed Runtime run [38500329741](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38500329741), with the same 52/52 signature. This final result-recording commit contains only documentation evidence and triggers a fresh exact-head check. PR #29 is open and unmerged.
 - Development log: `docs/development_log/2026-10-14-black-wind-north-path-region.md`. Next: confirm the newest PR #29 Runtime result on its exact head, update validation evidence if needed, and do not merge without explicit user permission.
+
+
+### Round 78 — 2026-10-14: Region Entry Requirement Feedback
+- Region eligibility previously had only a boolean `can_enter()`, so WorldMap disabled the region button without explaining the missing timeline or recruitment gate.
+- Added `RegionExplorationManager.get_entry_block_reason()` and made `can_enter()` delegate to it; added localized milestone descriptions and inline WorldMap hint / tooltip.
+- Extended the existing production SceneTree regression with direct explanation checks and real WorldMap locked/unlocked presentation assertions. Test suite count remains 52 entries; assertions were added within `combat/test_region_exploration.gd`.
+- Implementation/test head `e50f7089ce18c598f513643149cd31a20eff56e3` had an exact-head Runtime workflow queued/in progress at the time of this log. Verify the final docs-sync head's CI result before declaring the batch green.
+- Development log: `docs/development_log/2026-10-14-region-entry-feedback.md`. Keep PR #29 open and unmerged without explicit user permission.
