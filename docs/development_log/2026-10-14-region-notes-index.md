@@ -29,7 +29,8 @@ Let players revisit clues after leaving a region, using the current save field r
 - `AI_HANDOFF.md`
 
 ## Validation
-- Runtime validation is pending for the initial implementation commit. Do not treat a queued or in-progress workflow as a pass; verify the exact branch head before marking this section complete.
+- PASS: implementation/test SHA `26c4d27b8464db2b3110d38b634754e04b53b248`, Godot Runtime [38503524908](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38503524908), completed successfully. Logs contain `PASS res://combat/test_region_notes_log.gd` and `RUNTIME_SUITE_PASS tests=54`.
+- This result applies to the exact implementation head above. After the following documentation-only sync commit, check Runtime again for that new exact head.
 - No visual screenshot acceptance, Web Demo deployment or final character PNG/WebP asset delivery is claimed.
 
 ## Known limitations
@@ -37,6 +38,6 @@ Let players revisit clues after leaving a region, using the current save field r
 - The screen intentionally does not expose undiscovered clues.
 
 ## Next step / Agent handoff
-1. Inspect Godot Runtime for the exact feature commit; fix any parse, UI-construction or assertion failures and rerun.
-2. After code/test success, sync the exact-head result into this log and the PR description, then check the documentation-sync head as well.
-3. Keep PR #29 open and unmerged unless the user explicitly authorizes merge. Character PNG/WebP production and screenshot review remain separate.
+1. Check the documentation-sync commit's exact-head Godot Runtime before treating this round as fully verified.
+2. Preserve the no-duplicate-persistence and clue-only contract; do not expose undiscovered clues or mutate the Journey timeline.
+3. Keep PR #29 open and unmerged unless explicitly authorized. Character PNG/WebP production and screenshot review remain separate.

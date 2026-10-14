@@ -709,5 +709,5 @@ Wukong、Tang、Longma、Bajie、Wujing 五条 Origin Route 均已完成首轮 S
 - 新增 `RegionExplorationManager.get_discovered_notes()` 只读聚合器，从区域目录补齐已发现点的名称、描述、结果与区域标签，不返回未发现点，避免重复保存或提前泄露线索。
 - 新增 `ui/region_notes_log.gd/.tscn` 和 WorldMap「旅途见闻」入口；列表/详情为空时显示指引，查阅过程不写状态。
 - 新增 `combat/test_region_notes_log.gd`，注册到 Runtime suite；覆盖跨区域聚合、隐藏未发现线索、存档 round-trip、UI 列表/详情与空状态，以及查看时不得修改 timeline / chapter / recruitment / state。
-- 当前提交的 Godot Runtime 尚待验证；仅当最新 exact-head Workflow 完成成功后，才能记录通过。没有宣称 Web Demo 部署、截图验收或最终角色 PNG/WebP 已完成。
+- 实现/测试 SHA `26c4d27b8464db2b3110d38b634754e04b53b248` 的 Godot Runtime [38503524908](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38503524908) 已完成成功；日志含 `PASS res://combat/test_region_notes_log.gd` 与 `RUNTIME_SUITE_PASS tests=54`。后续文档同步 commit 仍需按 exact head 检查一次。没有宣称 Web Demo 部署、截图验收或最终角色 PNG/WebP 已完成。
 - 下一步：检查该实现 head 的完整 Godot Runtime 日志并修正失败；随后将最新 CI 结果写回本日志与 PR #29，检查文档同步 head，保持 PR 未合并。

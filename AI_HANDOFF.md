@@ -641,7 +641,7 @@ Runtime has now verified the post-Shared-02 detour and that Journey resumes at S
 - Development log: `docs/development_log/2026-10-14-region-notes-index.md`; architecture and log index are updated.
 
 ### Validation Gate
-- The first implementation commit's Runtime is pending at the time of this handoff edit. Do not report a pass until the exact commit is complete and its logs contain the expected suite marker.
+- PASS: implementation/test head `26c4d27b8464db2b3110d38b634754e04b53b248`, Godot Runtime [38503524908](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38503524908), completed successfully with `PASS res://combat/test_region_notes_log.gd` and `RUNTIME_SUITE_PASS tests=54`. The documentation-sync head must be checked separately.
 - No Web Demo deployment, final-art delivery, or screenshot acceptance is claimed.
 
 ### Next Agent
