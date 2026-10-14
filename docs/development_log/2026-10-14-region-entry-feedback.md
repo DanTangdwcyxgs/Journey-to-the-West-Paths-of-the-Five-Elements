@@ -34,7 +34,7 @@ Make locked optional regions understandable from WorldMap: when a region is not 
 
 ## Validation
 - Feature implementation/test head: `e50f7089ce18c598f513643149cd31a20eff56e3`.
-- Exact-head Godot Runtime was queued/in progress when this log was written. Do not claim this iteration passes until a completed run for the code head or newer documented head reports `RUNTIME_SUITE_PASS tests=52`.
+- PASS: code/test head `e50f7089ce18c598f513643149cd31a20eff56e3`; Godot Runtime [38501453314](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38501453314) completed successfully. The job log confirms `PASS res://combat/test_region_exploration.gd` and `RUNTIME_SUITE_PASS tests=52`. Documentation-sync head `624215981a68ac30ae8af8dad8f05c6ea93887cc` contains only log/index/architecture/memory/handoff changes and needs its own exact-head Runtime check.
 - The branch is still part of PR #29. No main-branch merge, image generation, Web Demo deployment, or screenshot acceptance is claimed.
 
 ## Known limitations
@@ -42,6 +42,7 @@ Make locked optional regions understandable from WorldMap: when a region is not 
 - Region exploration remains clue-only and does not award items or progress story flags.
 
 ## Next step / Agent handoff
-1. Inspect CI for the current branch head; if the test fails, fix the root cause and rerun exact-head Runtime.
-2. After the code and documentation sync pass, inspect the Web Demo path only if a demo build/deploy is explicitly run.
+1. Inspect CI for the newest documentation-sync branch head `624215981a68ac30ae8af8dad8f05c6ea93887cc`; the code/test head is confirmed green at 52/52.
+2. If the exact documentation-sync head passes Runtime, record the run. If it fails, inspect the exact job and correct only the actual root cause.
+3. Inspect the Web Demo path only if a demo build/deploy is explicitly run.
 3. Keep PR #29 open unless the user explicitly authorizes merge. Continue with non-art gameplay polish or the outstanding visual review once this gate-feedback change is validated.
