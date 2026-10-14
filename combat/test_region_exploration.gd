@@ -100,6 +100,10 @@ func _run_smoke() -> void:
 	mountain_no_milestone.state.completed_milestones.erase("WUKONG_RECRUITED")
 	mountain_no_milestone.state.add_world_node_visit("FIVE_ELEMENTS_MOUNTAIN")
 	_record(not region_manager.can_enter(mountain_no_milestone, "FIVE_ELEMENTS_MOUNTAIN"), "Five Elements Mountain should require the Wukong recruitment milestone")
+	_record(region_manager.get_entry_block_reason(mountain_no_milestone, "FIVE_ELEMENTS_MOUNTAIN").find("孙悟空") >= 0, "a locked region should explain the missing Wukong recruitment requirement in player-facing language")
+	_record(region_manager.get_entry_block_reason(mountain_early, "FIVE_ELEMENTS_MOUNTAIN").find("T100") >= 0, "a locked region should explain its required timeline")
+	_record(region_manager.get_entry_block_reason(fixture, "EAGLE_SORROW").is_empty(), "an unlocked region should expose no blocking reason")
+	_record(region_manager.can_enter(fixture, "EAGLE_SORROW") == region_manager.get_entry_block_reason(fixture, "EAGLE_SORROW").is_empty(), "region availability and its explanatory reason should share one gate contract")
 	_record(fixture.save(), "the starting region state should be persisted")
 	current_stage = "fixture_saved"
 	print("REGION_EXPLORATION_STAGE 01 fixture_saved")
@@ -209,6 +213,19 @@ func _run_smoke() -> void:
 									_record(world_map != null, "returning from Five Elements Mountain should reopen WorldMap")
 									if world_map != null:
 										_record(str(world_map.narrative.state.get_world_state().get("current_location", "")) == "FIVE_ELEMENTS_MOUNTAIN", "returning from mountain exploration should preserve its map location")
+										var mountain_state_snapshot: Dictionary = world_map.narrative.serialize().duplicate(true)
+										world_map.narrative.state.current_global_timeline = 99
+										world_map.call("_refresh")
+										_record(world_map.region_button.visible and world_map.region_button.disabled, "WorldMap should keep a region locked before its timeline gate")
+										_record(world_map.region_hint_label.text.find("T100") >= 0, "WorldMap should show the timeline needed to unlock the region")
+										world_map.narrative.restore_snapshot(mountain_state_snapshot)
+										world_map.narrative.state.completed_milestones.erase("WUKONG_RECRUITED")
+										world_map.call("_refresh")
+										_record(world_map.region_button.visible and world_map.region_button.disabled, "WorldMap should keep a region locked when its recruitment milestone is missing")
+										_record(world_map.region_hint_label.text.find("孙悟空") >= 0, "WorldMap should explain the missing recruitment milestone in plain language")
+										world_map.narrative.restore_snapshot(mountain_state_snapshot)
+										world_map.call("_refresh")
+										_record(not world_map.region_button.disabled, "restoring the required state should re-enable region exploration")
 										var eagle_index := _find_node_by_label(world_map, "鹰愁涧")
 										_record(eagle_index >= 0, "Eagle Sorrow should remain reachable from Five Elements Mountain")
 										if eagle_index >= 0:
