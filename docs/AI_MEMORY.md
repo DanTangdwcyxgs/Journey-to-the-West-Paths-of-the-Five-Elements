@@ -720,3 +720,10 @@ Wukong、Tang、Longma、Bajie、Wujing 五条 Origin Route 均已完成首轮 S
 - 文档改动包括 docs/architecture.md、docs/development_log/README.md、本开发日志、docs/AI_MEMORY.md 与 AI_HANDOFF.md。
 - 实现/测试 SHA `26d93318759d801f364526cdeae295a978c223d1` 的 Godot Runtime [38520530322](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38520530322) 完成成功，日志含 `PASS res://combat/test_region_exploration.gd` 与 `RUNTIME_SUITE_PASS tests=54`。文档同步 SHA `6bb1d0fd7e055736fcdb6f86541a544ac5b7c6a7` 的 Runtime [38520671947](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38520671947) 也通过，日志含 `PASS res://combat/test_region_exploration.gd` 与 `RUNTIME_SUITE_PASS tests=54`。没有宣称 Web Demo 部署、美术资产完成或截图验收完成。
 - 下一步：回看交接文档中剩余的 Vertical Slice 高优先级缺口，优先选不依赖图像生成、能由真实 Runtime 覆盖的工作；正式 PNG/WebP 与截图验收保持独立待办。
+
+### Round 82 — 2026-10-14：Region Exploration Completion Feedback
+- 阅读并遵循 DEVELOPMENT_RULES.md、游戏愿景、制作规则、内容流水线、章节圣经与当前区域架构约定；本次只做 Presentation 层玩家反馈，不加剧情或存档字段。
+- 区域界面之前只显示已发现/总数，即使到 3/3 也没有明确完成态和「旅途见闻」指引。现在直接复用 RegionExplorationManager.get_discovery_progress()：未完成时提示剩余线索，全部记录后提示可到「旅途见闻」回看，并明确不会推进西游主线。
+- 扩展现有生产 SceneTree 测试 combat/test_region_exploration.gd，通过全线索已发现的 fixture 实例化真实区域 screen，断言完成提示、日志导航指引和不推进主线文案；测试套件项数保持 54。
+- 已新增 docs/development_log/2026-10-14-region-completion-feedback.md 并更新架构说明、日志索引与本接手文件。提交完成后必须检查精确 PR head 的 Godot Runtime；当前尚未宣称 CI 通过，也未宣称 Web Demo、最终美术或截图验收完成。
+- 下一步：验证最新 PR #29 exact-head Runtime；若 54/54 通过，再按开发日志记录该 run。PR #29 保持 open/unmerged，除非用户明确授权合并。
