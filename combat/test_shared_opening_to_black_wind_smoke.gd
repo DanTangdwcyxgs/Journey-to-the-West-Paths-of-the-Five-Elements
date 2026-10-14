@@ -74,6 +74,7 @@ func _run_smoke() -> void:
 					_record(journey.narrative.state.current_shared_chapter == "SHARED-03-EAGLE-SORROW", "Shared-02 END should advance to Eagle Sorrow")
 					_record("SHARED-02-EARLY-PILGRIMAGE" in journey.narrative.state.completed_shared_chapters, "Shared-02 should be committed to completed chapters")
 
+					journey = await _exercise_optional_exploration(journey)
 					journey = await _drive_sequence(journey, "SHARED-03-EAGLE-SORROW-SEQUENCE", "SAVE_THE_DRAGON", "EAGLE_SORROW", "SHARED_EAGLE_SORROW")
 					if journey != null:
 						_record(journey.narrative.state.current_shared_chapter == "SHARED-04-EARLY-DEMON-TALES", "Longma victory should advance the current chapter to Shared-04")
@@ -125,6 +126,102 @@ func _run_smoke() -> void:
 			push_error(failure)
 		print("SHARED_OPENING_TO_BLACK_WIND_FAIL failures=%d" % failures.size())
 		quit(1)
+
+func _exercise_optional_exploration(journey: JourneyScreen) -> JourneyScreen:
+	if journey == null:
+		return null
+
+	var expected_chapter := journey.narrative.state.current_shared_chapter
+	var expected_timeline: int = journey.narrative.state.current_global_timeline
+	var expected_completed: Array = journey.narrative.state.completed_shared_chapters.duplicate(true)
+	var expected_roster: Array = journey.narrative.state.recruited_characters.duplicate(true)
+	_record(expected_chapter == "SHARED-03-EAGLE-SORROW", "optional exploration should sit between Shared-02 and Shared-03")
+	_record(str(journey.narrative.state.get_world_state().get("current_location", "")) == "FIVE_ELEMENTS_MOUNTAIN", "Shared-02 should end at Five Elements Mountain before the detour")
+	_record(not journey.world_button.disabled, "Journey should allow opening WorldMap between completed sequences")
+	journey.world_button.emit_signal("pressed")
+	var world_map: WorldMapScreen = await _wait_for_world_map()
+	_record(world_map != null, "Journey WorldMap control should open the production WorldMap")
+	if world_map == null:
+		return null
+
+	_record(world_map.narrative.state.current_shared_chapter == expected_chapter, "entering WorldMap should preserve the next canonical Shared chapter")
+	_record(world_map.narrative.state.current_global_timeline == expected_timeline, "entering WorldMap should preserve the global timeline")
+	var eagle_index := _find_map_node(world_map, "鹰愁涧")
+	_record(eagle_index >= 0, "Eagle Sorrow should be reachable from Five Elements Mountain before Shared-03")
+	if eagle_index < 0:
+		return null
+	world_map.node_list.select(eagle_index)
+	world_map.call("_on_node_selected", eagle_index)
+	_record(not world_map.travel_button.disabled, "Eagle Sorrow should be selectable as an optional map destination")
+	world_map.travel_button.emit_signal("pressed")
+	await process_frame
+	_record(str(world_map.narrative.state.get_world_state().get("current_location", "")) == "EAGLE_SORROW", "optional travel should persist Eagle Sorrow as the current location")
+	_record(world_map.narrative.state.current_shared_chapter == expected_chapter, "optional travel must not advance the Shared chapter")
+	_record(world_map.narrative.state.current_global_timeline == expected_timeline, "optional travel must not advance the global timeline")
+	_record(world_map.narrative.state.completed_shared_chapters == expected_completed, "optional travel must not change completed Shared chapter history")
+	_record(world_map.narrative.state.recruited_characters == expected_roster, "optional travel must not alter the recruited party")
+	_record(not world_map.rumor_button.disabled, "Eagle Sorrow should expose the Yellow Fang rumor at the current timeline")
+	if world_map.rumor_button.disabled:
+		return null
+	_record(world_map.rumor_list.get_item_text(0).find("黄牙") >= 0, "the available optional rumor should be the Yellow Fang lead")
+	world_map.rumor_list.select(0)
+	world_map.rumor_button.emit_signal("pressed")
+	await process_frame
+	var world_state: Dictionary = world_map.narrative.state.get_world_state()
+	_record("RUMOR_YELLOW_FANG" in world_state.get("heard_rumors", []), "hearing the rumor should commit the heard-rumor marker")
+	_record("BOUNTY_YELLOW_FANG" in world_state.get("discovered_bounties", []), "hearing the rumor should discover the optional bounty")
+	_record(world_map.narrative.state.current_shared_chapter == expected_chapter, "rumor discovery must not advance the Shared chapter")
+	_record(world_map.narrative.state.current_global_timeline == expected_timeline, "rumor discovery must not advance the global timeline")
+	_record(world_map.narrative.state.completed_shared_chapters == expected_completed, "rumor discovery must preserve completed Shared chapter history")
+	_record(world_map.narrative.state.recruited_characters == expected_roster, "rumor discovery must preserve the recruited party")
+	var saved_detour := NarrativeManager.new()
+	_record(saved_detour.load(), "the optional rumor detour should leave a loadable save")
+	if saved_detour.state != null:
+		_record(saved_detour.state.current_shared_chapter == expected_chapter, "saved rumor discovery should preserve the next canonical Shared chapter")
+		_record(saved_detour.state.current_global_timeline == expected_timeline, "saved rumor discovery should preserve the global timeline")
+		_record(str(saved_detour.state.get_world_state().get("current_location", "")) == "EAGLE_SORROW", "saved rumor discovery should retain the optional travel location")
+		_record("BOUNTY_YELLOW_FANG" in saved_detour.state.get_world_state().get("discovered_bounties", []), "saved rumor discovery should retain the unlocked optional bounty")
+
+	var return_button := _find_button_by_text(world_map, "返回行程")
+	_record(return_button != null, "WorldMap should provide the production Return to Journey control")
+	if return_button == null:
+		return null
+	return_button.emit_signal("pressed")
+	var resumed_journey: JourneyScreen = await _wait_for_journey()
+	_record(resumed_journey != null, "Return to Journey should reopen the production Journey scene")
+	if resumed_journey == null:
+		return null
+	_record(resumed_journey.event_session == null, "optional exploration should return between sequences, not resume a discarded active runner")
+	_record(resumed_journey.narrative.state.current_shared_chapter == expected_chapter, "returning from optional exploration should resume Shared-03")
+	_record(resumed_journey.narrative.state.current_global_timeline == expected_timeline, "returning from optional exploration should preserve the global timeline")
+	_record(resumed_journey.narrative.state.completed_shared_chapters == expected_completed, "returning from optional exploration should preserve completed Shared chapter history")
+	_record(resumed_journey.narrative.state.recruited_characters == expected_roster, "returning from optional exploration should preserve the recruited party")
+	_record(str(resumed_journey.narrative.state.get_world_state().get("current_location", "")) == "EAGLE_SORROW", "Journey should resume from the optional exploration location")
+	_record("BOUNTY_YELLOW_FANG" in resumed_journey.narrative.state.get_world_state().get("discovered_bounties", []), "Journey should retain the rumor discovery after returning from WorldMap")
+	return resumed_journey
+
+func _find_map_node(world_map: WorldMapScreen, label: String) -> int:
+	for index in range(world_map.node_list.get_item_count()):
+		if world_map.node_list.get_item_text(index).find(label) >= 0:
+			return index
+	return -1
+
+func _find_button_by_text(parent: Node, target_text: String) -> Button:
+	for child in parent.get_children():
+		var button := child as Button
+		if button != null and button.text == target_text:
+			return button
+		var nested: Button = _find_button_by_text(child, target_text)
+		if nested != null:
+			return nested
+	return null
+
+func _wait_for_world_map() -> WorldMapScreen:
+	for _frame in range(60):
+		await process_frame
+		if current_scene is WorldMapScreen:
+			return current_scene as WorldMapScreen
+	return null
 
 func _drive_sequence(journey: JourneyScreen, sequence_id: String, choice_id: String, expected_location: String, expected_battle_id: String = "") -> JourneyScreen:
 	if journey == null:
