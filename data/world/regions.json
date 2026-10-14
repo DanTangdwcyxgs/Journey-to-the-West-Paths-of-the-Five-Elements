@@ -59,6 +59,36 @@
           "result_text": "记录了松下行脚包的发现地点。留下的物件没有提供可领取的道具或奖励，只让旧路多了一处值得追问的细节。"
         }
       ]
+    },
+    {
+      "id": "BLACK_WIND_NORTH_PATH",
+      "location_id": "BLACK_WIND_NORTH_PATH",
+      "name": "黑风山北道 · 古寺余痕",
+      "description": "白龙马已加入取经队伍，山道把师徒引向黑风山与早期妖患。沿路调查三处痕迹，只会补充见闻，不会提前结算主线或替代后续事件。",
+      "required_timeline": 120,
+      "required_milestones": [
+        "BAI_LONGMA_RECRUITED"
+      ],
+      "points": [
+        {
+          "id": "BLACK_WIND_NORTH_PATH_BROKEN_PINE",
+          "name": "折断的松枝",
+          "description": "几根粗松枝断在路边，断口并不像被风雪折断，枝叶还残留一层难以辨认的暗灰。",
+          "result_text": "记录了折断松枝的位置。痕迹像是有东西从山道穿过，但眼下还不足以判断它的来历。"
+        },
+        {
+          "id": "BLACK_WIND_NORTH_PATH_TEMPLE_ASH",
+          "name": "石龛里的冷香灰",
+          "description": "道旁石龛积着薄薄一层香灰，灰烬早已冷透，混着些细碎的焦黑纤维，像从远处寺院飘来的旧余烬。",
+          "result_text": "记下了石龛与冷香灰的线索。它可能与山中寺院有关，暂时不会触发新的剧情或改变取经进度。"
+        },
+        {
+          "id": "BLACK_WIND_NORTH_PATH_CLAW_MARKS",
+          "name": "崖石上的深爪痕",
+          "description": "岩壁下方留着几道很深的抓痕，间距远超寻常野兽。痕迹朝向山中，却没有可供追踪的连续足迹。",
+          "result_text": "记录了崖石上的深爪痕。队伍知道黑风山附近并不太平，但仍需按既定行程继续查明真相。"
+        }
+      ]
     }
   ]
 }
