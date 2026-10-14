@@ -61,6 +61,7 @@ func _build_ui() -> void:
 	root.add_child(introduction)
 
 	status_label = Label.new()
+	status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	status_label.add_theme_font_size_override("font_size", 16)
 	root.add_child(status_label)
 
@@ -126,23 +127,29 @@ func _refresh() -> void:
 		return
 	var points := region_manager.get_points(region_id)
 	var discovered := region_manager.get_discovered_point_ids(narrative)
+	var progress := region_manager.get_discovery_progress(narrative, region_id)
 	point_list.clear()
-	var found_count := 0
 	for point in points:
 		var point_id := str(point.get("id", ""))
 		var is_found := point_id in discovered
-		if is_found:
-			found_count += 1
 		var marker := "✓" if is_found else "◇"
 		point_list.add_item("%s %s" % [marker, str(point.get("name", point_id))])
 		point_list.set_item_metadata(point_list.item_count - 1, point_id)
 		if point_id == selected_point_id:
 			point_list.select(point_list.item_count - 1)
-	status_label.text = "线索 %d/%d · 当前区域：%s · 可选探索（不推进西游主线）" % [
-		found_count,
-		points.size(),
-		str(region_definition.get("name", region_id))
-	]
+	var discovered_count := int(progress.get("discovered", 0))
+	var total_count := int(progress.get("total", points.size()))
+	if bool(progress.get("complete", false)):
+		status_label.text = "线索 %d/%d · 本区域线索已全部记录，可在「旅途见闻」回看；不会推进西游主线。" % [
+			discovered_count,
+			total_count
+		]
+	else:
+		status_label.text = "线索 %d/%d · 还剩 %d 处可调查 · 可选探索，不推进西游主线。" % [
+			discovered_count,
+			total_count,
+			int(progress.get("remaining", 0))
+		]
 	if selected_point_id == "" and not points.is_empty():
 		selected_point_id = str(points[0].get("id", ""))
 		point_list.select(0)
