@@ -581,7 +581,7 @@ Runtime has now verified the post-Shared-02 detour and that Journey resumes at S
 - Added `docs/development_log/2026-10-14-black-wind-north-path-region.md`, indexed it, and recorded the change in `docs/AI_MEMORY.md`.
 
 ### Validation gate
-- Implementation head `c2379b19e72d768957f4f70a206fe393bc8981e8`; Runtime run [38500154155](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38500154155) was in progress during handoff authoring. Check the latest PR head and its completed Runtime result before marking this work validated.
+- PASS: implementation/test head `c2379b19e72d768957f4f70a206fe393bc8981e8`; Runtime run [38500154155](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38500154155) completed successfully with `RUNTIME_SUITE_PASS tests=52`. Check the newest PR-head Runtime again after the later documentation-sync commits.
 - Main baseline `395233d8bcaf13aa9022c33903ab03a75c5a83ae` had successful Runtime run [38498039387](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38498039387) and Web Demo run [38498039390](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38498039390). Baseline results are not evidence for the feature branch.
 - No Web Demo deploy is claimed for this unmerged PR. No image-generation or screenshot acceptance was performed.
 
