@@ -21,6 +21,7 @@ class IsolatedRegionExplorationScreen:
 var failures: Array[String] = []
 var current_stage := "initialization"
 var test_finished := false
+var watchdog_backups: Dictionary = {}
 
 func _initialize() -> void:
 	var watchdog := create_timer(45.0)
@@ -31,6 +32,8 @@ func _on_watchdog_timeout() -> void:
 	if test_finished:
 		return
 	push_error("REGION_EXPLORATION_TEST_TIMEOUT stage=%s" % current_stage)
+	for path_value in watchdog_backups.keys():
+		_restore_file(str(path_value), watchdog_backups[path_value])
 	quit(124)
 
 func _run_smoke() -> void:
@@ -42,6 +45,11 @@ func _run_smoke() -> void:
 	var save_backup := _capture_file(save_path)
 	var encounter_backup := _capture_file(encounter_path)
 	var resume_backup := _capture_file(resume_path)
+	watchdog_backups = {
+		save_path: save_backup,
+		encounter_path: encounter_backup,
+		resume_path: resume_backup
+	}
 	_remove_file(save_path)
 	_remove_file(encounter_path)
 	_remove_file(resume_path)
@@ -58,7 +66,7 @@ func _run_smoke() -> void:
 	fixture.state.record_milestone("WUKONG_RECRUITED", 100)
 	fixture.state.mark_route_complete("WUKONG")
 	fixture.state.current_global_timeline = 105
-	fixture.state.set_shared_chapter("SHARED-03-EAGLE-SORROW")
+	fixture.state.set_current_shared_chapter("SHARED-03-EAGLE-SORROW")
 	fixture.state.completed_chapters = [
 		"WUKONG-ORIGIN",
 		"SHARED-01-FIVE-ELEMENTS",
