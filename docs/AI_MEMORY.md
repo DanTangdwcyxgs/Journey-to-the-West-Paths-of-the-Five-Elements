@@ -709,5 +709,14 @@ Wukong、Tang、Longma、Bajie、Wujing 五条 Origin Route 均已完成首轮 S
 - 新增 `RegionExplorationManager.get_discovered_notes()` 只读聚合器，从区域目录补齐已发现点的名称、描述、结果与区域标签，不返回未发现点，避免重复保存或提前泄露线索。
 - 新增 `ui/region_notes_log.gd/.tscn` 和 WorldMap「旅途见闻」入口；列表/详情为空时显示指引，查阅过程不写状态。
 - 新增 `combat/test_region_notes_log.gd`，注册到 Runtime suite；覆盖跨区域聚合、隐藏未发现线索、存档 round-trip、UI 列表/详情与空状态，以及查看时不得修改 timeline / chapter / recruitment / state。
-- 实现/测试 SHA `26c4d27b8464db2b3110d38b634754e04b53b248` 的 Godot Runtime [38503524908](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38503524908) 已完成成功；日志含 `PASS res://combat/test_region_notes_log.gd` 与 `RUNTIME_SUITE_PASS tests=54`。后续文档同步 commit 仍需按 exact head 检查一次。没有宣称 Web Demo 部署、截图验收或最终角色 PNG/WebP 已完成。
+- 实现/测试 SHA `26c4d27b8464db2b3110d38b634754e04b53b248` 的 Godot Runtime [38503524908](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38503524908) 已成功，日志含 `PASS res://combat/test_region_notes_log.gd` 与 `RUNTIME_SUITE_PASS tests=54`。文档同步 SHA `1de4a24112eb26a2bc8d36f44d2f86340776eaff` 的 Runtime [38503657814](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38503657814) 也通过 54/54。没有宣称 Web Demo 部署、截图验收或最终角色 PNG/WebP 已完成。
 - 下一步：检查该实现 head 的完整 Godot Runtime 日志并修正失败；随后将最新 CI 结果写回本日志与 PR #29，检查文档同步 head，保持 PR 未合并。
+
+### Round 81 — 2026-10-14：WorldMap Region Discovery Progress Feedback
+- 复核 PR #29 文档同步头 1de4a24112eb26a2bc8d36f44d2f86340776eaff 的 Godot Runtime [38503657814](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38503657814)：成功，RUNTIME_SUITE_PASS tests=54。
+- 补充玩家导航反馈：WorldMap 当前地点有区域探索定义时，入口显示已发现/总线索数；提示区域未完成时剩余数量，找齐后显示“本区域线索已全部记录”并引导到「旅途见闻」回看。
+- 新增 RegionExplorationManager.get_discovery_progress()，仅由 regions.json 点列表与既有 NarrativeState.world_state.discovered_region_points 派生 discovered/total/remaining/complete，不引入新存档字段、不更改章节状态。
+- 扩展 combat/test_region_exploration.gd，覆盖 0/3、1/3、3/3、回到世界地图仍显示已保存进度，以及“区域线索完成”不等于“主线章节完成”。Runtime suite 项数仍为 54。
+- 文档改动包括 docs/architecture.md、docs/development_log/README.md、本开发日志、docs/AI_MEMORY.md 与 AI_HANDOFF.md。
+- 当前实现及文档同步提交的 Runtime 结果待验证；任何 queued/in-progress 结果都不作为通过证明。没有宣称 Web Demo 部署、美术资产完成或截图验收完成。
+- 下一步：检查此实现头的 Godot Runtime；若失败按日志修复，再记录 exact SHA/run 并检查 docs-sync head。

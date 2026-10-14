@@ -30,7 +30,7 @@ Let players revisit clues after leaving a region, using the current save field r
 
 ## Validation
 - PASS: implementation/test SHA `26c4d27b8464db2b3110d38b634754e04b53b248`, Godot Runtime [38503524908](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38503524908), completed successfully. Logs contain `PASS res://combat/test_region_notes_log.gd` and `RUNTIME_SUITE_PASS tests=54`.
-- This result applies to the exact implementation head above. After the following documentation-only sync commit, check Runtime again for that new exact head.
+- The documentation-sync head `1de4a24112eb26a2bc8d36f44d2f86340776eaff` also passed Godot Runtime [38503657814](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38503657814), with `PASS res://combat/test_region_notes_log.gd` and `RUNTIME_SUITE_PASS tests=54`.
 - No visual screenshot acceptance, Web Demo deployment or final character PNG/WebP asset delivery is claimed.
 
 ## Known limitations
@@ -38,6 +38,6 @@ Let players revisit clues after leaving a region, using the current save field r
 - The screen intentionally does not expose undiscovered clues.
 
 ## Next step / Agent handoff
-1. Check the documentation-sync commit's exact-head Godot Runtime before treating this round as fully verified.
-2. Preserve the no-duplicate-persistence and clue-only contract; do not expose undiscovered clues or mutate the Journey timeline.
+1. The documentation-sync head has now passed the exact-head Runtime gate.
+2. A follow-up pass is improving the WorldMap's visible discovered/total clue count while retaining the same read-only source of truth.
 3. Keep PR #29 open and unmerged unless explicitly authorized. Character PNG/WebP production and screenshot review remain separate.

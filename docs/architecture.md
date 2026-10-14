@@ -687,6 +687,7 @@ Origin/Shared EventSequence 的 `MOVE` 是主线世界位置变更，不只是�
 
 
 - `RegionExplorationManager.get_discovered_notes()` projects discovered clues into a read-only journal view using the persisted flat point-ID list. `ui/region_notes_log.tscn` shows only discovered entries and is reachable from WorldMap; opening or browsing it never writes state or advances the canonical Journey.
+- `RegionExplorationManager.get_discovery_progress()` derives discovered/total/remaining counts from the same persisted discovery IDs. WorldMap may present this read-only progress, but region completion is not chapter completion and cannot advance the main story.
 
 ## Region Content Validation Contract (2026-10-14)
 

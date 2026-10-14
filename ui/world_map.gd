@@ -163,13 +163,32 @@ func _refresh() -> void:
 	ridge_button.disabled = current != "BLACK_WIND_NORTH_PATH" or not YellowWindRidgeManager.new().is_available(narrative)
 	var region: Dictionary = region_exploration.get_region_for_location(current)
 	region_button.visible = not region.is_empty()
-	region_button.text = "进入区域：%s" % str(region.get("name", ""))
 	var region_id := str(region.get("id", ""))
+	var progress := region_exploration.get_discovery_progress(narrative, region_id)
+	var discovered_count := int(progress.get("discovered", 0))
+	var total_count := int(progress.get("total", 0))
+	region_button.text = "进入区域：%s · %d/%d" % [
+		str(region.get("name", "")),
+		discovered_count,
+		total_count
+	]
 	var region_block_reason := region_exploration.get_entry_block_reason(narrative, region_id)
 	region_button.disabled = not region_block_reason.is_empty()
-	region_button.tooltip_text = region_block_reason if not region_block_reason.is_empty() else "调查地点线索并记录旅途见闻；不推进西游主线。"
 	region_hint_label.visible = not region.is_empty()
-	region_hint_label.text = region_block_reason if not region_block_reason.is_empty() else "可选探索：调查并记录线索，不推进西游主线。"
+	if not region_block_reason.is_empty():
+		region_hint_label.text = region_block_reason
+	elif bool(progress.get("complete", false)):
+		region_hint_label.text = "本区域线索已全部记录（%d/%d）。可在「旅途见闻」中回看；不会推进西游主线。" % [
+			discovered_count,
+			total_count
+		]
+	else:
+		region_hint_label.text = "可选探索：已记录 %d/%d 条线索，还剩 %d 处可调查；不会推进西游主线。" % [
+			discovered_count,
+			total_count,
+			int(progress.get("remaining", 0))
+		]
+	region_button.tooltip_text = region_block_reason if not region_block_reason.is_empty() else region_hint_label.text
 
 func _render_node(node: Dictionary) -> void:
 	selected_bounty_id = ""

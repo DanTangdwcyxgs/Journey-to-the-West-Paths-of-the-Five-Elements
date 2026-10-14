@@ -641,10 +641,28 @@ Runtime has now verified the post-Shared-02 detour and that Journey resumes at S
 - Development log: `docs/development_log/2026-10-14-region-notes-index.md`; architecture and log index are updated.
 
 ### Validation Gate
-- PASS: implementation/test head `26c4d27b8464db2b3110d38b634754e04b53b248`, Godot Runtime [38503524908](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38503524908), completed successfully with `PASS res://combat/test_region_notes_log.gd` and `RUNTIME_SUITE_PASS tests=54`. The documentation-sync head must be checked separately.
+- PASS: implementation/test head `26c4d27b8464db2b3110d38b634754e04b53b248`, Runtime [38503524908](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38503524908), and documentation-sync head `1de4a24112eb26a2bc8d36f44d2f86340776eaff`, Runtime [38503657814](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38503657814), both passed `PASS res://combat/test_region_notes_log.gd`, `RUNTIME_SUITE_PASS tests=54`.
 - No Web Demo deployment, final-art delivery, or screenshot acceptance is claimed.
 
 ### Next Agent
-1. Verify the exact implementation commit's Godot Runtime, including `PASS res://combat/test_region_notes_log.gd` and `RUNTIME_SUITE_PASS tests=54`; correct failures and rerun if needed.
-2. Record the actual run ID and exact tested SHA in the development log; then verify the documentation-sync head and update PR #29’s description with the latest exact-head Runtime.
+1. The exact implementation and docs-sync Runtime gates are both green at 54/54; the PR description includes these run IDs.
+2. Next polish: surface the current region's discovered/total clue progress on WorldMap, without creating a second persistence store or implying mainline completion.
 3. Keep PR #29 open/unmerged. Final character PNG/WebP assets and actual visual screenshot acceptance remain separate deliverables.
+
+## 27. 2026-10-14 WorldMap Region Discovery Progress Feedback (PR #29 continuation)
+
+### Implementation
+- Read the required vision, production and content-pipeline documents before extending the region subsystem. Region progress is presentation feedback, not a new narrative progression rule.
+- Added RegionExplorationManager.get_discovery_progress() as a derived summary over region definitions and existing persisted discovery point IDs.
+- WorldMap entry labels show discovered/total clues. The hint shows remaining clue count or a local-completion message that explicitly distinguishes regional clue completion from chapter/story completion.
+- Extended combat/test_region_exploration.gd rather than adding another duplicate test runner: covers 0/3, 1/3, 3/3 and progress remaining visible after return to WorldMap. Suite count stays 54.
+- Development record: docs/development_log/2026-10-14-region-discovery-progress-feedback.md.
+
+### Validation Gate
+- Previous verified docs-sync head 1de4a24112eb26a2bc8d36f44d2f86340776eaff passed Runtime [38503657814](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38503657814), RUNTIME_SUITE_PASS tests=54.
+- This batch's implementation head still requires exact-SHA Runtime validation. No Web Demo deploy, screenshot acceptance, or final character assets are claimed.
+
+### Next Agent
+1. Check the exact implementation Runtime and ensure combat/test_region_exploration.gd passes with RUNTIME_SUITE_PASS tests=54.
+2. After recording its SHA/run, update the log and check the documentation-sync head.
+3. Keep PR #29 open and unmerged without explicit user authorization. Final character PNG/WebP assets and screenshot review remain separate.

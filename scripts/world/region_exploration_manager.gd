@@ -73,6 +73,25 @@ func get_point(region_id: String, point_id: String) -> Dictionary:
 			return point
 	return {}
 
+## Returns the discovery count for a region without mutating NarrativeState.
+func get_discovery_progress(narrative: NarrativeManager, region_id: String) -> Dictionary:
+	var points := get_points(region_id)
+	var discovered_count := 0
+	if narrative != null:
+		var discovered_ids := get_discovered_point_ids(narrative)
+		for point in points:
+			var point_id := str(point.get("id", ""))
+			if point_id != "" and point_id in discovered_ids:
+				discovered_count += 1
+	var total_count := points.size()
+	return {
+		"discovered": discovered_count,
+		"total": total_count,
+		"remaining": maxi(0, total_count - discovered_count),
+		"complete": total_count > 0 and discovered_count >= total_count,
+	}
+
+
 func get_discovered_point_ids(narrative: NarrativeManager) -> Array[String]:
 	var result: Array[String] = []
 	if narrative == null:

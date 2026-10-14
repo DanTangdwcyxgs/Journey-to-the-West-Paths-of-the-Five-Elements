@@ -81,6 +81,15 @@ func _run_smoke() -> void:
 	]
 	fixture.state.add_world_node_visit("EAGLE_SORROW")
 	_record(region_manager.can_enter(fixture, "EAGLE_SORROW"), "the optional Eagle Sorrow region should be available at timeline 105")
+	var zero_progress := region_manager.get_discovery_progress(fixture, "EAGLE_SORROW")
+	_record(int(zero_progress.get("discovered", -1)) == 0 and int(zero_progress.get("total", -1)) == 3 and int(zero_progress.get("remaining", -1)) == 3, "an untouched region should report zero of three clues discovered")
+	_record(not bool(zero_progress.get("complete", true)), "an untouched region should not be marked complete")
+	var complete_fixture := NarrativeManager.new()
+	complete_fixture.state = NarrativeState.from_dict(fixture.serialize())
+	for clue in region_manager.get_points("EAGLE_SORROW"):
+		complete_fixture.state.record_region_point_discovered(str(clue.get("id", "")))
+	var completed_progress := region_manager.get_discovery_progress(complete_fixture, "EAGLE_SORROW")
+	_record(int(completed_progress.get("discovered", -1)) == 3 and int(completed_progress.get("remaining", -1)) == 0 and bool(completed_progress.get("complete", false)), "a region should report completion only after every authored clue is discovered")
 	var early_timeline := NarrativeManager.new()
 	early_timeline.state = NarrativeState.from_dict(fixture.serialize())
 	early_timeline.state.current_global_timeline = 104
@@ -143,6 +152,8 @@ func _run_smoke() -> void:
 				await process_frame
 
 				_record(first_point_id in region_screen.narrative.state.get_world_state().get("discovered_region_points", []), "investigating a point should record its discovery marker")
+				var first_discovery_progress := region_manager.get_discovery_progress(region_screen.narrative, "EAGLE_SORROW")
+				_record(int(first_discovery_progress.get("discovered", -1)) == 1 and int(first_discovery_progress.get("remaining", -1)) == 2, "first clue discovery should update region progress to one of three")
 				_record(region_screen.narrative.state.current_shared_chapter == expected_chapter, "region exploration must preserve the Shared chapter pointer")
 				_record(region_screen.narrative.state.current_global_timeline == expected_timeline, "region exploration must not advance the global timeline")
 				_record(region_screen.narrative.state.completed_shared_chapters == expected_completed, "region exploration must preserve completed Shared chapter history")
@@ -165,6 +176,16 @@ func _run_smoke() -> void:
 				if world_map != null:
 					_record(str(world_map.narrative.state.get_world_state().get("current_location", "")) == "EAGLE_SORROW", "returning should preserve the current WorldMap location")
 					_record(world_map.region_button.visible and not world_map.region_button.disabled, "the same region should remain available after returning")
+					_record(world_map.region_button.text.contains("1/3"), "WorldMap should show persisted region clue progress after returning")
+					_record(world_map.region_hint_label.text.contains("还剩 2 处"), "WorldMap should tell the player how many clues remain")
+					var state_before_complete_preview: Dictionary = world_map.narrative.serialize().duplicate(true)
+					for clue in region_manager.get_points("EAGLE_SORROW"):
+						world_map.narrative.state.record_region_point_discovered(str(clue.get("id", "")))
+					world_map.call("_refresh")
+					_record(world_map.region_button.text.contains("3/3"), "WorldMap should show a full progress count when all clues are discovered")
+					_record(world_map.region_hint_label.text.contains("全部记录"), "WorldMap should communicate region completion without implying story completion")
+					world_map.narrative.restore_snapshot(state_before_complete_preview)
+					world_map.call("_refresh")
 					world_map.region_button.emit_signal("pressed")
 					var reopened: RegionExplorationScreen = await _wait_for_region()
 					current_stage = "region_reopened"
