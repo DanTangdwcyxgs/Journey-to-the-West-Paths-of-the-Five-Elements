@@ -58,6 +58,9 @@ func _run_smoke() -> void:
 	var definition := region_manager.get_region("EAGLE_SORROW")
 	_record(not definition.is_empty(), "Eagle Sorrow should have a data-driven region definition")
 	_record(region_manager.get_points("EAGLE_SORROW").size() == 3, "Eagle Sorrow should define three interactive points of interest")
+	var mountain_definition := region_manager.get_region("FIVE_ELEMENTS_MOUNTAIN")
+	_record(not mountain_definition.is_empty(), "Five Elements Mountain should have a data-driven region definition")
+	_record(region_manager.get_points("FIVE_ELEMENTS_MOUNTAIN").size() == 3, "Five Elements Mountain should define three interactive points of interest")
 
 	var fixture := NarrativeManager.new()
 	_record(fixture.start_new_game("WUKONG"), "Wukong should initialize the region exploration fixture")
@@ -86,6 +89,17 @@ func _run_smoke() -> void:
 	wrong_location.state = NarrativeState.from_dict(fixture.serialize())
 	wrong_location.state.add_world_node_visit("FIVE_ELEMENTS_MOUNTAIN")
 	_record(not region_manager.can_enter(wrong_location, "EAGLE_SORROW"), "region entry must be bound to the current WorldMap location")
+	_record(region_manager.can_enter(wrong_location, "FIVE_ELEMENTS_MOUNTAIN"), "Five Elements Mountain should be available at its own current location")
+	var mountain_early := NarrativeManager.new()
+	mountain_early.state = NarrativeState.from_dict(fixture.serialize())
+	mountain_early.state.current_global_timeline = 99
+	mountain_early.state.add_world_node_visit("FIVE_ELEMENTS_MOUNTAIN")
+	_record(not region_manager.can_enter(mountain_early, "FIVE_ELEMENTS_MOUNTAIN"), "Five Elements Mountain should respect its own timeline gate")
+	var mountain_no_milestone := NarrativeManager.new()
+	mountain_no_milestone.state = NarrativeState.from_dict(fixture.serialize())
+	mountain_no_milestone.state.completed_milestones.erase("WUKONG_RECRUITED")
+	mountain_no_milestone.state.add_world_node_visit("FIVE_ELEMENTS_MOUNTAIN")
+	_record(not region_manager.can_enter(mountain_no_milestone, "FIVE_ELEMENTS_MOUNTAIN"), "Five Elements Mountain should require the Wukong recruitment milestone")
 	_record(fixture.save(), "the starting region state should be persisted")
 	current_stage = "fixture_saved"
 	print("REGION_EXPLORATION_STAGE 01 fixture_saved")
@@ -157,6 +171,51 @@ func _run_smoke() -> void:
 						reopened.return_button.emit_signal("pressed")
 						world_map = await _wait_for_world_map()
 						_record(world_map != null, "the player should be able to leave the region a second time")
+						if world_map != null:
+							var mountain_index := _find_node_by_label(world_map, "五行山")
+							_record(mountain_index >= 0, "Five Elements Mountain should be reachable from Eagle Sorrow")
+							if mountain_index >= 0:
+								world_map.call("_on_node_selected", mountain_index)
+								world_map.travel_button.emit_signal("pressed")
+								await process_frame
+								current_stage = "arrived_five_elements_mountain"
+								print("REGION_EXPLORATION_STAGE 10 arrived_five_elements_mountain")
+								_record(str(world_map.narrative.state.get_world_state().get("current_location", "")) == "FIVE_ELEMENTS_MOUNTAIN", "production WorldMap travel should reach Five Elements Mountain")
+								_record(world_map.region_button.visible and not world_map.region_button.disabled, "Five Elements Mountain region entry should appear and pass its gates")
+								world_map.region_button.emit_signal("pressed")
+								var mountain_screen: RegionExplorationScreen = await _wait_for_region()
+								current_stage = "five_elements_region_opened"
+								print("REGION_EXPLORATION_STAGE 11 five_elements_region_opened")
+								_record(mountain_screen != null, "the same production region scene should open at Five Elements Mountain")
+								if mountain_screen != null:
+									_record(mountain_screen.region_id == "FIVE_ELEMENTS_MOUNTAIN", "region scene should resolve the mountain definition by current location")
+									_record(mountain_screen.point_list.get_item_count() == 3, "Five Elements Mountain screen should render all three authored points")
+									var mountain_point_id := str(mountain_screen.point_list.get_item_metadata(0))
+									mountain_screen.point_list.select(0)
+									mountain_screen.call("_on_point_selected", 0)
+									mountain_screen.inspect_button.emit_signal("pressed")
+									await process_frame
+									_record(mountain_point_id in mountain_screen.narrative.state.get_world_state().get("discovered_region_points", []), "mountain point inspection should persist its discovery")
+									_record(mountain_screen.narrative.state.current_shared_chapter == expected_chapter, "mountain exploration must preserve the canonical Shared chapter")
+									_record(mountain_screen.narrative.state.current_global_timeline == expected_timeline, "mountain exploration must not advance global timeline")
+									_record(mountain_screen.narrative.state.completed_shared_chapters == expected_completed, "mountain exploration must preserve completed Shared history")
+									_record(mountain_screen.narrative.state.completed_chapters == expected_completed_chapters, "mountain exploration must preserve completed chapter history")
+									_record(mountain_screen.narrative.state.recruited_characters == expected_roster, "mountain exploration must not change the recruited roster")
+									var mountain_reloaded := NarrativeManager.new()
+									_record(mountain_reloaded.load(), "mountain exploration should leave a loadable save")
+									_record(mountain_point_id in mountain_reloaded.state.get_world_state().get("discovered_region_points", []), "mountain point discovery should persist across a fresh load")
+									mountain_screen.return_button.emit_signal("pressed")
+									world_map = await _wait_for_world_map()
+									_record(world_map != null, "returning from Five Elements Mountain should reopen WorldMap")
+									if world_map != null:
+										_record(str(world_map.narrative.state.get_world_state().get("current_location", "")) == "FIVE_ELEMENTS_MOUNTAIN", "returning from mountain exploration should preserve its map location")
+										var eagle_index := _find_node_by_label(world_map, "鹰愁涧")
+										_record(eagle_index >= 0, "Eagle Sorrow should remain reachable from Five Elements Mountain")
+										if eagle_index >= 0:
+											world_map.call("_on_node_selected", eagle_index)
+											world_map.travel_button.emit_signal("pressed")
+											await process_frame
+											_record(str(world_map.narrative.state.get_world_state().get("current_location", "")) == "EAGLE_SORROW", "the test should return to Eagle Sorrow before the save-failure rollback fixture")
 
 	var persisted := NarrativeManager.new()
 	_record(persisted.load(), "the successful production region pass should remain loadable for the rollback case")
@@ -245,6 +304,14 @@ func _wait_for_world_map() -> WorldMapScreen:
 		if current_scene is WorldMapScreen:
 			return current_scene as WorldMapScreen
 	return null
+
+func _find_node_by_label(world_map: WorldMapScreen, label: String) -> int:
+	if world_map == null or world_map.node_list == null:
+		return -1
+	for index in range(world_map.node_list.get_item_count()):
+		if world_map.node_list.get_item_text(index).find(label) >= 0:
+			return index
+	return -1
 
 func _capture_file(path: String) -> Dictionary:
 	if not FileAccess.file_exists(path):
