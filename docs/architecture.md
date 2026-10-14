@@ -675,3 +675,12 @@ This keeps the playable prototype stable while the architecture evolves toward m
 ## Story MOVE 与 World Map 状态提交
 
 Origin/Shared EventSequence 的 `MOVE` 是主线世界位置变更，不只是演出提示。Journey 在移动过渡结束后必须通过 `WorldActionService.apply_move()` 更新 NarrativeState 的当前位置、已访问和已发现节点，并在推进 EventSession 游标前成功保存。若移动记录无效或保存失败，不得推进到后续剧情 action；保存失败必须恢复 pre-MOVE NarrativeState，让同一 MOVE 可重试。WorldMap 的自由旅行继续由 `WorldMapManager.can_visit()/visit()` 控制时间线、里程碑与连接关系。
+
+
+## Region Exploration Runtime Contract (2026-10-14)
+
+- Region definitions live in `data/world/regions.json`; content IDs are stable and unique, and each region declares its map location, timeline gate, required milestones and points of interest.
+- `RegionExplorationManager` owns read-only catalog lookup, entry gates and validated discovery decisions. The screen does not invent progression rules or update the canonical chapter timeline.
+- Persistent region-point facts are stored through the explicit `NarrativeState.record_region_point_discovered()` API under `world_state.discovered_region_points`; that field must be present in new-game defaults, world-state replacement, serialization and load migration.
+- The UI commits a clue in one save transaction. If saving fails, restore the complete serialized NarrativeState and leave the same point retryable.
+- Region exploration is optional content: it must not mutate `current_shared_chapter`, `current_global_timeline`, `completed_shared_chapters`, or `recruited_characters`. Additional map locations should be added through data plus regression tests before claiming region coverage.

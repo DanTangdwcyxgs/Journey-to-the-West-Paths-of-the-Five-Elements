@@ -545,20 +545,28 @@ Runtime has now verified the post-Shared-02 detour and that Journey resumes at S
 - Pending: six separate transparent final character assets and actual Journey/battle screenshot review. Continue non-art production regression work meanwhile.
 
 
-## Current Handoff — 2026-10-14: Shared-02 Optional Exploration Rebase
+## Current Handoff — 2026-10-14: Eagle Sorrow Region Exploration Vertical Slice
 
-### Confirmed operations
-- PR #25 (optional Yellow Fang bounty vs. mainline Yellow Wind King, plus timeline-105 optional Eagle Sorrow access) was merged by squash after owner authorization. Merge commit: 9c8ca5742ef32af72d480c06e8f5a6e20196e12a.
-- The old PR #26 head cefaf8e5283accf5c8d9808f1698e75ad2363731 failed Runtime because its test ran against pre-PR-25 main; the first failing assertion correctly exposed that Eagle Sorrow was unavailable after Shared-02. Do not weaken the assertion.
-- The PR #26 production SceneTree smoke and its docs have been rebased onto the merged main state. Exact implementation SHA f63d9d8a5001fa783ddcd4e467f9e10942ea7f0d passed Runtime run [38495061187](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38495061187); logs confirm PASS for combat/test_shared_opening_to_black_wind_smoke.gd and RUNTIME_SUITE_PASS tests=51. The subsequent documentation-sync head must also have a green exact-head Runtime before PR #26 is marked ready.
+### Completed mainline integration
+- PR #25 was merged by squash as `9c8ca5742ef32af72d480c06e8f5a6e20196e12a`.
+- PR #26 was merged after exact current-head Runtime passed, as `74c011680cc7a76afa478747475c9e3e8a0a40b2`. It preserves the optional Shared-02 → Eagle Sorrow exploration path without changing canonical Shared-03 chronology.
+- Main SHA `74c011680cc7a76afa478747475c9e3e8a0a40b2` passed Godot Runtime [38495397569](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38495397569), with `RUNTIME_SUITE_PASS tests=51`. Web Demo [38495397529](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38495397529) passed import, runtime-before-export, Web export, artifact upload and GitHub Pages deployment. Published URL: https://dantangdwcyxgs.github.io/Journey-to-the-West-Paths-of-the-Five-Elements/
+
+### Current feature work
+- Active branch: `feature/eagle-sorrow-region-exploration-2026-10-14`.
+- Adds one data-driven Eagle Sorrow region with three interactive clues; an entry button on WorldMap; a reusable region screen; persistent `discovered_region_points` via NarrativeState; and atomic save/rollback/retry.
+- Registered a new SceneTree test: `combat/test_region_exploration.gd`. Exact implementation head `533ffa9eb989676a4cefc1e0bc9d85f81188cbce` passed Runtime [38496887862](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38496887862) with `PASS res://combat/test_region_exploration.gd` and `RUNTIME_SUITE_PASS tests=52`.
+- Initial head `842dccc14d7592574d98a2d471a830454067de05` failed because the fixture called nonexistent `NarrativeState.set_shared_chapter()`. Corrected it to `set_current_shared_chapter()`, added stage logging and a 45-second watchdog that restores the three test save files on timeout. Failed run [38496663446](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38496663446) is historical evidence, not a pass.
+- Older heads `2a1dbc12d9f525e14f3c0fedc135f09af2d7e084` and `4d0a13a063ee5683b0e2cb9ab123579327db7be8` remain displayed as in-progress stale runs; do not treat them as current validation.
+- The feature log is `docs/development_log/2026-10-14-eagle-sorrow-region-exploration.md`; project memory is updated in Round 74. The implementation is intentionally restricted to optional discovery and must not grant rewards or advance mainline state.
 
 ### Required next actions
-1. Check the newest Godot Runtime workflow for the current PR #26 head. Expected suite result after PR #25 is RUNTIME_SUITE_PASS tests=51; verify the actual current head log rather than assuming the count.
-2. If Runtime passes, inspect the job log for the full RUNTIME_SUITE_PASS tests=50 line, mark PR #26 ready, and merge it using the verified current head SHA.
-3. After merge, validate the exact main commit's Runtime and Web Demo build/export/deploy. Record the actual run IDs and conclusions in the development log and AI memory.
-4. Resume the vertical-slice review: region entry / interactive exploration, then the six final transparent character PNG/WebP assets and actual Journey/battle screenshot review.
+1. PR #27 is already open as Draft: https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/pull/27. The current code head passed 52/52; this documentation update creates a new head, so check that new exact-head Runtime before marking Ready.
+2. Keep all chronology, location-gate and save-rollback assertions intact. If the final head fails, fix implementation/test rather than weakening invariants.
+3. If final exact-head Runtime succeeds, mark PR #27 Ready, merge with the verified head SHA, then validate merged main Runtime plus Web Demo build/export/deploy and record actual run IDs.
+4. Continue expanding data-driven region interactions after this one-location slice proves stable, then conduct player-facing screenshot review and deliver six separate final transparent character PNG/WebP assets through `ArtAssetCatalog`.
 
 ### Non-negotiable constraints
-- Optional rumor/bounty must not advance canonical Shared chronology or change recruitment.
-- Do not mark a queued, in_progress, pending, stale or failed workflow as passed.
-- Keep the historical failure visible and record the final validated SHA and the next-agent entry point after the run completes.
+- Optional exploration must not advance canonical Shared chronology, mutate recruitment, or replace the existing fixed Journey sequence.
+- Never mark a queued, in-progress, pending, stale or failed workflow as passed.
+- SVG geometric placeholders are not final character art; automated resource-contract tests are not visual acceptance.

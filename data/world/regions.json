@@ -1,0 +1,32 @@
+{
+  "regions": [
+    {
+      "id": "EAGLE_SORROW",
+      "location_id": "EAGLE_SORROW",
+      "name": "鹰愁涧 · 涧谷微探",
+      "description": "涧水遮住了主路上的喧声。沿着石岸调查三处异样痕迹，可以留下线索，但不会替玩家推进接下来的主线章节。",
+      "required_timeline": 105,
+      "required_milestones": ["WUKONG_RECRUITED"],
+      "points": [
+        {
+          "id": "EAGLE_SORROW_STONE_TRACE",
+          "name": "石岸旧痕",
+          "description": "潮湿的石面上留着几道弯曲擦痕，像是某种巨物匆忙掠过。水流已经冲淡了边缘，暂时看不出更多。",
+          "result_text": "记下了石岸上的弯曲擦痕。它像是匆忙留下的，却没有打乱取经人的行程。"
+        },
+        {
+          "id": "EAGLE_SORROW_BROKEN_WOODEN_SIGN",
+          "name": "断裂的行脚木牌",
+          "description": "一块木牌卡在两块岩石之间，只剩半截路标。刻痕被水汽浸得发白，仍能看出这是旧日行脚人留下的记号。",
+          "result_text": "记录了断裂木牌的方位。旧路标可以留给后续探索追查，不改变眼前的主线目标。"
+        },
+        {
+          "id": "EAGLE_SORROW_BACKWATER",
+          "name": "回水旋涡",
+          "description": "一小片草茎在回水中反复打转。涧底的水声忽远忽近，像是地形改变了水流方向。",
+          "result_text": "标记了回水旋涡的位置。这里值得以后再来查看，眼下仍可继续前往鹰愁涧的主线会合点。"
+        }
+      ]
+    }
+  ]
+}

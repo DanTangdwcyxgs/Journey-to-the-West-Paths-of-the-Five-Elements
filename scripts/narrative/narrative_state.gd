@@ -34,7 +34,8 @@ var world_state: Dictionary = {
 	"visited_nodes": [],
 	"discovered_nodes": [],
 	"heard_rumors": [],
-	"discovered_bounties": []
+	"discovered_bounties": [],
+	"discovered_region_points": []
 }
 
 func initialize_for_start(character_id: String, initial_timeline: int = 0) -> void:
@@ -64,7 +65,8 @@ func initialize_for_start(character_id: String, initial_timeline: int = 0) -> vo
 		"visited_nodes": [],
 		"discovered_nodes": [],
 		"heard_rumors": [],
-		"discovered_bounties": []
+		"discovered_bounties": [],
+		"discovered_region_points": []
 	}
 	route_progress.clear()
 	for id in CHARACTER_IDS:
@@ -183,6 +185,7 @@ func set_world_state(data: Dictionary) -> void:
 		"discovered_nodes": _string_array(data.get("discovered_nodes", [])),
 		"heard_rumors": _string_array(data.get("heard_rumors", [])),
 		"discovered_bounties": _string_array(data.get("discovered_bounties", [])),
+		"discovered_region_points": _string_array(data.get("discovered_region_points", [])),
 	}
 
 func get_world_state() -> Dictionary:
@@ -202,6 +205,14 @@ func add_world_rumor(rumor_id: String, bounty_id: String = "") -> void:
 		world_state["heard_rumors"].append(rumor_id)
 	if bounty_id != "" and bounty_id not in world_state["discovered_bounties"]:
 		world_state["discovered_bounties"].append(bounty_id)
+
+func record_region_point_discovered(point_id: String) -> bool:
+	if point_id == "" or point_id in world_state.get("discovered_region_points", []):
+		return false
+	if not world_state.has("discovered_region_points"):
+		world_state["discovered_region_points"] = []
+	world_state["discovered_region_points"].append(point_id)
+	return true
 
 func add_memory_chapters(chapter_ids: Array[String]) -> void:
 	for chapter_id in chapter_ids:
@@ -290,6 +301,7 @@ static func from_dict(data: Dictionary) -> NarrativeState:
 		"discovered_nodes": _string_array(raw_world.get("discovered_nodes", [])),
 		"heard_rumors": _string_array(raw_world.get("heard_rumors", [])),
 		"discovered_bounties": _string_array(raw_world.get("discovered_bounties", [])),
+		"discovered_region_points": _string_array(raw_world.get("discovered_region_points", [])),
 	}
 	for id in CHARACTER_IDS:
 		if not restored.route_progress.has(id):
