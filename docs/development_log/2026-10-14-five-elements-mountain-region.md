@@ -36,7 +36,16 @@ Expand the reusable region-exploration flow from one configured map location to 
 - Player-facing screenshot / art acceptance remains outstanding. Existing SVG placeholders are not final transparent character assets.
 
 ## Next step
-PR #28 is open as Draft: https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/pull/28. Require the newest exact-head Runtime to report `RUNTIME_SUITE_PASS tests=52` and ensure the region SceneTree regression exits without errors/timeouts. After exact-head success, mark Ready, merge using the verified SHA, and validate the merged main SHA's Runtime + Web Demo build/export/Pages deploy.
+PR #28 merged as `ec6ef177b6a2a604c1f86b7e447f2212af82f069`. Exact pre-merge head passed Runtime [38497759935](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38497759935), including `PASS res://combat/test_region_exploration.gd` and `RUNTIME_SUITE_PASS tests=52`. Merged main Runtime [38497860810](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38497860810) passed 52/52 and Web Demo [38497860796](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38497860796) passed build/export/Pages deployment. The published demo is https://dantangdwcyxgs.github.io/Journey-to-the-West-Paths-of-the-Five-Elements/.
 
 ## Handoff point
 Start from PR #28's newest head and Runtime run. The primary implementation points are `data/world/regions.json`, `scripts/world/region_exploration_manager.gd`, `ui/region_exploration.gd`, and `combat/test_region_exploration.gd`. Continue by adding additional locations as data-only configurations wherever possible; preserve location/timeline/milestone gates, unique persisted discoveries, save rollback, and the fixed Journey chronology.
+
+
+## 2026-10-14 Post-merge verification
+
+- PR #28 merged to main at `ec6ef177b6a2a604c1f86b7e447f2212af82f069`.
+- Exact pre-merge documentation-sync head `384771aadca78ffb5324d47721af511c6e671223` passed Runtime [38497759935](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38497759935), with `PASS res://combat/test_region_exploration.gd` and `RUNTIME_SUITE_PASS tests=52`.
+- The merged main SHA passed Godot Runtime [38497860810](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38497860810) with the same `RUNTIME_SUITE_PASS tests=52` signature.
+- Web Demo [38497860796](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38497860796) passed import, runtime-before-export, export, Pages artifact upload, and deployment. Live URL: https://dantangdwcyxgs.github.io/Journey-to-the-West-Paths-of-the-Five-Elements/.
+- Main includes two data-driven regions (Eagle Sorrow, Five Elements Mountain), each with three optional clue points. Next: determine a third region based on the current story/content plan or move to player-facing screenshot/character art acceptance; do not add repetitive content only to inflate region count.
