@@ -6,7 +6,9 @@
       "name": "鹰愁涧 · 涧谷微探",
       "description": "涧水遮住了主路上的喧声。沿着石岸调查三处异样痕迹，可以留下线索，但不会替玩家推进接下来的主线章节。",
       "required_timeline": 105,
-      "required_milestones": ["WUKONG_RECRUITED"],
+      "required_milestones": [
+        "WUKONG_RECRUITED"
+      ],
       "points": [
         {
           "id": "EAGLE_SORROW_STONE_TRACE",
@@ -25,6 +27,36 @@
           "name": "回水旋涡",
           "description": "一小片草茎在回水中反复打转。涧底的水声忽远忽近，像是地形改变了水流方向。",
           "result_text": "标记了回水旋涡的位置。这里值得以后再来查看，眼下仍可继续前往鹰愁涧的主线会合点。"
+        }
+      ]
+    },
+    {
+      "id": "FIVE_ELEMENTS_MOUNTAIN",
+      "location_id": "FIVE_ELEMENTS_MOUNTAIN",
+      "name": "五行山 · 山门余迹",
+      "description": "山风卷过石阶，昔日镇压大圣的痕迹已被草木遮掩。沿山门与松林查访三处旧迹，只会补充旅途见闻，不推进取经章节。",
+      "required_timeline": 100,
+      "required_milestones": [
+        "WUKONG_RECRUITED"
+      ],
+      "points": [
+        {
+          "id": "FIVE_ELEMENTS_MOUNTAIN_OLD_STELE",
+          "name": "山门旧碑",
+          "description": "半埋在土中的石碑只剩几行模糊刻字，边角被风雨磨平。碑文似乎提醒过路人敬畏山势，却没有留下完整的来历。",
+          "result_text": "拓下了山门旧碑的残字。它记录着这座山被人记住的方式，但没有改变队伍接下来的行程。"
+        },
+        {
+          "id": "FIVE_ELEMENTS_MOUNTAIN_SEAL_SCAR",
+          "name": "封缚石痕",
+          "description": "岩面上有一道弧形浅痕，旁边的苔藓颜色比周围更深。痕迹已经很旧，无法单凭它断定当年发生过什么。",
+          "result_text": "记下了封缚石痕的位置。旧迹仍待更多线索互证，目前它只是旅途中的一条观察记录。"
+        },
+        {
+          "id": "FIVE_ELEMENTS_MOUNTAIN_PILGRIM_OFFERING",
+          "name": "松下行脚包",
+          "description": "一只褪色的布包被压在松根旁，里面只有干草绳、空水囊和一张辨不清方向的纸片，看起来属于很久以前的行路人。",
+          "result_text": "记录了松下行脚包的发现地点。留下的物件没有提供可领取的道具或奖励，只让旧路多了一处值得追问的细节。"
         }
       ]
     }

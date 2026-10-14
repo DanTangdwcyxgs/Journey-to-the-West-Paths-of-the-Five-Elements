@@ -545,27 +545,27 @@ Runtime has now verified the post-Shared-02 detour and that Journey resumes at S
 - Pending: six separate transparent final character assets and actual Journey/battle screenshot review. Continue non-art production regression work meanwhile.
 
 
-## Current Handoff — 2026-10-14: Eagle Sorrow Region Exploration Vertical Slice
+## Current Handoff — 2026-10-14: Five Elements Mountain Region Exploration
 
-### Completed mainline integration
-- PR #25 was merged by squash as `9c8ca5742ef32af72d480c06e8f5a6e20196e12a`.
-- PR #26 was merged after exact current-head Runtime passed, as `74c011680cc7a76afa478747475c9e3e8a0a40b2`. It preserves the optional Shared-02 → Eagle Sorrow exploration path without changing canonical Shared-03 chronology.
-- Main SHA `74c011680cc7a76afa478747475c9e3e8a0a40b2` passed Godot Runtime [38495397569](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38495397569), with `RUNTIME_SUITE_PASS tests=51`. Web Demo [38495397529](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38495397529) passed import, runtime-before-export, Web export, artifact upload and GitHub Pages deployment. Published URL: https://dantangdwcyxgs.github.io/Journey-to-the-West-Paths-of-the-Five-Elements/
+### Completed baseline
+- PR #25 fixed optional Yellow Fang / Eagle Sorrow timing; PR #26 added the same-save Shared-02 optional detour regression; PR #27 added the reusable region screen and persisted clue discoveries.
+- Main docs-sync SHA `ccc44e226bab2e722fb4413c55f698db9e69cd2f` passed Runtime [38497385618](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38497385618) and Web Demo [38497385698](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38497385698).
+- PR #27 merged as `aac03d053c7ef1f13e5981cdfa6ea8c6a4731ed6`; its Runtime [38497186380](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38497186380) passed `RUNTIME_SUITE_PASS tests=52`; Web Demo [38497186366](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38497186366) passed build/export/Pages deployment.
 
-### Completed feature work — PR #27
-- PR #27: https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/pull/27 was merged as `aac03d053c7ef1f13e5981cdfa6ea8c6a4731ed6`.
-- Added one data-driven Eagle Sorrow region with three clue points, a WorldMap entry button, reusable region screen, persisted `discovered_region_points`, and full state rollback + retry on save failure.
-- Exact pre-merge documentation-sync head `c91149c7c7fde2c2b47700f9a06a85f3cde7541c` passed Runtime [38497081497](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38497081497), with `PASS res://combat/test_region_exploration.gd` and `RUNTIME_SUITE_PASS tests=52`.
-- Merged main SHA `aac03d053c7ef1f13e5981cdfa6ea8c6a4731ed6` passed Runtime [38497186380](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38497186380), with `RUNTIME_SUITE_PASS tests=52`. Web Demo [38497186366](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38497186366) passed build, pre-export Runtime, Web export, artifact upload, and GitHub Pages deployment. Published URL: https://dantangdwcyxgs.github.io/Journey-to-the-West-Paths-of-the-Five-Elements/
-- The initial region test failed because it called nonexistent `NarrativeState.set_shared_chapter()`; the correct API is `set_current_shared_chapter()`. The test now includes stage markers and a 45-second watchdog that restores backed-up test files on timeout. Failure run [38496663446](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38496663446) is historical and not treated as green.
-- Earlier heads `2a1dbc12d9f525e14f3c0fedc135f09af2d7e084` and `4d0a13a063ee5683b0e2cb9ab123579327db7be8` were stale in-progress runs; the verified evidence is tied to the explicit passing SHAs above.
+### Current feature work — PR #28
+- PR #28 is Draft: https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/pull/28
+- Branch: `feature/five-elements-mountain-region-2026-10-14`
+- Added a second data-driven region definition `FIVE_ELEMENTS_MOUNTAIN`, with timeline 100, milestone `WUKONG_RECRUITED`, and three clue-only points. The same generic manager/screen path handles it.
+- Extended `combat/test_region_exploration.gd` with location/timeline/milestone rejection, real WorldMap travel Eagle Sorrow → Five Elements Mountain → Eagle Sorrow, regional UI entry, clue save/reload, and mainline-state invariants.
+- Code SHA `eaa86b236188eeb9189304994849756ecb27dc2c` passed exact Runtime [38497613436](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38497613436) with `RUNTIME_SUITE_PASS tests=52`. The current documentation-sync head must be checked again at exact SHA before marking PR #28 Ready.
 
 ### Required next actions
-1. Start from the latest `main` SHA and check its current GitHub Actions status; this handoff update is documentation-only after the green feature merge.
-2. Continue the data-driven region system with one additional mapped location, keeping location/timeline/milestone gates and persistent clues under `RegionExplorationManager` / `NarrativeState`. Add a production UI regression and a save-failure case before claiming coverage.
-3. Then conduct player-facing screenshot review and deliver six separate final transparent pixel-art character PNG/WebP assets through `ArtAssetCatalog`; SVG placeholders and contract tests do not constitute visual acceptance.
+1. Require the newest PR #28 Runtime log to report `RUNTIME_SUITE_PASS tests=52` and inspect the final run status against the exact current head.
+2. If green, mark PR #28 Ready, merge with the verified current SHA, and verify post-merge main Runtime plus Web Demo build/export/deploy.
+3. Expand region content through `data/world/regions.json` for additional map locations, keeping observations clue-only until a separate progression/reward design is approved.
+4. Then conduct player-facing screenshot review and deliver six individual transparent character PNG/WebP assets through `ArtAssetCatalog`; SVG placeholders and contract tests are not visual acceptance.
 
-### Non-negotiable constraints
-- Optional exploration must not advance canonical Shared chronology, mutate recruitment, or replace the fixed Journey sequence.
-- Never claim a queued, in-progress, pending, stale or failed workflow passed; cite the exact tested SHA and run.
-- SVG geometric placeholders are not final character art; automated resource-contract tests are not visual acceptance.
+### Constraints
+- Optional exploration must not advance the fixed Shared chronology, mutate recruitment, or add completed chapters.
+- Treat stale/in-progress historical runs as neither green nor current validation. Only the exact tested SHA and completed run count.
+- Save failure must restore the full NarrativeState snapshot and leave the clue retryable.
