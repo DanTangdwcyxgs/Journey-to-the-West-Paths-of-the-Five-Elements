@@ -676,10 +676,10 @@ Runtime has now verified the post-Shared-02 detour and that Journey resumes at S
 - Architecture contract and development log are updated in docs/architecture.md and docs/development_log/2026-10-14-region-completion-feedback.md.
 
 ### Validation gate
-- Pending: inspect the exact current PR-head Godot Runtime workflow. Require PASS res://combat/test_region_exploration.gd and RUNTIME_SUITE_PASS tests=54 before claiming success.
-- No Web Demo deployment, final character PNG/WebP delivery, or actual screenshot acceptance is claimed.
+- PASS: implementation/documentation head `43951fa76b45e37dee5f8ed5902b3edc17a55227`, Godot Runtime [38521895114](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38521895114), completed successfully; logs show `PASS res://combat/test_region_exploration.gd` and `RUNTIME_SUITE_PASS tests=54`.
+- This is not a Web Demo deployment and does not count as final character PNG/WebP delivery or screenshot acceptance.
 
 ### Next Agent
-1. Check the latest Runtime run for the exact head and examine the region-test result; repair any failure at its cause.
-2. On pass, add the run ID and exact SHA to the development log / AI memory, then confirm the docs-sync head's Runtime too.
+1. Check the exact newest PR #29 Runtime after this result-recording documentation sync; do not assume Run #430 applies to its newer SHA.
+2. If the new head fails, fix the source and rerun. Preserve the no-mainline-progression contract.
 3. Keep PR #29 open/unmerged unless the user explicitly authorizes merge. Final character PNG/WebP assets and screenshot review remain separate work items.
