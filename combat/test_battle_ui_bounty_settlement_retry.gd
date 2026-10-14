@@ -114,7 +114,7 @@ func _run_smoke() -> void:
 	_record(not battle.bounty_settlement_pending, "successful retry should clear pending settlement")
 	_record(battle.encounter_resolved, "successful retry should resolve the encounter")
 	_record(current_scene == battle, "successful retry should keep the victory summary visible before leaving")
-	_record(battle.status_label.text.contains("悬赏完成：黄风妖王"), "successful retry should replace failure feedback with the victory summary")
+	_record(battle.status_label.text.contains("悬赏完成：黄牙老妖"), "successful retry should replace failure feedback with the victory summary")
 	_record(battle.return_button.text == "返回地图", "committed bounty result should restore the normal continue label")
 	_record(not FileAccess.file_exists(encounter_path), "successful settlement should clear the active bounty handoff")
 	_record(battle.engine.turn_number == turn_before, "retry should not replay or advance the finished battle")

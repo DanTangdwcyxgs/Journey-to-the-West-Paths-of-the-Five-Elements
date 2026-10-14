@@ -39,7 +39,7 @@
       "name": "黄风洞外",
       "description": "洞口的风声像低沉兽吼。现在可以选择出战，或退回世界地图继续准备。",
       "type": "BOSS_GATE",
-      "bounty_id": "BOUNTY_YELLOW_FANG",
+      "boss_id": "YELLOW_WIND_KING",
       "milestone": "YELLOW_WIND_GATE_OPEN"
     }
   ]

@@ -10,6 +10,15 @@
 
 ## 最新记录
 
+- [`2026-10-12 — Runtime Art Catalog Contract`](2026-10-12-art-catalog-runtime-contract.md)
+
+- [`2026-10-12 — Character Asset Source Audit and Delivery Gate`](2026-10-12-character-asset-source-audit.md)
+
+- [`2026-10-12 — Yellow Wind King Settlement Rollback and Resume Audit`](2026-10-12-yellow-wind-king-settlement-rollback.md)
+- [`2026-10-12 — Agent Handoff: Yellow Wind Ridge Stage and Save/Resume Audit`](2026-10-12-agent-handoff-yellow-wind-ridge-save-audit.md)
+
+- [`2026-10-12 — Separate Optional Yellow Fang Bounty from Mainline Yellow Wind King`](2026-10-12-yellow-wind-bounty-mainline-identity.md)
+
 - [`2026-10-12 — Shared Opening Exploration Signposting and WorldMap Atomicity`](2026-10-12-exploration-signposting-and-world-map-atomicity.md)
 - [`2026-10-11 — Production BattleUI Bounty Settlement Retry`](2026-10-11-battle-ui-bounty-settlement-retry.md)
 - [`2026-10-11 — Atomic Bounty Settlement and Retry`](2026-10-11-bounty-settlement-atomic-retry.md)

@@ -597,3 +597,53 @@ Wukong、Tang、Longma、Bajie、Wujing 五条 Origin Route 均已完成首轮 S
 
 任何下一轮继续：
 `实现 → regression → Godot Runtime → development log → AI_MEMORY`。
+
+
+### Round 67 — 2026-10-12：Separate Yellow Fang Optional Bounty from Mainline Boss
+- 用户更新后重新检查 main：PR #24 已合并为 `3c9ace36750c2aa4a009a0b63b66673a78cab1ea`；精确 SHA 的 Godot Runtime [38190663833](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38190663833) 输出 `RUNTIME_SUITE_PASS tests=49`，Web Demo [38190663847](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38190663847) build/export/deploy 成功。
+- 复审用户之前担心的主线/悬赏身份冲突，确认问题仍存在：可选传闻触发的 `BOUNTY_YELLOW_FANG` 与黄风洞主线 Boss 共用同一击败 ID，先完成悬赏会让黄风妖王入口被判为已击败。
+- 修复方向：保留 `BOUNTY_YELLOW_FANG` 为可选黄牙老妖；新增独立 `YELLOW_WIND_KING` 主线定义，并将黄风洞 gate/handoff/日志改用主线 ID；扩展生产 cave roundtrip，在预先击败可选悬赏的状态下验证主线 Boss 仍可挑战。
+- 首次 exact-head Runtime [38192876862](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38192876862) 暴露两个断言时机/文案问题；修复后 `e572f2b6149100a7d37ade917ecc9e74c14e4de0` 的 Runtime [38193002843](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38193002843) 通过 `RUNTIME_SUITE_PASS tests=49`。继续审查发现 `YellowWindRidgeManager.BOSS_TARGET_ID` 和 Ridge stage metadata 仍指向旧的可选悬赏 ID；现已改为 `YELLOW_WIND_KING` 并新增区域 gate 完成断言，最新 head 必须重新通过 Runtime。
+
+
+### Round 68 — 2026-10-12：Agent Handoff — Yellow Wind Ridge Stage / Save-Resume Audit
+- 检查 PR #25 分支当前状态：`c180b4351dd4c474209984d3323b1e3a01aed1ab` 仍是独立可审查分支；PR 未合并。该精确 head Runtime [38193241086](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38193241086) 通过 `RUNTIME_SUITE_PASS tests=49`。
+- 将下一位 Agent 的明确任务写入 `AI_HANDOFF.md`：审计黄风岭阶段选择、洞口 gate、黄风洞房间恢复、主线 Boss 完成、存档失败回滚和保存重载一致性；先检查现有管理器/存档边界和生产 SceneTree 测试，只有可复现问题才改代码。
+- 关键身份规则：`BOUNTY_YELLOW_FANG` 是可选黄牙老妖，`YELLOW_WIND_KING` 是主线黄风妖王；任何阶段、handoff、击败日志和 gate 判定不得重新混用这两个 ID。PR #25 未合并前 main 仍可能保留旧实现，审计应以 PR 分支为准。
+- 本次为文档交接更新，不声称新 head 已通过 CI；提交后必须检查精确新 SHA 的 Runtime 结果。PR #25 保持未合并。
+- 下一步：按 `AI_HANDOFF.md` 第 16 节执行黄风岭阶段 / Save-Load regression audit，完成后继续更新开发日志、索引、AI_MEMORY 与 handoff。
+
+
+### Round 69 — 2026-10-12: Yellow Wind King settlement rollback and resume audit
+- Audited PR #25 after splitting optional BOUNTY_YELLOW_FANG from the mainline YELLOW_WIND_KING. The existing production cave roundtrip covers prior optional-bounty victory, normal encounter, mainline boss, and scene return, but retry-on-save-failure coverage used only the optional bounty identity.
+- Added a production BattleUI SceneTree regression that forces the first YELLOW_WIND_KING settlement save to fail, asserts exact NarrativeState/BountyManager rollback and no gate completion, then presses the real retry button and checks a single mainline journal entry while preserving the independent optional bounty.
+- The test then performs a fresh NarrativeManager load and reloads the production Cave and Ridge screens, confirming final room cursor, Ridge 4/4 completion, and unchanged Shared chapter, global timeline, and roster.
+- Runtime PASS on test/implementation SHA `911be5faad001551b330675cf6208b556ac9d82f`: run [38194393891](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38194393891) reported `PASS res://combat/test_yellow_wind_king_settlement_retry.gd` and `RUNTIME_SUITE_PASS tests=50`. Initial test commit `eeee1058104d90d2a08530e35fb19027fcdb587c` caught one incorrect assumption about the pre-victory button label; this was corrected before the passing run.
+- Web Demo is not run by the PR workflow; do not report it as passed on this branch. PR #25 remains unmerged.
+- Next step: inspect the full PR diff and newest branch-head Actions after the documentation-only follow-up, then return to player-facing Shared-02 → optional exploration → Shared-03 pacing, region interactions, and final character asset review.
+
+
+### Round 70 — 2026-10-12: Make Shared-02 Optional Rumor Detour Actually Reachable
+- Player-facing review found a mismatch between the Shared-02 signpost and WorldMap gates: Shared-02 commits timeline 105, while both the Eagle Sorrow map node and Yellow Fang rumor required timeline 110. The dialogue invited optional rumor exploration before Eagle Sorrow, but the player could not reach that node until after the canonical Shared-03 recruitment battle.
+- Lowered the Eagle Sorrow exploration node and optional Yellow Fang rumor thresholds to 105 only. Shared-03's canonical chapter/recruitment milestone remains at 110; optional discovery does not advance the chapter, timeline, or roster.
+- Added `combat/test_shared02_optional_rumor_access.gd` to the production Runtime suite. It exercises real WorldMap travel, rumor discovery, the optional Yellow Fang BattleUI victory and return, then reloads the save and checks the canonical Shared-03 state is unchanged.
+- Updated `scripts/world/test_world_map_manager.gd` so its static assertion uses the actual post-Shared-02 timeline. This old static test is not itself registered in Runtime; the new SceneTree test is.
+- PASS: latest regression head `ae921d076cedfec500f6eb7e16f57f2ef147d3a5`, [Runtime 38209609249](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38209609249) reported `PASS res://combat/test_shared02_optional_rumor_access.gd` and `RUNTIME_SUITE_PASS tests=51`. The test verifies the production map/rumor, optional BattleUI victory and return, and reopening Journey into the canonical Shared-03 sequence. An intermediate test head failed because the fixture left Wukong's Origin route incomplete; the fixture was corrected before this pass. PR #25 remains unmerged; Web Demo is not claimed on this feature branch.
+- Asset review: repository tree contains six character SVG placeholders and no `assets/art/characters/final/` PNG/WebP files. `ArtAssetCatalog` already resolves final PNG → WebP → SVG, so final art can be added without gameplay code changes. See `docs/visual_reference/README.md` for the visual quality gate.
+- Next: conduct visual screenshot review and deliver final transparent-background pixel character PNG/WebP assets when image-generation/asset delivery is available; do not promote placeholder SVGs to final art.
+
+
+### Round 71 — 2026-10-12: Character Asset Source Audit and Delivery Gate
+- Reviewed all six character SVG placeholders, the `ArtAssetCatalog` fallback order, visual asset contract tests, and existing AI art delivery/pipeline specifications on PR #25.
+- Confirmed automated checks establish resource loadability and environment layer markers only; they cannot establish character-art quality or player-facing visual acceptance.
+- Recorded the framing difference between five 32×48 logical humanoid canvases and Longma's horizontal 40×32 canvas as a composition-review point, not a reason to force the dragon-horse into a humanoid frame.
+- No final PNG/WebP or screenshot artifact was present. This was source inspection only; no new runtime or screenshot pass is claimed.
+- Added `docs/development_log/2026-10-12-character-asset-source-audit.md`. Next: deliver six separate transparent final character assets, then run exact-head Runtime/Web Demo validation and inspect Journey/battle screenshots.
+
+
+### Round 72 — 2026-10-12: Runtime Art Catalog Contract
+- Updated the visual asset contract regression to load character and scene textures through production `ArtAssetCatalog` rather than bypassing final-asset resolution.
+- Added assertions for the real resolved path priority: final PNG, then final WebP, then SVG fallback, while leaving absent final files optional.
+- Kept environmental SVG layer-marker checks and documented that automated loadability is not visual acceptance. No irrelevant status infographic was added to game assets.
+- Added `docs/development_log/2026-10-12-art-catalog-runtime-contract.md` and updated the development-log index. Runtime status is pending exact-head CI; previous successful runs do not validate this new test.
+- Next: inspect exact-head Actions, then continue non-art vertical-slice robustness work while six final transparent character assets remain pending generation.

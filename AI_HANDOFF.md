@@ -455,8 +455,91 @@ Exact implementation SHA and merged main SHA both pass Runtime; the merged main 
 - New/expanded regression coverage registered at 49 Runtime suite entries.
 
 ### Validation gate
-- Runtime: PENDING for this combined implementation SHA.
-- Web Demo: PR workflow does not run on pull_request; verify build/export/deploy for the main-branch implementation push.
+- PASS: merged main SHA `3c9ace36750c2aa4a009a0b63b66673a78cab1ea`, Godot Runtime [38190663833](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38190663833) reports `RUNTIME_SUITE_PASS tests=49`.
+- PASS: Web Demo [38190663847](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38190663847) passed build/export/deploy.
 
 ### Handoff
 After exact-SHA validation, review Shared-02 → optional rumor exploration → Shared-03 experience, then continue region-entry / interactive exploration and final character asset review. Do not alter fixed Journey chronology or present an optional bounty as the mainline Yellow Wind Ridge arc.
+
+
+## 19. 2026-10-12 Optional Yellow Fang vs Mainline Yellow Wind King
+
+### Finding
+The optional Eagle Sorrow rumor bounty and the Yellow Wind Cave mainline boss both used `BOUNTY_YELLOW_FANG`. Because the cave gate read the shared defeated-target journal, completing the optional bounty first could suppress the required mainline boss.
+
+### Change
+- `BOUNTY_YELLOW_FANG` remains the optional “黄牙老妖”.
+- `YELLOW_WIND_KING` is a distinct mainline boss definition and battle/journal ID, displayed as “黄风妖王”.
+- Cave availability now depends only on the mainline boss ID.
+- Regression starts the cave with the optional bounty already defeated, proves the mainline boss remains challengeable, and verifies the mainline victory records `YELLOW_WIND_KING` separately.
+
+### Validation
+- First exact-head run [38192876862](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38192876862) failed two assertions: one was checked in the wrong cave room, and the existing bounty retry test expected the previous optional-target name. The production WorldMap bounty test and bounty reward atomicity test passed. Follow-up commit fixes both expectations. PASS: implementation head `e572f2b6149100a7d37ade917ecc9e74c14e4de0`, [Runtime 38193002843](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38193002843), `RUNTIME_SUITE_PASS tests=49`; cave roundtrip, WorldMap rumor/bounty and BattleUI retry tests all pass. A further consistency pass found `YellowWindRidgeManager.BOSS_TARGET_ID` and the ridge stage metadata still pointed at the optional ID; both now use `YELLOW_WIND_KING`, and the cave roundtrip asserts the Ridge gate completes after mainline victory. This latest head must pass exact-head Runtime before marking ready.
+
+### Handoff
+Inspect the exact-head CI logs. If both the production cave roundtrip and WorldMap rumor-to-bounty test pass, record the CI result and mark the PR ready. Consider a save migration only if production telemetry or fixtures show existing saves used the shared ID to record a previously defeated mainline boss.
+
+
+### Completed Handoff — Yellow Wind Ridge Stage / Save-Resume Audit
+
+This older audit instruction has been completed by the implementation and regression recorded below. It is retained as a pointer, not as a pending task.
+
+- The current implementation uses `YELLOW_WIND_KING` for mainline gate completion and `BOUNTY_YELLOW_FANG` for the optional Yellow Fang objective.
+- The production BattleUI regression covers the mainline boss save failure, real retry-button commit, distinct journal IDs, fresh NarrativeManager load, and Cave → Ridge return.
+- Exact test/implementation SHA `911be5faad001551b330675cf6208b556ac9d82f` passed [Runtime run 38194393891](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38194393891) with `RUNTIME_SUITE_PASS tests=50`. The documentation sync SHA `37d7bfaf71a6694f518a9f23e64eba01e8233777` also passed [Runtime run 38194500393](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38194500393) with 50/50.
+- PR #25 remains open. Do not merge without explicit user permission.
+
+Next: inspect the current PR diff and newest branch-head Actions; then review Shared-02 → optional rumor exploration → Shared-03 pacing, region entry / interaction, and final character PNG/WebP assets.
+
+## 20. 2026-10-12 Yellow Wind King Settlement / Save-Resume Audit
+
+### Implementation
+- Added a production BattleUI SceneTree test for YELLOW_WIND_KING settlement save failure, retry, distinct journal identity, and Ridge gate completion.
+- The fixture begins with BOUNTY_YELLOW_FANG already defeated so its optional history must survive the failed mainline transaction and the successful retry.
+- The test reloads the save through a fresh NarrativeManager and the production Cave → Ridge screens; it asserts final room/stage state and preserves the fixed Shared chapter, timeline, and roster.
+- Runtime suite expected entries: 50.
+
+### Validation gate
+- Test/implementation SHA `911be5faad001551b330675cf6208b556ac9d82f` passed exact-head Godot Runtime run [38194393891](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38194393891): `PASS res://combat/test_yellow_wind_king_settlement_retry.gd` and `RUNTIME_SUITE_PASS tests=50`.
+- The first test-only commit had one brittle assertion about the initial button label; it was corrected, and the result above applies to the corrected SHA. Web Demo is not run by the PR workflow; do not claim a feature-branch deploy.
+- PR #25 stays open; do not merge without explicit user permission.
+
+### Next Agent
+1. Inspect the full PR #25 diff and check the latest branch-head Actions after the documentation-only follow-up; the tested code SHA `911be5faad001551b330675cf6208b556ac9d82f` is green at Runtime 50/50.
+2. Preserve the separation of optional and mainline target IDs. Do not merge PR #25 without explicit user permission.
+3. Continue the player-facing review of Shared-02 → optional rumors → Shared-03, then region-entry / interactive exploration and final character PNG/WebP asset review. Do not start unrelated Camp/Relationship work.
+
+
+## 21. 2026-10-12 Shared-02 Optional Exploration Access — Regression Added
+
+### Finding
+Shared-02 completes at timeline `105`, but the WorldMap node `EAGLE_SORROW` and its `RUMOR_YELLOW_FANG` both required timeline `110`. The Shared-02 dialogue explicitly invites the player to open the map and hear rumors before continuing to Eagle Sorrow. That promise was unreachable at timeline 105: the map hid the destination and the rumor.
+
+### Change
+- Lower only the optional exploration availability thresholds for the Eagle Sorrow map node and Yellow Fang rumor to timeline 105. Shared-03's canonical chapter and recruitment milestone remain at timeline 110.
+- Add a production WorldMap SceneTree regression from the real post-Shared-02 state: travel to Eagle Sorrow, hear/discover the optional rumor, launch and win the actual optional bounty battle, return to WorldMap, save/reload, then return to Journey and verify Continue starts `SHARED-03-EAGLE-SORROW-SEQUENCE`.
+- Update the static WorldMap manager regression to use the post-Shared-02 timeline before testing Eagle Sorrow access.
+
+### Validation
+- PASS: latest test head `ae921d076cedfec500f6eb7e16f57f2ef147d3a5`, [Godot Runtime 38209609249](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38209609249), `RUNTIME_SUITE_PASS tests=51`; logs confirm `test_shared02_optional_rumor_access.gd` passed. The regression checks rumor discovery, actual optional bounty battle/return, then reopening Journey and starting `SHARED-03-EAGLE-SORROW-SEQUENCE`. An earlier test-only head `6515941e0e3f826a588d3a694a7bb5c22e337476` failed because the fixture had not marked Wukong's Origin route complete; the fixture was corrected and the exact newer SHA passed. Do not reuse prior results to validate a later SHA.
+- PR #25 remains open and unmerged. No Web Demo run is claimed for the feature branch.
+
+### Next
+Runtime has now verified the post-Shared-02 detour and that Journey resumes at Shared-03. Next, do the player-facing visual review and prepare final character asset delivery: the repository has six character SVG placeholders and no `assets/art/characters/final/` PNG/WebP assets. Follow `docs/visual_reference/README.md`; do not treat placeholders as final art.
+
+
+## 2026-10-12 Visual Asset Source Audit (PR #25)
+
+- Audited the six character SVG placeholders and the catalog / visual contract tests. They remain geometric placeholders; automated tests check resource loading and environment-layer markers, not visual quality.
+- Five humanoid placeholders use a 32×48 logical viewBox; Longma uses a horizontal 40×32 viewBox. Review actual in-game scale rather than forcing Longma into a humanoid frame.
+- No final character PNG/WebP or player-facing screenshot artifact is present in the reviewed branch. This was source inspection only, not a screenshot acceptance pass.
+- Delivery and review requirements are recorded in `docs/development_log/2026-10-12-character-asset-source-audit.md`. Next: deliver six separate transparent pixel-art assets, then run exact-head Runtime/Web Demo validation and inspect actual Journey/battle screenshots. Keep SVG fallbacks; do not merge PR #25 without explicit permission.
+
+
+## 17. 2026-10-12 Art Catalog Runtime Contract
+
+- `combat/test_visual_asset_contract.gd` now checks the actual production `ArtAssetCatalog` resolution path for all six character IDs and scene textures.
+- Character resolution is asserted as final PNG → final WebP → SVG fallback based on files present. Final art remains optional; do not rename placeholders or add unrelated status/infographic images as character assets.
+- Existing SVG environment layer markers remain checked. These tests prove resource/path contracts only, not art quality or visual acceptance.
+- New log: `docs/development_log/2026-10-12-art-catalog-runtime-contract.md`. Exact-head Runtime must be checked after the update; no new Runtime pass is claimed until Actions confirms it.
+- Pending: six separate transparent final character assets and actual Journey/battle screenshot review. Continue non-art production regression work meanwhile.

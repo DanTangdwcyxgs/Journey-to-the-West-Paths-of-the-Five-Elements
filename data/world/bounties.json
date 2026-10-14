@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
-  "description": "西游 JRPG 悬赏妖王定义。悬赏目标是可选世界内容，不等同于强制主线 Boss。",
+  "description": "西游 JRPG 悬赏与首领定义。可选悬赏与固定主线首领使用不同目标 ID，结算和击败状态互不影响。",
   "bounties": [
     {
       "id": "BOUNTY_YELLOW_FANG",
-      "name": "黄风妖王",
+      "name": "黄牙老妖",
       "tier": "B",
       "discovery": {
         "type": "RUMOR",
@@ -26,6 +26,31 @@
       "world_effects_on_defeat": ["LOCAL_VILLAGE_SAFE_ROUTE"],
       "memory_hooks": ["WUKONG", "TANG"],
       "status_flags": ["OPTIONAL", "REVISITABLE"]
+    },
+    {
+      "id": "YELLOW_WIND_KING",
+      "name": "黄风妖王",
+      "tier": "MAINLINE",
+      "discovery": {
+        "type": "MAINLINE_GATE",
+        "location": "YELLOW_WIND_THRONE",
+        "required_evidence": 0
+      },
+      "location_id": "YELLOW_WIND_THRONE",
+      "recommended_level": 12,
+      "can_appear_before_mainline": false,
+      "can_retreat": false,
+      "retreat_memory": "",
+      "weaknesses": ["FIRE", "WIND"],
+      "battle_profile": {
+        "shield": 4,
+        "break_reward_multiplier": 1.5,
+        "enrage_below_hp_percent": 30
+      },
+      "rewards": ["COIN_MEDIUM", "DEMON_FANG", "FANG_TALISMAN"],
+      "world_effects_on_defeat": ["LOCAL_VILLAGE_SAFE_ROUTE"],
+      "memory_hooks": ["WUKONG", "TANG"],
+      "status_flags": ["MAINLINE"]
     },
     {
       "id": "BOUNTY_IRON_HORN",

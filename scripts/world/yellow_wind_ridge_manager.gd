@@ -5,7 +5,7 @@ const RIDGE_PATH := "res://data/world/yellow_wind_ridge.json"
 const BLACK_WIND_LOCATION := "BLACK_WIND_NORTH_PATH"
 const GATE_STAGE_ID := "YELLOW_WIND_GATE"
 const GATE_MILESTONE := "YELLOW_WIND_GATE_OPEN"
-const BOSS_TARGET_ID := "BOUNTY_YELLOW_FANG"
+const BOSS_TARGET_ID := "YELLOW_WIND_KING"
 
 var definition: Dictionary = {}
 

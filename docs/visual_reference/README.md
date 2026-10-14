@@ -36,3 +36,11 @@
 视觉规范是全项目长期基线，不只适用于战斗页面。不同页面允许有不同信息布局，但面板几何、描边语言、颜色层级、像素密度和状态条风格必须统一。
 
 后续模型接手时，先查看本目录中的参考图，再查看 `ui/pixel_frame.gd`、`ui/pixel_ui.gd`、`ui/pixel_hud.gd`，确认新增 UI 不偏离该标准。
+
+
+## 角色占位资源审查（2026-10-12）
+
+- 六个角色文件（Wukong、Tang、Bajie、Wujing、Longma、Yellow Wind）仍是可运行的几何 SVG 占位，不是最终美术。可用于验证加载链路，但不代表角色辨识度或像素质量通过验收。
+- `ArtAssetCatalog` 的覆盖顺序是 final PNG → final WebP → SVG fallback；最终资源放入 `assets/art/characters/final/`，无需为换图修改战斗/剧情规则。
+- 当前自动契约测试检查资源加载与环境分层标记，不检查美术质量。此次仅完成源文件审查，没有实际游戏截图，因此不标记视觉验收通过。
+- 六个文件名、角色辨识点及下一步截图验收流程见 `AI_ASSET_DELIVERY_SPEC.md` 与开发日志 `2026-10-12-character-asset-source-audit.md`。
