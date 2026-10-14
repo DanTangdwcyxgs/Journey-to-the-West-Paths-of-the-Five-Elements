@@ -24,17 +24,40 @@ func get_region_for_location(location_id: String) -> Dictionary:
 	return {}
 
 func can_enter(narrative: NarrativeManager, region_id: String) -> bool:
+	return get_entry_block_reason(narrative, region_id).is_empty()
+
+
+## Returns a player-facing reason when a region is locked, or an empty string when available.
+## Keep this as the single source of truth for both the gate and its presentation.
+func get_entry_block_reason(narrative: NarrativeManager, region_id: String) -> String:
 	if narrative == null or not regions.has(region_id):
-		return false
+		return "当前没有可进入的区域探索。"
 	var region: Dictionary = regions[region_id]
-	if str(narrative.state.get_world_state().get("current_location", "")) != str(region.get("location_id", "")):
-		return false
-	if narrative.state.current_global_timeline < int(region.get("required_timeline", 0)):
-		return false
+	var current_location := str(narrative.state.get_world_state().get("current_location", ""))
+	if current_location != str(region.get("location_id", "")):
+		return "请先前往%s，再进入区域探索。" % str(region.get("name", region_id))
+	var required_timeline := int(region.get("required_timeline", 0))
+	if narrative.state.current_global_timeline < required_timeline:
+		return "区域尚未开放：需要旅途推进至 T%03d（当前 T%03d）。" % [
+			required_timeline,
+			narrative.state.current_global_timeline
+		]
 	for milestone in region.get("required_milestones", []):
-		if str(milestone) not in narrative.state.completed_milestones:
-			return false
-	return true
+		var milestone_id := str(milestone)
+		if milestone_id not in narrative.state.completed_milestones:
+			return "区域尚未开放：%s。" % _milestone_requirement_label(milestone_id)
+	return ""
+
+
+func _milestone_requirement_label(milestone_id: String) -> String:
+	var labels := {
+		"WUKONG_RECRUITED": "需要先让孙悟空加入取经队伍",
+		"BAI_LONGMA_RECRUITED": "需要先让白龙马加入取经队伍",
+		"ZHU_BAJIE_RECRUITED": "需要先让猪八戒加入取经队伍",
+		"SHA_WUJING_RECRUITED": "需要先让沙悟净加入取经队伍",
+		"PARTY_FULL": "需要先集结完整的五人队伍"
+	}
+	return str(labels.get(milestone_id, "需要先完成必要的旅途事件"))
 
 func get_points(region_id: String) -> Array[Dictionary]:
 	var result: Array[Dictionary] = []
