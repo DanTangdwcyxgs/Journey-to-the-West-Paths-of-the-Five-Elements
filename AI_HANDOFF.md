@@ -569,3 +569,23 @@ Runtime has now verified the post-Shared-02 detour and that Journey resumes at S
 - Optional exploration must not advance the fixed Shared chronology, mutate recruitment, or add completed chapters.
 - Treat stale/in-progress historical runs as neither green nor current validation. Only the exact tested SHA and completed run count.
 - Save failure must restore the full NarrativeState snapshot and leave the clue retryable.
+
+
+## 22. 2026-10-14 Black Wind North Path Region Exploration (PR #29)
+
+### Implementation
+- PR: https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/pull/29
+- Branch: `feature/black-wind-region-exploration-2026-10-14`
+- Added `BLACK_WIND_NORTH_PATH` as the third data-driven region, gated by timeline 120 and `BAI_LONGMA_RECRUITED`, with three clue-only observations. This matches the existing `SHARED-04-EARLY-DEMON-TALES` shared chapter and does not add a parallel story route.
+- Extended `combat/test_region_exploration.gd` to cover timeline/milestone locks, the production WorldMap → region scene path, persistence across fresh load, return travel, and invariants on Shared chapter pointer, timeline, completed chapters, and recruited roster.
+- Added `docs/development_log/2026-10-14-black-wind-north-path-region.md`, indexed it, and recorded the change in `docs/AI_MEMORY.md`.
+
+### Validation gate
+- Implementation head `c2379b19e72d768957f4f70a206fe393bc8981e8`; Runtime run [38500154155](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38500154155) was in progress during handoff authoring. Check the latest PR head and its completed Runtime result before marking this work validated.
+- Main baseline `395233d8bcaf13aa9022c33903ab03a75c5a83ae` had successful Runtime run [38498039387](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38498039387) and Web Demo run [38498039390](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38498039390). Baseline results are not evidence for the feature branch.
+- No Web Demo deploy is claimed for this unmerged PR. No image-generation or screenshot acceptance was performed.
+
+### Next Agent
+1. Inspect the newest PR #29 Runtime run for the exact latest PR head and review logs for `test_region_exploration.gd`.
+2. If it fails, fix the underlying fixture/path issue and rerun. If it passes, preserve the exact SHA/run in the development log.
+3. Do not merge PR #29 without explicit user permission. Keep final character PNG/WebP assets and screenshot review as separate outstanding work.
