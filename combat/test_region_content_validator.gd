@@ -28,6 +28,13 @@ static func run_all() -> Dictionary:
 	var duplicate_location_errors := RegionContentValidator.validate_payload(duplicate_location, valid_map)
 	_expect(_has_error(duplicate_location_errors, "Multiple regions reference world map location"), "ambiguous one-location-to-region mappings should be rejected", failures)
 
+	var duplicate_region_id := _valid_region_payload()
+	var duplicate_region_map := _valid_map_payload()
+	duplicate_region_map["nodes"].append({"id": "SECOND_NODE"})
+	duplicate_region_id["regions"].append(_make_region("TEST_REGION", "SECOND_NODE", "SECOND_POINT"))
+	var duplicate_region_errors := RegionContentValidator.validate_payload(duplicate_region_id, duplicate_region_map)
+	_expect(_has_error(duplicate_region_errors, "Duplicate region id"), "duplicate region IDs should be rejected", failures)
+
 	var two_node_map := _valid_map_payload()
 	two_node_map["nodes"].append({"id": "SECOND_NODE"})
 	var duplicate_point_regions := _valid_region_payload()
@@ -44,6 +51,16 @@ static func run_all() -> Dictionary:
 	bad_timeline["regions"][0]["required_timeline"] = -1
 	var bad_timeline_errors := RegionContentValidator.validate_payload(bad_timeline, valid_map)
 	_expect(_has_error(bad_timeline_errors, "non-negative integer required_timeline"), "negative timeline gates should be rejected", failures)
+
+	var fractional_timeline := _valid_region_payload()
+	fractional_timeline["regions"][0]["required_timeline"] = 1.5
+	var fractional_timeline_errors := RegionContentValidator.validate_payload(fractional_timeline, valid_map)
+	_expect(_has_error(fractional_timeline_errors, "non-negative integer required_timeline"), "fractional timeline gates should be rejected", failures)
+
+	var duplicate_milestones := _valid_region_payload()
+	duplicate_milestones["regions"][0]["required_milestones"] = ["TEST_MILESTONE", "TEST_MILESTONE"]
+	var duplicate_milestone_errors := RegionContentValidator.validate_payload(duplicate_milestones, valid_map)
+	_expect(_has_error(duplicate_milestone_errors, "repeats milestone"), "duplicate required milestone IDs should be rejected", failures)
 
 	var empty_points := _valid_region_payload()
 	empty_points["regions"][0]["points"] = []
