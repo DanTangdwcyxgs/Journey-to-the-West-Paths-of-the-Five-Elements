@@ -683,3 +683,20 @@ Runtime has now verified the post-Shared-02 detour and that Journey resumes at S
 1. Check the exact newest PR #29 Runtime after this result-recording documentation sync; do not assume Run #430 applies to its newer SHA.
 2. If the new head fails, fix the source and rerun. Preserve the no-mainline-progression contract.
 3. Keep PR #29 open/unmerged unless the user explicitly authorizes merge. Final character PNG/WebP assets and screenshot review remain separate work items.
+
+## 29. 2026-10-14 EventSequence MOVE Map Reference Validation (PR #29 continuation)
+
+### Change
+- Content-quality validation now checks every move node before the sequence enters the runtime catalog: map_id must be the currently supported WORLD_MAP, marker_id must be present, and the marker must resolve to WorldMapManager.nodes.
+- This closes the path where WorldActionService.apply_move() could fall back to the map ID as a persisted location if a content author omitted marker_id.
+- combat/test_event_sequence_validator.gd now covers the valid path and missing marker / unknown marker / missing map ID / unsupported map ID. Production sequence catalog checks remain in the existing Runtime suite (54 entries).
+- See docs/development_log/2026-10-14-event-sequence-move-reference-validation.md for details.
+
+### Validation gate
+- PASS: implementation/test SHA daa33bb02411173170912eedd037e6dbf1e226f8, Godot Runtime [38522405623](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38522405623), with PASS res://combat/test_event_sequence_validator.gd and RUNTIME_SUITE_PASS tests=54.
+- New documentation-sync head must be checked independently. No Web Demo deploy or visual acceptance is claimed.
+
+### Next Agent
+1. Confirm Godot Runtime on the latest documentation-sync head; record the exact SHA and run.
+2. If new maps are implemented later, introduce explicit map-catalog support instead of letting arbitrary map IDs through.
+3. Keep PR #29 open/unmerged unless the user explicitly authorizes merge. Final character PNG/WebP assets and screenshots remain outstanding.
