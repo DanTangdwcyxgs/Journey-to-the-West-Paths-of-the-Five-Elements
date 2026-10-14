@@ -60,8 +60,9 @@ The same-save production smoke now exercises the optional detour at the actual n
 - Reapplied the existing SceneTree regression onto the post-PR-25 main base. The flow still uses production Journey/WorldMap controls and verifies location/rumor persistence without mutating Shared chapter, global timeline, completed chapter history, or roster.
 
 ### Current validation gate
-- Integrated Runtime suite expected count: 50 entries (PR #25 introduced an additional registered regression).
-- Rebased PR head: pending exact-SHA GitHub Actions Runtime validation. No local Godot execution is claimed. The old PR #26 failure remains historical evidence and is not counted as validation of this rebased head.
+- Main SHA 9c8ca5742ef32af72d480c06e8f5a6e20196e12a: Runtime run [38494818772](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38495061187) passed with RUNTIME_SUITE_PASS tests=51. Web Demo run [38494818783](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38494818783) passed build, export, artifact upload, and Pages deployment.
+- Rebased implementation SHA f63d9d8a5001fa783ddcd4e467f9e10942ea7f0d: Runtime run [38495061187](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38495061187) passed; log includes PASS res://combat/test_shared_opening_to_black_wind_smoke.gd and RUNTIME_SUITE_PASS tests=51. No local Godot execution is claimed.
+- This results entry is tied to the implementation SHA. Because the memory/handoff/log sync produces later documentation commits, verify the latest PR head's own Runtime before merging.
 - Web Demo: not expected on this feature branch; must be verified on the post-merge main push.
 
 ### Next-agent entry point
