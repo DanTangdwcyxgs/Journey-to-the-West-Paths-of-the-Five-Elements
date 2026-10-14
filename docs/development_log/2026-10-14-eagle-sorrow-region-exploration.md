@@ -54,7 +54,17 @@ The SceneTree regression exercises:
 - No screenshot/pixel-art acceptance pass was run. Existing final transparent character PNG/WebP assets remain pending and SVG placeholders are not final art.
 
 ## Next step
-PR #27 is open as Draft at https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/pull/27. The implementation head above is green at 52/52, but this documentation update creates a new head: require its exact-SHA Runtime to confirm `PASS res://combat/test_region_exploration.gd` and `RUNTIME_SUITE_PASS tests=52`. Then mark Ready, merge only the verified head, and validate merged main Runtime + Web Demo build/export/deploy.
+PR #27 is merged. The implementation and merged main results are recorded in `## 2026-10-14 Post-merge verification` below. Start the next batch from latest `main`, check its live exact-SHA status, and add another data-driven region plus production regression without changing fixed Journey chronology.
 
 ## Handoff point
 Start at the current PR head and its newest Runtime run. The key files are `ui/region_exploration.gd`, `scripts/world/region_exploration_manager.gd`, `scripts/narrative/narrative_state.gd`, and `combat/test_region_exploration.gd`. Keep optional region exploration separate from the fixed Shared chronology. After CI validation, continue region interaction/signposting and actual player-facing screenshot review, then deliver six separate final transparent pixel-art character assets through `ArtAssetCatalog`.
+
+
+## 2026-10-14 Post-merge verification
+
+- PR #27 merged to main as `aac03d053c7ef1f13e5981cdfa6ea8c6a4731ed6`.
+- The exact pre-merge head `c91149c7c7fde2c2b47700f9a06a85f3cde7541c` passed Runtime [38497081497](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38497081497): `PASS res://combat/test_region_exploration.gd` and `RUNTIME_SUITE_PASS tests=52`.
+- Merged main Runtime [38497186380](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38497186380) passed `RUNTIME_SUITE_PASS tests=52`.
+- Web Demo [38497186366](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38497186366) passed Web project import, Runtime-before-export, export, Pages artifact upload, and deployment. Live URL: https://dantangdwcyxgs.github.io/Journey-to-the-West-Paths-of-the-Five-Elements/
+- The earlier `set_shared_chapter` API typo and its timeout were fixed; see the exact failed run 38496663446 for historical diagnostics. Later exact-head tests passed.
+- This commit only syncs handoff/memory/log to the already-verified feature merge. Future work should add a second data-driven region with location/timeline gates, persisted clue discovery, and a production UI regression. Visual screenshot acceptance and six final transparent character assets remain outstanding.

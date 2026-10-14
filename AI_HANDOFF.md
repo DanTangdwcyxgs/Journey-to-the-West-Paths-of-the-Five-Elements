@@ -552,21 +552,20 @@ Runtime has now verified the post-Shared-02 detour and that Journey resumes at S
 - PR #26 was merged after exact current-head Runtime passed, as `74c011680cc7a76afa478747475c9e3e8a0a40b2`. It preserves the optional Shared-02 → Eagle Sorrow exploration path without changing canonical Shared-03 chronology.
 - Main SHA `74c011680cc7a76afa478747475c9e3e8a0a40b2` passed Godot Runtime [38495397569](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38495397569), with `RUNTIME_SUITE_PASS tests=51`. Web Demo [38495397529](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38495397529) passed import, runtime-before-export, Web export, artifact upload and GitHub Pages deployment. Published URL: https://dantangdwcyxgs.github.io/Journey-to-the-West-Paths-of-the-Five-Elements/
 
-### Current feature work
-- Active branch: `feature/eagle-sorrow-region-exploration-2026-10-14`.
-- Adds one data-driven Eagle Sorrow region with three interactive clues; an entry button on WorldMap; a reusable region screen; persistent `discovered_region_points` via NarrativeState; and atomic save/rollback/retry.
-- Registered a new SceneTree test: `combat/test_region_exploration.gd`. Exact implementation head `533ffa9eb989676a4cefc1e0bc9d85f81188cbce` passed Runtime [38496887862](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38496887862) with `PASS res://combat/test_region_exploration.gd` and `RUNTIME_SUITE_PASS tests=52`.
-- Initial head `842dccc14d7592574d98a2d471a830454067de05` failed because the fixture called nonexistent `NarrativeState.set_shared_chapter()`. Corrected it to `set_current_shared_chapter()`, added stage logging and a 45-second watchdog that restores the three test save files on timeout. Failed run [38496663446](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38496663446) is historical evidence, not a pass.
-- Older heads `2a1dbc12d9f525e14f3c0fedc135f09af2d7e084` and `4d0a13a063ee5683b0e2cb9ab123579327db7be8` remain displayed as in-progress stale runs; do not treat them as current validation.
-- The feature log is `docs/development_log/2026-10-14-eagle-sorrow-region-exploration.md`; project memory is updated in Round 74. The implementation is intentionally restricted to optional discovery and must not grant rewards or advance mainline state.
+### Completed feature work — PR #27
+- PR #27: https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/pull/27 was merged as `aac03d053c7ef1f13e5981cdfa6ea8c6a4731ed6`.
+- Added one data-driven Eagle Sorrow region with three clue points, a WorldMap entry button, reusable region screen, persisted `discovered_region_points`, and full state rollback + retry on save failure.
+- Exact pre-merge documentation-sync head `c91149c7c7fde2c2b47700f9a06a85f3cde7541c` passed Runtime [38497081497](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38497081497), with `PASS res://combat/test_region_exploration.gd` and `RUNTIME_SUITE_PASS tests=52`.
+- Merged main SHA `aac03d053c7ef1f13e5981cdfa6ea8c6a4731ed6` passed Runtime [38497186380](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38497186380), with `RUNTIME_SUITE_PASS tests=52`. Web Demo [38497186366](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38497186366) passed build, pre-export Runtime, Web export, artifact upload, and GitHub Pages deployment. Published URL: https://dantangdwcyxgs.github.io/Journey-to-the-West-Paths-of-the-Five-Elements/
+- The initial region test failed because it called nonexistent `NarrativeState.set_shared_chapter()`; the correct API is `set_current_shared_chapter()`. The test now includes stage markers and a 45-second watchdog that restores backed-up test files on timeout. Failure run [38496663446](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38496663446) is historical and not treated as green.
+- Earlier heads `2a1dbc12d9f525e14f3c0fedc135f09af2d7e084` and `4d0a13a063ee5683b0e2cb9ab123579327db7be8` were stale in-progress runs; the verified evidence is tied to the explicit passing SHAs above.
 
 ### Required next actions
-1. PR #27 is already open as Draft: https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/pull/27. The current code head passed 52/52; this documentation update creates a new head, so check that new exact-head Runtime before marking Ready.
-2. Keep all chronology, location-gate and save-rollback assertions intact. If the final head fails, fix implementation/test rather than weakening invariants.
-3. If final exact-head Runtime succeeds, mark PR #27 Ready, merge with the verified head SHA, then validate merged main Runtime plus Web Demo build/export/deploy and record actual run IDs.
-4. Continue expanding data-driven region interactions after this one-location slice proves stable, then conduct player-facing screenshot review and deliver six separate final transparent character PNG/WebP assets through `ArtAssetCatalog`.
+1. Start from the latest `main` SHA and check its current GitHub Actions status; this handoff update is documentation-only after the green feature merge.
+2. Continue the data-driven region system with one additional mapped location, keeping location/timeline/milestone gates and persistent clues under `RegionExplorationManager` / `NarrativeState`. Add a production UI regression and a save-failure case before claiming coverage.
+3. Then conduct player-facing screenshot review and deliver six separate final transparent pixel-art character PNG/WebP assets through `ArtAssetCatalog`; SVG placeholders and contract tests do not constitute visual acceptance.
 
 ### Non-negotiable constraints
-- Optional exploration must not advance canonical Shared chronology, mutate recruitment, or replace the existing fixed Journey sequence.
-- Never mark a queued, in-progress, pending, stale or failed workflow as passed.
+- Optional exploration must not advance canonical Shared chronology, mutate recruitment, or replace the fixed Journey sequence.
+- Never claim a queued, in-progress, pending, stale or failed workflow passed; cite the exact tested SHA and run.
 - SVG geometric placeholders are not final character art; automated resource-contract tests are not visual acceptance.
