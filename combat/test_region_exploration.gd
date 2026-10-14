@@ -131,30 +131,32 @@ func _run_smoke() -> void:
 	current_scene = isolated
 	await process_frame
 	_record(isolated.region_id == "EAGLE_SORROW", "the injected screen should initialize against the same current region")
-	_record(isolated.point_list.get_item_count() == 3, "the injected screen should use the production point catalog")
-	if isolated.point_list.get_item_count() > 1:
-		isolated.point_list.select(1)
-		isolated.call("_on_point_selected", 1)
-		var retry_point_id := str(isolated.point_list.get_item_metadata(1))
-		var before_failed_save: Dictionary = failing_manager.serialize().duplicate(true)
-		_record(not isolated.inspect_button.disabled, "an undiscovered second point should be ready for the save-failure case")
-		isolated.inspect_button.emit_signal("pressed")
-		await process_frame
+	_record(isolated.point_list != null, "the injected screen should build its point list")
+	if isolated.point_list != null:
+		_record(isolated.point_list.get_item_count() == 3, "the injected screen should use the production point catalog")
+		if isolated.point_list.get_item_count() > 1:
+			isolated.point_list.select(1)
+			isolated.call("_on_point_selected", 1)
+			var retry_point_id := str(isolated.point_list.get_item_metadata(1))
+			var before_failed_save: Dictionary = failing_manager.serialize().duplicate(true)
+			_record(not isolated.inspect_button.disabled, "an undiscovered second point should be ready for the save-failure case")
+			isolated.inspect_button.emit_signal("pressed")
+			await process_frame
 
-		_record(failing_manager.save_attempts == 1, "region discovery should attempt one save")
-		_record(failing_manager.serialize() == before_failed_save, "a failed region save should restore the complete NarrativeState snapshot")
-		_record(retry_point_id not in failing_manager.state.get_world_state().get("discovered_region_points", []), "failed save must roll back the discovery marker")
-		_record(not isolated.inspect_button.disabled, "a failed save should leave the point retryable")
-		_record(isolated.status_label.text.find("保存失败") >= 0, "a failed region save should be visible to the player")
+			_record(failing_manager.save_attempts == 1, "region discovery should attempt one save")
+			_record(failing_manager.serialize() == before_failed_save, "a failed region save should restore the complete NarrativeState snapshot")
+			_record(retry_point_id not in failing_manager.state.get_world_state().get("discovered_region_points", []), "failed save must roll back the discovery marker")
+			_record(not isolated.inspect_button.disabled, "a failed save should leave the point retryable")
+			_record(isolated.status_label.text.find("保存失败") >= 0, "a failed region save should be visible to the player")
 
-		failing_manager.save_success = true
-		isolated.inspect_button.emit_signal("pressed")
-		await process_frame
-		_record(failing_manager.save_attempts == 2, "retrying the region discovery should attempt a second save")
-		_record(retry_point_id in failing_manager.state.get_world_state().get("discovered_region_points", []), "a successful retry should commit the discovery")
-		_record(isolated.status_label.text.find("记录了断裂木牌的方位") >= 0, "successful interaction should show the point's authored feedback")
-		_record(failing_manager.state.current_shared_chapter == expected_chapter, "the retry must preserve the canonical Shared chapter")
-		_record(failing_manager.state.current_global_timeline == expected_timeline, "the retry must preserve the global timeline")
+			failing_manager.save_success = true
+			isolated.inspect_button.emit_signal("pressed")
+			await process_frame
+			_record(failing_manager.save_attempts == 2, "retrying the region discovery should attempt a second save")
+			_record(retry_point_id in failing_manager.state.get_world_state().get("discovered_region_points", []), "a successful retry should commit the discovery")
+			_record(isolated.status_label.text.find("记录了断裂木牌的方位") >= 0, "successful interaction should show the point's authored feedback")
+			_record(failing_manager.state.current_shared_chapter == expected_chapter, "the retry must preserve the canonical Shared chapter")
+			_record(failing_manager.state.current_global_timeline == expected_timeline, "the retry must preserve the global timeline")
 
 	var final_scene: Node = current_scene
 	current_scene = null
