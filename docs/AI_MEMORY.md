@@ -677,3 +677,61 @@ Wukong、Tang、Longma、Bajie、Wujing 五条 Origin Route 均已完成首轮 S
 - PR #28 merged to main as `ec6ef177b6a2a604c1f86b7e447f2212af82f069`. Exact docs-sync head `384771aadca78ffb5324d47721af511c6e671223` passed Runtime [38497759935](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38497759935), including `PASS res://combat/test_region_exploration.gd` and `RUNTIME_SUITE_PASS tests=52`. Merged main Runtime [38497860810](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38497860810) passed 52/52; Web Demo [38497860796](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38497860796) passed build/export/Pages deployment. Live demo: https://dantangdwcyxgs.github.io/Journey-to-the-West-Paths-of-the-Five-Elements/.
 - Five Elements Mountain is now the second generic region definition (three clue-only POIs, timeline 100 and Wukong milestone). Tests cover map traversal into and out of the region, gates, save/reload, and unchanged Shared chapter/timeline/completed history/roster.
 - Next: evaluate whether a third mapped location has enough narrative value for exploration; otherwise move to the outstanding visual screenshot review and six final transparent character PNG/WebP assets.
+
+
+### Round 77 — 2026-10-14: Black Wind North Path Region Exploration
+- Started from main baseline `395233d8bcaf13aa9022c33903ab03a75c5a83ae`, whose exact Runtime run [38498039387](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38498039387) and Web Demo run [38498039390](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38498039390) completed successfully.
+- Added data-driven `BLACK_WIND_NORTH_PATH` at timeline 120, gated by `BAI_LONGMA_RECRUITED`, with three optional clue-only points. Reused `RegionExplorationManager` and `RegionExplorationScreen`; no location-specific UI implementation or generated image asset was added.
+- Extended the existing production SceneTree smoke for timeline/recruitment gates, actual WorldMap travel and region entry, discovery save/reload, return navigation, and unchanged Shared chapter/timeline/completion/roster facts during discovery. The original Eagle Sorrow rollback/retry fixture is restored before its checks.
+- PASS: exact code/test head `c2379b19e72d768957f4f70a206fe393bc8981e8`, Runtime run [38500154155](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38500154155), job log confirms `RUNTIME_SUITE_PASS tests=52`. Documentation-sync head `32e24b6eb251a12c8fe2f7aaa5d580935a23de48` also passed Runtime run [38500329741](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38500329741), with the same 52/52 signature. This final result-recording commit contains only documentation evidence and triggers a fresh exact-head check. PR #29 is open and unmerged.
+- Development log: `docs/development_log/2026-10-14-black-wind-north-path-region.md`. Next: confirm the newest PR #29 Runtime result on its exact head, update validation evidence if needed, and do not merge without explicit user permission.
+
+
+### Round 78 — 2026-10-14: Region Entry Requirement Feedback
+- Region eligibility previously had only a boolean `can_enter()`, so WorldMap disabled the region button without explaining the missing timeline or recruitment gate.
+- Added `RegionExplorationManager.get_entry_block_reason()` and made `can_enter()` delegate to it; added localized milestone descriptions and inline WorldMap hint / tooltip.
+- Extended the existing production SceneTree regression with direct explanation checks and real WorldMap locked/unlocked presentation assertions. Test suite count remains 52 entries; assertions were added within `combat/test_region_exploration.gd`.
+- PASS: exact implementation/test head `e50f7089ce18c598f513643149cd31a20eff56e3`, Runtime [38501453314](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38501453314); the log confirms `PASS res://combat/test_region_exploration.gd` and `RUNTIME_SUITE_PASS tests=52`. Documentation-sync head `624215981a68ac30ae8af8dad8f05c6ea93887cc` passed Runtime [38501558456](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38501558456) at 52/52. The follow-up head `a19983a8155fe590f6654a290d41ea37185da8b0` also passed Runtime [38501605740](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38501605740), with the region SceneTree test passing and `RUNTIME_SUITE_PASS tests=52`. Final result-recording head `fcba52ed18c3d65c24ac220d46d78d819f852ee3` passed Runtime [38501734471](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38501734471), including the region SceneTree test and `RUNTIME_SUITE_PASS tests=52`.
+- Development log: `docs/development_log/2026-10-14-region-entry-feedback.md`. Keep PR #29 open and unmerged without explicit user permission.
+
+
+### Round 79 — 2026-10-14: Region Content Catalog Validation
+- Added `scripts/world/region_content_validator.gd` and `combat/test_region_content_validator.gd`; registered the new static validator test in `tests/runtime_suite.gd`, raising the full suite count to 53.
+- Validation contract checks region IDs, one-region-per-map-location, map cross references, region text, non-negative integral timeline gates, milestone arrays/uniqueness, non-empty clue lists, globally unique persisted clue IDs, and clue name/description/result text. It validates the real `regions.json` against `world_map.json` and exercises malformed fixtures.
+- First CI attempt `c10d46cb7c2056017ef4f9481591de0cd93eafff` failed because the validator required `TYPE_INT`; Godot's JSON parser yields numeric floating-point variants for the production timeline fields. Corrected the check to accept non-negative whole-number int/float values while rejecting fractional/negative gates.
+- PASS: validator-fix head `22e83daf31ca7176dc9d120595306e9bdab092ad`, Runtime [38502403071](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38502403071), `PASS res://combat/test_region_content_validator.gd`, `RUNTIME_SUITE_PASS tests=53`. Latest expanded-test head `da48a2b8fd4e00df8dd4d3ba1c1a47ce33b582aa`, Runtime [38502420049](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38502420049), same 53/53 pass.
+- Development log: `docs/development_log/2026-10-14-region-content-validation.md`. Next: inspect the existing JourneyLog and implement a player-facing index for discovered region notes without creating a second persistence authority. PR #29 remains open and unmerged.
+
+
+### Round 80 — 2026-10-14：Discovered Region Notes Journal
+- 复核 PR #29 的最新 Runtime：提交 `826eedcd621f262ea451799bfb4a7e78c35c0602` 对应 Godot Runtime [38502606214](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38502606214) 完成且成功，旧 suite 为 53/53。
+- 先检查 `scripts/world/journey_log.gd`、`NarrativeState.world_state.discovered_region_points`、区域管理器与存档序列化。既有 JourneyLog 记录战斗与世界效果，不是区域线索的权威来源；发现 ID 已经由 NarrativeState 持久化。
+- 新增 `RegionExplorationManager.get_discovered_notes()` 只读聚合器，从区域目录补齐已发现点的名称、描述、结果与区域标签，不返回未发现点，避免重复保存或提前泄露线索。
+- 新增 `ui/region_notes_log.gd/.tscn` 和 WorldMap「旅途见闻」入口；列表/详情为空时显示指引，查阅过程不写状态。
+- 新增 `combat/test_region_notes_log.gd`，注册到 Runtime suite；覆盖跨区域聚合、隐藏未发现线索、存档 round-trip、UI 列表/详情与空状态，以及查看时不得修改 timeline / chapter / recruitment / state。
+- 实现/测试 SHA `26c4d27b8464db2b3110d38b634754e04b53b248` 的 Godot Runtime [38503524908](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38503524908) 已成功，日志含 `PASS res://combat/test_region_notes_log.gd` 与 `RUNTIME_SUITE_PASS tests=54`。文档同步 SHA `1de4a24112eb26a2bc8d36f44d2f86340776eaff` 的 Runtime [38503657814](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38503657814) 也通过 54/54。没有宣称 Web Demo 部署、截图验收或最终角色 PNG/WebP 已完成。
+- 下一步：检查该实现 head 的完整 Godot Runtime 日志并修正失败；随后将最新 CI 结果写回本日志与 PR #29，检查文档同步 head，保持 PR 未合并。
+
+### Round 81 — 2026-10-14：WorldMap Region Discovery Progress Feedback
+- 复核 PR #29 文档同步头 1de4a24112eb26a2bc8d36f44d2f86340776eaff 的 Godot Runtime [38503657814](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38503657814)：成功，RUNTIME_SUITE_PASS tests=54。
+- 补充玩家导航反馈：WorldMap 当前地点有区域探索定义时，入口显示已发现/总线索数；提示区域未完成时剩余数量，找齐后显示“本区域线索已全部记录”并引导到「旅途见闻」回看。
+- 新增 RegionExplorationManager.get_discovery_progress()，仅由 regions.json 点列表与既有 NarrativeState.world_state.discovered_region_points 派生 discovered/total/remaining/complete，不引入新存档字段、不更改章节状态。
+- 扩展 combat/test_region_exploration.gd，覆盖 0/3、1/3、3/3、回到世界地图仍显示已保存进度，以及“区域线索完成”不等于“主线章节完成”。Runtime suite 项数仍为 54。
+- 文档改动包括 docs/architecture.md、docs/development_log/README.md、本开发日志、docs/AI_MEMORY.md 与 AI_HANDOFF.md。
+- 实现/测试 SHA `26d93318759d801f364526cdeae295a978c223d1` 的 Godot Runtime [38520530322](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38520530322) 完成成功，日志含 `PASS res://combat/test_region_exploration.gd` 与 `RUNTIME_SUITE_PASS tests=54`。文档同步 SHA `6bb1d0fd7e055736fcdb6f86541a544ac5b7c6a7` 的 Runtime [38520671947](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38520671947) 也通过，日志含 `PASS res://combat/test_region_exploration.gd` 与 `RUNTIME_SUITE_PASS tests=54`。没有宣称 Web Demo 部署、美术资产完成或截图验收完成。
+- 下一步：回看交接文档中剩余的 Vertical Slice 高优先级缺口，优先选不依赖图像生成、能由真实 Runtime 覆盖的工作；正式 PNG/WebP 与截图验收保持独立待办。
+
+### Round 82 — 2026-10-14：Region Exploration Completion Feedback
+- 阅读并遵循 DEVELOPMENT_RULES.md、游戏愿景、制作规则、内容流水线、章节圣经与当前区域架构约定；本次只做 Presentation 层玩家反馈，不加剧情或存档字段。
+- 区域界面之前只显示已发现/总数，即使到 3/3 也没有明确完成态和「旅途见闻」指引。现在直接复用 RegionExplorationManager.get_discovery_progress()：未完成时提示剩余线索，全部记录后提示可到「旅途见闻」回看，并明确不会推进西游主线。
+- 扩展现有生产 SceneTree 测试 combat/test_region_exploration.gd，通过全线索已发现的 fixture 实例化真实区域 screen，断言完成提示、日志导航指引和不推进主线文案；测试套件项数保持 54。
+- 已新增 docs/development_log/2026-10-14-region-completion-feedback.md 并更新架构说明、日志索引与本接手文件。实现/文档 head `43951fa76b45e37dee5f8ed5902b3edc17a55227` 的 Godot Runtime [38521895114](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38521895114) 完成成功，日志包含 `PASS res://combat/test_region_exploration.gd` 与 `RUNTIME_SUITE_PASS tests=54`。该结果只适用于精确 SHA `43951fa...`；本轮结果记录本身会产生新的文档同步 head，仍需单独确认。
+- 未宣称 Web Demo 部署、最终美术或截图验收完成。下一步验证最新 PR #29 exact-head Runtime；PR #29 保持 open/unmerged，除非用户明确授权合并。
+
+### Round 83 — 2026-10-14: EventSequence MOVE Map Reference Validation
+- 按内容流水线的显式缺口，审查 EventSequenceValidator、EventSequenceDefinition、EventRunner、WorldActionService.apply_move() 及生产 world_map.json。发现 move 节点缺少 marker_id 时，执行层可能回退把 map_id 当作当前位置写入 NarrativeState；原 cross-reference validator 没有预先拒绝这类坏内容。
+- 在 EventSequenceValidator.validate() 增加 MOVE 引用校验：只接受当前实现的 WORLD_MAP map_id；要求非空 marker_id；marker 必须存在于 WorldMapManager.nodes。这不改变运行时动作执行，只在内容载入前拦截无效序列。
+- 在现有 combat/test_event_sequence_validator.gd 中新增有效标记、缺少 marker、未知 marker、缺少 map_id、不支持 map_id 五种回归断言；没有新加独立测试入口，Runtime suite 仍为 54 项。
+- PASS：实现/测试 SHA daa33bb02411173170912eedd037e6dbf1e226f8 的 Godot Runtime [38522405623](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38522405623) 完成成功，日志含 PASS res://combat/test_event_sequence_validator.gd 和 RUNTIME_SUITE_PASS tests=54。文档同步 head d5fcf00d8d2d0e360de3f50f1d597de28e2a2c7b 的 Godot Runtime [38522641916](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38522641916) 也通过相同的 54/54 质量门。下一步仍须核对本条结果记录更新后的最新 head。
+- 已更新 docs/architecture.md、docs/content_pipeline.md、本开发日志索引与 AI_HANDOFF.md。没有声称 Web Demo 部署或视觉验收。
+- 下一步：确认文档同步后的最新 PR #29 head 对应 Runtime 成功，再将最终 SHA/run 写入开发日志与 PR 描述。PR #29 保持 open/unmerged，除非用户明确授权合并。

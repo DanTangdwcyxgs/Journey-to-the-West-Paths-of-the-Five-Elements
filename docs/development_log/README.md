@@ -10,6 +10,18 @@
 
 ## 最新记录
 
+- [2026-10-14 — EventSequence MOVE Map Reference Validation](2026-10-14-event-sequence-move-reference-validation.md)
+- [2026-10-14 — Region Exploration Completion Feedback](2026-10-14-region-completion-feedback.md)
+- [2026-10-14 — Region Discovery Progress Feedback](2026-10-14-region-discovery-progress-feedback.md)
+
+- [2026-10-14 — Discovered Region Notes Journal](2026-10-14-region-notes-index.md)
+
+- [2026-10-14 — Region Content Catalog Validation](2026-10-14-region-content-validation.md)
+
+- [2026-10-14 — Region Entry Requirement Feedback](2026-10-14-region-entry-feedback.md)
+
+- [2026-10-14 — Black Wind North Path Region Exploration](2026-10-14-black-wind-north-path-region.md)
+
 - [2026-10-14 — Five Elements Mountain Region Exploration](2026-10-14-five-elements-mountain-region.md)
 
 - [2026-10-14 — Eagle Sorrow Region Exploration Vertical Slice](2026-10-14-eagle-sorrow-region-exploration.md)

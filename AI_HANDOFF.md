@@ -569,3 +569,135 @@ Runtime has now verified the post-Shared-02 detour and that Journey resumes at S
 - Optional exploration must not advance the fixed Shared chronology, mutate recruitment, or add completed chapters.
 - Treat stale/in-progress historical runs as neither green nor current validation. Only the exact tested SHA and completed run count.
 - Save failure must restore the full NarrativeState snapshot and leave the clue retryable.
+
+
+## 22. 2026-10-14 Black Wind North Path Region Exploration (PR #29)
+
+### Implementation
+- PR: https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/pull/29
+- Branch: `feature/black-wind-region-exploration-2026-10-14`
+- Added `BLACK_WIND_NORTH_PATH` as the third data-driven region, gated by timeline 120 and `BAI_LONGMA_RECRUITED`, with three clue-only observations. This matches the existing `SHARED-04-EARLY-DEMON-TALES` shared chapter and does not add a parallel story route.
+- Extended `combat/test_region_exploration.gd` to cover timeline/milestone locks, the production WorldMap → region scene path, persistence across fresh load, return travel, and invariants on Shared chapter pointer, timeline, completed chapters, and recruited roster.
+- Added `docs/development_log/2026-10-14-black-wind-north-path-region.md`, indexed it, and recorded the change in `docs/AI_MEMORY.md`.
+
+### Validation gate
+- PASS: implementation/test head `c2379b19e72d768957f4f70a206fe393bc8981e8`; Runtime run [38500154155](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38500154155) completed successfully with `RUNTIME_SUITE_PASS tests=52`. The documentation-sync head `32e24b6eb251a12c8fe2f7aaa5d580935a23de48` also passed Runtime [38500329741](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38500329741) at 52/52. Check the newest PR-head Runtime after this final result-recording commit.
+- Main baseline `395233d8bcaf13aa9022c33903ab03a75c5a83ae` had successful Runtime run [38498039387](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38498039387) and Web Demo run [38498039390](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38498039390). Baseline results are not evidence for the feature branch.
+- No Web Demo deploy is claimed for this unmerged PR. No image-generation or screenshot acceptance was performed.
+
+### Next Agent
+1. Inspect the newest PR #29 Runtime run for the exact latest PR head and review logs for `test_region_exploration.gd`.
+2. If it fails, fix the underlying fixture/path issue and rerun. If it passes, preserve the exact SHA/run in the development log.
+3. Do not merge PR #29 without explicit user permission. Keep final character PNG/WebP assets and screenshot review as separate outstanding work.
+
+
+## 23. 2026-10-14 Region Entry Requirement Feedback (PR #29 continuation)
+
+### Implementation
+- Added `RegionExplorationManager.get_entry_block_reason()` as the single source for both region-entry eligibility and the player's explanation. `can_enter()` now returns whether that reason is empty.
+- WorldMap presents inline explanatory text and a tooltip for region entries: current-location/timeline/milestone locks explain the exact missing prerequisite; available regions explain that they are optional clue investigations and do not progress the main story.
+- Added friendly text for Wukong, Longma, Bajie, Wujing recruitment and full-party milestones; no internal milestone key is presented to players.
+- Extended the production `combat/test_region_exploration.gd` path to verify locked-state feedback and successful re-enablement after restoring the required state.
+
+### Validation gate
+- PASS: feature code/test SHA `e50f7089ce18c598f513643149cd31a20eff56e3`, Runtime [38501453314](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38501453314), `PASS res://combat/test_region_exploration.gd`, `RUNTIME_SUITE_PASS tests=52). Final documentation-sync SHA `fcba52ed18c3d65c24ac220d46d78d819f852ee3` passed Runtime [38501734471](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38501734471) at 52/52.
+- No Web Demo deployment, visual screenshot acceptance, or image generation is claimed.
+
+### Next Agent
+1. Inspect the latest PR #29 head and Runtime. Fix any syntax/fixture/assertion failures and rerun the exact head.
+2. Preserve the fixed Journey timeline, the timeline and milestone gates, and the clue-only / no-chapter-progression contract.
+3. Keep PR #29 open unless the user explicitly authorizes merge. After validation, choose a further non-art gameplay polish or resume the separate final character asset/screenshot task.
+
+
+## 25. 2026-10-14 Region Content Catalog Validation
+
+### Implementation
+- Added `scripts/world/region_content_validator.gd`; `validate_payload(region_payload, world_map_payload)` provides a reusable CI content contract without adding per-region runtime logic.
+- Added `combat/test_region_content_validator.gd` and registered it in `tests/runtime_suite.gd`. Runtime suite count is now 53.
+- Contract catches duplicated/blank world-map IDs, region IDs, duplicate region ownership of a location, unknown region locations, empty titles/descriptions, invalid timeline gates, invalid/duplicate milestones, empty clue arrays, global clue-ID collisions, and missing player-facing clue fields.
+- Point IDs must be globally unique because `NarrativeState.world_state.discovered_region_points` stores a flat list without a region namespace.
+
+### Validation gate
+- First attempt `c10d46cb7c2056017ef4f9481591de0cd93eafff` failed at Runtime [38502308548](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38502308548): valid JSON timeline numbers were represented as floating-point values, but the validator only accepted `TYPE_INT`. This assumption was fixed; negative and fractional values remain invalid.
+- PASS: validator fix/test head `22e83daf31ca7176dc9d120595306e9bdab092ad`, Runtime [38502403071](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38502403071), `PASS res://combat/test_region_content_validator.gd`, `RUNTIME_SUITE_PASS tests=53`.
+- PASS: expanded negative-test head `da48a2b8fd4e00df8dd4d3ba1c1a47ce33b582aa`, Runtime [38502420049](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38502420049), also at 53/53.
+- No image generation, Web Demo deploy or visual screenshot acceptance is claimed. PR #29 stays open and unmerged.
+
+### Next Agent
+1. Check the exact-head Runtime after this documentation synchronization.
+2. Inspect `scripts/world/journey_log.gd` plus current history / journal UI before implementing a player-facing review list for discovered region clues. Reuse the flat persisted discovery list; do not duplicate persistence or let optional clues advance the mainline.
+3. Preserve PR #29's unmerged state unless the user explicitly authorizes merge. Character PNG/WebP production and actual visual acceptance remain separate pending work.
+
+
+## 26. 2026-10-14 Discovered Region Notes Journal (PR #29 continuation)
+
+### Implementation
+- Branch: `feature/black-wind-region-exploration-2026-10-14`; PR #29 stays open and must not be merged without explicit user permission.
+- Rechecked the previous exact-head baseline: `826eedcd621f262ea451799bfb4a7e78c35c0602`, Godot Runtime [38502606214](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38502606214), success at 53/53.
+- Architecture review: `scripts/world/journey_log.gd` records battles and world effects; region discoveries remain facts in `NarrativeState.world_state.discovered_region_points`. Do not duplicate this persistence.
+- Added `RegionExplorationManager.get_discovered_notes()` as a read-only region-catalog projection. The journal only exposes discovered IDs and derives their display fields from `data/world/regions.json`.
+- Added `ui/region_notes_log.gd` / `.tscn` and a `旅途见闻` button on WorldMap, with list/detail, an empty state, and a return-to-map action.
+- Added `combat/test_region_notes_log.gd` and registered it in `tests/runtime_suite.gd`; suite now expects 54 test entries.
+- Development log: `docs/development_log/2026-10-14-region-notes-index.md`; architecture and log index are updated.
+
+### Validation Gate
+- PASS: implementation/test head `26c4d27b8464db2b3110d38b634754e04b53b248`, Runtime [38503524908](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38503524908), and documentation-sync head `1de4a24112eb26a2bc8d36f44d2f86340776eaff`, Runtime [38503657814](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38503657814), both passed `PASS res://combat/test_region_notes_log.gd`, `RUNTIME_SUITE_PASS tests=54`.
+- No Web Demo deployment, final-art delivery, or screenshot acceptance is claimed.
+
+### Next Agent
+1. The exact implementation and docs-sync Runtime gates are both green at 54/54; the PR description includes these run IDs.
+2. Next polish: surface the current region's discovered/total clue progress on WorldMap, without creating a second persistence store or implying mainline completion.
+3. Keep PR #29 open/unmerged. Final character PNG/WebP assets and actual visual screenshot acceptance remain separate deliverables.
+
+## 27. 2026-10-14 WorldMap Region Discovery Progress Feedback (PR #29 continuation)
+
+### Implementation
+- Read the required vision, production and content-pipeline documents before extending the region subsystem. Region progress is presentation feedback, not a new narrative progression rule.
+- Added RegionExplorationManager.get_discovery_progress() as a derived summary over region definitions and existing persisted discovery point IDs.
+- WorldMap entry labels show discovered/total clues. The hint shows remaining clue count or a local-completion message that explicitly distinguishes regional clue completion from chapter/story completion.
+- Extended combat/test_region_exploration.gd rather than adding another duplicate test runner: covers 0/3, 1/3, 3/3 and progress remaining visible after return to WorldMap. Suite count stays 54.
+- Development record: docs/development_log/2026-10-14-region-discovery-progress-feedback.md.
+
+### Validation Gate
+- Previous verified docs-sync head 1de4a24112eb26a2bc8d36f44d2f86340776eaff passed Runtime [38503657814](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38503657814), RUNTIME_SUITE_PASS tests=54.
+- PASS: implementation/test SHA `26d93318759d801f364526cdeae295a978c223d1`, Runtime [38520530322](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38520530322), and docs-sync head `6bb1d0fd7e055736fcdb6f86541a544ac5b7c6a7`, Runtime [38520671947](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38520671947), both include `PASS res://combat/test_region_exploration.gd` and `RUNTIME_SUITE_PASS tests=54`.
+
+### Next Agent
+1. The progress-feedback implementation and its docs-sync head are both green at 54/54.
+2. Re-read the main Vertical Slice task list and choose the next non-art gap with a clear runtime-testable acceptance contract; don't add another region unless the canonical route justifies it.
+3. Keep PR #29 open/unmerged absent explicit approval. Final transparent character PNG/WebP assets and visual screenshot acceptance remain separate deliverables.
+
+## 28. 2026-10-14 Region Exploration Completion Feedback (PR #29 continuation)
+
+### Change
+- Region screen progress now shares RegionExplorationManager.get_discovery_progress() with WorldMap; an unfinished area shows remaining clues, and a fully discovered area gives an explicit completed message plus 「旅途见闻」 review guidance.
+- Wrapped the status label for narrower viewports.
+- Extended combat/test_region_exploration.gd using a complete persisted-state fixture and production region screen. It verifies completion copy, journal guidance, and wording that protects the fixed main story. The suite remains 54 entries.
+- Architecture contract and development log are updated in docs/architecture.md and docs/development_log/2026-10-14-region-completion-feedback.md.
+
+### Validation gate
+- PASS: implementation/documentation head `43951fa76b45e37dee5f8ed5902b3edc17a55227`, Godot Runtime [38521895114](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38521895114), completed successfully; logs show `PASS res://combat/test_region_exploration.gd` and `RUNTIME_SUITE_PASS tests=54`.
+- This is not a Web Demo deployment and does not count as final character PNG/WebP delivery or screenshot acceptance.
+
+### Next Agent
+1. Check the exact newest PR #29 Runtime after this result-recording documentation sync; do not assume Run #430 applies to its newer SHA.
+2. If the new head fails, fix the source and rerun. Preserve the no-mainline-progression contract.
+3. Keep PR #29 open/unmerged unless the user explicitly authorizes merge. Final character PNG/WebP assets and screenshot review remain separate work items.
+
+## 29. 2026-10-14 EventSequence MOVE Map Reference Validation (PR #29 continuation)
+
+### Change
+- Content-quality validation now checks every move node before the sequence enters the runtime catalog: map_id must be the currently supported WORLD_MAP, marker_id must be present, and the marker must resolve to WorldMapManager.nodes.
+- This closes the path where WorldActionService.apply_move() could fall back to the map ID as a persisted location if a content author omitted marker_id.
+- combat/test_event_sequence_validator.gd now covers the valid path and missing marker / unknown marker / missing map ID / unsupported map ID. Production sequence catalog checks remain in the existing Runtime suite (54 entries).
+- See docs/development_log/2026-10-14-event-sequence-move-reference-validation.md for details.
+
+### Validation gate
+- PASS: implementation/test SHA daa33bb02411173170912eedd037e6dbf1e226f8, Godot Runtime [38522405623](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38522405623), with PASS res://combat/test_event_sequence_validator.gd and RUNTIME_SUITE_PASS tests=54.
+- PASS: documentation-sync SHA d5fcf00d8d2d0e360de3f50f1d597de28e2a2c7b, Godot Runtime [38522641916](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38522641916), completed with PASS res://combat/test_event_sequence_validator.gd and RUNTIME_SUITE_PASS tests=54.
+- This result applies to that exact head; the result-recording docs update must be checked independently. No Web Demo deploy or visual acceptance is claimed.
+
+### Next Agent
+1. Confirm Godot Runtime on the exact head produced by this result-recording update; record the SHA/run in the PR description if it passes.
+2. If new maps are implemented later, introduce explicit map-catalog support instead of letting arbitrary map IDs through.
+3. Keep PR #29 open/unmerged unless the user explicitly authorizes merge. Final character PNG/WebP assets and screenshots remain outstanding.

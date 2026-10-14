@@ -14,6 +14,8 @@ var rumor_button: Button
 var bounty_button: Button
 var ridge_button: Button
 var region_button: Button
+var region_hint_label: Label
+var notes_button: Button
 var bounty_label: Label
 var selected_node_id := ""
 var selected_bounty_id := ""
@@ -108,6 +110,10 @@ func _build_ui() -> void:
 	region_button.custom_minimum_size = Vector2(0, 46)
 	region_button.pressed.connect(_enter_region_exploration)
 	center.add_child(region_button)
+	region_hint_label = Label.new()
+	region_hint_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	region_hint_label.add_theme_font_size_override("font_size", 14)
+	center.add_child(region_hint_label)
 	bounty_button = Button.new()
 	bounty_button.text = "接受悬赏并出战"
 	bounty_button.custom_minimum_size = Vector2(0, 46)
@@ -132,6 +138,12 @@ func _build_ui() -> void:
 	var camp := Button.new(); camp.text = "营地休整"; camp.pressed.connect(_rest_at_camp); footer.add_child(camp)
 	var shop := Button.new(); shop.text = "补给商店"; shop.pressed.connect(func(): get_tree().change_scene_to_file("res://ui/shop.tscn")); footer.add_child(shop)
 	var party := Button.new(); party.text = "队伍编成"; party.pressed.connect(func(): get_tree().change_scene_to_file("res://ui/party_screen.tscn")); footer.add_child(party)
+	notes_button = Button.new()
+	notes_button.name = "RegionNotesButton"
+	notes_button.text = "旅途见闻"
+	notes_button.tooltip_text = "回看已经发现的区域线索"
+	notes_button.pressed.connect(_open_region_notes)
+	footer.add_child(notes_button)
 	var journey := Button.new(); journey.text = "返回行程"; journey.pressed.connect(func(): get_tree().change_scene_to_file("res://ui/journey.tscn")); footer.add_child(journey)
 	var menu := Button.new(); menu.text = "主菜单"; menu.pressed.connect(func(): get_tree().change_scene_to_file("res://ui/main_menu.tscn")); footer.add_child(menu)
 
@@ -151,8 +163,32 @@ func _refresh() -> void:
 	ridge_button.disabled = current != "BLACK_WIND_NORTH_PATH" or not YellowWindRidgeManager.new().is_available(narrative)
 	var region: Dictionary = region_exploration.get_region_for_location(current)
 	region_button.visible = not region.is_empty()
-	region_button.text = "进入区域：%s" % str(region.get("name", ""))
-	region_button.disabled = region.is_empty() or not region_exploration.can_enter(narrative, str(region.get("id", "")))
+	var region_id := str(region.get("id", ""))
+	var progress := region_exploration.get_discovery_progress(narrative, region_id)
+	var discovered_count := int(progress.get("discovered", 0))
+	var total_count := int(progress.get("total", 0))
+	region_button.text = "进入区域：%s · %d/%d" % [
+		str(region.get("name", "")),
+		discovered_count,
+		total_count
+	]
+	var region_block_reason := region_exploration.get_entry_block_reason(narrative, region_id)
+	region_button.disabled = not region_block_reason.is_empty()
+	region_hint_label.visible = not region.is_empty()
+	if not region_block_reason.is_empty():
+		region_hint_label.text = region_block_reason
+	elif bool(progress.get("complete", false)):
+		region_hint_label.text = "本区域线索已全部记录（%d/%d）。可在「旅途见闻」中回看；不会推进西游主线。" % [
+			discovered_count,
+			total_count
+		]
+	else:
+		region_hint_label.text = "可选探索：已记录 %d/%d 条线索，还剩 %d 处可调查；不会推进西游主线。" % [
+			discovered_count,
+			total_count,
+			int(progress.get("remaining", 0))
+		]
+	region_button.tooltip_text = region_block_reason if not region_block_reason.is_empty() else region_hint_label.text
 
 func _render_node(node: Dictionary) -> void:
 	selected_bounty_id = ""
@@ -212,6 +248,10 @@ func _hear_rumor() -> void:
 func _enter_yellow_wind_ridge() -> void:
 	if not YellowWindRidgeManager.new().is_available(narrative): return
 	get_tree().change_scene_to_file("res://ui/yellow_wind_ridge.tscn")
+
+func _open_region_notes() -> void:
+	get_tree().change_scene_to_file("res://ui/region_notes_log.tscn")
+
 
 func _enter_region_exploration() -> void:
 	var current := world.get_current_location(narrative)

@@ -24,17 +24,40 @@ func get_region_for_location(location_id: String) -> Dictionary:
 	return {}
 
 func can_enter(narrative: NarrativeManager, region_id: String) -> bool:
+	return get_entry_block_reason(narrative, region_id).is_empty()
+
+
+## Returns a player-facing reason when a region is locked, or an empty string when available.
+## Keep this as the single source of truth for both the gate and its presentation.
+func get_entry_block_reason(narrative: NarrativeManager, region_id: String) -> String:
 	if narrative == null or not regions.has(region_id):
-		return false
+		return "当前没有可进入的区域探索。"
 	var region: Dictionary = regions[region_id]
-	if str(narrative.state.get_world_state().get("current_location", "")) != str(region.get("location_id", "")):
-		return false
-	if narrative.state.current_global_timeline < int(region.get("required_timeline", 0)):
-		return false
+	var current_location := str(narrative.state.get_world_state().get("current_location", ""))
+	if current_location != str(region.get("location_id", "")):
+		return "请先前往%s，再进入区域探索。" % str(region.get("name", region_id))
+	var required_timeline := int(region.get("required_timeline", 0))
+	if narrative.state.current_global_timeline < required_timeline:
+		return "区域尚未开放：需要旅途推进至 T%03d（当前 T%03d）。" % [
+			required_timeline,
+			narrative.state.current_global_timeline
+		]
 	for milestone in region.get("required_milestones", []):
-		if str(milestone) not in narrative.state.completed_milestones:
-			return false
-	return true
+		var milestone_id := str(milestone)
+		if milestone_id not in narrative.state.completed_milestones:
+			return "区域尚未开放：%s。" % _milestone_requirement_label(milestone_id)
+	return ""
+
+
+func _milestone_requirement_label(milestone_id: String) -> String:
+	var labels := {
+		"WUKONG_RECRUITED": "需要先让孙悟空加入取经队伍",
+		"BAI_LONGMA_RECRUITED": "需要先让白龙马加入取经队伍",
+		"ZHU_BAJIE_RECRUITED": "需要先让猪八戒加入取经队伍",
+		"SHA_WUJING_RECRUITED": "需要先让沙悟净加入取经队伍",
+		"PARTY_FULL": "需要先集结完整的五人队伍"
+	}
+	return str(labels.get(milestone_id, "需要先完成必要的旅途事件"))
 
 func get_points(region_id: String) -> Array[Dictionary]:
 	var result: Array[Dictionary] = []
@@ -50,6 +73,25 @@ func get_point(region_id: String, point_id: String) -> Dictionary:
 			return point
 	return {}
 
+## Returns the discovery count for a region without mutating NarrativeState.
+func get_discovery_progress(narrative: NarrativeManager, region_id: String) -> Dictionary:
+	var points := get_points(region_id)
+	var discovered_count := 0
+	if narrative != null:
+		var discovered_ids := get_discovered_point_ids(narrative)
+		for point in points:
+			var point_id := str(point.get("id", ""))
+			if point_id != "" and point_id in discovered_ids:
+				discovered_count += 1
+	var total_count := points.size()
+	return {
+		"discovered": discovered_count,
+		"total": total_count,
+		"remaining": maxi(0, total_count - discovered_count),
+		"complete": total_count > 0 and discovered_count >= total_count,
+	}
+
+
 func get_discovered_point_ids(narrative: NarrativeManager) -> Array[String]:
 	var result: Array[String] = []
 	if narrative == null:
@@ -57,6 +99,31 @@ func get_discovered_point_ids(narrative: NarrativeManager) -> Array[String]:
 	for point_id in narrative.state.get_world_state().get("discovered_region_points", []):
 		result.append(str(point_id))
 	return result
+
+## Returns a read-only journal projection of discovered clues across every region.
+## Undiscovered points are deliberately omitted so the journal does not reveal hidden content.
+func get_discovered_notes(narrative: NarrativeManager) -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	if narrative == null:
+		return result
+	var discovered_ids := get_discovered_point_ids(narrative)
+	if discovered_ids.is_empty():
+		return result
+	for region_value in regions.values():
+		if not region_value is Dictionary:
+			continue
+		var region: Dictionary = region_value
+		var region_id := str(region.get("id", ""))
+		for point in get_points(region_id):
+			var point_id := str(point.get("id", ""))
+			if point_id == "" or point_id not in discovered_ids:
+				continue
+			var note := point.duplicate(true)
+			note["region_id"] = region_id
+			note["region_name"] = str(region.get("name", region_id))
+			result.append(note)
+	return result
+
 
 func is_discovered(narrative: NarrativeManager, point_id: String) -> bool:
 	return point_id in get_discovered_point_ids(narrative)
