@@ -41,15 +41,27 @@ func _run_smoke() -> void:
 
 	var fixture := NarrativeManager.new()
 	_record(fixture.start_new_game("WUKONG"), "Wukong should initialize the region exploration fixture")
+	_record(fixture.encounter_character("TANG"), "Tang should be present in the canonical shared-party fixture")
+	_record(fixture.encounter_character("WUKONG"), "Wukong should be present before the first shared journey region")
 	fixture.state.record_milestone("WUKONG_RECRUITED", 100)
+	fixture.state.mark_route_complete("WUKONG")
 	fixture.state.current_global_timeline = 105
 	fixture.state.set_shared_chapter("SHARED-03-EAGLE-SORROW")
+	fixture.state.completed_chapters = [
+		"WUKONG-ORIGIN",
+		"SHARED-01-FIVE-ELEMENTS",
+		"SHARED-02-EARLY-PILGRIMAGE"
+	]
 	fixture.state.completed_shared_chapters = [
 		"SHARED-01-FIVE-ELEMENTS",
 		"SHARED-02-EARLY-PILGRIMAGE"
 	]
 	fixture.state.add_world_node_visit("EAGLE_SORROW")
 	_record(region_manager.can_enter(fixture, "EAGLE_SORROW"), "the optional Eagle Sorrow region should be available at timeline 105")
+	var early_timeline := NarrativeManager.new()
+	early_timeline.state = NarrativeState.from_dict(fixture.serialize())
+	early_timeline.state.current_global_timeline = 104
+	_record(not region_manager.can_enter(early_timeline, "EAGLE_SORROW"), "region entry must respect its timeline gate")
 	var wrong_location := NarrativeManager.new()
 	wrong_location.state = NarrativeState.from_dict(fixture.serialize())
 	wrong_location.state.add_world_node_visit("FIVE_ELEMENTS_MOUNTAIN")
@@ -59,6 +71,7 @@ func _run_smoke() -> void:
 	var expected_chapter := fixture.state.current_shared_chapter
 	var expected_timeline: int = fixture.state.current_global_timeline
 	var expected_completed := fixture.state.completed_shared_chapters.duplicate(true)
+	var expected_completed_chapters := fixture.state.completed_chapters.duplicate(true)
 	var expected_roster := fixture.state.recruited_characters.duplicate(true)
 
 	var map_scene := load("res://ui/world_map.tscn") as PackedScene
@@ -89,6 +102,7 @@ func _run_smoke() -> void:
 				_record(region_screen.narrative.state.current_shared_chapter == expected_chapter, "region exploration must preserve the Shared chapter pointer")
 				_record(region_screen.narrative.state.current_global_timeline == expected_timeline, "region exploration must not advance the global timeline")
 				_record(region_screen.narrative.state.completed_shared_chapters == expected_completed, "region exploration must preserve completed Shared chapter history")
+				_record(region_screen.narrative.state.completed_chapters == expected_completed_chapters, "region exploration must preserve completed chapter history")
 				_record(region_screen.narrative.state.recruited_characters == expected_roster, "region exploration must not change recruited characters")
 
 				var reloaded := NarrativeManager.new()
@@ -156,6 +170,8 @@ func _run_smoke() -> void:
 			_record(retry_point_id in failing_manager.state.get_world_state().get("discovered_region_points", []), "a successful retry should commit the discovery")
 			_record(isolated.status_label.text.find("记录了断裂木牌的方位") >= 0, "successful interaction should show the point's authored feedback")
 			_record(failing_manager.state.current_shared_chapter == expected_chapter, "the retry must preserve the canonical Shared chapter")
+			_record(failing_manager.state.completed_shared_chapters == expected_completed, "the retry must preserve completed Shared history")
+			_record(failing_manager.state.recruited_characters == expected_roster, "the retry must preserve the recruited roster")
 			_record(failing_manager.state.current_global_timeline == expected_timeline, "the retry must preserve the global timeline")
 
 	var final_scene: Node = current_scene
