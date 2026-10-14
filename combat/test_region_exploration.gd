@@ -19,11 +19,22 @@ class IsolatedRegionExplorationScreen:
 		_initialize_region_screen(false)
 
 var failures: Array[String] = []
+var current_stage := "initialization"
+var test_finished := false
 
 func _initialize() -> void:
+	var watchdog := create_timer(45.0)
+	watchdog.timeout.connect(_on_watchdog_timeout)
 	await _run_smoke()
 
+func _on_watchdog_timeout() -> void:
+	if test_finished:
+		return
+	push_error("REGION_EXPLORATION_TEST_TIMEOUT stage=%s" % current_stage)
+	quit(124)
+
 func _run_smoke() -> void:
+	current_stage = "start"
 	print("REGION_EXPLORATION_STAGE 00 start")
 	var save_path: String = NarrativeSave.SAVE_PATH
 	var encounter_path: String = BountyEncounterState.PATH
@@ -68,6 +79,7 @@ func _run_smoke() -> void:
 	wrong_location.state.add_world_node_visit("FIVE_ELEMENTS_MOUNTAIN")
 	_record(not region_manager.can_enter(wrong_location, "EAGLE_SORROW"), "region entry must be bound to the current WorldMap location")
 	_record(fixture.save(), "the starting region state should be persisted")
+	current_stage = "fixture_saved"
 	print("REGION_EXPLORATION_STAGE 01 fixture_saved")
 
 	var expected_chapter := fixture.state.current_shared_chapter
@@ -84,12 +96,14 @@ func _run_smoke() -> void:
 		root.add_child(world_map)
 		current_scene = world_map
 		await process_frame
+		current_stage = "world_map_ready"
 		print("REGION_EXPLORATION_STAGE 02 world_map_ready")
 		_record(world_map.region_button != null and world_map.region_button.visible, "WorldMap should show the region entry at Eagle Sorrow")
 		_record(world_map.region_button != null and not world_map.region_button.disabled, "WorldMap region entry should be enabled after the timeline and location checks")
 		if world_map.region_button != null:
 			world_map.region_button.emit_signal("pressed")
 			var region_screen: RegionExplorationScreen = await _wait_for_region()
+			current_stage = "first_region_scene_wait_finished"
 			print("REGION_EXPLORATION_STAGE 03 region_scene_wait_finished")
 			_record(region_screen != null, "the production region-entry button should open the RegionExploration scene")
 			if region_screen != null:
@@ -109,6 +123,7 @@ func _run_smoke() -> void:
 				_record(region_screen.narrative.state.completed_chapters == expected_completed_chapters, "region exploration must preserve completed chapter history")
 				_record(region_screen.narrative.state.recruited_characters == expected_roster, "region exploration must not change recruited characters")
 
+				current_stage = "first_point_saved"
 				print("REGION_EXPLORATION_STAGE 04 first_point_saved")
 				var reloaded := NarrativeManager.new()
 				_record(reloaded.load(), "the region discovery should leave a loadable save")
@@ -118,6 +133,7 @@ func _run_smoke() -> void:
 
 				region_screen.return_button.emit_signal("pressed")
 				world_map = await _wait_for_world_map()
+				current_stage = "world_map_returned"
 				print("REGION_EXPLORATION_STAGE 05 world_map_returned")
 				_record(world_map != null, "the production Return to World Map control should work")
 				if world_map != null:
@@ -125,6 +141,7 @@ func _run_smoke() -> void:
 					_record(world_map.region_button.visible and not world_map.region_button.disabled, "the same region should remain available after returning")
 					world_map.region_button.emit_signal("pressed")
 					var reopened: RegionExplorationScreen = await _wait_for_region()
+					current_stage = "region_reopened"
 					print("REGION_EXPLORATION_STAGE 06 region_reopened")
 					_record(reopened != null, "the region should be reopenable after scene transition")
 					if reopened != null:
@@ -135,6 +152,7 @@ func _run_smoke() -> void:
 
 	var persisted := NarrativeManager.new()
 	_record(persisted.load(), "the successful production region pass should remain loadable for the rollback case")
+	current_stage = "persisted_reload"
 	print("REGION_EXPLORATION_STAGE 07 persisted_reload")
 	var failing_manager := ToggleSaveNarrativeManager.new()
 	failing_manager.state = NarrativeState.from_dict(persisted.serialize())
@@ -152,6 +170,7 @@ func _run_smoke() -> void:
 	root.add_child(isolated)
 	current_scene = isolated
 	await process_frame
+	current_stage = "isolated_ready"
 	print("REGION_EXPLORATION_STAGE 08 isolated_ready")
 	_record(isolated.region_id == "EAGLE_SORROW", "the injected screen should initialize against the same current region")
 	_record(isolated.point_list != null, "the injected screen should build its point list")
@@ -192,8 +211,10 @@ func _run_smoke() -> void:
 	_restore_file(save_path, save_backup)
 	_restore_file(encounter_path, encounter_backup)
 	_restore_file(resume_path, resume_backup)
+	current_stage = "cleanup_complete"
 	print("REGION_EXPLORATION_STAGE 09 cleanup_complete")
 
+	test_finished = true
 	if failures.is_empty():
 		print("REGION_EXPLORATION_SCENE_TREE_PASS")
 		quit(0)
