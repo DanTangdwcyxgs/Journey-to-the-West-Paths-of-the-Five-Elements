@@ -677,6 +677,11 @@ This keeps the playable prototype stable while the architecture evolves toward m
 Origin/Shared EventSequence 的 `MOVE` 是主线世界位置变更，不只是演出提示。Journey 在移动过渡结束后必须通过 `WorldActionService.apply_move()` 更新 NarrativeState 的当前位置、已访问和已发现节点，并在推进 EventSession 游标前成功保存。若移动记录无效或保存失败，不得推进到后续剧情 action；保存失败必须恢复 pre-MOVE NarrativeState，让同一 MOVE 可重试。WorldMap 的自由旅行继续由 `WorldMapManager.can_visit()/visit()` 控制时间线、里程碑与连接关系。
 
 
+## EventSequence MOVE Cross-Reference Contract
+
+- EventSequenceValidator.validate() checks every executable move node against the current WorldMap catalog: map_id must be WORLD_MAP and marker_id must resolve to a declared data/world/world_map.json node.
+- The runtime WorldActionService.apply_move() trusts the action payload and uses marker_id as the persisted location; a missing marker can otherwise fall back to the map identifier, which is not a valid location ID. Content CI therefore rejects missing map/marker references and unknown markers before a sequence is loaded.
+- If a separate map catalog is introduced later, extend the validation contract with an explicit map registry; do not accept arbitrary map_id strings or silently persist map IDs as locations.
 ## Region Exploration Runtime Contract (2026-10-14)
 
 - Region definitions live in `data/world/regions.json`; content IDs are stable and unique, and each region declares its map location, timeline gate, required milestones and points of interest.
