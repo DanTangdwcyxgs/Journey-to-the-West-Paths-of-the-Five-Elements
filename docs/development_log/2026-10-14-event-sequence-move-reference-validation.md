@@ -24,10 +24,10 @@ EventRunner emits map_id and marker_id as a MOVE action, and WorldActionService.
 
 ## Validation
 - PASS: implementation/test head daa33bb02411173170912eedd037e6dbf1e226f8, Godot Runtime [38522405623](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38522405623), completed successfully. Logs contain PASS res://combat/test_event_sequence_validator.gd and RUNTIME_SUITE_PASS tests=54.
-- Exact-head Runtime after the documentation-only synchronization is pending. Do not reuse the implementation run to claim verification of the later documentation commit.
+- PASS: documentation-sync head d5fcf00d8d2d0e360de3f50f1d597de28e2a2c7b, Godot Runtime [38522641916](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38522641916), completed successfully. Logs contain PASS res://combat/test_event_sequence_validator.gd and RUNTIME_SUITE_PASS tests=54. The subsequent result-recording documentation commit still needs its own exact-head Runtime check.
 - No Web Demo deployment, final character PNG/WebP delivery, or screenshot acceptance is claimed.
 
 ## Next step / Handoff
-1. Inspect the exact current PR-head Runtime and require the full 54/54 pass.
+1. Inspect the exact current PR-head Runtime after this result-recording update and require the full 54/54 pass.
 2. Preserve the rule that MOVE only names resolvable locations; when adding new maps later, add an explicit catalog rather than weakening this validator.
 3. Keep PR #29 open/unmerged without explicit permission. Final character art and screenshot review remain separate.
