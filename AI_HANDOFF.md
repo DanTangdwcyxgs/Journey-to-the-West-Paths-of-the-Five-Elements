@@ -660,7 +660,7 @@ Runtime has now verified the post-Shared-02 detour and that Journey resumes at S
 
 ### Validation Gate
 - Previous verified docs-sync head 1de4a24112eb26a2bc8d36f44d2f86340776eaff passed Runtime [38503657814](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38503657814), RUNTIME_SUITE_PASS tests=54.
-- This batch's implementation head still requires exact-SHA Runtime validation. No Web Demo deploy, screenshot acceptance, or final character assets are claimed.
+- PASS: implementation/test SHA `26d93318759d801f364526cdeae295a978c223d1`, Runtime [38520530322](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38520530322), `PASS res://combat/test_region_exploration.gd`, `RUNTIME_SUITE_PASS tests=54`. The documentation-sync head must be checked separately.
 
 ### Next Agent
 1. Check the exact implementation Runtime and ensure combat/test_region_exploration.gd passes with RUNTIME_SUITE_PASS tests=54.

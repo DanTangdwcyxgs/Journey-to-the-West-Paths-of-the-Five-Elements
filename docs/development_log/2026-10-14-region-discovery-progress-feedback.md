@@ -26,10 +26,10 @@ Make optional exploration progress understandable after the player leaves a regi
 
 ## Validation
 - The previous exact docs-sync head 1de4a24112eb26a2bc8d36f44d2f86340776eaff passed Runtime [38503657814](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38503657814) at 54/54.
-- Runtime for the new progress-feedback implementation is pending; the latest exact branch-head result must be checked before this entry is marked passed.
+- PASS: implementation/test head `26d93318759d801f364526cdeae295a978c223d1`, Godot Runtime [38520530322](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38520530322), completed successfully. Logs contain `PASS res://combat/test_region_exploration.gd` and `RUNTIME_SUITE_PASS tests=54`. The documentation-sync head must be checked separately.
 - No Web Demo deploy, final character art delivery, or screenshot acceptance is claimed.
 
 ## Next step / Handoff
-1. Verify the latest exact-head Godot Runtime and check the region progression assertions.
-2. Record the implementation/runtime SHA and run ID, then synchronize documentation and verify that new head too.
+1. Check the documentation-sync commit's exact-head Godot Runtime before marking this batch fully verified.
+2. Preserve the derived-progress and no-mainline-progression contract.
 3. Keep PR #29 open and unmerged unless explicitly authorized.
