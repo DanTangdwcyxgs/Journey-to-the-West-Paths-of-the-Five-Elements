@@ -647,3 +647,12 @@ Wukong、Tang、Longma、Bajie、Wujing 五条 Origin Route 均已完成首轮 S
 - Kept environmental SVG layer-marker checks and documented that automated loadability is not visual acceptance. No irrelevant status infographic was added to game assets.
 - Added `docs/development_log/2026-10-12-art-catalog-runtime-contract.md` and updated the development-log index. Runtime status is pending exact-head CI; previous successful runs do not validate this new test.
 - Next: inspect exact-head Actions, then continue non-art vertical-slice robustness work while six final transparent character assets remain pending generation.
+
+
+### Round 73 — 2026-10-14：Shared-02 Optional Exploration Integration Rebase
+- 按负责人授权，先合并已有 Godot Runtime 通过的 PR #25：squash commit 9c8ca5742ef32af72d480c06e8f5a6e20196e12a。该变更把鹰愁涧地图节点与黄牙传闻的可选开放时间调整为 timeline 105，同时保留 Shared-03 的 canonical 主线里程碑 110。
+- 原 PR #26 head cefaf8e5283accf5c8d9808f1698e75ad2363731 的精确 SHA Runtime 失败；首个失败断言是 Shared-02 后鹰愁涧应可达。失败发生时 PR #26 仍基于旧 main，未包含 PR #25 的 timeline 修正，因此不能通过放松断言来处理。
+- 已将原有生产 SceneTree smoke 改动重放到 PR #25 合并后的 main 基点，并继续覆盖同存档 Shared-02 → WorldMap → 鹰愁涧 → 黄牙传闻 → 返回 Journey → Shared-03 / 白龙马战斗；不改变固定世界时间线、招募队伍或章节历史。
+- PR #25 合并后的 main 精确 SHA 9c8ca5742ef32af72d480c06e8f5a6e20196e12a 的 Runtime run [38494818772](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38494818772) 实际输出 RUNTIME_SUITE_PASS tests=51；Web Demo run [38494818783](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38494818783) 的 build、export、Pages artifact 上传与 deploy 全部通过。
+- Rebased implementation SHA f63d9d8a5001fa783ddcd4e467f9e10942ea7f0d 的 Runtime run [38495061187](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38495061187) 通过，日志同时确认 PASS res://combat/test_shared_opening_to_black_wind_smoke.gd 和 RUNTIME_SUITE_PASS tests=51。后续文档同步会产生新 head，合并前仍须确认最新 head 的 exact-SHA Runtime。
+- 下一步：检查 PR 分支同步后的最新精确 SHA Runtime 日志；通过后将 PR #26 标为 ready 并合并，再确认新 main SHA 的 Runtime 与 Web Demo build/export/deploy。随后继续区域进入/互动探索与正式角色 PNG/WebP 评审。

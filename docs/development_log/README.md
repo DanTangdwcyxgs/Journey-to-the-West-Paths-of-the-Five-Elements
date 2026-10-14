@@ -10,6 +10,8 @@
 
 ## 最新记录
 
+- [2026-10-12 — Shared-02 Optional Exploration Vertical-Slice Smoke (rebase update 2026-10-14)](2026-10-12-shared02-optional-exploration-vertical-slice-smoke.md)
+
 - [`2026-10-12 — Runtime Art Catalog Contract`](2026-10-12-art-catalog-runtime-contract.md)
 
 - [`2026-10-12 — Character Asset Source Audit and Delivery Gate`](2026-10-12-character-asset-source-audit.md)
