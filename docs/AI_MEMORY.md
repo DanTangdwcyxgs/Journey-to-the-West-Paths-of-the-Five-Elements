@@ -718,5 +718,5 @@ Wukong、Tang、Longma、Bajie、Wujing 五条 Origin Route 均已完成首轮 S
 - 新增 RegionExplorationManager.get_discovery_progress()，仅由 regions.json 点列表与既有 NarrativeState.world_state.discovered_region_points 派生 discovered/total/remaining/complete，不引入新存档字段、不更改章节状态。
 - 扩展 combat/test_region_exploration.gd，覆盖 0/3、1/3、3/3、回到世界地图仍显示已保存进度，以及“区域线索完成”不等于“主线章节完成”。Runtime suite 项数仍为 54。
 - 文档改动包括 docs/architecture.md、docs/development_log/README.md、本开发日志、docs/AI_MEMORY.md 与 AI_HANDOFF.md。
-- 实现/测试 SHA `26d93318759d801f364526cdeae295a978c223d1` 的 Godot Runtime [38520530322](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38520530322) 完成成功，日志含 `PASS res://combat/test_region_exploration.gd` 与 `RUNTIME_SUITE_PASS tests=54`。文档同步 head 仍需单独做 exact-SHA Runtime 验证。没有宣称 Web Demo 部署、美术资产完成或截图验收完成。
-- 下一步：检查此实现头的 Godot Runtime；若失败按日志修复，再记录 exact SHA/run 并检查 docs-sync head。
+- 实现/测试 SHA `26d93318759d801f364526cdeae295a978c223d1` 的 Godot Runtime [38520530322](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38520530322) 完成成功，日志含 `PASS res://combat/test_region_exploration.gd` 与 `RUNTIME_SUITE_PASS tests=54`。文档同步 SHA `6bb1d0fd7e055736fcdb6f86541a544ac5b7c6a7` 的 Runtime [38520671947](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38520671947) 也通过，日志含 `PASS res://combat/test_region_exploration.gd` 与 `RUNTIME_SUITE_PASS tests=54`。没有宣称 Web Demo 部署、美术资产完成或截图验收完成。
+- 下一步：回看交接文档中剩余的 Vertical Slice 高优先级缺口，优先选不依赖图像生成、能由真实 Runtime 覆盖的工作；正式 PNG/WebP 与截图验收保持独立待办。

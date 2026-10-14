@@ -660,9 +660,9 @@ Runtime has now verified the post-Shared-02 detour and that Journey resumes at S
 
 ### Validation Gate
 - Previous verified docs-sync head 1de4a24112eb26a2bc8d36f44d2f86340776eaff passed Runtime [38503657814](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38503657814), RUNTIME_SUITE_PASS tests=54.
-- PASS: implementation/test SHA `26d93318759d801f364526cdeae295a978c223d1`, Runtime [38520530322](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38520530322), `PASS res://combat/test_region_exploration.gd`, `RUNTIME_SUITE_PASS tests=54`. The documentation-sync head must be checked separately.
+- PASS: implementation/test SHA `26d93318759d801f364526cdeae295a978c223d1`, Runtime [38520530322](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38520530322), and docs-sync head `6bb1d0fd7e055736fcdb6f86541a544ac5b7c6a7`, Runtime [38520671947](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38520671947), both include `PASS res://combat/test_region_exploration.gd` and `RUNTIME_SUITE_PASS tests=54`.
 
 ### Next Agent
-1. Check the exact implementation Runtime and ensure combat/test_region_exploration.gd passes with RUNTIME_SUITE_PASS tests=54.
-2. After recording its SHA/run, update the log and check the documentation-sync head.
-3. Keep PR #29 open and unmerged without explicit user authorization. Final character PNG/WebP assets and screenshot review remain separate.
+1. The progress-feedback implementation and its docs-sync head are both green at 54/54.
+2. Re-read the main Vertical Slice task list and choose the next non-art gap with a clear runtime-testable acceptance contract; don't add another region unless the canonical route justifies it.
+3. Keep PR #29 open/unmerged absent explicit approval. Final transparent character PNG/WebP assets and visual screenshot acceptance remain separate deliverables.
