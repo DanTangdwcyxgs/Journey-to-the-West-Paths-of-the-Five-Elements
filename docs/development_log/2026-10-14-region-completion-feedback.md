@@ -25,7 +25,7 @@ Make the completed state as clear inside the region screen as it already is on W
 - `AI_HANDOFF.md`
 
 ## Validation
-- Exact-head Godot Runtime CI for the resulting commit is pending; do not claim this change is validated until the run completes and the logs show `PASS res://combat/test_region_exploration.gd` plus `RUNTIME_SUITE_PASS tests=54`.
+- PASS: exact implementation/documentation head `43951fa76b45e37dee5f8ed5902b3edc17a55227`, Godot Runtime [38521895114](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38521895114), completed successfully. Logs contain `PASS res://combat/test_region_exploration.gd` and `RUNTIME_SUITE_PASS tests=54`. This evidence applies to that exact SHA; the following result-recording documentation commit must be checked independently.
 - No Web Demo deployment, final character-art delivery, or actual screenshot acceptance is claimed.
 
 ## Next step / Handoff
