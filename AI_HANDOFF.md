@@ -694,9 +694,10 @@ Runtime has now verified the post-Shared-02 detour and that Journey resumes at S
 
 ### Validation gate
 - PASS: implementation/test SHA daa33bb02411173170912eedd037e6dbf1e226f8, Godot Runtime [38522405623](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38522405623), with PASS res://combat/test_event_sequence_validator.gd and RUNTIME_SUITE_PASS tests=54.
-- New documentation-sync head must be checked independently. No Web Demo deploy or visual acceptance is claimed.
+- PASS: documentation-sync SHA d5fcf00d8d2d0e360de3f50f1d597de28e2a2c7b, Godot Runtime [38522641916](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38522641916), completed with PASS res://combat/test_event_sequence_validator.gd and RUNTIME_SUITE_PASS tests=54.
+- This result applies to that exact head; the result-recording docs update must be checked independently. No Web Demo deploy or visual acceptance is claimed.
 
 ### Next Agent
-1. Confirm Godot Runtime on the latest documentation-sync head; record the exact SHA and run.
+1. Confirm Godot Runtime on the exact head produced by this result-recording update; record the SHA/run in the PR description if it passes.
 2. If new maps are implemented later, introduce explicit map-catalog support instead of letting arbitrary map IDs through.
 3. Keep PR #29 open/unmerged unless the user explicitly authorizes merge. Final character PNG/WebP assets and screenshots remain outstanding.
