@@ -28,7 +28,7 @@ Make 「旅途见闻」 reflect the order in which the player actually discovere
 ## Validation
 - Implementation commit: `525e069be678af344b723297c2f23e6f15c81379`.
 - Regression commit: `bbdf5ee29f20157bc4f83c06380245ef71bf3cdf`.
-- Godot Runtime for the regression head was triggered as run [42942960838](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42942960838); its status was **queued** when this record was written. This is not a Runtime pass. Recheck the final documentation-sync head and record its exact completed result before considering the batch validated.
+- PASS: the regression head `bbdf5ee29f20157bc4f83c06380245ef71bf3cdf` completed Godot Runtime run [42942960838](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42942960838). The complete code + documentation sync head `6d71dbee1539dd7689a11ab1ec7c9c372c2cc7d5` also passed Runtime run [42943064424](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42943064424); its job log confirms `PASS res://combat/test_region_notes_log.gd` and `RUNTIME_SUITE_PASS tests=54`. This validates the implementation and all documentation recorded above.
 - No Web Demo deploy, final character PNG/WebP delivery, or screenshot acceptance is claimed.
 
 ## Known limitations
