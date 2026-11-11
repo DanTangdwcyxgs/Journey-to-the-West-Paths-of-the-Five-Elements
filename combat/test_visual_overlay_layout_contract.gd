@@ -15,6 +15,20 @@ const ORIGIN_CANVASES: Dictionary = {
 static func run_all() -> Dictionary:
 	var failures: Array[String] = []
 
+	var active_origin := VisualOverlay.build_presentation_signature("res://ui/journey.tscn", "WUKONG", NarrativeState.ROUTE_IN_PROGRESS)
+	var completed_origin := VisualOverlay.build_presentation_signature("res://ui/journey.tscn", "WUKONG", NarrativeState.ROUTE_COMPLETE)
+	if active_origin == completed_origin:
+		failures.append("Journey overlay signature does not change when the starting route completes")
+
+	var alternate_hero := VisualOverlay.build_presentation_signature("res://ui/journey.tscn", "TANG", NarrativeState.ROUTE_IN_PROGRESS)
+	if active_origin == alternate_hero:
+		failures.append("Journey overlay signature does not change when the starting character changes")
+
+	var main_menu_before := VisualOverlay.build_presentation_signature("res://ui/main_menu.tscn", "WUKONG", NarrativeState.ROUTE_IN_PROGRESS)
+	var main_menu_after := VisualOverlay.build_presentation_signature("res://ui/main_menu.tscn", "WUKONG", NarrativeState.ROUTE_COMPLETE)
+	if main_menu_before != main_menu_after:
+		failures.append("Non-Journey overlay signature should depend only on scene path")
+
 	for raw_id in ORIGIN_CANVASES.keys():
 		var character_id: String = str(raw_id)
 		var canvas: Vector2i = ORIGIN_CANVASES[character_id]
