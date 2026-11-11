@@ -688,3 +688,13 @@ Wukong、Tang、Longma、Bajie、Wujing 五条 Origin Route 均已完成首轮 S
 - 扩展 `combat/test_visual_asset_contract.gd`，让 Runtime 自动校验六个角色实际加载纹理的画布尺寸。更新 AI_ASSET_DELIVERY_SPEC、AI_ASSET_PIPELINE、视觉参考 README、开发日志索引与 AI_HANDOFF。
 - 今日没有产出可验收的 final PNG/WebP；首个正式角色生成安排为 2026-11-12 的 Wukong。未声称图像资产完成、Web Demo 部署或实际截图验收。
 - PASS：精确文档/代码 head `5132ca55735cecf3f32b3c6ef2f402a954dd67c6` 的 Godot Runtime [42944345417](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42944345417) 成功，日志确认 `PASS res://combat/test_visual_asset_contract.gd` 与 `RUNTIME_SUITE_PASS tests=52`。后续文档同步如触发新 workflow，仍需按最新 SHA 再核对。
+
+
+### Round 78 — 2026-11-11: Four-View Character Turnaround Strategy
+- 复核 ui/visual_overlay.gd 和 ui/character_portrait.gd：当前角色资源在主菜单、旅途、战斗及角色卡中以静态纹理显示，当前运行时没有按方向切换的角色动画帧。
+- 决定将每个角色日的一次生成调用用于同一角色的一张 2×2 四视图设定图，顺时针视角为左上正面 3/4（当前游戏主视图）、右上右侧面、右下背面 3/4、左下左侧面；四格必须完整全身且保持同一套设计。
+- 原始设定图存入 assets/art/source_sheets/characters/<id>_turnaround.png；仅将左上主视角裁切为 assets/art/characters/final/<id>.png。其余三个视角保留作未来方向素材、动画及设计参考，不直接进入运行时。
+- 精确尺寸合同只作用于最终游戏裁切：Wukong/Tang/Bajie/Wujing 128×192，Longma 160×128，Yellow Wind King 144×192。保持比例，使用 nearest-neighbor，不将四个方向压进单张运行时纹理。
+- 更新 AI_ART_PRODUCTION_SCHEDULE、AI_ASSET_DELIVERY_SPEC、AI_ASSET_PIPELINE、视觉参考索引、开发日志和 AI_HANDOFF。详细决策见 docs/development_log/2026-11-11-four-view-character-turnaround-strategy.md。
+- 今日 2026-11-11 的图像生成额度已被排期海报消耗；本轮没有调用 ImageGen，也没有接受任何正式角色美术。首个角色四视图生成仍为 2026-11-12 Wukong。
+- 文档策略修改不改运行时代码；此前 visual-asset contract 的 52/52 Runtime 结果不自动代表新文档 head 已验证，必须检查本次确切分支 head 的 Actions。
