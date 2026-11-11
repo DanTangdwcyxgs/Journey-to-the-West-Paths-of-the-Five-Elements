@@ -101,6 +101,7 @@ func get_discovered_point_ids(narrative: NarrativeManager) -> Array[String]:
 	return result
 
 ## Returns a read-only journal projection of discovered clues across every region.
+## The persisted discovery array is the player's actual discovery order; catalog order must not replace it.
 ## Undiscovered points are deliberately omitted so the journal does not reveal hidden content.
 func get_discovered_notes(narrative: NarrativeManager) -> Array[Dictionary]:
 	var result: Array[Dictionary] = []
@@ -109,19 +110,34 @@ func get_discovered_notes(narrative: NarrativeManager) -> Array[Dictionary]:
 	var discovered_ids := get_discovered_point_ids(narrative)
 	if discovered_ids.is_empty():
 		return result
-	for region_value in regions.values():
-		if not region_value is Dictionary:
+	for discovered_id in discovered_ids:
+		var point_id := str(discovered_id)
+		if point_id == "":
 			continue
-		var region: Dictionary = region_value
-		var region_id := str(region.get("id", ""))
-		for point in get_points(region_id):
-			var point_id := str(point.get("id", ""))
-			if point_id == "" or point_id not in discovered_ids:
+		var already_added := false
+		for note in result:
+			if str(note.get("id", "")) == point_id:
+				already_added = true
+				break
+		if already_added:
+			continue
+		for region_value in regions.values():
+			if not region_value is Dictionary:
 				continue
-			var note := point.duplicate(true)
-			note["region_id"] = region_id
-			note["region_name"] = str(region.get("name", region_id))
-			result.append(note)
+			var region: Dictionary = region_value
+			var region_id := str(region.get("id", ""))
+			var found_point := false
+			for point in get_points(region_id):
+				if str(point.get("id", "")) != point_id:
+					continue
+				var note := point.duplicate(true)
+				note["region_id"] = region_id
+				note["region_name"] = str(region.get("name", region_id))
+				result.append(note)
+				found_point = true
+				break
+			if found_point:
+				break
 	return result
 
 
