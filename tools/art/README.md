@@ -49,4 +49,4 @@ The script does not edit or delete the input. It refuses to overwrite either des
 python -m unittest discover -s tools/art -p 'test_*.py' -v
 ```
 
-The tests cover source preservation, isolation of the primary view, presence/edge-safety of all four quadrants, target dimensions, aspect-ratio preservation, bottom alignment, real transparency, invalid sheets, and overwrite protection.
+The 12 tests cover source preservation, isolation of the primary view, presence/edge-safety of all four quadrants, target dimensions, aspect-ratio preservation, bottom alignment, real transparency, invalid sheets, and overwrite protection.
