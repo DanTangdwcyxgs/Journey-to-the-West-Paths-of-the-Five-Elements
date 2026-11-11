@@ -35,7 +35,7 @@ Create a reliable, one-image-per-day art-production process for the project's fi
 
 ## Validation
 - Runtime test change adds a size assertion against the currently selected texture for all six character IDs. Existing SVG fallbacks have the documented target dimensions.
-- Godot Runtime has not yet been checked for this branch head at the time of this record. The exact branch-head workflow must complete successfully before this change is reported as validated.
+- PASS: exact code + documentation head `5132ca55735cecf3f32b3c6ef2f402a954dd67c6`, Godot Runtime [42944345417](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42944345417), completed successfully. The job log confirms `PASS res://combat/test_visual_asset_contract.gd` and `RUNTIME_SUITE_PASS tests=52`. Any later documentation-only head must be checked against its own exact Runtime run.
 - No final art asset, Web Demo deployment, or in-game screenshot acceptance is claimed.
 
 ## Known limitations
