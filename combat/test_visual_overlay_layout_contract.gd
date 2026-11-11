@@ -12,8 +12,30 @@ const ORIGIN_CANVASES: Dictionary = {
 	"LONGMA": Vector2i(160, 128),
 }
 
+const SCENE_STAGE_EXPECTATIONS: Dictionary = {
+	"res://ui/main_menu.tscn": "main_menu",
+	"res://ui/journey.tscn": "journey",
+	"res://ui/battle_ui.tscn": "battle",
+	"res://ui/world_map.tscn": "world_map",
+	"res://ui/yellow_wind_ridge.tscn": "yellow_wind",
+	"res://ui/yellow_wind_cave.tscn": "yellow_wind",
+	"res://ui/bounty_prep.tscn": "",
+	"res://ui/camp.tscn": "",
+	"res://ui/party_screen.tscn": "",
+	"res://ui/preparation.tscn": "",
+	"res://ui/region_exploration.tscn": "",
+	"res://ui/shop.tscn": "",
+}
+
 static func run_all() -> Dictionary:
 	var failures: Array[String] = []
+
+	for raw_scene_path in SCENE_STAGE_EXPECTATIONS.keys():
+		var scene_path: String = str(raw_scene_path)
+		var expected_stage: String = str(SCENE_STAGE_EXPECTATIONS[scene_path])
+		var actual_stage: String = VisualOverlay.stage_kind_for_scene(scene_path)
+		if actual_stage != expected_stage:
+			failures.append("unexpected VisualOverlay stage mapping for %s: expected=%s actual=%s" % [scene_path, expected_stage, actual_stage])
 
 	var active_origin := VisualOverlay.build_presentation_signature("res://ui/journey.tscn", "WUKONG", NarrativeState.ROUTE_IN_PROGRESS)
 	var completed_origin := VisualOverlay.build_presentation_signature("res://ui/journey.tscn", "WUKONG", NarrativeState.ROUTE_COMPLETE)
