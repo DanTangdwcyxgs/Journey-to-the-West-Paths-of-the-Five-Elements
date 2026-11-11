@@ -27,8 +27,8 @@ func _run_test() -> void:
 	_record(fixture.start_new_game("WUKONG"), "fixture should initialize narrative state")
 	fixture.state.current_global_timeline = 120
 	fixture.state.set_current_shared_chapter("SHARED-04-EARLY-DEMON-TALES")
-	_record(fixture.state.record_region_point_discovered("EAGLE_SORROW_STONE_TRACE"), "first region clue should be recorded once")
-	_record(fixture.state.record_region_point_discovered("BLACK_WIND_NORTH_PATH_BROKEN_PINE"), "cross-region clue should be recorded once")
+	_record(fixture.state.record_region_point_discovered("BLACK_WIND_NORTH_PATH_BROKEN_PINE"), "the first discovered clue should be recorded once")
+	_record(fixture.state.record_region_point_discovered("EAGLE_SORROW_STONE_TRACE"), "the second cross-region clue should be recorded once")
 	_record(not fixture.state.record_region_point_discovered("EAGLE_SORROW_STONE_TRACE"), "duplicate discovery should stay idempotent")
 
 	var restored := NarrativeManager.new()
@@ -42,7 +42,11 @@ func _run_test() -> void:
 	_record("EAGLE_SORROW_STONE_TRACE" in note_ids, "the discovered Eagle Sorrow note should be present")
 	_record("BLACK_WIND_NORTH_PATH_BROKEN_PINE" in note_ids, "the discovered Black Wind note should be present")
 	_record("EAGLE_SORROW_BACKWATER" not in note_ids, "undiscovered clues must not appear in the journal")
-	_record(str(notes[0].get("region_name", "")).contains("鹰愁涧"), "journal items should retain their region label")
+	_record(notes.size() >= 2, "the journal should preserve both discovery records after save/load")
+	if notes.size() >= 2:
+		_record(str(notes[0].get("id", "")) == "BLACK_WIND_NORTH_PATH_BROKEN_PINE", "the journal should show the earliest discovered clue first, even when it belongs to a later catalog region")
+		_record(str(notes[1].get("id", "")) == "EAGLE_SORROW_STONE_TRACE", "the journal should preserve the second discovery position")
+		_record(str(notes[0].get("region_name", "")).contains("黑风山"), "journal items should retain their region label")
 
 	var state_before_review := restored.state.to_dict().duplicate(true)
 	var timeline_before := restored.state.current_global_timeline
@@ -55,9 +59,9 @@ func _run_test() -> void:
 	await process_frame
 	_record(screen.note_list != null and screen.note_list.item_count == 2, "the screen should list only the two discovered notes")
 	_record(screen.summary_label != null and screen.summary_label.text.contains("2 条线索"), "the summary should report the discovered-note count")
-	_record(screen.note_list.get_item_text(0).contains("石岸旧痕"), "the first list item should show the discovered clue name")
+	_record(screen.note_list.get_item_text(0).contains("折断的松枝"), "the first list item should show the earliest discovered clue")
 	screen._on_note_selected(1)
-	_record(screen.detail_label.text.contains("折断的松枝"), "selecting a note should show its clue detail")
+	_record(screen.detail_label.text.contains("石岸旧痕"), "selecting the second note should show its later-discovered clue detail")
 	_record(restored.state.to_dict() == state_before_review, "opening and browsing the journal must not mutate persisted narrative state")
 	_record(restored.state.current_global_timeline == timeline_before, "review must not advance the world timeline")
 	_record(restored.state.current_shared_chapter == chapter_before, "review must not advance the shared chapter")
