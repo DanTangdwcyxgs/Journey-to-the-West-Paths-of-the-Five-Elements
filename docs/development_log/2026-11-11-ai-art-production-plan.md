@@ -40,6 +40,10 @@ Create a reliable, one-image-per-day art-production process for the project's fi
 - PASS: exact code + documentation head `5132ca55735cecf3f32b3c6ef2f402a954dd67c6`, Godot Runtime [42944345417](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42944345417), completed successfully. The job log confirms `PASS res://combat/test_visual_asset_contract.gd` and `RUNTIME_SUITE_PASS tests=52`. Any later documentation-only head must be checked against its own exact Runtime run.
 - No final art asset, Web Demo deployment, or in-game screenshot acceptance is claimed.
 
+## Turnaround processing helper
+
+A deterministic Python/Pillow helper is now available at `tools/art/prepare_character_turnaround.py`. It preserves the original source PNG byte-for-byte, extracts the top-left view, and prepares the exact-size runtime crop. See the later log `2026-11-11-turnaround-crop-utility.md` for implementation and 10 local unit tests. The original one-view next step in this log is superseded by the four-view strategy log.
+
 ## Known limitations
 - Today's planning-poster generation did not produce a game-ready image. The next valid generation slot is 2026-11-12.
 - Static art only is scheduled. Sprite animation, NPCs, regular enemies, props, and VFX remain deferred until the initial six-character and three-scene batch is integrated and reviewed.
