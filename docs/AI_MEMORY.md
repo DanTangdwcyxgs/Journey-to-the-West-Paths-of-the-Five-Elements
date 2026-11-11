@@ -779,3 +779,10 @@ Wukong、Tang、Longma、Bajie、Wujing 五条 Origin Route 均已完成首轮 S
 - 新增三项 Runtime 回归：无背景纹理保持不透明、存在背景纹理才将 alpha 限制到 0.30、原本 alpha=0.12 的遮罩不进一步变淡。
 - 新增开发日志 docs/development_log/2026-11-11-visual-overlay-backdrop-opacity-guard.md 并更新索引与 Agent handoff。
 - 未修改场景/战斗/剧情/存档逻辑、未改动任何 PNG/SVG 资源、未调用图像生成。最终精确 HEAD 的 Godot Runtime 与 Art Tooling 结果以 PR #30 的最新 Actions 记录为准。
+
+### Round 90 — 2026-11-11: VisualOverlay Scene Instance Refresh
+- 继续审查 autoload VisualOverlay 的场景切换生命周期，发现旧逻辑只比较 scene_file_path；若同一个 .tscn 被重新实例化，路径相同但新 root 未经过背景透明度处理和舞台资源重载。
+- VisualOverlay 新增 scene_instance_id，并以路径 + instance ID 判断是否需要重新应用场景视觉；场景切换期间 current_scene 暂时为空时，清空旧实例 ID、场景名、舞台纹理和 signature。
+- 增加 should_reapply_scene_visuals() 纯策略函数与三项回归：同路径不同实例必须刷新、相同实例不刷新、不同路径必须刷新。
+- 新增开发日志 docs/development_log/2026-11-11-visual-overlay-scene-instance-refresh.md；同步索引和 AI_HANDOFF。仍须以最终精确 HEAD 的 Runtime Actions 验收。
+- 未修改剧情、战斗、存档、资源或 UI 输入规则；未调用图像生成。
