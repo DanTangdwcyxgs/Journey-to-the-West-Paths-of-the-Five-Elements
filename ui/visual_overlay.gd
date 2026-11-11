@@ -80,9 +80,16 @@ func _apply_scene_visuals() -> void:
 		if child is ColorRect:
 			var rect := child as ColorRect
 			if rect.size.x >= 900.0 and rect.size.y >= 500.0:
-				var c: Color = rect.color
-				c.a = min(c.a, 0.30)
-				rect.color = c
+				rect.color = background_color_for_backdrop(rect.color, background_texture != null)
+
+## Only reveal the scene beneath a ColorRect when an actual stage texture is loaded.
+## Unsupported scenes and missing-art fallback retain their original opaque backgrounds.
+static func background_color_for_backdrop(color: Color, backdrop_available: bool) -> Color:
+	if not backdrop_available:
+		return color
+	var adjusted := color
+	adjusted.a = minf(adjusted.a, 0.30)
+	return adjusted
 
 static func stage_kind_for_scene(scene_path: String) -> String:
 	if scene_path.ends_with("main_menu.tscn"):
