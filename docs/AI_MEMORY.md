@@ -687,4 +687,4 @@ Wukong、Tang、Longma、Bajie、Wujing 五条 Origin Route 均已完成首轮 S
 - 关键实现事实：`ui/visual_overlay.gd` 通过纹理原始宽高乘显示倍率绘制角色，故 final PNG/WebP 画布必须匹配 SVG fallback 的真实尺寸：Wukong/Tang/Bajie/Wujing 128×192，Longma 160×128，Yellow Wind King 144×192。
 - 扩展 `combat/test_visual_asset_contract.gd`，让 Runtime 自动校验六个角色实际加载纹理的画布尺寸。更新 AI_ASSET_DELIVERY_SPEC、AI_ASSET_PIPELINE、视觉参考 README、开发日志索引与 AI_HANDOFF。
 - 今日没有产出可验收的 final PNG/WebP；首个正式角色生成安排为 2026-11-12 的 Wukong。未声称图像资产完成、Web Demo 部署或实际截图验收。
-- 本分支 Runtime 需要对最新文档同步 head 进行精确 SHA 验证，不能将 main 旧版或其他 PR 的绿灯当作本分支结果。
+- PASS：精确文档/代码 head `5132ca55735cecf3f32b3c6ef2f402a954dd67c6` 的 Godot Runtime [42944345417](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42944345417) 成功，日志确认 `PASS res://combat/test_visual_asset_contract.gd` 与 `RUNTIME_SUITE_PASS tests=52`。后续文档同步如触发新 workflow，仍需按最新 SHA 再核对。
