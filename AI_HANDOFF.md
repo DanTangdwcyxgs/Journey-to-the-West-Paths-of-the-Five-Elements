@@ -618,3 +618,11 @@ Runtime has now verified the post-Shared-02 detour and that Journey resumes at S
 - PASS: initial four-view strategy docs head `e9cfdba08c18b50dedecc3886a5589195a01deee`, Godot Runtime [42945517918](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42945517918); log confirms visual-asset contract and `RUNTIME_SUITE_PASS tests=52`.
 - PASS: pose-refined strategy docs head `c0b3ec73246ce647eb04e6376ea25c538eec5083`, Godot Runtime [42945721522](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42945721522); log confirms `PASS res://combat/test_visual_asset_contract.gd` and `RUNTIME_SUITE_PASS tests=52`.
 - Do not merge PR #29 as part of this art task. Keep the art plan in its own branch/PR.
+
+## 16. 2026-11-11 VisualOverlay Backdrop Opacity Guard
+
+- VisualOverlay._apply_scene_visuals() may lower a scene-root ColorRect alpha only when background_texture != null.
+- Unsupported scenes (Camp / Shop / Party / Preparation / Region Exploration / Bounty Prep) and mapped scenes whose art texture failed to load must preserve their authored background opacity. Never make these screens translucent over an empty underlay.
+- VisualOverlay.background_color_for_backdrop(color, backdrop_available) is the shared policy function; the Runtime layout contract covers opaque fallback, stage-backed alpha cap, and pre-existing translucent shades.
+- Latest implementation work belongs to PR #30 branch art/production-roadmap-2026-11-11; keep it Draft/unmerged unless explicitly instructed otherwise.
+- No player-facing screenshot acceptance or final-art acceptance is claimed. Continue with scene layering/input audits, then verify actual screenshots once production art is integrated.
