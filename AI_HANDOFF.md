@@ -714,7 +714,7 @@ Runtime has now verified the post-Shared-02 detour and that Journey resumes at S
 
 ### Validation Gate
 - Implementation commit `525e069be678af344b723297c2f23e6f15c81379`; regression commit `bbdf5ee29f20157bc4f83c06380245ef71bf3cdf`.
-- Runtime run [42942960838](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42942960838) was queued when implementation notes were written. Do not mark the work complete until the newest documentation-sync branch head has a completed successful Godot Runtime run and the job log confirms the journal regression plus the 54-entry suite.
+- PASS: exact code + documentation-sync head `6d71dbee1539dd7689a11ab1ec7c9c372c2cc7d5`, Godot Runtime [42943064424](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42943064424); job log confirms `PASS res://combat/test_region_notes_log.gd` and `RUNTIME_SUITE_PASS tests=54`. Any later docs-only synchronization commit should be checked separately if it triggers a new workflow run.
 - No Web Demo, final-art, or screenshot acceptance is claimed.
 
 ### Next Agent
