@@ -764,3 +764,11 @@ Wukong、Tang、Longma、Bajie、Wujing 五条 Origin Route 均已完成首轮 S
 - VisualOverlay 新增 presentation signature：Journey 场景包含 scene path、starting character 和其 route status；其他场景仍只依赖 scene path。signature 改变时，只有场景路径变化才重载场景背景，但始终触发 queue_redraw。
 - 扩展 `combat/test_visual_overlay_layout_contract.gd`，验证 Origin route completion 会改变 Journey signature、不同 starting hero 也会改变 signature，且主菜单不受 Journey route 状态影响。
 - 新增开发日志 `docs/development_log/2026-11-11-journey-overlay-origin-refresh.md`，更新索引和 AI_HANDOFF。本轮没有改变剧情/存档状态逻辑、没有修改美术文件、没有调用图像生成。
+
+
+### Round 88 — 2026-11-11: VisualOverlay Unsupported Scene Routing
+- 审查常驻 VisualBackdrop 时发现 VisualOverlay._draw() 将 Journey 舞台作为无条件 fallback；悬赏准备、营地、队伍、准备、区域探索和商店等非舞台场景也会被叠加取经队伍立绘。
+- 新增 stage_kind_for_scene(scene_path) 显式解析主菜单、Journey、战斗、世界地图、黄风岭/洞舞台；背景图选择和前景舞台绘制共用该解析结果。未知/非舞台场景不再绘制 Journey 队伍。
+- 扩展 combat/test_visual_overlay_layout_contract.gd，对仓库现有 12 个 UI 场景建立映射契约：6 个预期舞台场景必须映射正确，6 个非舞台场景必须返回空舞台。
+- 新增开发日志 docs/development_log/2026-11-11-visual-overlay-unsupported-scene-fallback.md，更新开发日志索引与 AI_HANDOFF。
+- 本轮只调整 Presentation 路由与回归，不修改战斗、剧情、存档、角色素材或图像生成。必须检查当前精确 branch HEAD 的 Godot Runtime 和 Art Tooling Actions；没有完成玩家可见截图验收。
