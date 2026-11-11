@@ -46,6 +46,8 @@ class PreparationResult:
     output_size: tuple[int, int]
     placed_sprite_size: tuple[int, int]
     output_alpha_bounds: tuple[int, int, int, int]
+    quadrant_visible_bounds: dict[str, tuple[int, int, int, int]]
+    quadrant_transparent_ratios: dict[str, float]
     source_sha256: str
 
 
@@ -140,25 +142,50 @@ def prepare_turnaround(
         )
 
     quadrant_width, quadrant_height = sheet_width // 2, sheet_height // 2
-    front = sheet.crop((0, 0, quadrant_width, quadrant_height))
-    alpha = front.getchannel("A")
-    alpha_histogram = alpha.histogram()
-    transparent_ratio = alpha_histogram[0] / float(quadrant_width * quadrant_height)
-    if transparent_ratio < MIN_TRANSPARENT_RATIO:
-        raise PreparationError(
-            "Top-left quadrant has too little fully transparent background "
-            f"({transparent_ratio:.1%}); reject flattened background or panel frame"
-        )
+    quadrant_rects = {
+        "front_3q": (0, 0, quadrant_width, quadrant_height),
+        "right_profile": (quadrant_width, 0, sheet_width, quadrant_height),
+        "rear_3q": (quadrant_width, quadrant_height, sheet_width, sheet_height),
+        "left_profile": (0, quadrant_height, quadrant_width, sheet_height),
+    }
+    quadrant_visible_bounds: dict[str, tuple[int, int, int, int]] = {}
+    quadrant_transparent_ratios: dict[str, float] = {}
+    front: Image.Image | None = None
 
-    visible_bounds = alpha.getbbox()
-    if visible_bounds is None:
-        raise PreparationError("Top-left quadrant contains no visible character pixels")
-    left, top, right, bottom = visible_bounds
-    if left == 0 or top == 0 or right == quadrant_width or bottom == quadrant_height:
-        raise PreparationError(
-            "Top-left view touches a quadrant edge; the figure or a prop may be cropped. "
-            "Reject it and revise the next scheduled generation brief."
-        )
+    for quadrant_name, rect in quadrant_rects.items():
+        quadrant = sheet.crop(rect)
+        alpha = quadrant.getchannel("A")
+        alpha_histogram = alpha.histogram()
+        transparent_ratio = alpha_histogram[0] / float(quadrant_width * quadrant_height)
+        quadrant_transparent_ratios[quadrant_name] = transparent_ratio
+        label = "Top-left quadrant" if quadrant_name == "front_3q" else f"Quadrant '{quadrant_name}'"
+        if transparent_ratio < MIN_TRANSPARENT_RATIO:
+            raise PreparationError(
+                f"{label} has too little fully transparent background "
+                f"({transparent_ratio:.1%}); reject flattened background or panel frame"
+            )
+
+        visible_bounds = alpha.getbbox()
+        if visible_bounds is None:
+            raise PreparationError(f"{label} contains no visible character pixels")
+        left, top, right, bottom = visible_bounds
+        if left == 0 or top == 0 or right == quadrant_width or bottom == quadrant_height:
+            edge_message = (
+                "Top-left view touches a quadrant edge"
+                if quadrant_name == "front_3q"
+                else f"Quadrant '{quadrant_name}' touches a quadrant edge"
+            )
+            raise PreparationError(
+                f"{edge_message}; the figure or a prop may be cropped. "
+                "Reject it and revise the next scheduled generation brief."
+            )
+        quadrant_visible_bounds[quadrant_name] = visible_bounds
+        if quadrant_name == "front_3q":
+            front = quadrant
+
+    if front is None:
+        raise PreparationError("Top-left primary front three-quarter view is missing")
+    visible_bounds = quadrant_visible_bounds["front_3q"]
     visible = front.crop(visible_bounds)
     visible_width, visible_height = visible.size
 
@@ -212,6 +239,8 @@ def prepare_turnaround(
         output_size=(target_width, target_height),
         placed_sprite_size=(resized_width, resized_height),
         output_alpha_bounds=output_bounds,
+        quadrant_visible_bounds=quadrant_visible_bounds,
+        quadrant_transparent_ratios=quadrant_transparent_ratios,
         source_sha256=digest_builder.hexdigest(),
     )
 
