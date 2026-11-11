@@ -598,8 +598,11 @@ Runtime has now verified the post-Shared-02 detour and that Journey resumes at S
 - The dedicated Art Tooling workflow tests the helper independently from Godot Runtime. Current helper suite has 12 tests, including missing/cropped secondary-view rejection; check the exact latest branch SHA before reporting CI green.
 
 ### Crop-tool validation
-- Art Tooling PASS on helper/docs SHA `69fc03a38b02221e57b66003c1dbb1440c51a307`: [42947150489](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42947150489), all 10 unit tests passed.
-- Godot Runtime PASS on the same SHA: [42947150307](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42947150307), visual asset contract and `RUNTIME_SUITE_PASS tests=52`.
+- Historical initial helper PASS on SHA `69fc03a38b02221e57b66003c1dbb1440c51a307`: [42947150489](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42947150489), original 10 tests.
+- PASS: expanded 12-test helper code/test SHA `2bf702052e0827c06464cb60d8906c21f5d9430f`, Art Tooling [42948677672](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42948677672), `Ran 12 tests` / `OK`.
+- PASS: same code/test SHA, Godot Runtime [42948677560](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42948677560), visual asset contract and `RUNTIME_SUITE_PASS tests=52`.
+- PASS: later docs SHA `981282eaf9692aebfdb1ccb52c7b4d193becf37e`, Art Tooling [42948839342](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42948839342), all 12 tests.
+- If later doc-only commits move the art branch, verify the newest Runtime SHA before calling the branch current/green.
 - If any later doc-only commit moves the art branch, verify that newest SHA's workflows before calling the branch current/green.
 
 ### Branch / validation
