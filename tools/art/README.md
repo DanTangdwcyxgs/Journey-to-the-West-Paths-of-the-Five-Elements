@@ -36,7 +36,7 @@ The script does not edit or delete the input. It refuses to overwrite either des
 
 - Source must be a PNG with a real alpha channel. Flattened backgrounds and painted checkerboards are rejected.
 - The source width and height must both be even so the 2×2 quadrants can be split exactly.
-- The top-left quadrant must contain visible artwork, at least 5% fully transparent pixels, and no visible pixels touching its outer edge. These checks catch obvious empty/flattened/cropped inputs; they do not replace visual review of all four views.
+- Every quadrant must contain visible artwork, at least 5% fully transparent pixels, and no visible pixels touching its outer edge. This catches obviously missing, flattened, or edge-cropped directions before the source is archived.
 - The source sheet is archived unchanged. Only the top-left quadrant is cropped using its alpha bounds.
 - The crop is proportionally fitted inside the current character canvas with 4 px transparent padding, bottom-aligned feet/hooves, and nearest-neighbor resizing. The character is never stretched to fill the canvas.
 - Exact runtime canvases: Wukong/Tang/Bajie/Wujing 128×192; Longma 160×128; Yellow Wind King 144×192.
@@ -49,4 +49,4 @@ The script does not edit or delete the input. It refuses to overwrite either des
 python -m unittest discover -s tools/art -p 'test_*.py' -v
 ```
 
-The tests cover source preservation, quadrant isolation, target dimensions, aspect-ratio preservation, bottom alignment, real transparency, edge safety, invalid sheets, and overwrite protection.
+The tests cover source preservation, isolation of the primary view, presence/edge-safety of all four quadrants, target dimensions, aspect-ratio preservation, bottom alignment, real transparency, invalid sheets, and overwrite protection.
