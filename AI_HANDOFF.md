@@ -593,5 +593,6 @@ Runtime has now verified the post-Shared-02 detour and that Journey resumes at S
 
 ### Branch / validation
 - Art branch: `art/production-roadmap-2026-11-11`, created from main `395233d8bcaf13aa9022c33903ab03a75c5a83ae`.
-- PASS: code + docs head `5132ca55735cecf3f32b3c6ef2f402a954dd67c6`, Godot Runtime [42944345417](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42944345417); log confirms `PASS res://combat/test_visual_asset_contract.gd` and `RUNTIME_SUITE_PASS tests=52`. Check any newer docs-sync head independently.
+- PASS: code + docs head `5132ca55735cecf3f32b3c6ef2f402a954dd67c6`, Godot Runtime [42944345417](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42944345417); log confirms `PASS res://combat/test_visual_asset_contract.gd` and `RUNTIME_SUITE_PASS tests=52`.
+- PASS: latest four-view strategy docs head `e9cfdba08c18b50dedecc3886a5589195a01deee`, Godot Runtime [42945517918](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42945517918); log confirms the visual-asset contract test and `RUNTIME_SUITE_PASS tests=52`.
 - Do not merge PR #29 as part of this art task. Keep the art plan in its own branch/PR.
