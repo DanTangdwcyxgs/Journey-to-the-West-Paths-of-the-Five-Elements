@@ -597,6 +597,11 @@ Runtime has now verified the post-Shared-02 detour and that Journey resumes at S
 - Run tests with `python -m unittest discover -s tools/art -p 'test_*.py' -v`.
 - The dedicated Art Tooling workflow tests the helper independently from Godot Runtime. A local 10/10 pass is not the same as branch CI passing.
 
+### Crop-tool validation
+- Art Tooling PASS on helper/docs SHA `69fc03a38b02221e57b66003c1dbb1440c51a307`: [42947150489](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42947150489), all 10 unit tests passed.
+- Godot Runtime PASS on the same SHA: [42947150307](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42947150307), visual asset contract and `RUNTIME_SUITE_PASS tests=52`.
+- If any later doc-only commit moves the art branch, verify that newest SHA's workflows before calling the branch current/green.
+
 ### Branch / validation
 - Art branch: `art/production-roadmap-2026-11-11`, created from main `395233d8bcaf13aa9022c33903ab03a75c5a83ae`.
 - PASS: code + docs head `5132ca55735cecf3f32b3c6ef2f402a954dd67c6`, Godot Runtime [42944345417](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42944345417); log confirms `PASS res://combat/test_visual_asset_contract.gd` and `RUNTIME_SUITE_PASS tests=52`.
