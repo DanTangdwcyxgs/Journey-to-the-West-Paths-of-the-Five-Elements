@@ -585,7 +585,7 @@ Runtime has now verified the post-Shared-02 detour and that Journey resumes at S
 
 ### Required workflow per image
 1. Check today's local date and this schedule; verify no generation call has already been made today.
-2. On a character date, generate one single-character 2×2 four-view turnaround sheet: top-left primary front 3/4, top-right right profile, bottom-right rear 3/4, bottom-left left profile. All four views must be full-body and consistent; this is not a multi-character contact sheet. No UI, labels, panel borders, watermark, or scenery.
+2. On a character date, generate one single-character 2×2 four-view turnaround sheet: top-left primary front 3/4, top-right right profile, bottom-right rear 3/4, bottom-left left profile. All four views must be full-body and consistent, preserving the same pose and weapon grip while rotating only the viewing angle; this is not a multi-character contact sheet. No UI, labels, panel borders, watermark, or scenery.
 3. Inspect all four views for full-body completeness, consistent character design, transparency, silhouette, clean pixel edges, identity props, and crop safety.
 4. Archive the untouched source sheet at assets/art/source_sheets/characters/<id>_turnaround.png; crop only the top-left view into the exact final path without deleting SVG fallbacks. The other views remain reference material.
 5. Update the schedule status, a dated development log, AI_MEMORY and handoff.
