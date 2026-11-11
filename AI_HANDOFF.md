@@ -633,3 +633,10 @@ Runtime has now verified the post-Shared-02 detour and that Journey resumes at S
 - When `SceneTree.current_scene` is temporarily null during scene changes, clear `scene_instance_id`, `scene_name`, `background_texture`, and `presentation_signature`; this prevents a same-path re-entry from being mistaken for the previous scene instance.
 - `should_reapply_scene_visuals()` is covered by the Runtime layout contract for same-path recreation, same-instance stability, and path changes.
 - PR #30 remains Draft/unmerged. Do not claim screenshot acceptance; verify the exact branch HEAD Actions before considering this batch complete.
+
+## 18. 2026-11-11 PixelHUD Theme Refresh on Scene Re-instancing
+
+- PixelHUD must refresh the root Control theme when either scene_file_path or current_scene instance ID changes. A new instance reusing the same .tscn path still needs PixelUI.build_theme() applied.
+- During a null current_scene transition, PixelHUD records empty path + instance ID 0; entering/re-entering a scene applies the theme again.
+- The PixelHUD policy function `should_refresh_scene_theme()` is covered in `combat/test_visual_overlay_layout_contract.gd` for same-path re-instancing, stable same instance, null clearing, and null-to-scene entry.
+- Verify exact HEAD CI before treating this change as validated; PR #30 remains Draft and unmerged.
