@@ -10,6 +10,7 @@
 
 ## 最新记录
 
+- [2026-11-11 — Four-View Character Turnaround Strategy](2026-11-11-four-view-character-turnaround-strategy.md)
 - [2026-11-11 — Daily AI Art Production Plan and Canvas Contract](2026-11-11-ai-art-production-plan.md)
 
 - [2026-10-14 — Five Elements Mountain Region Exploration](2026-10-14-five-elements-mountain-region.md)
