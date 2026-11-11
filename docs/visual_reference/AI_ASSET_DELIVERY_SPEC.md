@@ -202,3 +202,23 @@ CharacterPortrait / VisualOverlay / BattleUI / WorldMap
 - 禁止 AI 图片直接包含 HUD/UI 文本。
 - 禁止为了换图修改核心剧情或战斗规则。
 - 禁止把一次性的 AI 图片直接散落到代码里而不登记 Asset Catalog。
+
+
+## 11. Canvas Size Is a Runtime Contract
+
+Character PNG/WebP assets must preserve the exact canvas dimensions of their existing SVG fallbacks. `ui/visual_overlay.gd` multiplies the texture's raw width/height by the presentation scale, so a larger source image changes the character's in-game size even if its aspect ratio is unchanged.
+
+| Character | Required final canvas |
+|---|---:|
+| Wukong | 128×192 |
+| Tang | 128×192 |
+| Bajie | 128×192 |
+| Wujing | 128×192 |
+| Longma | 160×128 |
+| Yellow Wind King | 144×192 |
+
+Generate with ample detail, then crop and use nearest-neighbor processing to fit the exact canvas without cutting weapons, tails, hooves, feet, or headwear. The runtime visual contract checks these exact dimensions. A deliberate canvas change requires a reviewed update to VisualOverlay scale/layout and the corresponding regression test.
+
+## 12. Daily Generation Schedule
+
+The one-image-per-day queue and the rules for rejected generations are maintained in [AI_ART_PRODUCTION_SCHEDULE.md](AI_ART_PRODUCTION_SCHEDULE.md). It is the canonical source of dates, asset order, output paths, prompts, and handoff instructions. Do not treat generated schedule posters or chat graphics as production assets.
