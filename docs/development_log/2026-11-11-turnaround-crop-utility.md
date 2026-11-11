@@ -38,7 +38,11 @@ Added `tools/art/test_prepare_character_turnaround.py` with 12 unit tests coveri
 
 Added `tools/art/requirements.txt` and `.github/workflows/art-tooling.yml` so the helper tests run independently of the Godot Runtime workflow when art tooling files change.
 
-The new test cases explicitly prove that missing or edge-cropped secondary views reject the entire sheet. The suite now contains 12 tests; exact-head CI is pending.
+The new test cases explicitly prove that missing or edge-cropped secondary views reject the entire sheet. The suite now contains 12 tests.
+
+- PASS: expanded helper code/test head `2bf702052e0827c06464cb60d8906c21f5d9430f`, Art Tooling [42948677672](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42948677672); log confirms `Ran 12 tests` and `OK`.
+- PASS: same code/test head, Godot Runtime [42948677560](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42948677560); log confirms `PASS res://combat/test_visual_asset_contract.gd` and `RUNTIME_SUITE_PASS tests=52`.
+- The later README/documentation head `981282eaf9692aebfdb1ccb52c7b4d193becf37e` also passed Art Tooling [42948839342](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42948839342) with all 12 tests. Check newest Runtime if later documentation commits remain in flight.
 
 ## Documentation
 
