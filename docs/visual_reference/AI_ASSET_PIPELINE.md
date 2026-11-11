@@ -136,3 +136,11 @@ SVG 当前继续作为占位/可运行资源，不是最终美术标准。
 - Vertical Slice
 
 图片不足不会阻塞这些工作。最终美术资源可以后置替换。
+
+## 10. Daily image-generation budget
+
+The project owner has one image-generation call per local calendar day. Read `AI_ART_PRODUCTION_SCHEDULE.md` before each call, generate only the current day's isolated asset, and do not retry or refine with a second generation call on the same date. A rejected output must be marked in the schedule and moved to the next available date; continue non-generation engineering work for the rest of the day.
+
+The canonical schedule is the single source of truth for daily asset order and prompts. Today’s generated planning poster was not accepted as game art; the first production asset is Wukong on 2026-11-12.
+
+Character images must be reduced/cropped to the exact current SVG canvas sizes in `AI_ASSET_DELIVERY_SPEC.md`. This matters because `VisualOverlay` uses the raw texture width/height for screen sizing. The Runtime visual-contract test enforces these dimensions.
