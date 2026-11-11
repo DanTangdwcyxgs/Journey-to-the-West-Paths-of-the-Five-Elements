@@ -127,7 +127,7 @@ For each generated asset, the Agent must:
 
 1. Inspect all four views at native size. Confirm they are the same character model, all full-body, consistently proportioned, correctly oriented, and free of overlap or cropped extremities.
 2. Confirm transparent alpha; no checkerboard painted into the image. Reject a sheet that contains text, labels, borders, UI, scenery, or watermarks.
-3. Archive the untouched source sheet at the exact assets/art/source_sheets/characters/<id>_turnaround.png path from the queue.
+3. Keep the generated PNG unchanged at its original input path until the preparation tool completes; do not manually crop, resize, or recompress it.
 4. Run `python tools/art/prepare_character_turnaround.py --input /absolute/path/<id>_turnaround.png --character <id>` from the repository root. The tool first confirms all four quadrants contain visible pixels, transparent margin, and no edge-touching crop, then byte-for-byte archives the source, extracts the top-left primary view, and writes the exact-size runtime crop with aspect ratio preserved and nearest-neighbor scaling.
 5. Inspect the tool output and the resulting crop visually at native and in-game scale. The tool cannot verify that all four views depict the same model, costume, stance, or weapon grip; human review remains mandatory.
 6. Keep the SVG fallback untouched. Do not use `--overwrite` unless the previous sheet and crop have been reviewed and replacement is intentional.
