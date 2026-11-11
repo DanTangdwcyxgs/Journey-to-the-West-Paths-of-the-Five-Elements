@@ -758,3 +758,9 @@ Wukong、Tang、Longma、Bajie、Wujing 五条 Origin Route 均已完成首轮 S
 - 为 VisualOverlay 增加命名布局常量：序章角色缩放 2.80、底部锚点 82%、阴影中心 83%；battle UI boss baseline 73%；ridge/cave boss baseline 77%。
 - 新增 `combat/test_visual_overlay_layout_contract.gd`，验证 Wukong/Tang/Bajie/Wujing/Longma 序章画布完全位于 1280×720 内、阴影和地面锚点接近，以及两种 boss 站位不裁顶/底；登记进 `tests/runtime_suite.gd`，Runtime 测试预期从 52 项增加到 53 项。
 - 新增开发日志 `docs/development_log/2026-11-11-visual-overlay-layout-contract.md`，并更新索引和 handoff。本轮未调用图像生成，未改动任何 PNG/SVG，美术截图验收仍须等正式素材接入。
+
+### Round 87 — 2026-11-11: Journey Overlay Refresh on Origin Completion
+- 复核 OriginRoute 结束流程发现：序章完成时 `NarrativeManager.state.route_progress[starting_character]` 会在同一个 `journey.tscn` 内变为 `COMPLETE`，`JourneyScreen._refresh()` 不会切换场景；此前 VisualOverlay 仅在 scene_file_path 变化时 queue_redraw，可能继续显示单人序章立绘而不切换到五人队伍展示。
+- VisualOverlay 新增 presentation signature：Journey 场景包含 scene path、starting character 和其 route status；其他场景仍只依赖 scene path。signature 改变时，只有场景路径变化才重载场景背景，但始终触发 queue_redraw。
+- 扩展 `combat/test_visual_overlay_layout_contract.gd`，验证 Origin route completion 会改变 Journey signature、不同 starting hero 也会改变 signature，且主菜单不受 Journey route 状态影响。
+- 新增开发日志 `docs/development_log/2026-11-11-journey-overlay-origin-refresh.md`，更新索引和 AI_HANDOFF。本轮没有改变剧情/存档状态逻辑、没有修改美术文件、没有调用图像生成。
