@@ -602,6 +602,7 @@ Runtime has now verified the post-Shared-02 detour and that Journey resumes at S
 - PASS: expanded 12-test helper code/test SHA `2bf702052e0827c06464cb60d8906c21f5d9430f`, Art Tooling [42948677672](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42948677672), `Ran 12 tests` / `OK`.
 - PASS: same code/test SHA, Godot Runtime [42948677560](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42948677560), visual asset contract and `RUNTIME_SUITE_PASS tests=52`.
 - PASS: later docs SHA `981282eaf9692aebfdb1ccb52c7b4d193becf37e`, Art Tooling [42948839342](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42948839342), all 12 tests.
+- PASS: Wukong prompt/memory head `a1f7c762d50e38e3f713c25858efab1d0e291297`, Art Tooling [42949285871](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42949285871), all 12 tests; Godot Runtime [42949285936](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42949285936), visual-asset contract and `RUNTIME_SUITE_PASS tests=52`. Check any newer branch head's workflows before calling it green.
 - If later doc-only commits move the art branch, verify the newest Runtime SHA before calling the branch current/green.
 - If any later doc-only commit moves the art branch, verify that newest SHA's workflows before calling the branch current/green.
 
