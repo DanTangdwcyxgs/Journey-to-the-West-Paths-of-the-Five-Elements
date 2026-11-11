@@ -793,3 +793,4 @@ Wukong、Tang、Longma、Bajie、Wujing 五条 Origin Route 均已完成首轮 S
 - 将四项 PixelHUD 生命周期断言并入 test_visual_overlay_layout_contract.gd：同路径新实例刷新、相同实例不刷新、scene null 清理、null 后重新进入刷新。
 - 本轮不改变控件输入行为、业务流程或存档。新增开发日志并同步 handoff；以最终精确 HEAD Godot Runtime / Art Tooling 为准。
 - 未修改美术素材，未调用图像生成。
+- PASS：精确 HEAD `03db87b6c5dc6208cf820e1b0677165455fa978b` 的 Godot Runtime [42981863213](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42981863213) 通过 `PASS res://combat/test_visual_overlay_layout_contract.gd` 与 `RUNTIME_SUITE_PASS tests=53`；Art Tooling [42981863335](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42981863335) 通过全部 12 tests / OK。该 head 同时包含 Round 90 / Round 91 的实现、回归与交接文档。
