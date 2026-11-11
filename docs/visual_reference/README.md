@@ -44,3 +44,10 @@
 - `ArtAssetCatalog` 的覆盖顺序是 final PNG → final WebP → SVG fallback；最终资源放入 `assets/art/characters/final/`，无需为换图修改战斗/剧情规则。
 - 当前自动契约测试检查资源加载与环境分层标记，不检查美术质量。此次仅完成源文件审查，没有实际游戏截图，因此不标记视觉验收通过。
 - 六个文件名、角色辨识点及下一步截图验收流程见 `AI_ASSET_DELIVERY_SPEC.md` 与开发日志 `2026-10-12-character-asset-source-audit.md`。
+
+
+## 每日 AI 美术生产计划（2026-11-11）
+- 当前唯一有效排期见 [AI_ART_PRODUCTION_SCHEDULE.md](AI_ART_PRODUCTION_SCHEDULE.md)。未来 Agent 必须按本地日期执行，每天最多一次图像生成调用。
+- 首批顺序：Wukong → Tang → Bajie → Wujing → Longma → Yellow Wind King → Journey scenery → Yellow Wind battle → WorldMap。
+- 角色 final PNG 必须与现有 SVG fallback 画布尺寸一致，否则 `VisualOverlay` 的原始纹理尺寸倍率会改变角色显示大小。
+- 本排期概念图/聊天图片不是最终角色或场景资产；只有通过透明背景、尺寸、轮廓、目录、Runtime 与实际截图验收的文件才可标记完成。
