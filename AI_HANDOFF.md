@@ -701,3 +701,23 @@ Runtime has now verified the post-Shared-02 detour and that Journey resumes at S
 1. Confirm Godot Runtime on the exact head produced by this result-recording update; record the SHA/run in the PR description if it passes.
 2. If new maps are implemented later, introduce explicit map-catalog support instead of letting arbitrary map IDs through.
 3. Keep PR #29 open/unmerged unless the user explicitly authorizes merge. Final character PNG/WebP assets and screenshots remain outstanding.
+
+
+## 30. 2026-11-11 Region Notes Journal Discovery Order
+
+### Implementation
+- Continued on `feature/black-wind-region-exploration-2026-10-14` / PR #29; do not merge without explicit owner approval.
+- Confirmed `NarrativeState.record_region_point_discovered()` appends unique IDs to the existing persisted discovery array and serialization preserves that array order.
+- Updated `RegionExplorationManager.get_discovered_notes()` to resolve entries in persisted discovery order instead of region-catalog order. Unknown IDs remain hidden, duplicate IDs are skipped, and the projection remains read-only.
+- Extended `combat/test_region_notes_log.gd` with reversed cross-region discovery order and save/load/UI assertions.
+- Development record: `docs/development_log/2026-11-11-region-notes-discovery-order.md`.
+
+### Validation Gate
+- Implementation commit `525e069be678af344b723297c2f23e6f15c81379`; regression commit `bbdf5ee29f20157bc4f83c06380245ef71bf3cdf`.
+- Runtime run [42942960838](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42942960838) was queued when implementation notes were written. Do not mark the work complete until the newest documentation-sync branch head has a completed successful Godot Runtime run and the job log confirms the journal regression plus the 54-entry suite.
+- No Web Demo, final-art, or screenshot acceptance is claimed.
+
+### Next Agent
+1. Verify the exact latest branch-head Runtime result and job log; update the development record if a code fix is required.
+2. Keep PR #29 open/unmerged absent explicit authorization.
+3. Remaining separate work: six final transparent character PNG/WebP assets and actual player-facing screenshot review; do not replace these acceptance gates with placeholder SVGs or automated resource-load tests.
