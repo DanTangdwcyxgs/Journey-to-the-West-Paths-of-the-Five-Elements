@@ -719,3 +719,10 @@ Wukong、Tang、Longma、Bajie、Wujing 五条 Origin Route 均已完成首轮 S
 - 新增 2 项回归：非主视角缺失拒绝、非主视角触边拒绝；测试数从 10 增加到 12。同步更新 README、排期、交付规范、开发日志和 Agent handoff；并消除排期清单中重复编号及重复手动归档的冲突。
 - 精确当前 branch HEAD 的 Art Tooling 与 Godot Runtime 尚待 Actions 结果；不要把上一版 10 项测试的成功结果误记为当前 12 项测试版本的通过。
 - 本轮未调用图像生成。2026-11-11 额度保持已用；明日第一个角色任务仍为 Wukong 四视图。
+
+
+### Round 81 — 2026-11-11: Four-Quadrant Validation CI
+- 扩展后的 12 项工具回归在代码/测试 head 2bf702052e0827c06464cb60d8906c21f5d9430f 通过 Art Tooling [42948677672](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42948677672)，日志确认 Ran 12 tests / OK；同一 head 的 Godot Runtime [42948677560](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42948677560) 通过 visual_asset_contract 和 tests=52。
+- 后续 README 文档 head 981282eaf9692aebfdb1ccb52c7b4d193becf37e 的 Art Tooling [42948839342](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42948839342) 再次通过全部 12 项。
+- 新增验证确保非主视角方向也不能是空象限或贴边裁切；左上主视图仍是唯一 runtime crop，其他三个方向保存为 reference。
+- Runtime 文档提交若仍在运行，必须继续检查最终 branch HEAD 的 Actions；不因代码 head 通过就把尚未完成的后续 head 标记为绿。
