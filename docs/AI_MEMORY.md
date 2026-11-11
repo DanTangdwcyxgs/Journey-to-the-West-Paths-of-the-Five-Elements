@@ -707,5 +707,6 @@ Wukong、Tang、Longma、Bajie、Wujing 五条 Origin Route 均已完成首轮 S
 - 新增 tools/art/test_prepare_character_turnaround.py 共 10 个测试，覆盖源图字节完整、只提左上象限、长宽比和基线、透明通道、空象限、贴边裁切、尺寸奇数、未知角色及覆盖保护。当前本地 unittest discover 10/10 通过。
 - 新增 tools/art/README.md、tools/art/requirements.txt 和 .github/workflows/art-tooling.yml；新增开发日志 docs/development_log/2026-11-11-turnaround-crop-utility.md，更新美术排期、交付规范、pipeline、视觉索引与 Agent handoff。
 - 人工仍须检查四个视角是否同一模型、同一套服装/装备、同一站姿、朝向正确；自动裁切不能替代美术验收。工具只产出运行时尺寸/透明度候选，不代表画质验收通过。
-- 本地测试命令：python -m unittest discover -s tools/art -p 'test_*.py' -v。专属 Art Tooling GitHub Actions 必须在精确分支 HEAD 上完成后，才能报告 CI 通过。
+- PASS：工具/文档 head 69fc03a38b02221e57b66003c1dbb1440c51a307 的 Art Tooling [42947150489](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42947150489) 通过全部 10 项单元测试；同一 head 的 Godot Runtime [42947150307](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42947150307) 通过 visual-asset contract 与 Runtime suite 52/52。
+- 本地可复现命令：python -m unittest discover -s tools/art -p 'test_*.py' -v。若之后还有文档提交移动 branch HEAD，必须检查最新 HEAD 的 Art Tooling / Godot Runtime Actions，不能沿用旧 SHA 的结果声称最新提交已通过。
 - 本轮没有调用图像生成；2026-11-11 的额度仍已消耗。下一代 Agent 于 2026-11-12 生成悟空四视图后再运行裁切工具。
