@@ -6,6 +6,13 @@ const PAPER := Color("d2bd89")
 const GOLD := Color("d5ad57")
 const RED := Color("8f3f39")
 
+## Presentation anchors are expressed as viewport ratios and tested at the canonical 1280×720 canvas.
+const ORIGIN_HERO_SCALE: float = 2.80
+const ORIGIN_HERO_BASELINE_RATIO: float = 0.82
+const ORIGIN_HERO_SHADOW_RATIO: float = 0.83
+const BATTLE_BOSS_BASELINE_RATIO: float = 0.73
+const YELLOW_WIND_BOSS_BASELINE_RATIO: float = 0.77
+
 var scene_name := ""
 var background_texture: Texture2D
 var sprite_textures: Dictionary = {}
@@ -82,8 +89,8 @@ func _draw_journey_stage() -> void:
 	var is_origin: bool = journey != null and journey.narrative != null and journey.narrative.state != null and journey.narrative.state.route_progress.get(journey.narrative.state.starting_character, NarrativeState.ROUTE_LOCKED) != NarrativeState.ROUTE_COMPLETE
 	if is_origin:
 		var hero: String = str(journey.narrative.state.starting_character)
-		_draw_sprite(hero, Vector2(size.x * 0.50, size.y * 0.66), 3.45)
-		_draw_sprite_shadow(Vector2(size.x * 0.50, size.y * 0.83), 74.0)
+		_draw_sprite(hero, Vector2(size.x * 0.50, size.y * ORIGIN_HERO_BASELINE_RATIO), ORIGIN_HERO_SCALE)
+		_draw_sprite_shadow(Vector2(size.x * 0.50, size.y * ORIGIN_HERO_SHADOW_RATIO), 74.0)
 		_draw_origin_landmarks(hero)
 	else:
 		_draw_sprite("WUKONG", Vector2(size.x * 0.16, size.y * 0.74), 1.75)
@@ -121,13 +128,13 @@ func _draw_origin_landmarks(hero: String) -> void:
 func _draw_battle_stage() -> void:
 	_draw_sprite("WUKONG", Vector2(size.x * 0.31, size.y * 0.70), 2.40)
 	_draw_sprite("TANG", Vector2(size.x * 0.42, size.y * 0.74), 1.95)
-	_draw_sprite("YELLOW_WIND", Vector2(size.x * 0.76, size.y * 0.68), 2.65)
+	_draw_sprite("YELLOW_WIND", Vector2(size.x * 0.76, size.y * BATTLE_BOSS_BASELINE_RATIO), 2.65)
 	_draw_battle_marks()
 
 func _draw_yellow_wind_stage() -> void:
 	_draw_sprite("WUKONG", Vector2(size.x * 0.18, size.y * 0.77), 1.90)
 	_draw_sprite("TANG", Vector2(size.x * 0.29, size.y * 0.79), 1.70)
-	_draw_sprite("YELLOW_WIND", Vector2(size.x * 0.73, size.y * 0.68), 2.50)
+	_draw_sprite("YELLOW_WIND", Vector2(size.x * 0.73, size.y * YELLOW_WIND_BOSS_BASELINE_RATIO), 2.50)
 	_draw_battle_marks()
 
 func _draw_sprite(kind: String, base: Vector2, scale_factor: float) -> void:
