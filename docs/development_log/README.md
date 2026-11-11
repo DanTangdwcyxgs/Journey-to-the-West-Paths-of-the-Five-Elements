@@ -10,6 +10,8 @@
 
 ## 最新记录
 
+- [2026-11-11 — VisualOverlay Backdrop Opacity Guard](2026-11-11-visual-overlay-backdrop-opacity-guard.md)
+
 - [2026-11-11 — Four-View Turnaround Crop Utility](2026-11-11-turnaround-crop-utility.md)
 - [2026-11-11 — Wukong Turnaround Pose Brief Alignment](2026-11-11-wukong-pose-brief-alignment.md)
 - [2026-11-11 — Scene Asset Filename Contract](2026-11-11-scene-asset-filename-contract.md)
