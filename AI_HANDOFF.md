@@ -577,17 +577,17 @@ Runtime has now verified the post-Shared-02 detour and that Journey resumes at S
 - Read `docs/visual_reference/AI_ART_PRODUCTION_SCHEDULE.md` before any image generation. It is the single source of truth for date, asset order, output path, prompt brief, and status.
 - Daily limit: one image-generation call per local calendar day (`America/Los_Angeles`). Never retry on the same day. After the daily image task, continue with non-generation engineering work.
 - Today (2026-11-11) the single generation call produced a planning poster whose generated asset labels were inaccurate. It is rejected as production art, was not committed to game folders, and today's image quota is consumed. Do not generate again today.
-- First production asset: **2026-11-12 — Wukong**. Continue with Tang, Bajie, Wujing, Longma, Yellow Wind King, Journey scenery, Yellow Wind battle background, and WorldMap according to the schedule.
+- First production image: **2026-11-12 — Wukong four-view turnaround sheet**. Crop its top-left three-quarter view into the runtime sprite; archive the untouched sheet. Continue with Tang, Bajie, Wujing, Longma, Yellow Wind King, Journey scenery, Yellow Wind battle background, and WorldMap according to the schedule.
 
 ### Critical implementation detail
 - `ui/visual_overlay.gd` multiplies the source texture's raw width and height by the presentation scale. Final character textures must match the current SVG dimensions exactly: Wukong/Tang/Bajie/Wujing 128×192; Longma 160×128; Yellow Wind King 144×192.
-- `combat/test_visual_asset_contract.gd` now enforces these dimensions. Export generated high-resolution art onto the exact canvas using nearest-neighbor processing. Do not change dimensions without updating VisualOverlay and layout regressions deliberately.
+- `combat/test_visual_asset_contract.gd` now enforces these dimensions. The exact-size rule applies to the extracted top-left gameplay crop, not the raw turnaround sheet. Archive the source sheet separately, preserve character proportions, and use nearest-neighbor processing. Do not change final crop dimensions without updating VisualOverlay and layout regressions deliberately.
 
 ### Required workflow per image
 1. Check today's local date and this schedule; verify no generation call has already been made today.
-2. Generate one isolated asset only; no contact sheet, UI, text, watermarks, or scene background for character sprites.
-3. Inspect transparency, silhouette, clean pixel edges, identity props, and crop safety.
-4. Save to the exact final path without deleting SVG fallbacks.
+2. On a character date, generate one single-character 2×2 four-view turnaround sheet: top-left primary front 3/4, top-right right profile, bottom-right rear 3/4, bottom-left left profile. All four views must be full-body and consistent; this is not a multi-character contact sheet. No UI, labels, panel borders, watermark, or scenery.
+3. Inspect all four views for full-body completeness, consistent character design, transparency, silhouette, clean pixel edges, identity props, and crop safety.
+4. Archive the untouched source sheet at assets/art/source_sheets/characters/<id>_turnaround.png; crop only the top-left view into the exact final path without deleting SVG fallbacks. The other views remain reference material.
 5. Update the schedule status, a dated development log, AI_MEMORY and handoff.
 6. Verify the exact newest Godot Runtime head; after the initial batch also run Web Demo and review actual in-game screenshots.
 
