@@ -595,7 +595,7 @@ Runtime has now verified the post-Shared-02 detour and that Journey resumes at S
 ### Turnaround crop utility
 - Install its dependency with `python -m pip install -r tools/art/requirements.txt`.
 - Run tests with `python -m unittest discover -s tools/art -p 'test_*.py' -v`.
-- The dedicated Art Tooling workflow tests the helper independently from Godot Runtime. Current helper suite has 12 tests; check the exact latest branch SHA before reporting CI green.
+- The dedicated Art Tooling workflow tests the helper independently from Godot Runtime. Current helper suite has 12 tests, including missing/cropped secondary-view rejection; check the exact latest branch SHA before reporting CI green.
 
 ### Crop-tool validation
 - Art Tooling PASS on helper/docs SHA `69fc03a38b02221e57b66003c1dbb1440c51a307`: [42947150489](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42947150489), all 10 unit tests passed.
