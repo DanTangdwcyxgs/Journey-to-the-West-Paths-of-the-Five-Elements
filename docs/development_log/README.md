@@ -15,6 +15,7 @@
 - [2026-11-11 — Scene Asset Filename Contract](2026-11-11-scene-asset-filename-contract.md)
 - [2026-11-11 — Visual Overlay Sprite Bounds and Ground Anchors](2026-11-11-visual-overlay-layout-contract.md)
 - [2026-11-11 — Journey Overlay Refresh on Origin Completion](2026-11-11-journey-overlay-origin-refresh.md)
+- [2026-11-11 — VisualOverlay Unsupported Scene Fallback](2026-11-11-visual-overlay-unsupported-scene-fallback.md)
 - [2026-11-11 — Four-View Character Turnaround Strategy](2026-11-11-four-view-character-turnaround-strategy.md)
 - [2026-11-11 — Daily AI Art Production Plan and Canvas Contract](2026-11-11-ai-art-production-plan.md)
 
