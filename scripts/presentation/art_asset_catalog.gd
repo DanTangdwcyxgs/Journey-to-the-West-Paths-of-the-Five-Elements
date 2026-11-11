@@ -21,6 +21,14 @@ const SCENE_PATHS: Dictionary = {
 	"WORLD_MAP": "res://assets/art/scenes/journey_map.svg",
 }
 
+## Final scene filenames are explicit because the runtime IDs intentionally differ from file stems.
+## Keep these stems synchronized with AI_ART_PRODUCTION_SCHEDULE.md.
+const SCENE_FINAL_STEMS: Dictionary = {
+	"JOURNEY": "journey_scenery",
+	"BATTLE_YELLOW_WIND": "yellow_wind_battle",
+	"WORLD_MAP": "world_map",
+}
+
 static func character_texture(character_id: String) -> Texture2D:
 	return _resolve_texture("characters", character_id, CHARACTER_PATHS)
 
@@ -36,6 +44,8 @@ static func scene_asset_path(scene_id: String) -> String:
 static func _resolve_asset_path(kind: String, asset_id: String, fallback_paths: Dictionary) -> String:
 	var normalized_id: String = asset_id.to_upper()
 	var stem: String = normalized_id.to_lower()
+	if kind == "scenes":
+		stem = str(SCENE_FINAL_STEMS.get(normalized_id, stem))
 	var final_candidates: Array[String] = [
 		"res://assets/art/%s/final/%s.png" % [kind, stem],
 		"res://assets/art/%s/final/%s.webp" % [kind, stem],
