@@ -772,3 +772,10 @@ Wukong、Tang、Longma、Bajie、Wujing 五条 Origin Route 均已完成首轮 S
 - 扩展 combat/test_visual_overlay_layout_contract.gd，对仓库现有 12 个 UI 场景建立映射契约：6 个预期舞台场景必须映射正确，6 个非舞台场景必须返回空舞台。
 - 新增开发日志 docs/development_log/2026-11-11-visual-overlay-unsupported-scene-fallback.md，更新开发日志索引与 AI_HANDOFF。
 - 本轮只调整 Presentation 路由与回归，不修改战斗、剧情、存档、角色素材或图像生成。实现/回归 head `8866bcf06ad5933296759e6cb7fff6b717bb2530` 的 Art Tooling [42966697704](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42966697704) 通过 12 tests / OK；同一 head 的 Godot Runtime [42966697762](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42966697762) 通过 `test_visual_overlay_layout_contract.gd` 与 `RUNTIME_SUITE_PASS tests=53`。没有完成玩家可见截图验收；后续文档同步 head 仍必须重新核对 CI。
+
+### Round 89 — 2026-11-11: VisualOverlay Backdrop Opacity Guard
+- 审查 VisualOverlay 与真实场景根节点的背景构建流程，发现 _apply_scene_visuals() 对所有场景的全屏 ColorRect 无条件执行 alpha ≤ 0.30；Camp、Shop、Party、Preparation 等没有舞台背景纹理的页面也会被改为半透明。
+- 新增 background_color_for_backdrop(color, backdrop_available)，仅当实际加载到舞台背景纹理时才将底层 ColorRect alpha 限制为 0.30；没有纹理（包括资源缺失 fallback）时完整保留原始颜色和透明度。
+- 新增三项 Runtime 回归：无背景纹理保持不透明、存在背景纹理才将 alpha 限制到 0.30、原本 alpha=0.12 的遮罩不进一步变淡。
+- 新增开发日志 docs/development_log/2026-11-11-visual-overlay-backdrop-opacity-guard.md 并更新索引与 Agent handoff。
+- 未修改场景/战斗/剧情/存档逻辑、未改动任何 PNG/SVG 资源、未调用图像生成。最终精确 HEAD 的 Godot Runtime 与 Art Tooling 结果以 PR #30 的最新 Actions 记录为准。
