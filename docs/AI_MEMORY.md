@@ -771,4 +771,4 @@ Wukong、Tang、Longma、Bajie、Wujing 五条 Origin Route 均已完成首轮 S
 - 新增 stage_kind_for_scene(scene_path) 显式解析主菜单、Journey、战斗、世界地图、黄风岭/洞舞台；背景图选择和前景舞台绘制共用该解析结果。未知/非舞台场景不再绘制 Journey 队伍。
 - 扩展 combat/test_visual_overlay_layout_contract.gd，对仓库现有 12 个 UI 场景建立映射契约：6 个预期舞台场景必须映射正确，6 个非舞台场景必须返回空舞台。
 - 新增开发日志 docs/development_log/2026-11-11-visual-overlay-unsupported-scene-fallback.md，更新开发日志索引与 AI_HANDOFF。
-- 本轮只调整 Presentation 路由与回归，不修改战斗、剧情、存档、角色素材或图像生成。必须检查当前精确 branch HEAD 的 Godot Runtime 和 Art Tooling Actions；没有完成玩家可见截图验收。
+- 本轮只调整 Presentation 路由与回归，不修改战斗、剧情、存档、角色素材或图像生成。实现/回归 head `8866bcf06ad5933296759e6cb7fff6b717bb2530` 的 Art Tooling [42966697704](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42966697704) 通过 12 tests / OK；同一 head 的 Godot Runtime [42966697762](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42966697762) 通过 `test_visual_overlay_layout_contract.gd` 与 `RUNTIME_SUITE_PASS tests=53`。没有完成玩家可见截图验收；后续文档同步 head 仍必须重新核对 CI。
