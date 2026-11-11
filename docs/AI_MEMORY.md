@@ -710,3 +710,12 @@ Wukong、Tang、Longma、Bajie、Wujing 五条 Origin Route 均已完成首轮 S
 - PASS：工具/文档 head 69fc03a38b02221e57b66003c1dbb1440c51a307 的 Art Tooling [42947150489](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42947150489) 通过全部 10 项单元测试；同一 head 的 Godot Runtime [42947150307](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42947150307) 通过 visual-asset contract 与 Runtime suite 52/52。
 - 本地可复现命令：python -m unittest discover -s tools/art -p 'test_*.py' -v。若之后还有文档提交移动 branch HEAD，必须检查最新 HEAD 的 Art Tooling / Godot Runtime Actions，不能沿用旧 SHA 的结果声称最新提交已通过。
 - 本轮没有调用图像生成；2026-11-11 的额度仍已消耗。下一代 Agent 于 2026-11-12 生成悟空四视图后再运行裁切工具。
+
+
+### Round 80 — 2026-11-11: Validate Every Turnaround Quadrant
+- 再审查 prepare_character_turnaround.py，发现旧实现虽然只裁切左上主视角，却只对左上象限做空白/透明边距/边缘裁切检查；其余三个方向若缺失或贴边仍可能通过。
+- 将输入验收升级为四象限全部检查：front_3q / right_profile / rear_3q / left_profile 每格必须有可见内容、至少 5% 完全透明像素、可见边界不触碰各自象限边界。裁切行为仍仅提取左上主视角。
+- PreparationResult JSON 元数据增加所有象限的可见边界与透明像素比，便于每张图事后审计。
+- 新增 2 项回归：非主视角缺失拒绝、非主视角触边拒绝；测试数从 10 增加到 12。同步更新 README、排期、交付规范、开发日志和 Agent handoff；并消除排期清单中重复编号及重复手动归档的冲突。
+- 精确当前 branch HEAD 的 Art Tooling 与 Godot Runtime 尚待 Actions 结果；不要把上一版 10 项测试的成功结果误记为当前 12 项测试版本的通过。
+- 本轮未调用图像生成。2026-11-11 额度保持已用；明日第一个角色任务仍为 Wukong 四视图。
