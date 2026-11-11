@@ -744,3 +744,10 @@ Wukong、Tang、Longma、Bajie、Wujing 五条 Origin Route 均已完成首轮 S
 - 统一以 `docs/visual_reference/prompts/2026-11-12-wukong-turnaround.md` 为详细动作权威：双脚约肩宽、膝部微松、躯干直立；金箍棒由角色解剖学右手握持，直立置于身体旁；四格保持同一动作与握法，只旋转观察方向，不挥击、不突刺。
 - 同步更新 AI_ART_PRODUCTION_SCHEDULE、AI_ASSET_PIPELINE、AI_ASSET_DELIVERY_SPEC，并新增开发日志 `docs/development_log/2026-11-11-wukong-pose-brief-alignment.md`。
 - 本轮仅修改文档，未调用图像生成，未变更游戏代码、资源目录或 runtime contract。2026-11-11 图像生成额度仍已消耗；下一次正式生成仍为 2026-11-12 的 Wukong 四视图。
+
+### Round 85 — 2026-11-11: Scene Asset Filename Contract
+- 对照生产排期、`ArtAssetCatalog` 和场景运行时加载链，发现排期中的 `journey_scenery.png` / `yellow_wind_battle.png` 与原 catalog 根据场景 ID 自动生成的 `journey.png` / `battle_yellow_wind.png` 不一致；生成后会继续使用 SVG fallback。
+- 新增 `SCENE_FINAL_STEMS` 显式映射：JOURNEY → journey_scenery、BATTLE_YELLOW_WIND → yellow_wind_battle、WORLD_MAP → world_map；保留 PNG → WebP → SVG 加载顺序及原 SVG 文件不变。
+- 扩展 `combat/test_art_asset_catalog.gd`，验证场景最终文件名映射、解析优先级、资源可加载和 16:9 画布比例；Runtime suite 已登记该测试。
+- 更新 `docs/visual_reference/AI_ASSET_DELIVERY_SPEC.md`，增加 Scene ID / PNG-WebP stem / fallback 表；新增 `docs/development_log/2026-11-11-scene-asset-filename-contract.md`。
+- 本轮未调用图像生成，未改动 SVG 或最终图像素材；2026-11-11 额度仍已消耗。新代码必须在当前精确 branch HEAD 的 Godot Runtime 与 Art Tooling 中验证。
