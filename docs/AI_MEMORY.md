@@ -732,3 +732,9 @@ Wukong、Tang、Longma、Bajie、Wujing 五条 Origin Route 均已完成首轮 S
 - 新增 docs/visual_reference/prompts/2026-11-12-wukong-turnaround.md，作为 2026-11-12 唯一一次悟空四视图生成调用的详细提示文件。
 - 提示固定 2×2 象限顺序、同一站姿/武器握法、悟空猴面/金箍/红赭战衣/如意金箍棒/尾巴识别点、统一像素密度、真实透明背景、四格留白与无文字/无 UI/无场景要求。
 - AI_HANDOFF 和每日排期已链接该提示；执行 Agent 仍须先检查当地日期和今日生成状态，一天只生成一次。今日额度已消耗，本轮没有调用图像生成。
+
+
+### Round 83 — 2026-11-11: Final Wukong Prompt/Handoff Validation
+- 包含悟空专用提示与交接链接的 prompt/memory head a1f7c762d50e38e3f713c25858efab1d0e291297 已通过 Art Tooling [42949285871](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42949285871)：12 tests / OK。
+- 同一 head 的 Godot Runtime [42949285936](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42949285936) 通过，日志确认 PASS res://combat/test_visual_asset_contract.gd 和 RUNTIME_SUITE_PASS tests=52。
+- 2026-11-12 Wukong prompt 文件 docs/visual_reference/prompts/2026-11-12-wukong-turnaround.md 已保存，并从排期与 AI_HANDOFF 链接。今日图像生成额度仍已用，本轮只完成提示准备和代码/文档工作。
