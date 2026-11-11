@@ -588,14 +588,14 @@ Runtime has now verified the post-Shared-02 detour and that Journey resumes at S
 2. On a character date, generate one single-character 2×2 four-view turnaround sheet: top-left primary front 3/4, top-right right profile, bottom-right rear 3/4, bottom-left left profile. All four views must be full-body and consistent, preserving the same pose and weapon grip while rotating only the viewing angle; this is not a multi-character contact sheet. No UI, labels, panel borders, watermark, or scenery.
 3. Inspect all four views for full-body completeness, consistent character design, transparency, silhouette, clean pixel edges, identity props, and crop safety.
 4. Manually review all four views first. From the repository root, run `python tools/art/prepare_character_turnaround.py --input /absolute/path/<id>_turnaround.png --character <id>`. It byte-for-byte archives the original sheet and extracts the top-left view into the exact final canvas. Do not pass `--overwrite` unless replacement has been reviewed and approved.
-5. Inspect both archived source and runtime crop; confirm exact dimensions, transparency, complete silhouette, proportion, same model/pose across all views, and correct quadrant order. The tool does not validate artistic consistency.
+5. Inspect both archived source and runtime crop; confirm exact dimensions, transparency, complete silhouette, proportion, same model/pose across all views, and correct quadrant order. The tool rejects any empty or edge-cropped quadrant. It does not validate artistic consistency.
 6. Update the schedule status, a dated development log, AI_MEMORY and handoff.
 7. Verify the exact newest Godot Runtime head; after the initial batch also run Web Demo and review actual in-game screenshots.
 
 ### Turnaround crop utility
 - Install its dependency with `python -m pip install -r tools/art/requirements.txt`.
 - Run tests with `python -m unittest discover -s tools/art -p 'test_*.py' -v`.
-- The dedicated Art Tooling workflow tests the helper independently from Godot Runtime. A local 10/10 pass is not the same as branch CI passing.
+- The dedicated Art Tooling workflow tests the helper independently from Godot Runtime. Current helper suite has 12 tests; check the exact latest branch SHA before reporting CI green.
 
 ### Crop-tool validation
 - Art Tooling PASS on helper/docs SHA `69fc03a38b02221e57b66003c1dbb1440c51a307`: [42947150489](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42947150489), all 10 unit tests passed.
