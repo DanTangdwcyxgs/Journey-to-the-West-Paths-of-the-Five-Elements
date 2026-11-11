@@ -40,11 +40,13 @@ SVG 当前继续作为占位/可运行资源，不是最终美术标准。
 
 目标不是“卡通人物”，而是可以直接放进 JRPG 战斗画面的完整像素角色。
 
+每个角色日期的唯一生成调用应输出一张完整的 2×2 四视图设定图，而不是只画单一方向，也不是多角色联系表。四个象限顺时针排列：左上主要正面 3/4 战斗展示角度（用于当前游戏贴图），右上右侧面，右下背面 3/4，左下左侧面。四个视角必须是同一角色、同一服装/装备、完整全身且互不重叠。
+
 建议输出：
 
 - 透明背景。
-- 单角色全身。
-- 正侧约 3/4 战斗姿态。
+- 单角色四视图完整全身；四个方向都不能裁切。
+- 左上角主视图为正面 3/4 战斗姿态。
 - 清晰轮廓。
 - 可辨认脸部、发型/头饰、服装、鞋、武器、饰物。
 - 明确的明暗分层。
@@ -52,6 +54,8 @@ SVG 当前继续作为占位/可运行资源，不是最终美术标准。
 - 像素边缘，不要抗锯齿。
 - 不要 UI、文字、边框、水印。
 - 不要把角色画成圆头+方身体的简化几何体。
+
+原始四视图设定图存档到 assets/art/source_sheets/characters/<id>_turnaround.png。只把左上角主视图裁切到 assets/art/characters/final/<id>.png，遵守现有精确画布尺寸合同；其余三个方向作为后续动画、方向素材及角色设计一致性参考，不直接加载进当前运行时。
 
 ## 4. 五人必须保持的视觉识别点
 
@@ -139,8 +143,8 @@ SVG 当前继续作为占位/可运行资源，不是最终美术标准。
 
 ## 10. Daily image-generation budget
 
-The project owner has one image-generation call per local calendar day. Read `AI_ART_PRODUCTION_SCHEDULE.md` before each call, generate only the current day's isolated asset, and do not retry or refine with a second generation call on the same date. A rejected output must be marked in the schedule and moved to the next available date; continue non-generation engineering work for the rest of the day.
+The project owner has one image-generation call per local calendar day. Read `AI_ART_PRODUCTION_SCHEDULE.md` before each call and never make a second call on the same date. For a character day, the one call must create a single-character 2×2 four-view turnaround sheet (front 3/4, right profile, rear 3/4, left profile); archive the source sheet and crop the top-left view for the current game. A scene day creates one full scene background. A rejected output must be recorded and moved to the next available date; continue non-generation engineering work for the rest of the day.
 
 The canonical schedule is the single source of truth for daily asset order and prompts. Today’s generated planning poster was not accepted as game art; the first production asset is Wukong on 2026-11-12.
 
-Character images must be reduced/cropped to the exact current SVG canvas sizes in `AI_ASSET_DELIVERY_SPEC.md`. This matters because `VisualOverlay` uses the raw texture width/height for screen sizing. The Runtime visual-contract test enforces these dimensions.
+Only the extracted top-left gameplay crop must be reduced proportionally to the exact current SVG canvas sizes in `AI_ASSET_DELIVERY_SPEC.md`. Archive the original four-view reference sheet separately; it is not runtime-loaded. This matters because `VisualOverlay` uses the final texture width/height for screen sizing. The Runtime visual-contract test enforces the crop dimensions.
