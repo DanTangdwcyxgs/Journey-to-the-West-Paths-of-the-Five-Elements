@@ -578,6 +578,7 @@ Runtime has now verified the post-Shared-02 detour and that Journey resumes at S
 - Daily limit: one image-generation call per local calendar day (`America/Los_Angeles`). Never retry on the same day. After the daily image task, continue with non-generation engineering work.
 - Today (2026-11-11) the single generation call produced a planning poster whose generated asset labels were inaccurate. It is rejected as production art, was not committed to game folders, and today's image quota is consumed. Do not generate again today.
 - First production image: **2026-11-12 — Wukong four-view turnaround sheet**. Use `docs/visual_reference/prompts/2026-11-12-wukong-turnaround.md` as the copy-ready prompt. Crop its top-left three-quarter view into the runtime sprite; archive the untouched sheet. Continue with Tang, Bajie, Wujing, Longma, Yellow Wind King, Journey scenery, Yellow Wind battle background, and WorldMap according to the schedule.
+- The Wukong pose brief is synchronized across the schedule, delivery spec, and visual pipeline. The dedicated prompt is authoritative: upright neutral battle-ready stance; staff held beside the body in the anatomical right hand; same pose and grip in every quadrant. See `docs/development_log/2026-11-11-wukong-pose-brief-alignment.md`.
 
 ### Critical implementation detail
 - `ui/visual_overlay.gd` multiplies the source texture's raw width and height by the presentation scale. Final character textures must match the current SVG dimensions exactly: Wukong/Tang/Bajie/Wujing 128×192; Longma 160×128; Yellow Wind King 144×192.
