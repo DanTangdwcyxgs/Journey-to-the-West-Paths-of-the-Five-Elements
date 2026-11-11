@@ -626,3 +626,10 @@ Runtime has now verified the post-Shared-02 detour and that Journey resumes at S
 - VisualOverlay.background_color_for_backdrop(color, backdrop_available) is the shared policy function; the Runtime layout contract covers opaque fallback, stage-backed alpha cap, and pre-existing translucent shades.
 - Latest implementation work belongs to PR #30 branch art/production-roadmap-2026-11-11; keep it Draft/unmerged unless explicitly instructed otherwise.
 - No player-facing screenshot acceptance or final-art acceptance is claimed. Continue with scene layering/input audits, then verify actual screenshots once production art is integrated.
+
+## 17. 2026-11-11 VisualOverlay Scene Instance Refresh
+
+- VisualOverlay refresh identity is `(scene_file_path, current_scene.get_instance_id())`, not path alone. A newly instantiated scene using the same `.tscn` path must reapply its backdrop and root ColorRect opacity policy.
+- When `SceneTree.current_scene` is temporarily null during scene changes, clear `scene_instance_id`, `scene_name`, `background_texture`, and `presentation_signature`; this prevents a same-path re-entry from being mistaken for the previous scene instance.
+- `should_reapply_scene_visuals()` is covered by the Runtime layout contract for same-path recreation, same-instance stability, and path changes.
+- PR #30 remains Draft/unmerged. Do not claim screenshot acceptance; verify the exact branch HEAD Actions before considering this batch complete.
