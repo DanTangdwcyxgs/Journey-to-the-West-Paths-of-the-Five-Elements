@@ -10,6 +10,8 @@
 
 ## 最新记录
 
+- [2026-11-11 — VisualOverlay Scene Instance Refresh](2026-11-11-visual-overlay-scene-instance-refresh.md)
+
 - [2026-11-11 — VisualOverlay Backdrop Opacity Guard](2026-11-11-visual-overlay-backdrop-opacity-guard.md)
 
 - [2026-11-11 — Four-View Turnaround Crop Utility](2026-11-11-turnaround-crop-utility.md)
