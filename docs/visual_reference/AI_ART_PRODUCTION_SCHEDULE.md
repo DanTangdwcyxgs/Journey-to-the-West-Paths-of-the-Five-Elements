@@ -128,14 +128,14 @@ For each generated asset, the Agent must:
 1. Inspect all four views at native size. Confirm they are the same character model, all full-body, consistently proportioned, correctly oriented, and free of overlap or cropped extremities.
 2. Confirm transparent alpha; no checkerboard painted into the image. Reject a sheet that contains text, labels, borders, UI, scenery, or watermarks.
 3. Archive the untouched source sheet at the exact assets/art/source_sheets/characters/<id>_turnaround.png path from the queue.
-4. Run `python tools/art/prepare_character_turnaround.py --input /absolute/path/<id>_turnaround.png --character <id>` from the repository root. The tool byte-for-byte archives the source, extracts the top-left primary view, checks real transparency/edge safety, and writes the exact-size runtime crop with aspect ratio preserved and nearest-neighbor scaling.
+4. Run `python tools/art/prepare_character_turnaround.py --input /absolute/path/<id>_turnaround.png --character <id>` from the repository root. The tool first confirms all four quadrants contain visible pixels, transparent margin, and no edge-touching crop, then byte-for-byte archives the source, extracts the top-left primary view, and writes the exact-size runtime crop with aspect ratio preserved and nearest-neighbor scaling.
 5. Inspect the tool output and the resulting crop visually at native and in-game scale. The tool cannot verify that all four views depict the same model, costume, stance, or weapon grip; human review remains mandatory.
 6. Keep the SVG fallback untouched. Do not use `--overwrite` unless the previous sheet and crop have been reviewed and replacement is intentional.
-6. Add a dated development log with the prompt summary, output dimensions, processing steps, file SHA/path, and acceptance/rejection result.
-7. Run exact-head Godot Runtime CI. Inspect the log for `PASS res://combat/test_visual_asset_contract.gd` and the full `RUNTIME_SUITE_PASS` result. Do not claim success from a queued/in-progress run.
-8. Update this schedule, `docs/AI_MEMORY.md`, `AI_HANDOFF.md`, and the development-log index.
-9. After the character/background batch is complete, run Web Demo build/deploy and inspect actual game screenshots. Resource-load CI alone is not aesthetic acceptance.
-10. Once today's image task is done, continue with non-generation work. Do not spend another generation call for the same local date.
+7. Add a dated development log with the prompt summary, output dimensions, processing steps, file SHA/path, and acceptance/rejection result.
+8. Run exact-head Godot Runtime CI. Inspect the log for `PASS res://combat/test_visual_asset_contract.gd` and the full `RUNTIME_SUITE_PASS` result. Do not claim success from a queued/in-progress run.
+9. Update this schedule, `docs/AI_MEMORY.md`, `AI_HANDOFF.md`, and the development-log index.
+10. After the character/background batch is complete, run Web Demo build/deploy and inspect actual game screenshots. Resource-load CI alone is not aesthetic acceptance.
+11. Once today's image task is done, continue with non-generation work. Do not spend another generation call for the same local date.
 
 ## 7. Non-generation work to do between scheduled images
 
