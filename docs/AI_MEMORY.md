@@ -738,3 +738,9 @@ Wukong、Tang、Longma、Bajie、Wujing 五条 Origin Route 均已完成首轮 S
 - 包含悟空专用提示与交接链接的 prompt/memory head a1f7c762d50e38e3f713c25858efab1d0e291297 已通过 Art Tooling [42949285871](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42949285871)：12 tests / OK。
 - 同一 head 的 Godot Runtime [42949285936](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42949285936) 通过，日志确认 PASS res://combat/test_visual_asset_contract.gd 和 RUNTIME_SUITE_PASS tests=52。
 - 2026-11-12 Wukong prompt 文件 docs/visual_reference/prompts/2026-11-12-wukong-turnaround.md 已保存，并从排期与 AI_HANDOFF 链接。今日图像生成额度仍已用，本轮只完成提示准备和代码/文档工作。
+
+### Round 84 — 2026-11-11: Wukong Turnaround Pose Brief Alignment
+- 交叉审查 2026-11-12 悟空专用提示词、每日排期、交付规范和视觉 pipeline，发现“直立中性战斗准备站姿”“略微前倾动作姿态”“偏进攻”三种描述不完全一致。
+- 统一以 `docs/visual_reference/prompts/2026-11-12-wukong-turnaround.md` 为详细动作权威：双脚约肩宽、膝部微松、躯干直立；金箍棒由角色解剖学右手握持，直立置于身体旁；四格保持同一动作与握法，只旋转观察方向，不挥击、不突刺。
+- 同步更新 AI_ART_PRODUCTION_SCHEDULE、AI_ASSET_PIPELINE、AI_ASSET_DELIVERY_SPEC，并新增开发日志 `docs/development_log/2026-11-11-wukong-pose-brief-alignment.md`。
+- 本轮仅修改文档，未调用图像生成，未变更游戏代码、资源目录或 runtime contract。2026-11-11 图像生成额度仍已消耗；下一次正式生成仍为 2026-11-12 的 Wukong 四视图。
