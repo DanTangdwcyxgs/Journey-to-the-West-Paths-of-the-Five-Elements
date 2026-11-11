@@ -697,4 +697,5 @@ Wukong、Tang、Longma、Bajie、Wujing 五条 Origin Route 均已完成首轮 S
 - 精确尺寸合同只作用于最终游戏裁切：Wukong/Tang/Bajie/Wujing 128×192，Longma 160×128，Yellow Wind King 144×192。保持比例，使用 nearest-neighbor，不将四个方向压进单张运行时纹理。
 - 更新 AI_ART_PRODUCTION_SCHEDULE、AI_ASSET_DELIVERY_SPEC、AI_ASSET_PIPELINE、视觉参考索引、开发日志和 AI_HANDOFF。详细决策见 docs/development_log/2026-11-11-four-view-character-turnaround-strategy.md。
 - 今日 2026-11-11 的图像生成额度已被排期海报消耗；本轮没有调用 ImageGen，也没有接受任何正式角色美术。首个角色四视图生成仍为 2026-11-12 Wukong。
-- 文档策略修改不改运行时代码。PASS：准确分支 head e9cfdba08c18b50dedecc3886a5589195a01deee 的 Godot Runtime [42945517918](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42945517918) 日志确认 PASS res://combat/test_visual_asset_contract.gd 与 RUNTIME_SUITE_PASS tests=52。
+- 文档策略修改不改运行时代码。初始四视图策略 head e9cfdba08c18b50dedecc3886a5589195a01deee 的 Godot Runtime [42945517918](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42945517918) 通过 52/52。
+- 加入四视角同站姿约束后的策略 head c0b3ec73246ce647eb04e6376ea25c538eec5083，Godot Runtime [42945721522](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42945721522) 再次通过；日志确认 PASS visual-asset contract 与 RUNTIME_SUITE_PASS tests=52。
