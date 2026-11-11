@@ -36,7 +36,7 @@ Presentation lifecycle only. Gameplay, narrative state, combat, save data, and i
 
 ## Godot Runtime status
 
-Exact-head CI is required. Do not reuse the prior opacity-guard SHA result as validation for this follow-up.
+PASS on exact tested HEAD `03db87b6c5dc6208cf820e1b0677165455fa978b`: Godot Runtime [42981863213](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42981863213) confirms `PASS res://combat/test_visual_overlay_layout_contract.gd` and `RUNTIME_SUITE_PASS tests=53`; Art Tooling [42981863335](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42981863335) confirms 12 tests / OK.
 
 ## Known issues
 
