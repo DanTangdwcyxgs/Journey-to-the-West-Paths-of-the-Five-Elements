@@ -44,6 +44,10 @@ The new test cases explicitly prove that missing or edge-cropped secondary views
 - PASS: same code/test head, Godot Runtime [42948677560](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42948677560); log confirms `PASS res://combat/test_visual_asset_contract.gd` and `RUNTIME_SUITE_PASS tests=52`.
 - The later README/documentation head `981282eaf9692aebfdb1ccb52c7b4d193becf37e` also passed Art Tooling [42948839342](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42948839342) with all 12 tests. Check newest Runtime if later documentation commits remain in flight.
 
+## Wukong prompt preparation
+
+Added `docs/visual_reference/prompts/2026-11-12-wukong-turnaround.md` as the copy-ready brief for the first production slot. It fixes the exact 2×2 orientation layout, character identity, same-pose/weapon-grip constraint, pixel-art style, transparent background, safe margins, and no-text/no-UI exclusions. It also repeats the no-retry rule and post-generation crop workflow.
+
 ## Documentation
 
 - `tools/art/README.md`: installation, command, output contract, limitations, and tests.
