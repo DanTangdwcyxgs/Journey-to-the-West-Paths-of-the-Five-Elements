@@ -33,6 +33,12 @@ assets/art/characters/final/longma.png
 assets/art/characters/final/yellow_wind.png
 ```
 
+### 每日角色四视图设定图
+
+每个角色只消耗当天一次生成调用，但输出应是一张完整的 2×2 四视图设定图，而不是只交付单一方向，也不是多角色拼盘。四个象限按顺时针排列：左上为主要正面 3/4 战斗展示角度（当前游戏贴图取这一格），右上为右侧面，右下为背面 3/4，左下为左侧面。四个视角必须是同一个角色、同一套服装和同一组道具，全部完整全身，不得裁切、重叠或混入其他角色。
+
+原始设定图保存到 assets/art/source_sheets/characters/<id>_turnaround.png。仅将左上角 3/4 视角裁切为 assets/art/characters/final/<id>.png 的游戏贴图；其余三个视角保留为未来方向素材、动画和角色一致性参考。不要把四个方向缩进一张 128×192 / 160×128 的运行时贴图。
+
 ### 推荐交付规格
 
 - 透明背景。
@@ -112,7 +118,7 @@ AI 美术不要生成 UI 截图来替代程序 UI。AI 只负责角色、场景�
 
 ## 5. 动画素材（后续）
 
-当进入动画阶段，优先采用 sprite sheet：
+四视图设定图用于锁定角色在不同朝向下的服装、比例、背部细节和道具连续性；它不是动画帧，也不会直接被当前运行时代码加载。当进入动画阶段，优先采用独立的 sprite sheet：
 
 ```text
 assets/art/characters/final/wukong_idle.png
@@ -206,7 +212,7 @@ CharacterPortrait / VisualOverlay / BattleUI / WorldMap
 
 ## 11. Canvas Size Is a Runtime Contract
 
-Character PNG/WebP assets must preserve the exact canvas dimensions of their existing SVG fallbacks. `ui/visual_overlay.gd` multiplies the texture's raw width/height by the presentation scale, so a larger source image changes the character's in-game size even if its aspect ratio is unchanged.
+Only the canonical gameplay crop (the top-left primary three-quarter view from each turnaround sheet) must preserve the exact canvas dimensions of its existing SVG fallback. The archived source sheet is reference material and is not loaded at runtime. `ui/visual_overlay.gd` multiplies the final crop's raw width/height by the presentation scale, so changing the final crop dimensions changes the character's in-game size even if its aspect ratio is unchanged.
 
 | Character | Required final canvas |
 |---|---:|
@@ -217,7 +223,7 @@ Character PNG/WebP assets must preserve the exact canvas dimensions of their exi
 | Longma | 160×128 |
 | Yellow Wind King | 144×192 |
 
-Generate with ample detail, then crop and use nearest-neighbor processing to fit the exact canvas without cutting weapons, tails, hooves, feet, or headwear. The runtime visual contract checks these exact dimensions. A deliberate canvas change requires a reviewed update to VisualOverlay scale/layout and the corresponding regression test.
+Keep the untouched four-view source sheet under assets/art/source_sheets/characters/, then crop the top-left view and use nearest-neighbor processing to fit the exact canvas without cutting weapons, tails, hooves, feet, or headwear. The runtime visual contract checks only the final gameplay crop dimensions, not the source sheet. A deliberate canvas change requires a reviewed update to VisualOverlay scale/layout and the corresponding regression test.
 
 ## 12. Daily Generation Schedule
 
