@@ -577,7 +577,7 @@ Runtime has now verified the post-Shared-02 detour and that Journey resumes at S
 - Read `docs/visual_reference/AI_ART_PRODUCTION_SCHEDULE.md` before any image generation. It is the single source of truth for date, asset order, output path, prompt brief, and status.
 - Daily limit: one image-generation call per local calendar day (`America/Los_Angeles`). Never retry on the same day. After the daily image task, continue with non-generation engineering work.
 - Today (2026-11-11) the single generation call produced a planning poster whose generated asset labels were inaccurate. It is rejected as production art, was not committed to game folders, and today's image quota is consumed. Do not generate again today.
-- First production image: **2026-11-12 — Wukong four-view turnaround sheet**. Crop its top-left three-quarter view into the runtime sprite; archive the untouched sheet. Continue with Tang, Bajie, Wujing, Longma, Yellow Wind King, Journey scenery, Yellow Wind battle background, and WorldMap according to the schedule.
+- First production image: **2026-11-12 — Wukong four-view turnaround sheet**. Use `docs/visual_reference/prompts/2026-11-12-wukong-turnaround.md` as the copy-ready prompt. Crop its top-left three-quarter view into the runtime sprite; archive the untouched sheet. Continue with Tang, Bajie, Wujing, Longma, Yellow Wind King, Journey scenery, Yellow Wind battle background, and WorldMap according to the schedule.
 
 ### Critical implementation detail
 - `ui/visual_overlay.gd` multiplies the source texture's raw width and height by the presentation scale. Final character textures must match the current SVG dimensions exactly: Wukong/Tang/Bajie/Wujing 128×192; Longma 160×128; Yellow Wind King 144×192.
