@@ -55,7 +55,7 @@ SVG 当前继续作为占位/可运行资源，不是最终美术标准。
 - 不要 UI、文字、边框、水印。
 - 不要把角色画成圆头+方身体的简化几何体。
 
-原始四视图设定图存档到 assets/art/source_sheets/characters/<id>_turnaround.png。只把左上角主视图裁切到 assets/art/characters/final/<id>.png，遵守现有精确画布尺寸合同；其余三个方向作为后续动画、方向素材及角色设计一致性参考，不直接加载进当前运行时。
+原始四视图设定图存档到 assets/art/source_sheets/characters/<id>_turnaround.png。只把左上角主视图裁切到 assets/art/characters/final/<id>.png，遵守现有精确画布尺寸合同；其余三个方向作为后续动画、方向素材及角色设计一致性参考，不直接加载进当前运行时。使用 tools/art/prepare_character_turnaround.py 完成原图归档与主视角裁切，先人工检查所有视角，再运行工具；工具拒绝非透明背景、空视角、贴边疑似裁切画面和未经授权的覆盖。
 
 ## 4. 五人必须保持的视觉识别点
 
