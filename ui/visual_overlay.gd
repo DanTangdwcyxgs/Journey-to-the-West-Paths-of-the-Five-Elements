@@ -69,14 +69,13 @@ func _apply_scene_visuals() -> void:
 		return
 	scene_name = root.scene_file_path
 	background_texture = null
-	if scene_name.ends_with("main_menu.tscn") or scene_name.ends_with("journey.tscn"):
-		background_texture = ArtAssetCatalog.scene_texture("JOURNEY")
-	elif scene_name.ends_with("battle_ui.tscn"):
-		background_texture = ArtAssetCatalog.scene_texture("BATTLE_YELLOW_WIND")
-	elif scene_name.ends_with("world_map.tscn"):
-		background_texture = ArtAssetCatalog.scene_texture("WORLD_MAP")
-	elif scene_name.ends_with("yellow_wind_ridge.tscn") or scene_name.ends_with("yellow_wind_cave.tscn"):
-		background_texture = ArtAssetCatalog.scene_texture("BATTLE_YELLOW_WIND")
+	match stage_kind_for_scene(scene_name):
+		"main_menu", "journey":
+			background_texture = ArtAssetCatalog.scene_texture("JOURNEY")
+		"battle", "yellow_wind":
+			background_texture = ArtAssetCatalog.scene_texture("BATTLE_YELLOW_WIND")
+		"world_map":
+			background_texture = ArtAssetCatalog.scene_texture("WORLD_MAP")
 	for child in root.get_children():
 		if child is ColorRect:
 			var rect := child as ColorRect
@@ -85,19 +84,33 @@ func _apply_scene_visuals() -> void:
 				c.a = min(c.a, 0.30)
 				rect.color = c
 
+static func stage_kind_for_scene(scene_path: String) -> String:
+	if scene_path.ends_with("main_menu.tscn"):
+		return "main_menu"
+	if scene_path.ends_with("journey.tscn"):
+		return "journey"
+	if scene_path.ends_with("battle_ui.tscn"):
+		return "battle"
+	if scene_path.ends_with("world_map.tscn"):
+		return "world_map"
+	if scene_path.ends_with("yellow_wind_ridge.tscn") or scene_path.ends_with("yellow_wind_cave.tscn"):
+		return "yellow_wind"
+	return ""
+
 func _draw() -> void:
 	if background_texture != null:
 		draw_texture_rect(background_texture, Rect2(Vector2.ZERO, size), false)
-	if scene_name.ends_with("main_menu.tscn"):
-		_draw_main_menu_stage()
-	elif scene_name.ends_with("battle_ui.tscn"):
-		_draw_battle_stage()
-	elif scene_name.ends_with("world_map.tscn"):
-		_draw_map_details()
-	elif scene_name.ends_with("yellow_wind_ridge.tscn") or scene_name.ends_with("yellow_wind_cave.tscn"):
-		_draw_yellow_wind_stage()
-	else:
-		_draw_journey_stage()
+	match stage_kind_for_scene(scene_name):
+		"main_menu":
+			_draw_main_menu_stage()
+		"journey":
+			_draw_journey_stage()
+		"battle":
+			_draw_battle_stage()
+		"world_map":
+			_draw_map_details()
+		"yellow_wind":
+			_draw_yellow_wind_stage()
 
 func _draw_main_menu_stage() -> void:
 	_draw_sprite("WUKONG", Vector2(size.x * 0.18, size.y * 0.70), 2.35)
