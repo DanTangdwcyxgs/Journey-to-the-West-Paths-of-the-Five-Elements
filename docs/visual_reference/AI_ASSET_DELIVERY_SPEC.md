@@ -228,3 +228,5 @@ Keep the untouched four-view source sheet under assets/art/source_sheets/charact
 ## 12. Daily Generation Schedule
 
 The one-image-per-day queue and the rules for rejected generations are maintained in [AI_ART_PRODUCTION_SCHEDULE.md](AI_ART_PRODUCTION_SCHEDULE.md). It is the canonical source of dates, asset order, output paths, prompts, and handoff instructions. Do not treat generated schedule posters or chat graphics as production assets.
+
+For character sheets, use `tools/art/prepare_character_turnaround.py` after reviewing all four views. It preserves the source PNG byte-for-byte, extracts the top-left canonical view, and proportionally fits it to the exact runtime canvas. Run its regression tests with `python -m unittest discover -s tools/art -p 'test_*.py' -v`.
