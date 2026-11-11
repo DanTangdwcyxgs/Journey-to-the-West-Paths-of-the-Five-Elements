@@ -14,6 +14,7 @@ const BATTLE_BOSS_BASELINE_RATIO: float = 0.73
 const YELLOW_WIND_BOSS_BASELINE_RATIO: float = 0.77
 
 var scene_name := ""
+var presentation_signature := ""
 var background_texture: Texture2D
 var sprite_textures: Dictionary = {}
 var pixel_hud: PixelHUD
@@ -31,14 +32,36 @@ func _ready() -> void:
 	pixel_hud.z_index = 200
 	add_child(pixel_hud)
 	_apply_scene_visuals()
+	presentation_signature = _get_presentation_signature()
 	queue_redraw()
 
 func _process(_delta: float) -> void:
+	var next_signature := _get_presentation_signature()
+	if next_signature == presentation_signature:
+		return
 	var root := get_tree().current_scene
 	var next_scene: String = root.scene_file_path if root != null else ""
 	if next_scene != scene_name:
 		_apply_scene_visuals()
-		queue_redraw()
+	presentation_signature = next_signature
+	queue_redraw()
+
+static func build_presentation_signature(scene_path: String, starting_character: String = "", route_status: String = "") -> String:
+	if scene_path.ends_with("journey.tscn"):
+		return "%s|origin:%s|route:%s" % [scene_path, starting_character, route_status]
+	return scene_path
+
+func _get_presentation_signature() -> String:
+	var root := get_tree().current_scene
+	if root == null:
+		return ""
+	var scene_path: String = root.scene_file_path
+	var journey := root as JourneyScreen
+	if journey != null and journey.narrative != null and journey.narrative.state != null:
+		var hero: String = journey.narrative.state.starting_character
+		var route_status: String = str(journey.narrative.state.route_progress.get(hero, NarrativeState.ROUTE_LOCKED))
+		return build_presentation_signature(scene_path, hero, route_status)
+	return build_presentation_signature(scene_path)
 
 func _apply_scene_visuals() -> void:
 	var root := get_tree().current_scene
