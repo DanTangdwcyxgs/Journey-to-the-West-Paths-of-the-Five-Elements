@@ -49,6 +49,10 @@ All four must show the full character, including signature equipment and extremi
 - docs/AI_MEMORY.md
 - AI_HANDOFF.md
 
+## Processing helper
+
+A deterministic Python/Pillow utility now archives the original 2×2 PNG byte-for-byte and extracts only the top-left primary view into the exact runtime canvas. It rejects flattened/no-alpha sources, odd sheet sizes, empty or edge-touching top-left views, and accidental overwrites. See `tools/art/README.md`; automated tests are in `tools/art/test_prepare_character_turnaround.py`.
+
 ## Validation and limitations
 
 - Documentation-only strategy revision; no gameplay, resource catalog, or runtime code was changed.
