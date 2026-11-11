@@ -58,6 +58,15 @@ static func run_all() -> Dictionary:
 	if VisualOverlay.should_reapply_scene_visuals("res://ui/journey.tscn", 17, "res://ui/world_map.tscn", 18) == false:
 		failures.append("changing scene path should reload backdrop visuals")
 
+	if not PixelHUD.should_refresh_scene_theme("res://ui/camp.tscn", 31, "res://ui/camp.tscn", 32):
+		failures.append("PixelHUD should apply the theme to a re-instanced scene with the same path")
+	if PixelHUD.should_refresh_scene_theme("res://ui/camp.tscn", 31, "res://ui/camp.tscn", 31):
+		failures.append("PixelHUD should not reapply the theme to the same scene instance")
+	if not PixelHUD.should_refresh_scene_theme("res://ui/camp.tscn", 31, "", 0):
+		failures.append("PixelHUD should clear scene theme identity when current_scene is null")
+	if not PixelHUD.should_refresh_scene_theme("", 0, "res://ui/camp.tscn", 33):
+		failures.append("PixelHUD should apply the theme after a null-to-scene transition")
+
 	var active_origin := VisualOverlay.build_presentation_signature("res://ui/journey.tscn", "WUKONG", NarrativeState.ROUTE_IN_PROGRESS)
 	var completed_origin := VisualOverlay.build_presentation_signature("res://ui/journey.tscn", "WUKONG", NarrativeState.ROUTE_COMPLETE)
 	if active_origin == completed_origin:
