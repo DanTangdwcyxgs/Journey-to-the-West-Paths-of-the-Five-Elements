@@ -569,3 +569,29 @@ Runtime has now verified the post-Shared-02 detour and that Journey resumes at S
 - Optional exploration must not advance the fixed Shared chronology, mutate recruitment, or add completed chapters.
 - Treat stale/in-progress historical runs as neither green nor current validation. Only the exact tested SHA and completed run count.
 - Save failure must restore the full NarrativeState snapshot and leave the clue retryable.
+
+
+## Current Handoff — 2026-11-11: Daily AI Art Production
+
+### Canonical plan
+- Read `docs/visual_reference/AI_ART_PRODUCTION_SCHEDULE.md` before any image generation. It is the single source of truth for date, asset order, output path, prompt brief, and status.
+- Daily limit: one image-generation call per local calendar day (`America/Los_Angeles`). Never retry on the same day. After the daily image task, continue with non-generation engineering work.
+- Today (2026-11-11) the single generation call produced a planning poster whose generated asset labels were inaccurate. It is rejected as production art, was not committed to game folders, and today's image quota is consumed. Do not generate again today.
+- First production asset: **2026-11-12 — Wukong**. Continue with Tang, Bajie, Wujing, Longma, Yellow Wind King, Journey scenery, Yellow Wind battle background, and WorldMap according to the schedule.
+
+### Critical implementation detail
+- `ui/visual_overlay.gd` multiplies the source texture's raw width and height by the presentation scale. Final character textures must match the current SVG dimensions exactly: Wukong/Tang/Bajie/Wujing 128×192; Longma 160×128; Yellow Wind King 144×192.
+- `combat/test_visual_asset_contract.gd` now enforces these dimensions. Export generated high-resolution art onto the exact canvas using nearest-neighbor processing. Do not change dimensions without updating VisualOverlay and layout regressions deliberately.
+
+### Required workflow per image
+1. Check today's local date and this schedule; verify no generation call has already been made today.
+2. Generate one isolated asset only; no contact sheet, UI, text, watermarks, or scene background for character sprites.
+3. Inspect transparency, silhouette, clean pixel edges, identity props, and crop safety.
+4. Save to the exact final path without deleting SVG fallbacks.
+5. Update the schedule status, a dated development log, AI_MEMORY and handoff.
+6. Verify the exact newest Godot Runtime head; after the initial batch also run Web Demo and review actual in-game screenshots.
+
+### Branch / validation
+- Art branch: `art/production-roadmap-2026-11-11`, created from main `395233d8bcaf13aa9022c33903ab03a75c5a83ae`.
+- The new canvas-dimension regression and documentation still require exact-head Godot Runtime verification.
+- Do not merge PR #29 as part of this art task. Keep the art plan in its own branch/PR.
