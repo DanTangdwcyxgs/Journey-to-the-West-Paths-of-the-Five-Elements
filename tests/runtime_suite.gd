@@ -45,6 +45,8 @@ const TEST_SCRIPTS := [
 	"res://combat/test_world_map_travel_save_failure_rollback.gd",
 	"res://combat/test_world_map_rumor_save_failure_rollback.gd",
 	"res://combat/test_region_exploration.gd",
+	"res://combat/test_region_content_validator.gd",
+	"res://combat/test_region_notes_log.gd",
 	"res://combat/test_shared02_optional_rumor_access.gd",
 	"res://combat/test_yellow_wind_ridge_cave_progression.gd",
 	"res://combat/test_yellow_wind_cave_battle_roundtrip.gd",

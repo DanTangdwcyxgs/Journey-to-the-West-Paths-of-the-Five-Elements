@@ -81,6 +81,24 @@ func _run_smoke() -> void:
 	]
 	fixture.state.add_world_node_visit("EAGLE_SORROW")
 	_record(region_manager.can_enter(fixture, "EAGLE_SORROW"), "the optional Eagle Sorrow region should be available at timeline 105")
+	var zero_progress := region_manager.get_discovery_progress(fixture, "EAGLE_SORROW")
+	_record(int(zero_progress.get("discovered", -1)) == 0 and int(zero_progress.get("total", -1)) == 3 and int(zero_progress.get("remaining", -1)) == 3, "an untouched region should report zero of three clues discovered")
+	_record(not bool(zero_progress.get("complete", true)), "an untouched region should not be marked complete")
+	var complete_fixture := NarrativeManager.new()
+	complete_fixture.state = NarrativeState.from_dict(fixture.serialize())
+	for clue in region_manager.get_points("EAGLE_SORROW"):
+		complete_fixture.state.record_region_point_discovered(str(clue.get("id", "")))
+	var completed_progress := region_manager.get_discovery_progress(complete_fixture, "EAGLE_SORROW")
+	_record(int(completed_progress.get("discovered", -1)) == 3 and int(completed_progress.get("remaining", -1)) == 0 and bool(completed_progress.get("complete", false)), "a region should report completion only after every authored clue is discovered")
+	var completed_screen := IsolatedRegionExplorationScreen.new()
+	completed_screen.narrative = complete_fixture
+	root.add_child(completed_screen)
+	await process_frame
+	_record(completed_screen.status_label.text.contains("本区域线索已全部记录"), "the region screen should show an explicit completion message after all clues are found")
+	_record(completed_screen.status_label.text.contains("旅途见闻"), "the completion message should point players to the discovered-notes journal")
+	_record(completed_screen.status_label.text.contains("不会推进西游主线"), "region completion feedback must not imply main-story completion")
+	completed_screen.queue_free()
+	await process_frame
 	var early_timeline := NarrativeManager.new()
 	early_timeline.state = NarrativeState.from_dict(fixture.serialize())
 	early_timeline.state.current_global_timeline = 104
@@ -100,6 +118,10 @@ func _run_smoke() -> void:
 	mountain_no_milestone.state.completed_milestones.erase("WUKONG_RECRUITED")
 	mountain_no_milestone.state.add_world_node_visit("FIVE_ELEMENTS_MOUNTAIN")
 	_record(not region_manager.can_enter(mountain_no_milestone, "FIVE_ELEMENTS_MOUNTAIN"), "Five Elements Mountain should require the Wukong recruitment milestone")
+	_record(region_manager.get_entry_block_reason(mountain_no_milestone, "FIVE_ELEMENTS_MOUNTAIN").find("孙悟空") >= 0, "a locked region should explain the missing Wukong recruitment requirement in player-facing language")
+	_record(region_manager.get_entry_block_reason(mountain_early, "FIVE_ELEMENTS_MOUNTAIN").find("T100") >= 0, "a locked region should explain its required timeline")
+	_record(region_manager.get_entry_block_reason(fixture, "EAGLE_SORROW").is_empty(), "an unlocked region should expose no blocking reason")
+	_record(region_manager.can_enter(fixture, "EAGLE_SORROW") == region_manager.get_entry_block_reason(fixture, "EAGLE_SORROW").is_empty(), "region availability and its explanatory reason should share one gate contract")
 	_record(fixture.save(), "the starting region state should be persisted")
 	current_stage = "fixture_saved"
 	print("REGION_EXPLORATION_STAGE 01 fixture_saved")
@@ -139,6 +161,8 @@ func _run_smoke() -> void:
 				await process_frame
 
 				_record(first_point_id in region_screen.narrative.state.get_world_state().get("discovered_region_points", []), "investigating a point should record its discovery marker")
+				var first_discovery_progress := region_manager.get_discovery_progress(region_screen.narrative, "EAGLE_SORROW")
+				_record(int(first_discovery_progress.get("discovered", -1)) == 1 and int(first_discovery_progress.get("remaining", -1)) == 2, "first clue discovery should update region progress to one of three")
 				_record(region_screen.narrative.state.current_shared_chapter == expected_chapter, "region exploration must preserve the Shared chapter pointer")
 				_record(region_screen.narrative.state.current_global_timeline == expected_timeline, "region exploration must not advance the global timeline")
 				_record(region_screen.narrative.state.completed_shared_chapters == expected_completed, "region exploration must preserve completed Shared chapter history")
@@ -161,6 +185,16 @@ func _run_smoke() -> void:
 				if world_map != null:
 					_record(str(world_map.narrative.state.get_world_state().get("current_location", "")) == "EAGLE_SORROW", "returning should preserve the current WorldMap location")
 					_record(world_map.region_button.visible and not world_map.region_button.disabled, "the same region should remain available after returning")
+					_record(world_map.region_button.text.contains("1/3"), "WorldMap should show persisted region clue progress after returning")
+					_record(world_map.region_hint_label.text.contains("还剩 2 处"), "WorldMap should tell the player how many clues remain")
+					var state_before_complete_preview: Dictionary = world_map.narrative.serialize().duplicate(true)
+					for clue in region_manager.get_points("EAGLE_SORROW"):
+						world_map.narrative.state.record_region_point_discovered(str(clue.get("id", "")))
+					world_map.call("_refresh")
+					_record(world_map.region_button.text.contains("3/3"), "WorldMap should show a full progress count when all clues are discovered")
+					_record(world_map.region_hint_label.text.contains("全部记录"), "WorldMap should communicate region completion without implying story completion")
+					world_map.narrative.restore_snapshot(state_before_complete_preview)
+					world_map.call("_refresh")
 					world_map.region_button.emit_signal("pressed")
 					var reopened: RegionExplorationScreen = await _wait_for_region()
 					current_stage = "region_reopened"
@@ -209,6 +243,19 @@ func _run_smoke() -> void:
 									_record(world_map != null, "returning from Five Elements Mountain should reopen WorldMap")
 									if world_map != null:
 										_record(str(world_map.narrative.state.get_world_state().get("current_location", "")) == "FIVE_ELEMENTS_MOUNTAIN", "returning from mountain exploration should preserve its map location")
+										var mountain_state_snapshot: Dictionary = world_map.narrative.serialize().duplicate(true)
+										world_map.narrative.state.current_global_timeline = 99
+										world_map.call("_refresh")
+										_record(world_map.region_button.visible and world_map.region_button.disabled, "WorldMap should keep a region locked before its timeline gate")
+										_record(world_map.region_hint_label.text.find("T100") >= 0, "WorldMap should show the timeline needed to unlock the region")
+										world_map.narrative.restore_snapshot(mountain_state_snapshot)
+										world_map.narrative.state.completed_milestones.erase("WUKONG_RECRUITED")
+										world_map.call("_refresh")
+										_record(world_map.region_button.visible and world_map.region_button.disabled, "WorldMap should keep a region locked when its recruitment milestone is missing")
+										_record(world_map.region_hint_label.text.find("孙悟空") >= 0, "WorldMap should explain the missing recruitment milestone in plain language")
+										world_map.narrative.restore_snapshot(mountain_state_snapshot)
+										world_map.call("_refresh")
+										_record(not world_map.region_button.disabled, "restoring the required state should re-enable region exploration")
 										var eagle_index := _find_node_by_label(world_map, "鹰愁涧")
 										_record(eagle_index >= 0, "Eagle Sorrow should remain reachable from Five Elements Mountain")
 										if eagle_index >= 0:
@@ -216,6 +263,98 @@ func _run_smoke() -> void:
 											world_map.travel_button.emit_signal("pressed")
 											await process_frame
 											_record(str(world_map.narrative.state.get_world_state().get("current_location", "")) == "EAGLE_SORROW", "the test should return to Eagle Sorrow before the save-failure rollback fixture")
+
+	# Black Wind is the next coherent Shared Journey region after Longma's recruitment.
+	# Use a separate post-recruitment fixture, then restore the exact pre-test save.
+	if world_map != null:
+		var baseline_for_black_wind := NarrativeManager.new()
+		_record(baseline_for_black_wind.load(), "the pre-Black-Wind state should load")
+		var black_wind_region_manager := RegionExplorationManager.new()
+		var black_wind_definition := black_wind_region_manager.get_region("BLACK_WIND_NORTH_PATH")
+		_record(not black_wind_definition.is_empty(), "Black Wind North Path should have a data-driven region definition")
+		_record(black_wind_region_manager.get_points("BLACK_WIND_NORTH_PATH").size() == 3, "Black Wind North Path should define three authored points")
+
+		var black_wind_timeline_locked := NarrativeManager.new()
+		black_wind_timeline_locked.state = NarrativeState.from_dict(baseline_for_black_wind.serialize())
+		black_wind_timeline_locked.state.current_global_timeline = 119
+		black_wind_timeline_locked.state.record_milestone("BAI_LONGMA_RECRUITED", 110)
+		black_wind_timeline_locked.state.add_world_node_visit("BLACK_WIND_NORTH_PATH")
+		_record(not black_wind_region_manager.can_enter(black_wind_timeline_locked, "BLACK_WIND_NORTH_PATH"), "Black Wind entry must respect the timeline 120 gate")
+
+		var black_wind_milestone_locked := NarrativeManager.new()
+		black_wind_milestone_locked.state = NarrativeState.from_dict(baseline_for_black_wind.serialize())
+		black_wind_milestone_locked.state.current_global_timeline = 120
+		black_wind_milestone_locked.state.add_world_node_visit("BLACK_WIND_NORTH_PATH")
+		_record(not black_wind_region_manager.can_enter(black_wind_milestone_locked, "BLACK_WIND_NORTH_PATH"), "Black Wind entry must require Longma recruitment")
+
+		# Simulate the already-recruited Longma at the next canonical chapter without
+		# altering the fixture used by the earlier timeline-105 regressions.
+		world_map.narrative.state.current_global_timeline = 120
+		world_map.narrative.state.record_milestone("BAI_LONGMA_RECRUITED", 110)
+		world_map.narrative.encounter_character("LONGMA")
+		world_map.narrative.state.set_current_shared_chapter("SHARED-04-EARLY-DEMON-TALES")
+		world_map.narrative.state.completed_chapters.append("SHARED-03-EAGLE-SORROW")
+		world_map.narrative.state.completed_shared_chapters.append("SHARED-03-EAGLE-SORROW")
+		_record(world_map.narrative.save(), "the post-Longma fixture should be persisted before testing Black Wind entry")
+		world_map.call("_refresh")
+		await process_frame
+
+		var black_wind_index := _find_node_by_label(world_map, "黑风山北道")
+		_record(black_wind_index >= 0, "Black Wind North Path should be reachable after Longma recruitment")
+		if black_wind_index >= 0:
+			world_map.call("_on_node_selected", black_wind_index)
+			world_map.travel_button.emit_signal("pressed")
+			await process_frame
+			_record(str(world_map.narrative.state.get_world_state().get("current_location", "")) == "BLACK_WIND_NORTH_PATH", "production WorldMap travel should reach Black Wind North Path")
+			_record(world_map.region_button.visible and not world_map.region_button.disabled, "Black Wind region entry should appear only after its timeline and milestone gates pass")
+			world_map.region_button.emit_signal("pressed")
+			var black_wind_screen: RegionExplorationScreen = await _wait_for_region()
+			_record(black_wind_screen != null, "the production WorldMap button should open the Black Wind region")
+			if black_wind_screen != null:
+				_record(black_wind_screen.region_id == "BLACK_WIND_NORTH_PATH", "region screen should resolve the Black Wind definition from the current location")
+				_record(black_wind_screen.point_list.get_item_count() == 3, "Black Wind region should render all three authored points")
+				var black_wind_point_id := str(black_wind_screen.point_list.get_item_metadata(0))
+				var black_wind_chapter_before := black_wind_screen.narrative.state.current_shared_chapter
+				var black_wind_timeline_before: int = black_wind_screen.narrative.state.current_global_timeline
+				var black_wind_completed_before := black_wind_screen.narrative.state.completed_shared_chapters.duplicate(true)
+				var black_wind_chapters_before := black_wind_screen.narrative.state.completed_chapters.duplicate(true)
+				var black_wind_roster_before := black_wind_screen.narrative.state.recruited_characters.duplicate(true)
+				black_wind_screen.point_list.select(0)
+				black_wind_screen.call("_on_point_selected", 0)
+				_record(not black_wind_screen.inspect_button.disabled, "an undiscovered Black Wind point should be inspectable")
+				black_wind_screen.inspect_button.emit_signal("pressed")
+				await process_frame
+				_record(black_wind_point_id in black_wind_screen.narrative.state.get_world_state().get("discovered_region_points", []), "Black Wind point inspection should record its discovery")
+				_record(black_wind_screen.narrative.state.current_shared_chapter == black_wind_chapter_before, "Black Wind exploration must preserve the canonical Shared chapter pointer")
+				_record(black_wind_screen.narrative.state.current_global_timeline == black_wind_timeline_before, "Black Wind exploration must not advance the global timeline")
+				_record(black_wind_screen.narrative.state.completed_shared_chapters == black_wind_completed_before, "Black Wind exploration must preserve completed Shared history")
+				_record(black_wind_screen.narrative.state.completed_chapters == black_wind_chapters_before, "Black Wind exploration must preserve completed chapter history")
+				_record(black_wind_screen.narrative.state.recruited_characters == black_wind_roster_before, "Black Wind exploration must preserve the recruited roster")
+				var black_wind_reloaded := NarrativeManager.new()
+				_record(black_wind_reloaded.load(), "Black Wind discovery should leave a loadable save")
+				_record(black_wind_point_id in black_wind_reloaded.state.get_world_state().get("discovered_region_points", []), "Black Wind discovery should survive fresh NarrativeManager load")
+
+				black_wind_screen.return_button.emit_signal("pressed")
+				world_map = await _wait_for_world_map()
+				_record(world_map != null, "returning from Black Wind should reopen WorldMap")
+				if world_map != null:
+					_record(str(world_map.narrative.state.get_world_state().get("current_location", "")) == "BLACK_WIND_NORTH_PATH", "returning should preserve the Black Wind map location")
+					var return_eagle_index := _find_node_by_label(world_map, "鹰愁涧")
+					_record(return_eagle_index >= 0, "Eagle Sorrow should remain reachable after optional Black Wind exploration")
+					if return_eagle_index >= 0:
+						world_map.call("_on_node_selected", return_eagle_index)
+						world_map.travel_button.emit_signal("pressed")
+						await process_frame
+						_record(str(world_map.narrative.state.get_world_state().get("current_location", "")) == "EAGLE_SORROW", "the regression should return to Eagle Sorrow after Black Wind exploration")
+
+		# Restore the pre-Black-Wind save so the existing rollback test still checks
+		# the original timeline-105 Eagle Sorrow fixture exactly.
+		if current_scene is WorldMapScreen:
+			world_map = current_scene as WorldMapScreen
+			world_map.narrative.restore_snapshot(baseline_for_black_wind.serialize())
+			_record(world_map.narrative.save(), "the original region-test save should be restored after Black Wind regression")
+			world_map.call("_refresh")
+
 
 	var persisted := NarrativeManager.new()
 	_record(persisted.load(), "the successful production region pass should remain loadable for the rollback case")

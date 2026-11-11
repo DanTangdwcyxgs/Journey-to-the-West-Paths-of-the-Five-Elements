@@ -3,7 +3,7 @@ extends RefCounted
 
 ## Cross-reference validator for content CI.
 ## Structural validation stays in EventSequenceDefinition; this layer checks
-## references into event, encounter and chapter content.
+## references into event, encounter, chapter and WorldMap content.
 
 static func validate(definition: EventSequenceDefinition) -> Dictionary:
 	var errors: Array[String] = []
@@ -44,6 +44,7 @@ static func validate(definition: EventSequenceDefinition) -> Dictionary:
 	var encounter_manager := EncounterManager.new()
 	var origin_manager := OriginEventManager.new()
 	var shared_manager := SharedEventManager.new()
+	var world_map_manager := WorldMapManager.new()
 	for node in definition.get_nodes():
 		if not node is Dictionary:
 			continue
@@ -57,6 +58,17 @@ static func validate(definition: EventSequenceDefinition) -> Dictionary:
 				errors.append("shared event not found %s at node %s" % [event_id, node_id])
 			elif namespace_id == "ORIGIN" and not origin_manager.has_event(event_id):
 				errors.append("origin event not found %s at node %s" % [event_id, node_id])
+		elif kind == "move":
+			var map_id := str(node.get("map_id", "")).strip_edges()
+			var marker_id := str(node.get("marker_id", "")).strip_edges()
+			if map_id.is_empty():
+				errors.append("move node missing map_id: %s" % node_id)
+			elif map_id != "WORLD_MAP":
+				errors.append("unsupported move map_id %s at node %s" % [map_id, node_id])
+			if marker_id.is_empty():
+				errors.append("move node missing marker_id: %s" % node_id)
+			elif not world_map_manager.nodes.has(marker_id):
+				errors.append("world map marker not found %s at node %s" % [marker_id, node_id])
 		elif kind == "battle":
 			var encounter_id := str(node.get("encounter_id", ""))
 			var encounter_definition: Dictionary = encounter_manager.get_definition(encounter_id)
