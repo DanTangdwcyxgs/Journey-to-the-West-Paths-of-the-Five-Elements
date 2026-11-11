@@ -640,3 +640,11 @@ Runtime has now verified the post-Shared-02 detour and that Journey resumes at S
 - During a null current_scene transition, PixelHUD records empty path + instance ID 0; entering/re-entering a scene applies the theme again.
 - The PixelHUD policy function `should_refresh_scene_theme()` is covered in `combat/test_visual_overlay_layout_contract.gd` for same-path re-instancing, stable same instance, null clearing, and null-to-scene entry.
 - Verify exact HEAD CI before treating this change as validated; PR #30 remains Draft and unmerged.
+
+## 19. 2026-11-11 Exact-head validation — persistent UI lifecycle
+
+- Exact tested HEAD: `03db87b6c5dc6208cf820e1b0677165455fa978b`.
+- Godot Runtime [42981863213](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42981863213): success; log confirms `PASS res://combat/test_visual_overlay_layout_contract.gd` and `RUNTIME_SUITE_PASS tests=53`.
+- Art Tooling [42981863335](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42981863335): success; log confirms `Ran 12 tests` / `OK`.
+- PR #30 remains open, Draft, and unmerged. Main remains at `395233d8bcaf13aa9022c33903ab03a75c5a83ae`.
+- No player-facing screenshot acceptance or final-art acceptance is claimed.
