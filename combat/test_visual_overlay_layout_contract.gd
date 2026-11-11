@@ -51,6 +51,13 @@ static func run_all() -> Dictionary:
 	if absf(preserved_shade.a - 0.12) > 0.001:
 		failures.append("existing translucent scene shade should not be made more transparent")
 
+	if VisualOverlay.should_reapply_scene_visuals("res://ui/journey.tscn", 17, "res://ui/journey.tscn", 18) == false:
+		failures.append("re-instancing the same scene path should reload backdrop visuals")
+	if VisualOverlay.should_reapply_scene_visuals("res://ui/journey.tscn", 17, "res://ui/journey.tscn", 17):
+		failures.append("unchanged scene instance should not reload backdrop visuals")
+	if VisualOverlay.should_reapply_scene_visuals("res://ui/journey.tscn", 17, "res://ui/world_map.tscn", 18) == false:
+		failures.append("changing scene path should reload backdrop visuals")
+
 	var active_origin := VisualOverlay.build_presentation_signature("res://ui/journey.tscn", "WUKONG", NarrativeState.ROUTE_IN_PROGRESS)
 	var completed_origin := VisualOverlay.build_presentation_signature("res://ui/journey.tscn", "WUKONG", NarrativeState.ROUTE_COMPLETE)
 	if active_origin == completed_origin:
