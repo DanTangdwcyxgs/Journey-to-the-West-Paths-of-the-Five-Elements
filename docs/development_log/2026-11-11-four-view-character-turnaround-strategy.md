@@ -53,7 +53,7 @@ All four must show the full character, including signature equipment and extremi
 
 - Documentation-only strategy revision; no gameplay, resource catalog, or runtime code was changed.
 - The existing visual-contract test continues to validate the final runtime crop size only.
-- No new Runtime result is claimed for this documentation revision until the exact updated branch head completes CI.
+- PASS: exact strategy/documentation head e9cfdba08c18b50dedecc3886a5589195a01deee, Godot Runtime [42945517918](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42945517918), log confirms PASS res://combat/test_visual_asset_contract.gd and RUNTIME_SUITE_PASS tests=52.
 - No character art was generated or accepted in this revision.
 
 ## Next Agent
