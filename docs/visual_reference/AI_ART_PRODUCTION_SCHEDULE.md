@@ -39,7 +39,7 @@ After 2026-11-20, pause new image generation long enough to integrate the first 
 
 ### Shared four-view layout for every character slot
 
-Generate one transparent-background 2×2 turnaround sheet, containing the same single character in four complete full-body orientations. Keep anatomy, costume, colors, face, markings, accessories, weapon design, and proportions consistent across all four views. No view may be cropped or overlap another.
+Generate one transparent-background 2×2 turnaround sheet, containing the same single character in four complete full-body orientations. Keep anatomy, costume, colors, face, markings, accessories, weapon design, and proportions consistent across all four views. Use the exact same standing, battle-ready pose and weapon grip in every quadrant; rotate the model around its vertical axis instead of inventing four different action poses. No view may be cropped or overlap another. Each figure should occupy most of its quadrant height while leaving safe transparent margins around every extremity and prop.
 
 Use this clockwise quadrant order:
 - Top-left: primary front three-quarter view, subtly turned toward the viewer; this is the canonical game-sprite crop.
