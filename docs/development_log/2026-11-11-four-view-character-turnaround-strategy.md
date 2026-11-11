@@ -15,7 +15,7 @@ One character per sheet, arranged in a 2×2 grid in clockwise orientation order:
 3. Bottom-right: rear three-quarter view.
 4. Bottom-left: left-facing side profile.
 
-All four must show the full character, including signature equipment and extremities, with consistent anatomy, costume, colors, proportions, and props. The sheet must have a transparent background and contain no UI, labels, panel borders, watermark, unrelated character, or scenery. This is a single-character model turnaround, not a multi-character contact sheet.
+All four must show the full character, including signature equipment and extremities, with consistent anatomy, costume, colors, proportions, and props. Preserve the exact same standing pose, limb placement, and weapon grip in every quadrant; rotate the model rather than inventing four separate action poses. The sheet must have a transparent background and contain no UI, labels, panel borders, watermark, unrelated character, or scenery. This is a single-character model turnaround, not a multi-character contact sheet.
 
 ## Source and runtime file separation
 
