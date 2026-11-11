@@ -49,5 +49,6 @@
 ## 每日 AI 美术生产计划（2026-11-11）
 - 当前唯一有效排期见 [AI_ART_PRODUCTION_SCHEDULE.md](AI_ART_PRODUCTION_SCHEDULE.md)。未来 Agent 必须按本地日期执行，每天最多一次图像生成调用。
 - 首批顺序：Wukong → Tang → Bajie → Wujing → Longma → Yellow Wind King → Journey scenery → Yellow Wind battle → WorldMap。
-- 角色 final PNG 必须与现有 SVG fallback 画布尺寸一致，否则 `VisualOverlay` 的原始纹理尺寸倍率会改变角色显示大小。
-- 本排期概念图/聊天图片不是最终角色或场景资产；只有通过透明背景、尺寸、轮廓、目录、Runtime 与实际截图验收的文件才可标记完成。
+- 每个角色日的一次生成调用应产出 2×2 四视图设定图（正面 3/4、右侧面、背面 3/4、左侧面）；原图存入 `assets/art/source_sheets/characters/`，左上角主视图单独裁切为游戏贴图。
+- 只有裁切后的角色 final PNG 必须与现有 SVG fallback 画布尺寸一致，否则 `VisualOverlay` 的原始纹理尺寸倍率会改变角色显示大小。四视图原稿不参与运行时加载。
+- 本排期概念图/聊天图片不是最终角色或场景资产；只有通过透明背景、四视图完整度、尺寸、轮廓、目录、Runtime 与实际截图验收的文件才可标记完成。
