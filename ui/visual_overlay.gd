@@ -14,6 +14,7 @@ const BATTLE_BOSS_BASELINE_RATIO: float = 0.73
 const YELLOW_WIND_BOSS_BASELINE_RATIO: float = 0.77
 
 var scene_name := ""
+var scene_instance_id: int = 0
 var presentation_signature := ""
 var background_texture: Texture2D
 var sprite_textures: Dictionary = {}
@@ -36,15 +37,31 @@ func _ready() -> void:
 	queue_redraw()
 
 func _process(_delta: float) -> void:
+	var root := get_tree().current_scene
+	if root == null:
+		if scene_instance_id != 0 or scene_name != "" or background_texture != null:
+			scene_instance_id = 0
+			scene_name = ""
+			background_texture = null
+			presentation_signature = ""
+			queue_redraw()
+		return
+	var next_scene: String = root.scene_file_path
+	var next_instance_id: int = root.get_instance_id()
+	if should_reapply_scene_visuals(scene_name, scene_instance_id, next_scene, next_instance_id):
+		_apply_scene_visuals()
+		scene_instance_id = next_instance_id
+		presentation_signature = _get_presentation_signature()
+		queue_redraw()
+		return
 	var next_signature := _get_presentation_signature()
 	if next_signature == presentation_signature:
 		return
-	var root := get_tree().current_scene
-	var next_scene: String = root.scene_file_path if root != null else ""
-	if next_scene != scene_name:
-		_apply_scene_visuals()
 	presentation_signature = next_signature
 	queue_redraw()
+
+static func should_reapply_scene_visuals(previous_path: String, previous_instance_id: int, next_path: String, next_instance_id: int) -> bool:
+	return previous_path != next_path or previous_instance_id != next_instance_id
 
 static func build_presentation_signature(scene_path: String, starting_character: String = "", route_status: String = "") -> String:
 	if scene_path.ends_with("journey.tscn"):
