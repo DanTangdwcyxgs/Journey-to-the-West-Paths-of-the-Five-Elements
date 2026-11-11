@@ -677,3 +677,14 @@ Wukong、Tang、Longma、Bajie、Wujing 五条 Origin Route 均已完成首轮 S
 - PR #28 merged to main as `ec6ef177b6a2a604c1f86b7e447f2212af82f069`. Exact docs-sync head `384771aadca78ffb5324d47721af511c6e671223` passed Runtime [38497759935](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38497759935), including `PASS res://combat/test_region_exploration.gd` and `RUNTIME_SUITE_PASS tests=52`. Merged main Runtime [38497860810](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38497860810) passed 52/52; Web Demo [38497860796](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38497860796) passed build/export/Pages deployment. Live demo: https://dantangdwcyxgs.github.io/Journey-to-the-West-Paths-of-the-Five-Elements/.
 - Five Elements Mountain is now the second generic region definition (three clue-only POIs, timeline 100 and Wukong milestone). Tests cover map traversal into and out of the region, gates, save/reload, and unchanged Shared chapter/timeline/completed history/roster.
 - Next: evaluate whether a third mapped location has enough narrative value for exploration; otherwise move to the outstanding visual screenshot review and six final transparent character PNG/WebP assets.
+
+
+### Round 77 — 2026-11-11：Daily AI Art Production Schedule / Character Canvas Contract
+- 从 main baseline `395233d8bcaf13aa9022c33903ab03a75c5a83ae` 开始，建立独立分支 `art/production-roadmap-2026-11-11`，不把未合并的 PR #29 功能分支作为美术计划基线。
+- 先读取 AI 美术交付规范、AI 美术生产流水线、视觉参考、ArtAssetCatalog、六个 SVG fallback、VisualOverlay 和 Runtime visual-asset contract。
+- 2026-11-11 唯一一次图像生成调用产生一张 1536×1024 的排期概念海报，但其自动生成的资产/角色标签不符合项目真实清单；该图未被接受为游戏资源、未提交到仓库、不得作为正式排期依据。今日生成额度标记为已使用，不再重试。
+- 新增 `docs/visual_reference/AI_ART_PRODUCTION_SCHEDULE.md`：从 2026-11-12 开始每天最多一张、按序完成 Wukong / Tang / Bajie / Wujing / Longma / Yellow Wind King 六角色，再制作 Journey、Yellow Wind Battle、WorldMap 三张背景；写明每一天的提示重点、文件路径、质量门和后续 Agent 接手步骤。
+- 关键实现事实：`ui/visual_overlay.gd` 通过纹理原始宽高乘显示倍率绘制角色，故 final PNG/WebP 画布必须匹配 SVG fallback 的真实尺寸：Wukong/Tang/Bajie/Wujing 128×192，Longma 160×128，Yellow Wind King 144×192。
+- 扩展 `combat/test_visual_asset_contract.gd`，让 Runtime 自动校验六个角色实际加载纹理的画布尺寸。更新 AI_ASSET_DELIVERY_SPEC、AI_ASSET_PIPELINE、视觉参考 README、开发日志索引与 AI_HANDOFF。
+- 今日没有产出可验收的 final PNG/WebP；首个正式角色生成安排为 2026-11-12 的 Wukong。未声称图像资产完成、Web Demo 部署或实际截图验收。
+- 本分支 Runtime 需要对最新文档同步 head 进行精确 SHA 验证，不能将 main 旧版或其他 PR 的绿灯当作本分支结果。
