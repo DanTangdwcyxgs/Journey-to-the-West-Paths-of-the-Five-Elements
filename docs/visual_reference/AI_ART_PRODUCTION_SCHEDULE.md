@@ -6,7 +6,7 @@
 
 - The project owner has a limit of **one image-generation call per local calendar day**. Use the owner's local date in `America/Los_Angeles`.
 - Before generating, read this schedule and the current visual contract. Check today's status first. **Never make a second image-generation call on the same date**, even to fix a weak or incorrect result.
-- Each scheduled image should produce one isolated, production-oriented asset. Do not put multiple unrelated deliverables into a contact sheet.
+- Each character slot uses its one daily generation call to produce one coherent four-view turnaround sheet for that character. This is not a multi-character contact sheet: it contains the same character in four complete orientations. Each scene slot still produces one full scene background.
 - If the output misses the brief, lacks real transparency, contains text/UI/watermarks, or cannot meet the required canvas ratio, mark it `REJECTED`; do not retry that day. Use the rest of the day for cropping/inspection, code, tests, documentation, or other non-generation work. Replan the missed asset to the next available generation date.
 - Do not assume background work will occur automatically. The next Agent should execute only the task for the current date, then update this schedule and the development log before moving on.
 - A generated image is not accepted merely because it exists. It must pass the visual checklist, canvas-size contract, catalog lookup, exact-head Godot Runtime, and actual in-game screenshot review before being called production-ready.
@@ -23,12 +23,12 @@ No production character or scene asset was accepted today. Do not call image gen
 
 | Date (local) | One image to generate | Required output / file | Status |
 |---|---|---|---|
-| 2026-11-12 | Sun Wukong full-body character sprite | `assets/art/characters/final/wukong.png` · 128×192 | Pending |
-| 2026-11-13 | Tang Sanzang full-body character sprite | `assets/art/characters/final/tang.png` · 128×192 | Pending |
-| 2026-11-14 | Zhu Bajie full-body character sprite | `assets/art/characters/final/bajie.png` · 128×192 | Pending |
-| 2026-11-15 | Sha Wujing full-body character sprite | `assets/art/characters/final/wujing.png` · 128×192 | Pending |
-| 2026-11-16 | Bai Longma horizontal dragon-horse sprite | `assets/art/characters/final/longma.png` · 160×128 | Pending |
-| 2026-11-17 | Yellow Wind King boss sprite | `assets/art/characters/final/yellow_wind.png` · 144×192 | Pending |
+| 2026-11-12 | Sun Wukong four-view turnaround sheet + canonical game crop | `assets/art/source_sheets/characters/wukong_turnaround.png` → `assets/art/characters/final/wukong.png` · 128×192 | Pending |
+| 2026-11-13 | Tang Sanzang four-view turnaround sheet + canonical game crop | `assets/art/source_sheets/characters/tang_turnaround.png` → `assets/art/characters/final/tang.png` · 128×192 | Pending |
+| 2026-11-14 | Zhu Bajie four-view turnaround sheet + canonical game crop | `assets/art/source_sheets/characters/bajie_turnaround.png` → `assets/art/characters/final/bajie.png` · 128×192 | Pending |
+| 2026-11-15 | Sha Wujing four-view turnaround sheet + canonical game crop | `assets/art/source_sheets/characters/wujing_turnaround.png` → `assets/art/characters/final/wujing.png` · 128×192 | Pending |
+| 2026-11-16 | Bai Longma four-view turnaround sheet + canonical game crop | `assets/art/source_sheets/characters/longma_turnaround.png` → `assets/art/characters/final/longma.png` · 160×128 | Pending |
+| 2026-11-17 | Yellow Wind King four-view turnaround sheet + canonical game crop | `assets/art/source_sheets/characters/yellow_wind_turnaround.png` → `assets/art/characters/final/yellow_wind.png` · 144×192 | Pending |
 | 2026-11-18 | Main Journey scenery background | `assets/art/scenes/final/journey_scenery.png` · 16:9 | Pending |
 | 2026-11-19 | Yellow Wind battle background | `assets/art/scenes/final/yellow_wind_battle.png` · 16:9 | Pending |
 | 2026-11-20 | World map background | `assets/art/scenes/final/world_map.png` · 16:9 | Pending |
@@ -37,41 +37,55 @@ After 2026-11-20, pause new image generation long enough to integrate the first 
 
 ## 4. Per-asset art briefs
 
+### Shared four-view layout for every character slot
+
+Generate one transparent-background 2×2 turnaround sheet, containing the same single character in four complete full-body orientations. Keep anatomy, costume, colors, face, markings, accessories, weapon design, and proportions consistent across all four views. No view may be cropped or overlap another.
+
+Use this clockwise quadrant order:
+- Top-left: primary front three-quarter view, subtly turned toward the viewer; this is the canonical game-sprite crop.
+- Top-right: right-facing side profile.
+- Bottom-right: rear three-quarter view.
+- Bottom-left: left-facing side profile.
+
+All four views must be large, fully visible from head to foot/hoof/tail/weapon tip, and clearly separated by empty transparent space. No panel borders, labels, letters, numbers, text, watermark, UI, scenery, ground plane, or painted checkerboard. Do not create four different costume interpretations. Preserve crisp, intentional pixel clusters and a consistent pixel scale in all quadrants.
+
+Archive the untouched source sheet at assets/art/source_sheets/characters/<id>_turnaround.png. Crop only the top-left three-quarter view into the matching assets/art/characters/final/<id>.png file. The other three views remain as model-reference material for future direction-specific sprites and animation; do not shrink all four views into the single runtime texture.
+
 ### 2026-11-12 — Wukong
-- One isolated, complete, 3/4 battle-ready full-body sprite; transparent background.
-- Must read immediately as a monkey king, not a human general: expressive simian face/muzzle, golden headband, red/ochre armor and cloth, recognizable Ruyi Jingu Bang, visible tail, agile forward-leaning stance.
-- Keep the staff and tail inside the canvas. No ground plane, cast shadow, scenery, labels, UI, frame, watermark, or extra character.
-- Preserve the exact 128×192 output canvas ratio/dimensions after high-resolution generation and nearest-neighbor reduction.
+- Four-view turnaround of the same agile monkey king. Primary top-left view is battle-ready and slightly forward-leaning, with the Ruyi Jingu Bang held in a readable action-ready pose.
+- Every view must retain the expressive simian face and muzzle, golden headband, red/ochre armor and cloth, recognizable staff, and visible tail. Rotate the staff and tail naturally with the body; do not hide them behind the silhouette.
+- Keep staff, tail, both feet, and headband fully inside every relevant view. He must read immediately as Sun Wukong, not a human general.
+- Canonical crop: exact 128×192 final canvas.
 
 ### 2026-11-13 — Tang Sanzang
-- One isolated, complete, calm 3/4 full-body pilgrim sprite; transparent background.
-- Monk first, not a wizard: monk headwear/clean shaved head as appropriate to the chosen canonical design, layered saffron/ochre kasaya, travel robe, scripture scroll or monk's staff as a restrained secondary prop.
-- Gentle, morally steady posture; slim silhouette clearly distinct from Wukong, Bajie, and Wujing.
-- Exact 128×192 output.
+- Four-view turnaround of the same calm, morally steady pilgrim. The top-left view is a dignified, travel-ready three-quarter pose, not a spell-casting wizard pose.
+- Preserve the canonical monk identity in every view: clean shaved head or approved monk headwear, layered saffron/ochre kasaya and travel robe, restrained scripture scroll or monk's staff, slim silhouette.
+- Make robe layering and silhouette readable from front, side, and back. Keep hands, robe hem, footwear, and any scripture/staff fully visible.
+- Canonical crop: exact 128×192 final canvas.
 
 ### 2026-11-14 — Zhu Bajie
-- One isolated, complete, heavy-set 3/4 full-body sprite; transparent background.
-- Strong pig-head silhouette, snout/tusks/ears, rounded but powerful body, dark earth-tone travel clothing, unmistakable nine-toothed rake.
-- Give him warmth and comic personality without making him childish or a mascot. Keep rake head and ears inside the canvas.
-- Exact 128×192 output.
+- Four-view turnaround of the same heavy-set, powerful pig demon. The top-left view should feel sturdy and battle-ready while retaining warmth and comic personality.
+- Preserve a clear pig-head silhouette, snout, tusks, ears, rounded strong body, dark earth-tone travel clothing, and unmistakable nine-toothed rake in all views.
+- Ensure the rake head, ears, belly silhouette, feet, and clothing layers remain fully visible. He must not become childish or mascot-like.
+- Canonical crop: exact 128×192 final canvas.
 
 ### 2026-11-15 — Sha Wujing
-- One isolated, complete, tall/broad 3/4 full-body sprite; transparent background.
-- Stable sand/water-blue-grey palette, rugged travel gear or restrained armor, recognizable beard/hair/beads, and a crescent-moon spade / monk's spade.
-- Quiet, dependable, grounded silhouette; must not read as a second Bajie.
-- Exact 128×192 output.
+- Four-view turnaround of the same tall, broad, dependable river-sand warrior. The top-left view should feel quiet, grounded, and ready for battle.
+- Preserve the sand/water-blue-grey palette, rugged travel gear or restrained armor, recognizable beard/hair/beads, and crescent-moon spade / monk's spade in all views.
+- Differentiate his tall, stable silhouette from Bajie's broad rounded silhouette. Keep spade blade, hair, beads, feet, and garment edges fully visible.
+- Canonical crop: exact 128×192 final canvas.
 
 ### 2026-11-16 — Bai Longma
-- One isolated, complete, horizontal quadruped dragon-horse sprite; transparent background.
-- White horse body with unmistakable Eastern dragon ancestry: subtle horns, scaled details, flowing mane, expressive dragon-like face and tail. It must not look like an ordinary stable horse.
-- Use a clear 3/4 side view and preserve all four legs, hooves, mane, and tail.
-- Exact 160×128 output. Do not force Longma into a humanoid frame.
+- Four-view turnaround of the same horizontal quadruped dragon-horse; do not force Longma into a humanoid pose.
+- The top-left view is a clear front three-quarter quadruped stance. The remaining views show right-side, rear three-quarter, and left-side anatomy.
+- Preserve a white horse body with unmistakable Eastern dragon ancestry: subtle horns, scaled details, flowing mane, expressive dragon-like face, four legs/hooves, and a long readable tail. Keep the body horizontal and all legs anatomically consistent.
+- Canonical crop: exact 160×128 final canvas.
 
 ### 2026-11-17 — Yellow Wind King
-- One isolated, complete, imposing boss sprite; transparent background.
-- Yellow/ochre/brown wind-demon identity with a readable weasel/marten-like demon face, strong boss silhouette, layered robes/armor, and a controlled sand/wind motif.
-- Must read larger and more threatening than a common enemy when displayed in battle. Avoid making him look like a human soldier or a generic wolf.
-- Exact 144×192 output canvas; if a larger boss presentation is needed, change its presentation scale in code deliberately rather than silently changing the texture canvas.
+- Four-view turnaround of the same imposing Yellow Wind King boss. The top-left view should read as a threatening, battle-ready boss with a strong silhouette.
+- Preserve the yellow/ochre/brown wind-demon identity, readable weasel/marten-like demon face, layered robes/armor, and controlled sand/wind motifs in every view. Do not make him a generic wolf or human soldier.
+- Keep ears, muzzle, robe/armor edges, feet, and any held weapon fully visible in all orientations. His silhouette must feel larger and more imposing than a common enemy.
+- Canonical crop: exact 144×192 final canvas. If a larger boss presentation is needed, change presentation scale in code deliberately rather than silently changing texture canvas.
 
 ### 2026-11-18 — Journey scenery
 - One wide 16:9 playable background, ideally 1920×1080 or the largest available 16:9 output.
@@ -90,11 +104,9 @@ After 2026-11-20, pause new image generation long enough to integrate the first 
 - Readable Chinese mythological landmarks, mountains, river, village/temple silhouettes and paths. Keep open, low-detail space where the game can draw node markers and routes.
 - Do not bake in location names, route text, UI pins, menus, or a legend. The game owns all labels and route state.
 
-## 5. Hard technical contract — preserve character canvas sizes
+## 5. Hard technical contract — source sheet versus gameplay crop
 
-The current `ui/visual_overlay.gd` draws character textures using their raw width and height multiplied by a per-character presentation scale. Changing source texture dimensions changes the on-screen size even if the art itself looks identical.
-
-Therefore the final character PNG/WebP canvas must exactly match the current SVG fallback dimensions:
+The four-view source sheet is archival reference material and is not loaded by `ArtAssetCatalog`. Only the top-left primary three-quarter view is cropped into the final gameplay sprite. The current `ui/visual_overlay.gd` draws that final texture using its raw width and height multiplied by a per-character presentation scale, so the final crop must exactly match the current SVG fallback dimensions:
 
 | Character | Canvas |
 |---|---:|
@@ -105,7 +117,7 @@ Therefore the final character PNG/WebP canvas must exactly match the current SVG
 | Longma | 160×128 |
 | Yellow Wind King | 144×192 |
 
-Generate at the highest useful resolution available, then trim transparent excess without cutting any silhouette and place/scale the sprite into the exact canvas. Use nearest-neighbor pixel resizing only; do not introduce blur/anti-aliasing. Keep transparent padding consistent and keep the feet/hooves and weapons inside the canvas.
+Preserve the untouched four-view image at assets/art/source_sheets/characters/<id>_turnaround.png. Crop the top-left view without cutting its silhouette, then fit it proportionally inside the exact final canvas; never stretch the character to fill the canvas. Use nearest-neighbor scaling only; do not introduce blur/anti-aliasing. Keep transparent padding consistent and keep feet/hooves, weapon, tail, and headwear inside the final crop. The source sheet itself is not subject to the 128×192 / 160×128 / 144×192 runtime-size assertion.
 
 The exact-size contract is also enforced by `combat/test_visual_asset_contract.gd`. If a deliberate future change requires different dimensions, update `VisualOverlay`, all dependent layouts, and the regression in the same reviewed change.
 
@@ -113,11 +125,11 @@ The exact-size contract is also enforced by `combat/test_visual_asset_contract.g
 
 For each generated asset, the Agent must:
 
-1. Inspect the image visually at native size and at the in-game intended scale.
-2. Confirm transparent alpha for character sprites; no checkerboard painted into the image.
-3. Check anatomy, silhouette, character-defining props, clean pixel clusters, and no missing/cropped extremities.
-4. Crop/trim only as needed; preserve the exact canvas contract above.
-5. Save the production file to the exact path in the queue. Do not replace or rename the SVG placeholders.
+1. Inspect all four views at native size. Confirm they are the same character model, all full-body, consistently proportioned, correctly oriented, and free of overlap or cropped extremities.
+2. Confirm transparent alpha; no checkerboard painted into the image. Reject a sheet that contains text, labels, borders, UI, scenery, or watermarks.
+3. Archive the untouched source sheet at the exact assets/art/source_sheets/characters/<id>_turnaround.png path from the queue.
+4. Crop the top-left primary three-quarter view only, preserving its complete silhouette and aspect ratio; fit it proportionally into the exact final canvas with nearest-neighbor scaling.
+5. Save the crop to the matching assets/art/characters/final/<id>.png path. Do not replace or rename the SVG placeholders.
 6. Add a dated development log with the prompt summary, output dimensions, processing steps, file SHA/path, and acceptance/rejection result.
 7. Run exact-head Godot Runtime CI. Inspect the log for `PASS res://combat/test_visual_asset_contract.gd` and the full `RUNTIME_SUITE_PASS` result. Do not claim success from a queued/in-progress run.
 8. Update this schedule, `docs/AI_MEMORY.md`, `AI_HANDOFF.md`, and the development-log index.
@@ -127,7 +139,7 @@ For each generated asset, the Agent must:
 ## 7. Non-generation work to do between scheduled images
 
 Until the next calendar day, continue useful work without another image-generation call:
-- Verify output dimensions/alpha and refine the crop using local image processing.
+- Verify the four-view turnaround source, alpha, and final top-left crop; refine the crop using local image processing without another generation call.
 - Check catalog paths and pixel filtering; preserve nearest-neighbor rendering.
 - Improve screenshot capture/review and the visual acceptance checklist.
 - Audit current SVG fallbacks and scenes without reworking game logic.
@@ -138,4 +150,4 @@ Until the next calendar day, continue useful work without another image-generati
 
 - This schedule is the canonical daily queue. Generated schedule graphics are inspiration only and never override this Markdown.
 - A planned asset is not complete until the file exists at the specified path and passes the required review/CI gates.
-- The 2026-11-11 planning-poster generation is explicitly not accepted as a production asset. First production asset remains Wukong on 2026-11-12.
+- The 2026-11-11 planning-poster generation is explicitly not accepted as a production asset. First production asset remains Wukong's four-view turnaround sheet on 2026-11-12; the top-left three-quarter crop becomes the game sprite.
