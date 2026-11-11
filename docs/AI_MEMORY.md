@@ -726,3 +726,9 @@ Wukong、Tang、Longma、Bajie、Wujing 五条 Origin Route 均已完成首轮 S
 - 后续 README 文档 head 981282eaf9692aebfdb1ccb52c7b4d193becf37e 的 Art Tooling [42948839342](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42948839342) 再次通过全部 12 项。
 - 新增验证确保非主视角方向也不能是空象限或贴边裁切；左上主视图仍是唯一 runtime crop，其他三个方向保存为 reference。
 - Runtime 文档提交若仍在运行，必须继续检查最终 branch HEAD 的 Actions；不因代码 head 通过就把尚未完成的后续 head 标记为绿。
+
+
+### Round 82 — 2026-11-11: Wukong Copy-Ready Generation Prompt
+- 新增 docs/visual_reference/prompts/2026-11-12-wukong-turnaround.md，作为 2026-11-12 唯一一次悟空四视图生成调用的详细提示文件。
+- 提示固定 2×2 象限顺序、同一站姿/武器握法、悟空猴面/金箍/红赭战衣/如意金箍棒/尾巴识别点、统一像素密度、真实透明背景、四格留白与无文字/无 UI/无场景要求。
+- AI_HANDOFF 和每日排期已链接该提示；执行 Agent 仍须先检查当地日期和今日生成状态，一天只生成一次。今日额度已消耗，本轮没有调用图像生成。
