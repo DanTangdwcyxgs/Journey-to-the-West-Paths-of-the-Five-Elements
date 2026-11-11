@@ -699,3 +699,13 @@ Wukong、Tang、Longma、Bajie、Wujing 五条 Origin Route 均已完成首轮 S
 - 今日 2026-11-11 的图像生成额度已被排期海报消耗；本轮没有调用 ImageGen，也没有接受任何正式角色美术。首个角色四视图生成仍为 2026-11-12 Wukong。
 - 文档策略修改不改运行时代码。初始四视图策略 head e9cfdba08c18b50dedecc3886a5589195a01deee 的 Godot Runtime [42945517918](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42945517918) 通过 52/52。
 - 加入四视角同站姿约束后的策略 head c0b3ec73246ce647eb04e6376ea25c538eec5083，Godot Runtime [42945721522](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42945721522) 再次通过；日志确认 PASS visual-asset contract 与 RUNTIME_SUITE_PASS tests=52。
+
+
+### Round 79 — 2026-11-11: Four-View Turnaround Crop Utility
+- 新增 tools/art/prepare_character_turnaround.py：将模型输出的单角色 2×2 PNG 原稿按字节原样归档到 assets/art/source_sheets/characters/<id>_turnaround.png，仅提取左上主视角，按长宽比缩放、nearest-neighbor、4px 透明边距和脚底对齐，输出到 assets/art/characters/final/<id>.png。
+- 工具按六个角色映射准确画布尺寸，要求 PNG 真 alpha、偶数 2×2 画布、左上象限至少 5% 全透明像素、可见内容不触碰象限边缘；默认拒绝覆盖既有原稿或 final 图，除非显式传入 --overwrite。
+- 新增 tools/art/test_prepare_character_turnaround.py 共 10 个测试，覆盖源图字节完整、只提左上象限、长宽比和基线、透明通道、空象限、贴边裁切、尺寸奇数、未知角色及覆盖保护。当前本地 unittest discover 10/10 通过。
+- 新增 tools/art/README.md、tools/art/requirements.txt 和 .github/workflows/art-tooling.yml；新增开发日志 docs/development_log/2026-11-11-turnaround-crop-utility.md，更新美术排期、交付规范、pipeline、视觉索引与 Agent handoff。
+- 人工仍须检查四个视角是否同一模型、同一套服装/装备、同一站姿、朝向正确；自动裁切不能替代美术验收。工具只产出运行时尺寸/透明度候选，不代表画质验收通过。
+- 本地测试命令：python -m unittest discover -s tools/art -p 'test_*.py' -v。专属 Art Tooling GitHub Actions 必须在精确分支 HEAD 上完成后，才能报告 CI 通过。
+- 本轮没有调用图像生成；2026-11-11 的额度仍已消耗。下一代 Agent 于 2026-11-12 生成悟空四视图后再运行裁切工具。
