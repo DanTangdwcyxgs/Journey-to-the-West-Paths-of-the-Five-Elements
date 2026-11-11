@@ -735,3 +735,12 @@ Wukong、Tang、Longma、Bajie、Wujing 五条 Origin Route 均已完成首轮 S
 - PASS：实现/测试 SHA daa33bb02411173170912eedd037e6dbf1e226f8 的 Godot Runtime [38522405623](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38522405623) 完成成功，日志含 PASS res://combat/test_event_sequence_validator.gd 和 RUNTIME_SUITE_PASS tests=54。文档同步 head d5fcf00d8d2d0e360de3f50f1d597de28e2a2c7b 的 Godot Runtime [38522641916](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38522641916) 也通过相同的 54/54 质量门。下一步仍须核对本条结果记录更新后的最新 head。
 - 已更新 docs/architecture.md、docs/content_pipeline.md、本开发日志索引与 AI_HANDOFF.md。没有声称 Web Demo 部署或视觉验收。
 - 下一步：确认文档同步后的最新 PR #29 head 对应 Runtime 成功，再将最终 SHA/run 写入开发日志与 PR 描述。PR #29 保持 open/unmerged，除非用户明确授权合并。
+
+### Round 84 — 2026-11-11：Region Notes Journal Discovery Order
+- 继续在 PR #29 分支处理已有系统的可玩性打磨；检查 `NarrativeState.record_region_point_discovered()`、序列化/恢复、区域目录投影及现有生产 SceneTree 测试。没有改动 main，也没有合并 PR #29。
+- 查明存档中的 `world_state.discovered_region_points` 本身已保留首次发现顺序并拒绝重复 ID；旧的 `RegionExplorationManager.get_discovered_notes()` 按 region catalog 顺序循环，导致只读「旅途见闻」没有遵循实际探索顺序。
+- 调整只读投影，按已持久化 ID 顺序回查区域目录；隐藏未知/未发现点，防御性跳过重复 ID。未增加存档字段、时间戳、第二个日志来源或主线状态变更。
+- 扩展 `combat/test_region_notes_log.gd`，使用“先黑风山、后鹰愁涧”的跨区域调查顺序，序列化/恢复后检查数据投影、生产 UI 列表与详情顺序，同时保留未发现线索隐藏、只读不改 NarrativeState 等断言。
+- 开发日志：`docs/development_log/2026-11-11-region-notes-discovery-order.md`；日志索引与 `AI_HANDOFF.md` 已更新。
+- PASS：实现/回归链路的完整文档 head `6d71dbee1539dd7689a11ab1ec7c9c372c2cc7d5`，Godot Runtime [42943064424](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42943064424)，job log 确认 `PASS res://combat/test_region_notes_log.gd` 与 `RUNTIME_SUITE_PASS tests=54`。该结果属于精确 SHA `6d71dbee...`；后续仅文档同步提交仍须查看是否触发新的 Runtime。
+- PR #29 保持 open/unmerged。没有声称 Web Demo 部署、角色 PNG/WebP 交付或截图审美验收。
