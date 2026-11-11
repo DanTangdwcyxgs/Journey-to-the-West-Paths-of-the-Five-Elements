@@ -165,11 +165,19 @@ CharacterPortrait / VisualOverlay / BattleUI / WorldMap
 
 `ArtAssetCatalog` 当前解析顺序：
 
-1. `assets/art/<kind>/final/<id>.png`
-2. `assets/art/<kind>/final/<id>.webp`
+1. `assets/art/<kind>/final/<mapped-stem>.png`
+2. `assets/art/<kind>/final/<mapped-stem>.webp`
 3. 现有 SVG fallback
 
-因此以后只需要新增最终图片，不需要重写玩法代码。
+角色文件名使用角色 ID 的小写形式；场景文件名使用显式映射，必须与本规范和每日排期一致：
+
+| Scene ID | PNG / WebP stem | SVG fallback |
+|---|---|---|
+| `JOURNEY` | `journey_scenery` | `journey_scenery.svg` |
+| `BATTLE_YELLOW_WIND` | `yellow_wind_battle` | `yellow_wind_battle.svg` |
+| `WORLD_MAP` | `world_map` | `journey_map.svg` |
+
+场景原图及后续 PNG/WebP 保持 16:9；运行时 catalog 测试会验证映射、PNG → WebP → SVG 优先级和场景画布比例。因此以后只需要按表新增最终图片，不需要重写玩法代码。
 
 ## 8. 最终质量检查
 
