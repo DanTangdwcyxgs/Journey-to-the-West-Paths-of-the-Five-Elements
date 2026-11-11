@@ -786,3 +786,10 @@ Wukong、Tang、Longma、Bajie、Wujing 五条 Origin Route 均已完成首轮 S
 - 增加 should_reapply_scene_visuals() 纯策略函数与三项回归：同路径不同实例必须刷新、相同实例不刷新、不同路径必须刷新。
 - 新增开发日志 docs/development_log/2026-11-11-visual-overlay-scene-instance-refresh.md；同步索引和 AI_HANDOFF。仍须以最终精确 HEAD 的 Runtime Actions 验收。
 - 未修改剧情、战斗、存档、资源或 UI 输入规则；未调用图像生成。
+
+### Round 91 — 2026-11-11: PixelHUD Theme Refresh on Scene Re-instancing
+- 同步审查常驻 PixelHUD 发现它也只比较 scene_file_path；同一路径新实例化的 Camp / Shop / WorldMap 等页面可能不会重新应用 PixelUI theme。
+- PixelHUD 新增 scene_instance_id，使用 should_refresh_scene_theme(path + instance ID) 决定是否给新 root Control 应用主题；current_scene 暂时为 null 时会记录空路径和 instance ID=0，避免漏掉同路径重新进入。
+- 将四项 PixelHUD 生命周期断言并入 test_visual_overlay_layout_contract.gd：同路径新实例刷新、相同实例不刷新、scene null 清理、null 后重新进入刷新。
+- 本轮不改变控件输入行为、业务流程或存档。新增开发日志并同步 handoff；以最终精确 HEAD Godot Runtime / Art Tooling 为准。
+- 未修改美术素材，未调用图像生成。
