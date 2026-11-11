@@ -751,3 +751,10 @@ Wukong、Tang、Longma、Bajie、Wujing 五条 Origin Route 均已完成首轮 S
 - 扩展 `combat/test_art_asset_catalog.gd`，验证场景最终文件名映射、解析优先级、资源可加载和 16:9 画布比例；Runtime suite 已登记该测试。
 - 更新 `docs/visual_reference/AI_ASSET_DELIVERY_SPEC.md`，增加 Scene ID / PNG-WebP stem / fallback 表；新增 `docs/development_log/2026-11-11-scene-asset-filename-contract.md`。
 - 本轮未调用图像生成，未改动 SVG 或最终图像素材；2026-11-11 额度仍已消耗。新代码必须在当前精确 branch HEAD 的 Godot Runtime 与 Art Tooling 中验证。
+
+### Round 86 — 2026-11-11: Visual Overlay Sprite Bounds and Ground Anchors
+- 对照项目 1280×720 viewport、角色最终画布尺寸和 `ui/visual_overlay.gd` 绘制坐标，发现个人序章角色按 3.45 倍缩放并锚定在屏幕 66% 处，128×192 角色纹理上沿约 -187px，且阴影/地面线比角色画布底部低约 120px。
+- 同时发现 Yellow Wind battle UI 的妖王 144×192 画布按 2.65 倍缩放、底部锚点 68% 时上沿约 -19px；ridge/cave 的 boss baseline 也明显高于队伍站位。
+- 为 VisualOverlay 增加命名布局常量：序章角色缩放 2.80、底部锚点 82%、阴影中心 83%；battle UI boss baseline 73%；ridge/cave boss baseline 77%。
+- 新增 `combat/test_visual_overlay_layout_contract.gd`，验证 Wukong/Tang/Bajie/Wujing/Longma 序章画布完全位于 1280×720 内、阴影和地面锚点接近，以及两种 boss 站位不裁顶/底；登记进 `tests/runtime_suite.gd`，Runtime 测试预期从 52 项增加到 53 项。
+- 新增开发日志 `docs/development_log/2026-11-11-visual-overlay-layout-contract.md`，并更新索引和 handoff。本轮未调用图像生成，未改动任何 PNG/SVG，美术截图验收仍须等正式素材接入。
