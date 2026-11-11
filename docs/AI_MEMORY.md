@@ -692,7 +692,7 @@ Wukong、Tang、Longma、Bajie、Wujing 五条 Origin Route 均已完成首轮 S
 
 ### Round 78 — 2026-11-11: Four-View Character Turnaround Strategy
 - 复核 ui/visual_overlay.gd 和 ui/character_portrait.gd：当前角色资源在主菜单、旅途、战斗及角色卡中以静态纹理显示，当前运行时没有按方向切换的角色动画帧。
-- 决定将每个角色日的一次生成调用用于同一角色的一张 2×2 四视图设定图，顺时针视角为左上正面 3/4（当前游戏主视图）、右上右侧面、右下背面 3/4、左下左侧面；四格必须完整全身且保持同一套设计。
+- 决定将每个角色日的一次生成调用用于同一角色的一张 2×2 四视图设定图，顺时针视角为左上正面 3/4（当前游戏主视图）、右上右侧面、右下背面 3/4、左下左侧面；四格必须完整全身且保持同一套设计；保持完全相同的站姿、肢体位置和武器握法，只旋转角色朝向，不画成四个不同动作。
 - 原始设定图存入 assets/art/source_sheets/characters/<id>_turnaround.png；仅将左上主视角裁切为 assets/art/characters/final/<id>.png。其余三个视角保留作未来方向素材、动画及设计参考，不直接进入运行时。
 - 精确尺寸合同只作用于最终游戏裁切：Wukong/Tang/Bajie/Wujing 128×192，Longma 160×128，Yellow Wind King 144×192。保持比例，使用 nearest-neighbor，不将四个方向压进单张运行时纹理。
 - 更新 AI_ART_PRODUCTION_SCHEDULE、AI_ASSET_DELIVERY_SPEC、AI_ASSET_PIPELINE、视觉参考索引、开发日志和 AI_HANDOFF。详细决策见 docs/development_log/2026-11-11-four-view-character-turnaround-strategy.md。
