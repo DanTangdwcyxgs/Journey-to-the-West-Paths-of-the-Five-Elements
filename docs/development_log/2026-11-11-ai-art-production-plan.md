@@ -1,5 +1,7 @@
 # 2026-11-11 · Daily AI Art Production Plan and Canvas Contract
 
+> Strategy update (2026-11-11): the original single-pose character brief and next step in this log are superseded by [Four-View Character Turnaround Strategy](2026-11-11-four-view-character-turnaround-strategy.md). Each character day now generates one complete 2×2 turnaround sheet; only its top-left primary three-quarter view becomes the runtime crop.
+
 ## Goal
 Create a reliable, one-image-per-day art-production process for the project's first final character and scene assets. Make the sequence, quality gates, dimensions, and next action recoverable by a future Agent without relying on this conversation.
 
@@ -7,7 +9,7 @@ Create a reliable, one-image-per-day art-production process for the project's fi
 - Main baseline: `395233d8bcaf13aa9022c33903ab03a75c5a83ae`.
 - Existing delivery documents: `docs/visual_reference/AI_ASSET_DELIVERY_SPEC.md`, `AI_ASSET_PIPELINE.md`, and `docs/visual_reference/README.md`.
 - Six character resources are still SVG placeholders. `ArtAssetCatalog` already resolves final PNG → final WebP → SVG fallback.
-- The visual reference audit requires six separate transparent character assets, then scene backgrounds. A contact sheet or planning infographic is not a shippable character asset.
+- The visual reference audit requires six separate transparent character assets, then scene backgrounds. A multi-character contact sheet or planning infographic is not a shippable character asset. A single-character four-view turnaround sheet is now the required source deliverable, as documented in the strategy update linked above.
 
 ## Today's generation record
 - One image-generation call was used on 2026-11-11 to produce a 1536×1024 visual planning poster.
@@ -43,8 +45,9 @@ Create a reliable, one-image-per-day art-production process for the project's fi
 - Static art only is scheduled. Sprite animation, NPCs, regular enemies, props, and VFX remain deferred until the initial six-character and three-scene batch is integrated and reviewed.
 
 ## Next step / handoff
-1. On 2026-11-12 local time, generate exactly one isolated Wukong full-body sprite with a transparent background and the approved character brief in the schedule.
-2. Export/crop to exactly 128×192 with nearest-neighbor processing. Preserve the full staff, tail, feet, and silhouette.
-3. Save to `assets/art/characters/final/wukong.png`; keep the SVG fallback untouched.
-4. Update the daily schedule, a dated development log, AI memory, and handoff; then verify exact-head Godot Runtime.
-5. Do not make any additional image-generation call on 2026-11-12. Use remaining work time for asset integration and other engineering tasks.
+1. On 2026-11-12 local time, generate exactly one transparent 2×2 Wukong turnaround sheet using the revised schedule: top-left primary front 3/4, top-right right profile, bottom-right rear 3/4, bottom-left left profile.
+2. Inspect all four complete views and archive the untouched source at `assets/art/source_sheets/characters/wukong_turnaround.png`.
+3. Crop the top-left view proportionally to exactly 128×192 with nearest-neighbor processing. Preserve the full staff, tail, feet, and silhouette.
+4. Save the crop to `assets/art/characters/final/wukong.png`; keep the SVG fallback untouched.
+5. Update the daily schedule, a dated development log, AI memory, and handoff; then verify exact-head Godot Runtime.
+6. Do not make any additional image-generation call on 2026-11-12. Use remaining work time for asset integration and other engineering tasks.
