@@ -19,8 +19,7 @@ No combat, narrative, save, route progression, or asset-generation behavior chan
 
 ## Validation
 
-- The existing layout/signature checks remain in place alongside the new scene-routing table.
-- Godot Runtime and Art Tooling must be checked against the exact resulting branch head before this change is called validated.
+- PASS: implementation and regression head 8866bcf06ad5933296759e6cb7fff6b717bb2530: Art Tooling [42966697704](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42966697704) completed successfully with 12 tests / OK; Godot Runtime [42966697762](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42966697762) completed successfully, including PASS for test_visual_overlay_layout_contract.gd and RUNTIME_SUITE_PASS tests=53.
 - No player-facing screenshots were captured or accepted in this pass; final production art is still pending.
 
 ## Next
