@@ -10,7 +10,7 @@ Added `tools/art/prepare_character_turnaround.py`.
 
 The utility:
 - Accepts the six known character IDs and their exact runtime canvas sizes.
-- Requires a PNG with an actual alpha channel, an even 2×2 sheet, a non-empty top-left view, at least 5% fully transparent pixels in that quadrant, and a visible bounding box that does not touch the quadrant edge.
+- Requires a PNG with an actual alpha channel and an even 2×2 sheet. It validates all four quadrants in layout order: each must be non-empty, have at least 5% fully transparent pixels, and have a visible bounding box that does not touch the quadrant edge.
 - Copies the original source PNG byte-for-byte into `assets/art/source_sheets/characters/<id>_turnaround.png`.
 - Crops only the top-left primary front three-quarter view.
 - Fits the view proportionally inside the exact runtime canvas, uses nearest-neighbor resizing, applies 4 px transparent padding, and bottom-aligns the feet/hooves.
@@ -22,7 +22,7 @@ The helper does not decide whether the other three quadrants show the same chara
 
 ## Tests and CI
 
-Added `tools/art/test_prepare_character_turnaround.py` with 10 unit tests covering:
+Added `tools/art/test_prepare_character_turnaround.py` with 12 unit tests covering:
 1. Byte-identical source archive and top-left-only extraction.
 2. Aspect-ratio preservation and bottom alignment.
 3. Real alpha-channel requirement.
@@ -33,10 +33,12 @@ Added `tools/art/test_prepare_character_turnaround.py` with 10 unit tests coveri
 8. Longma's horizontal 160×128 output.
 9. Edge-touching/cropped-view rejection.
 10. Empty top-left quadrant rejection.
+11. Empty non-primary rear-three-quarter quadrant rejection.
+12. Non-primary side-profile edge-crop rejection.
 
 Added `tools/art/requirements.txt` and `.github/workflows/art-tooling.yml` so the helper tests run independently of the Godot Runtime workflow when art tooling files change.
 
-Local validation: `python -m unittest discover -s tools/art -p 'test_*.py' -v` — 10 tests passed.
+The new test cases explicitly prove that missing or edge-cropped secondary views reject the entire sheet. The suite now contains 12 tests; exact-head CI is pending.
 
 ## Documentation
 
