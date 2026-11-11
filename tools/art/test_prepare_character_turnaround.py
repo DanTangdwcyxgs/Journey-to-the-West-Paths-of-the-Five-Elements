@@ -39,6 +39,11 @@ class PrepareTurnaroundTests(unittest.TestCase):
         crop_path = self.root / result.gameplay_crop
         self.assertEqual(archive.read_bytes(), original)
         self.assertEqual(result.source_sha256, digest)
+        self.assertEqual(
+            set(result.quadrant_visible_bounds),
+            {"front_3q", "right_profile", "rear_3q", "left_profile"},
+        )
+        self.assertTrue(all(ratio >= 0.05 for ratio in result.quadrant_transparent_ratios.values()))
         self.assertTrue(crop_path.is_file())
 
         with Image.open(crop_path) as crop:
@@ -103,6 +108,24 @@ class PrepareTurnaroundTests(unittest.TestCase):
         ImageDraw.Draw(sheet).rectangle((0, 30, 80, 180), fill=(200, 30, 30, 255))
         sheet.save(self.source)
         with self.assertRaisesRegex(PreparationError, "touches a quadrant edge"):
+            prepare_turnaround(self.source, "wukong", self.root)
+
+    def test_rejects_empty_non_primary_view(self) -> None:
+        self.make_valid_sheet()
+        with Image.open(self.source) as opened:
+            sheet = opened.convert("RGBA")
+        ImageDraw.Draw(sheet).rectangle((200, 200, 399, 399), fill=(0, 0, 0, 0))
+        sheet.save(self.source)
+        with self.assertRaisesRegex(PreparationError, "rear_3q.*contains no visible character"):
+            prepare_turnaround(self.source, "wukong", self.root)
+
+    def test_rejects_non_primary_view_touching_quadrant_edge(self) -> None:
+        self.make_valid_sheet()
+        with Image.open(self.source) as opened:
+            sheet = opened.convert("RGBA")
+        ImageDraw.Draw(sheet).rectangle((390, 60, 399, 170), fill=(250, 240, 10, 255))
+        sheet.save(self.source)
+        with self.assertRaisesRegex(PreparationError, "right_profile.*touches a quadrant edge"):
             prepare_turnaround(self.source, "wukong", self.root)
 
     def test_rejects_transparent_but_empty_top_left_quadrant(self) -> None:
