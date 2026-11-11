@@ -50,7 +50,7 @@ The new test cases explicitly prove that missing or edge-cropped secondary views
 - No new image was generated. The 2026-11-11 image-generation quota remains consumed by the rejected planning poster.
 - No game character art was generated or accepted.
 - The tool assumes the top-left quadrant of the reviewed 2×2 source sheet is the primary front three-quarter view. It cannot automatically validate all other views' identity or artistic consistency.
-- PASS: helper/code head `69fc03a38b02221e57b66003c1dbb1440c51a307`, Art Tooling [42947150489](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42947150489), all 10 unit tests passed.
+- Historical PASS: helper/code head `69fc03a38b02221e57b66003c1dbb1440c51a307`, Art Tooling [42947150489](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42947150489), the original 10-test suite passed. The two secondary-quadrant guards were added after this run; see the latest validation below.
 - PASS: same exact head, Godot Runtime [42947150307](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42947150307), log confirms `PASS res://combat/test_visual_asset_contract.gd` and `RUNTIME_SUITE_PASS tests=52`.
 - These runs verify the helper and runtime state at the cited SHA. If later documentation commits move the branch, inspect the newest head's Actions before reporting it green.
 - Existing Godot Runtime remains a separate validation gate for the final output dimensions and catalog loading.
