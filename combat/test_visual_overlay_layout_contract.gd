@@ -37,6 +37,20 @@ static func run_all() -> Dictionary:
 		if actual_stage != expected_stage:
 			failures.append("unexpected VisualOverlay stage mapping for %s: expected=%s actual=%s" % [scene_path, expected_stage, actual_stage])
 
+	var opaque_background := Color("0b0d12")
+	var no_backdrop_background := VisualOverlay.background_color_for_backdrop(opaque_background, false)
+	if no_backdrop_background != opaque_background:
+		failures.append("scene background opacity changed without a loaded stage texture")
+
+	var revealed_background := VisualOverlay.background_color_for_backdrop(opaque_background, true)
+	if absf(revealed_background.a - 0.30) > 0.001:
+		failures.append("stage-backed scene background should be capped at 0.30 alpha")
+
+	var existing_shade := Color(0.03, 0.025, 0.04, 0.12)
+	var preserved_shade := VisualOverlay.background_color_for_backdrop(existing_shade, true)
+	if absf(preserved_shade.a - 0.12) > 0.001:
+		failures.append("existing translucent scene shade should not be made more transparent")
+
 	var active_origin := VisualOverlay.build_presentation_signature("res://ui/journey.tscn", "WUKONG", NarrativeState.ROUTE_IN_PROGRESS)
 	var completed_origin := VisualOverlay.build_presentation_signature("res://ui/journey.tscn", "WUKONG", NarrativeState.ROUTE_COMPLETE)
 	if active_origin == completed_origin:
