@@ -192,4 +192,4 @@
 - 所有关联的 Shared chapter ID 必须真实存在于 `shared_chapters.json`；
 - 游戏状态值必须属于受控集合，不允许误把无映射记录标记完成。
 
-当前 Runtime suite 在新测试提交后须重新跑精确 SHA；旧 SHA 成功不能替代新 SHA 验收。
+精确实现/测试 SHA `7b56408a9abf6b99e6373993343412c689287b6b` 已通过 Godot Runtime [43175664230](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/43175664230)；日志确认 `PASS res://combat/test_canonical_81_trials.gd` 与 `RUNTIME_SUITE_PASS tests=53`。后续如修改代码或测试，必须重新验证新 SHA。

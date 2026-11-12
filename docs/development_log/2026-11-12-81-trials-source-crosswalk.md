@@ -37,7 +37,7 @@ Replace the empty 81-slot scaffold with a source-backed record set, verify chapt
 
 ## Validation
 - Data construction check: 81 records; sequential IDs; 80 exact ledger list entries + 1 closing-episode-derived entry.
-- Runtime regression added but not yet validated on this new head. The next step is to inspect the new exact-SHA Godot Runtime run and fix any script/data issues before reporting success.
+- PASS: exact implementation/test SHA `7b56408a9abf6b99e6373993343412c689287b6b`, Godot Runtime run [43175664230](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/43175664230) completed successfully. Job log confirms `PASS res://combat/test_canonical_81_trials.gd` and `RUNTIME_SUITE_PASS tests=53`.
 - No gameplay state, battle logic, encounter data, or art asset was changed.
 - No PR was merged and no deployment was performed.
 
