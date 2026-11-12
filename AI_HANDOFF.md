@@ -569,3 +569,13 @@ Runtime has now verified the post-Shared-02 detour and that Journey resumes at S
 - Optional exploration must not advance the fixed Shared chronology, mutate recruitment, or add completed chapters.
 - Treat stale/in-progress historical runs as neither green nor current validation. Only the exact tested SHA and completed run count.
 - Save failure must restore the full NarrativeState snapshot and leave the clue retryable.
+
+
+## 2026-11-12 Handoff — 81 Trials Tracker Audit
+- New tracker: `docs/narrative/81_TRIALS_MASTER_TRACKER.md`.
+- New audit log: `docs/development_log/2026-11-12-81-trials-tracker-audit.md`.
+- The five-start route Bible contains 49 Origin chapter definitions (15/9/9/8/8); `event_sequences_origin.json` contains 31 entries (Tang 8, Bajie 9, Wujing 8, Longma 6). Identified gaps: TANG-09 and LONGMA-07/08.
+- Do not report these as 81-trial completion. Origin is personal backstory, not automatically a pilgrimage trial.
+- All 81 canonical slots remain UNMAPPED pending a verified source edition and chapter citations. Do not fill names from memory.
+- This batch is docs-only; no Runtime/Web CI pass is claimed.
+- Next: source-backed 81-trial mapping; cross-check shared catalog, validator and route sequence manager; then repair the three catalog gaps with regression coverage.
