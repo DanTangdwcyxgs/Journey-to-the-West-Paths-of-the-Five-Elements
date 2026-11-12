@@ -10,6 +10,8 @@
 
 ## 最新记录
 
+- [2026-11-12 — Art Generation Quota Record Consistency](2026-11-12-art-quota-record-consistency.md)
+
 - [2026-11-12 — Full-Project Art Prompt Library Baseline](2026-11-12-full-project-art-prompt-library.md)
 
 - [2026-11-12 — Wukong Prompt Preflight and Error-Proofing](2026-11-12-wukong-prompt-preflight.md)
