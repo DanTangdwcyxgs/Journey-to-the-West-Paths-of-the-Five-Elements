@@ -677,3 +677,13 @@ Wukong、Tang、Longma、Bajie、Wujing 五条 Origin Route 均已完成首轮 S
 - PR #28 merged to main as `ec6ef177b6a2a604c1f86b7e447f2212af82f069`. Exact docs-sync head `384771aadca78ffb5324d47721af511c6e671223` passed Runtime [38497759935](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38497759935), including `PASS res://combat/test_region_exploration.gd` and `RUNTIME_SUITE_PASS tests=52`. Merged main Runtime [38497860810](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38497860810) passed 52/52; Web Demo [38497860796](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38497860796) passed build/export/Pages deployment. Live demo: https://dantangdwcyxgs.github.io/Journey-to-the-West-Paths-of-the-Five-Elements/.
 - Five Elements Mountain is now the second generic region definition (three clue-only POIs, timeline 100 and Wukong milestone). Tests cover map traversal into and out of the region, gates, save/reload, and unchanged Shared chapter/timeline/completed history/roster.
 - Next: evaluate whether a third mapped location has enough narrative value for exploration; otherwise move to the outstanding visual screenshot review and six final transparent character PNG/WebP assets.
+
+
+### Round 77 — 2026-11-12: 81 Trials Tracker and Coverage Audit
+- Audited the current README, game vision, five-start route Bible, Origin sequence catalog, handoff and recent exploration logs.
+- Counted 49 Origin chapter definitions in the Bible: Wukong 15, Tang 9, Bajie 9, Wujing 8, Longma 8.
+- Parsed `data/narrative/event_sequences_origin.json`: 31 registered Origin sequences (Tang 8, Bajie 9, Wujing 8, Longma 6). The Bible-to-catalog gaps are TANG-09 and LONGMA-07/08.
+- Added `docs/narrative/81_TRIALS_MASTER_TRACKER.md` with 81 stable IDs, status/evidence gates, known crosswalk and audit findings. All canonical trial names remain UNMAPPED until the source edition and chapter references are verified; no invented 81/81 completion figure.
+- Explicitly separated Origin chapter definitions, authored sequence data, runtime readiness, content completion and production acceptance. The current counts are not a count of completed pilgrimage trials.
+- Documentation-only. JSON parsing/counting succeeded; no Godot Runtime or Web Demo result is claimed for this head.
+- Next: verify a canonical 81-trial source list, inspect both shared and origin catalogs for orphan/duplicate/namespace errors, then close TANG-09 and LONGMA-07/08 only after checking alternate catalogs for duplicates.
