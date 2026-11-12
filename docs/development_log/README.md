@@ -10,6 +10,8 @@
 
 ## 最新记录
 
+- [2026-11-12 — 81 Trials Source Ledger and Mapping Correction](2026-11-12-81-trials-source-crosswalk.md)
+
 - [2026-11-12 — 81 Trials Tracker and Coverage Audit](2026-11-12-81-trials-tracker-audit.md)
 
 

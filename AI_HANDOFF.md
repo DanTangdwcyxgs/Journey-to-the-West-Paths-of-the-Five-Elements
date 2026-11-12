@@ -580,3 +580,14 @@ Runtime has now verified the post-Shared-02 detour and that Journey resumes at S
 - All 81 canonical slots remain UNMAPPED pending a verified source edition and chapter citations. Do not fill names from memory. No duplicate IDs were found, but Bible-to-data gaps remain.
 - This batch is docs-only; no Runtime/Web CI pass is claimed.
 - Next: source-backed 81-trial mapping; cross-check shared catalog, validator and route sequence manager; then repair the three catalog gaps with regression coverage.
+
+
+## Current Handoff — 2026-11-12: 81 Trials Source Ledger and Mapping Correction
+- Canonical source data: `data/narrative/reference/canonical_81_trials.json`; full production tracker: `docs/narrative/81_TRIALS_MASTER_TRACKER.md`; latest log: `docs/development_log/2026-11-12-81-trials-source-crosswalk.md`.
+- Primary basis is the Chapter 99 ledger (80 numbered entries) plus the subsequent Tongtian River / White Turtle ordeal that the text uses to complete the count. Trial 81 is marked as derived from the closing episode, not as a literal numbered line in the initial ledger.
+- The novel chapter locators are a secondary crosswalk, checked against the repository's pinned 100-chapter title index (upstream commit `419a54fbaf368af463dd863b8271ec7bb176b3b3`).
+- Regression: `combat/test_canonical_81_trials.gd` is registered in `tests/runtime_suite.gd`. Validate the exact new head's Godot Runtime before marking it passed.
+- Important route correction: Tang start-route endpoint remains `TANG-08`; Longma start-route endpoint remains `LONGMA-06`. TANG-09 is shared-journey design; LONGMA-07/08 are post-recruitment memory/awakening concepts. Do not append them to Origin start routes or the handoff will move.
+- Shared chapter IDs in runtime data are SHARED-01 Five Elements, SHARED-02 Early Pilgrimage, SHARED-03 Eagle Sorrow, SHARED-04 Black Wind/Early Demon Tales, SHARED-05 Gaojiazhuang, SHARED-06 Four-Person Journey, SHARED-07 Flowing Sands, SHARED-08 Party Full, SHARED-09 Full Pilgrimage. The Shared Bible now contains an alignment table; its remaining legacy content still needs paragraph-level migration.
+- Mapping snapshot: 4 items with Runtime evidence (#9, #12, #15, #16), 3 partial (#8, #10, #11), 2 Yellow Wind vertical slices awaiting a canonical Shared chapter link (#13, #14), 72 without direct game chapter mapping. No 81-trial completion count is claimed.
+- Next work: exact-SHA Runtime validation; finish Shared Bible migration; build a separate post-recruitment Memory content catalog; connect the Yellow Wind vertical slice to a formally ordered Shared chapter; continue mapping in canonical sequence.

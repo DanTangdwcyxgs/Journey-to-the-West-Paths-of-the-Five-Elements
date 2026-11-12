@@ -688,3 +688,15 @@ Wukong、Tang、Longma、Bajie、Wujing 五条 Origin Route 均已完成首轮 S
 - Documentation-only. JSON parsing/counting succeeded; no Godot Runtime or Web Demo result is claimed for this head.
 - Cross-audited both catalogs: 31 Origin + 24 Shared = 55 sequences; zero duplicate sequence IDs and zero duplicate chapter IDs. Prefix counts: WUK 15, TANG 8, BAJIE 9, WUJING 8, LONGMA 6, SHARED 9.
 - Next: verify a canonical 81-trial source list and inspect catalog namespace/orphan references; then close TANG-09 and LONGMA-07/08 only after checking alternate catalogs for duplicates.
+
+
+### Round 78 — 2026-11-12: Source-backed 81 Trials Catalog and Mapping Correction
+- Established Chapter 99 as the primary source for the first 80 numbered difficulties. Chapter 99 says one additional ordeal remains; the subsequent Tongtian River / White Turtle incident is separately recorded as the derived 81st entry, not misquoted as part of the printed 80-item list.
+- Added `data/narrative/reference/canonical_81_trials.json`: 81 stable records, Chapter 99 line evidence, aliases / Unicode notes, novel chapter locators, pinned source provenance and current game crosswalk status.
+- Cross-referenced novel chapter numbers against `data/narrative/reference/xiyouji_chapter_index.json`, pinned to upstream commit `419a54fbaf368af463dd863b8271ec7bb176b3b3`. The 81-trial chapter mapping is explicitly marked as a secondary crosswalk; it is not attributed to the Chapter 99 ledger.
+- Added `combat/test_canonical_81_trials.gd` and registered it in `tests/runtime_suite.gd`. It asserts 81 contiguous/unique IDs, 80 ledger-listed entries + 1 closing episode, chapter references in the pinned 100-chapter index, and valid Shared chapter crosswalk targets.
+- Corrected the prior audit classification: TANG-09 is a Shared early-journey design concept, not a missing Origin-route step; LONGMA-07/08 are post-recruitment memory / awakening concepts, not Longma Origin route steps. Keep canonical route endpoints TANG-08 and LONGMA-06.
+- Found stale Shared Bible numbering. Added a runtime ID alignment table and corrected the Longma/Bajie/Wujing convergence rows. Remaining prose under older section headings is explicitly marked as legacy draft requiring migration.
+- Current mapping: four items with Runtime evidence (#9, #12, #15, #16); three partial mappings (#8, #10, #11); two Yellow Wind vertical slices not yet wired to a Shared chapter (#13, #14); 72 without a direct game chapter mapping. This is mapping evidence, not a completed-trial count.
+- Gameplay/battle/art content was not modified. New exact-head Runtime is pending; do not reuse the predecessor SHA's CI result.
+- Next: validate this commit's Runtime; finish the Shared Bible migration; design a separate post-recruitment Memory catalog for LONGMA-07/08; wire Yellow Wind into the canonical Shared timeline only after content/order review.
