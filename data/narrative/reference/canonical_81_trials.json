@@ -293,9 +293,9 @@
       ],
       "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
       "chapter_reference_note": "",
-      "game_mapping_status": "UNMAPPED",
+      "game_mapping_status": "VERTICAL_SLICE_NOT_MAINLINE_MAPPED",
       "game_shared_chapter_ids": [],
-      "game_mapping_note": ""
+      "game_mapping_note": "仓库已有黄风岭—黄风洞—黄风妖王纵向切片和保存/重试测试，但当前 shared_chapters.json 尚未给这项原著劫难分配正式 Shared 主线章节 ID；不能据此标记主线内容完成。"
     },
     {
       "id": "TRIAL-014",
@@ -312,9 +312,9 @@
       ],
       "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
       "chapter_reference_note": "",
-      "game_mapping_status": "UNMAPPED",
+      "game_mapping_status": "VERTICAL_SLICE_NOT_MAINLINE_MAPPED",
       "game_shared_chapter_ids": [],
-      "game_mapping_note": ""
+      "game_mapping_note": "仓库已有黄风岭—黄风洞—黄风妖王纵向切片和保存/重试测试，但当前 shared_chapters.json 尚未给这项原著劫难分配正式 Shared 主线章节 ID；不能据此标记主线内容完成。"
     },
     {
       "id": "TRIAL-015",
