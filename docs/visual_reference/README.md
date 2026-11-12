@@ -53,3 +53,8 @@
 - 使用 `tools/art/prepare_character_turnaround.py` 做可重复的透明度校验、原图归档与主视角裁切；工具说明见 `tools/art/README.md`。
 - 只有裁切后的角色 final PNG 必须与现有 SVG fallback 画布尺寸一致，否则 `VisualOverlay` 的原始纹理尺寸倍率会改变角色显示大小。四视图原稿不参与运行时加载。
 - 本排期概念图/聊天图片不是最终角色或场景资产；只有通过透明背景、四视图完整度、尺寸、轮廓、目录、Runtime 与实际截图验收的文件才可标记完成。
+
+## 全项目提示词库（2026-11-12）
+- 全量美术资产提示词与待办基线见 [MASTER_ASSET_PROMPT_LIBRARY.md](prompts/MASTER_ASSET_PROMPT_LIBRARY.md)，包含角色、怪物、Boss、场景、装备道具、VFX 与 UI 家族。
+- 该库负责资产级视觉指令；[AI_ART_PRODUCTION_SCHEDULE.md](AI_ART_PRODUCTION_SCHEDULE.md) 负责每日唯一执行顺序。新增剧情/NPC/道具/地图/运行时资源时，必须先补资产 ID 与独立提示词，再进入排期。
+- 只有 PRODUCTION ACCEPTED 才能将该资产标记完成。生成成功、透明度通过、进入运行时或 CI 通过均不等于美术完成。
