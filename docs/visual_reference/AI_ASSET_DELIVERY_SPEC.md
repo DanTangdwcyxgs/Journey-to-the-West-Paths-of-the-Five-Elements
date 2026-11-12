@@ -33,6 +33,12 @@ assets/art/characters/final/longma.png
 assets/art/characters/final/yellow_wind.png
 ```
 
+### 每日角色四视图设定图
+
+每个角色只消耗当天一次生成调用，但输出应是一张完整的 2×2 四视图设定图，而不是只交付单一方向，也不是多角色拼盘。四个象限按顺时针排列：左上为主要正面 3/4 战斗展示角度（当前游戏贴图取这一格），右上为右侧面，右下为背面 3/4，左下为左侧面。四个视角必须是同一个角色、同一套服装和同一组道具，全部完整全身，不得裁切、重叠或混入其他角色；四格保持完全相同的站姿与武器握法，只旋转角色朝向，不画成四个不同动作。
+
+原始设定图保存到 assets/art/source_sheets/characters/<id>_turnaround.png。仅将左上角 3/4 视角裁切为 assets/art/characters/final/<id>.png 的游戏贴图；其余三个视角保留为未来方向素材、动画和角色一致性参考。不要把四个方向缩进一张 128×192 / 160×128 的运行时贴图。
+
 ### 推荐交付规格
 
 - 透明背景。
@@ -45,7 +51,7 @@ assets/art/characters/final/yellow_wind.png
 
 ### 角色提示方向
 
-**孙悟空**：猴面、金箍、红/赭色战衣、金箍棒、敏捷战斗姿态；不要做成普通人类武将。
+**孙悟空**：猴面、金箍、红/赭色战衣、金箍棒、尾巴；不要做成普通人类武将。四视图采用同一中性战斗准备站姿，金箍棒由角色解剖学右手握持并置于身体旁，只旋转观察角度，不挥击或突刺。详细动作与构图以 `prompts/2026-11-12-wukong-turnaround.md` 为准。
 
 **唐三藏**：僧袍、法器/禅意细节、克制的姿态；视觉重心是“僧人”和“取经者”，不是法师。
 
@@ -112,7 +118,7 @@ AI 美术不要生成 UI 截图来替代程序 UI。AI 只负责角色、场景�
 
 ## 5. 动画素材（后续）
 
-当进入动画阶段，优先采用 sprite sheet：
+四视图设定图用于锁定角色在不同朝向下的服装、比例、背部细节和道具连续性；它不是动画帧，也不会直接被当前运行时代码加载。当进入动画阶段，优先采用独立的 sprite sheet：
 
 ```text
 assets/art/characters/final/wukong_idle.png
@@ -159,11 +165,19 @@ CharacterPortrait / VisualOverlay / BattleUI / WorldMap
 
 `ArtAssetCatalog` 当前解析顺序：
 
-1. `assets/art/<kind>/final/<id>.png`
-2. `assets/art/<kind>/final/<id>.webp`
+1. `assets/art/<kind>/final/<mapped-stem>.png`
+2. `assets/art/<kind>/final/<mapped-stem>.webp`
 3. 现有 SVG fallback
 
-因此以后只需要新增最终图片，不需要重写玩法代码。
+角色文件名使用角色 ID 的小写形式；场景文件名使用显式映射，必须与本规范和每日排期一致：
+
+| Scene ID | PNG / WebP stem | SVG fallback |
+|---|---|---|
+| `JOURNEY` | `journey_scenery` | `journey_scenery.svg` |
+| `BATTLE_YELLOW_WIND` | `yellow_wind_battle` | `yellow_wind_battle.svg` |
+| `WORLD_MAP` | `world_map` | `journey_map.svg` |
+
+场景原图及后续 PNG/WebP 保持 16:9；运行时 catalog 测试会验证映射、PNG → WebP → SVG 优先级和场景画布比例。因此以后只需要按表新增最终图片，不需要重写玩法代码。
 
 ## 8. 最终质量检查
 
@@ -202,3 +216,25 @@ CharacterPortrait / VisualOverlay / BattleUI / WorldMap
 - 禁止 AI 图片直接包含 HUD/UI 文本。
 - 禁止为了换图修改核心剧情或战斗规则。
 - 禁止把一次性的 AI 图片直接散落到代码里而不登记 Asset Catalog。
+
+
+## 11. Canvas Size Is a Runtime Contract
+
+Only the canonical gameplay crop (the top-left primary three-quarter view from each turnaround sheet) must preserve the exact canvas dimensions of its existing SVG fallback. The archived source sheet is reference material and is not loaded at runtime. `ui/visual_overlay.gd` multiplies the final crop's raw width/height by the presentation scale, so changing the final crop dimensions changes the character's in-game size even if its aspect ratio is unchanged.
+
+| Character | Required final canvas |
+|---|---:|
+| Wukong | 128×192 |
+| Tang | 128×192 |
+| Bajie | 128×192 |
+| Wujing | 128×192 |
+| Longma | 160×128 |
+| Yellow Wind King | 144×192 |
+
+Keep the untouched four-view source sheet under assets/art/source_sheets/characters/, then crop the top-left view and use nearest-neighbor processing to fit the exact canvas without cutting weapons, tails, hooves, feet, or headwear. The runtime visual contract checks only the final gameplay crop dimensions, not the source sheet. A deliberate canvas change requires a reviewed update to VisualOverlay scale/layout and the corresponding regression test.
+
+## 12. Daily Generation Schedule
+
+The one-image-per-day queue and the rules for rejected generations are maintained in [AI_ART_PRODUCTION_SCHEDULE.md](AI_ART_PRODUCTION_SCHEDULE.md). It is the canonical source of dates, asset order, output paths, prompts, and handoff instructions. Do not treat generated schedule posters or chat graphics as production assets.
+
+For character sheets, use `tools/art/prepare_character_turnaround.py` after reviewing all four views. It checks that each quadrant has visible artwork, transparent margin, and no edge-touching crop; it then preserves the source PNG byte-for-byte, extracts the top-left canonical view, and proportionally fits it to the exact runtime canvas. Run its regression tests with `python -m unittest discover -s tools/art -p 'test_*.py' -v`.

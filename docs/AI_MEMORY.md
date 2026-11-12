@@ -677,3 +677,155 @@ Wukong、Tang、Longma、Bajie、Wujing 五条 Origin Route 均已完成首轮 S
 - PR #28 merged to main as `ec6ef177b6a2a604c1f86b7e447f2212af82f069`. Exact docs-sync head `384771aadca78ffb5324d47721af511c6e671223` passed Runtime [38497759935](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38497759935), including `PASS res://combat/test_region_exploration.gd` and `RUNTIME_SUITE_PASS tests=52`. Merged main Runtime [38497860810](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38497860810) passed 52/52; Web Demo [38497860796](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38497860796) passed build/export/Pages deployment. Live demo: https://dantangdwcyxgs.github.io/Journey-to-the-West-Paths-of-the-Five-Elements/.
 - Five Elements Mountain is now the second generic region definition (three clue-only POIs, timeline 100 and Wukong milestone). Tests cover map traversal into and out of the region, gates, save/reload, and unchanged Shared chapter/timeline/completed history/roster.
 - Next: evaluate whether a third mapped location has enough narrative value for exploration; otherwise move to the outstanding visual screenshot review and six final transparent character PNG/WebP assets.
+
+
+### Round 77 — 2026-11-11：Daily AI Art Production Schedule / Character Canvas Contract
+- 从 main baseline `395233d8bcaf13aa9022c33903ab03a75c5a83ae` 开始，建立独立分支 `art/production-roadmap-2026-11-11`，不把未合并的 PR #29 功能分支作为美术计划基线。
+- 先读取 AI 美术交付规范、AI 美术生产流水线、视觉参考、ArtAssetCatalog、六个 SVG fallback、VisualOverlay 和 Runtime visual-asset contract。
+- 2026-11-11 唯一一次图像生成调用产生一张 1536×1024 的排期概念海报，但其自动生成的资产/角色标签不符合项目真实清单；该图未被接受为游戏资源、未提交到仓库、不得作为正式排期依据。今日生成额度标记为已使用，不再重试。
+- 新增 `docs/visual_reference/AI_ART_PRODUCTION_SCHEDULE.md`：从 2026-11-12 开始每天最多一张、按序完成 Wukong / Tang / Bajie / Wujing / Longma / Yellow Wind King 六角色，再制作 Journey、Yellow Wind Battle、WorldMap 三张背景；写明每一天的提示重点、文件路径、质量门和后续 Agent 接手步骤。
+- 关键实现事实：`ui/visual_overlay.gd` 通过纹理原始宽高乘显示倍率绘制角色，故 final PNG/WebP 画布必须匹配 SVG fallback 的真实尺寸：Wukong/Tang/Bajie/Wujing 128×192，Longma 160×128，Yellow Wind King 144×192。
+- 扩展 `combat/test_visual_asset_contract.gd`，让 Runtime 自动校验六个角色实际加载纹理的画布尺寸。更新 AI_ASSET_DELIVERY_SPEC、AI_ASSET_PIPELINE、视觉参考 README、开发日志索引与 AI_HANDOFF。
+- 今日没有产出可验收的 final PNG/WebP；首个正式角色生成安排为 2026-11-12 的 Wukong。未声称图像资产完成、Web Demo 部署或实际截图验收。
+- PASS：精确文档/代码 head `5132ca55735cecf3f32b3c6ef2f402a954dd67c6` 的 Godot Runtime [42944345417](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42944345417) 成功，日志确认 `PASS res://combat/test_visual_asset_contract.gd` 与 `RUNTIME_SUITE_PASS tests=52`。后续文档同步如触发新 workflow，仍需按最新 SHA 再核对。
+
+
+### Round 78 — 2026-11-11: Four-View Character Turnaround Strategy
+- 复核 ui/visual_overlay.gd 和 ui/character_portrait.gd：当前角色资源在主菜单、旅途、战斗及角色卡中以静态纹理显示，当前运行时没有按方向切换的角色动画帧。
+- 决定将每个角色日的一次生成调用用于同一角色的一张 2×2 四视图设定图，顺时针视角为左上正面 3/4（当前游戏主视图）、右上右侧面、右下背面 3/4、左下左侧面；四格必须完整全身且保持同一套设计；保持完全相同的站姿、肢体位置和武器握法，只旋转角色朝向，不画成四个不同动作。
+- 原始设定图存入 assets/art/source_sheets/characters/<id>_turnaround.png；仅将左上主视角裁切为 assets/art/characters/final/<id>.png。其余三个视角保留作未来方向素材、动画及设计参考，不直接进入运行时。
+- 精确尺寸合同只作用于最终游戏裁切：Wukong/Tang/Bajie/Wujing 128×192，Longma 160×128，Yellow Wind King 144×192。保持比例，使用 nearest-neighbor，不将四个方向压进单张运行时纹理。
+- 更新 AI_ART_PRODUCTION_SCHEDULE、AI_ASSET_DELIVERY_SPEC、AI_ASSET_PIPELINE、视觉参考索引、开发日志和 AI_HANDOFF。详细决策见 docs/development_log/2026-11-11-four-view-character-turnaround-strategy.md。
+- 今日 2026-11-11 的图像生成额度已被排期海报消耗；本轮没有调用 ImageGen，也没有接受任何正式角色美术。首个角色四视图生成仍为 2026-11-12 Wukong。
+- 文档策略修改不改运行时代码。初始四视图策略 head e9cfdba08c18b50dedecc3886a5589195a01deee 的 Godot Runtime [42945517918](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42945517918) 通过 52/52。
+- 加入四视角同站姿约束后的策略 head c0b3ec73246ce647eb04e6376ea25c538eec5083，Godot Runtime [42945721522](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42945721522) 再次通过；日志确认 PASS visual-asset contract 与 RUNTIME_SUITE_PASS tests=52。
+
+
+### Round 79 — 2026-11-11: Four-View Turnaround Crop Utility
+- 新增 tools/art/prepare_character_turnaround.py：将模型输出的单角色 2×2 PNG 原稿按字节原样归档到 assets/art/source_sheets/characters/<id>_turnaround.png，仅提取左上主视角，按长宽比缩放、nearest-neighbor、4px 透明边距和脚底对齐，输出到 assets/art/characters/final/<id>.png。
+- 工具按六个角色映射准确画布尺寸，要求 PNG 真 alpha、偶数 2×2 画布；四个象限均必须有可见内容、至少 5% 全透明像素，且可见内容不触碰象限边缘；默认拒绝覆盖既有原稿或 final 图，除非显式传入 --overwrite。
+- 新增两个回归测试，分别验证非主视角象限缺失、非主视角象限贴边裁切会拒绝整张图；测试总数从 10 增至 12。等待扩展后精确分支 HEAD 的 Art Tooling CI 确认。
+- 新增 tools/art/README.md、tools/art/requirements.txt 和 .github/workflows/art-tooling.yml；新增开发日志 docs/development_log/2026-11-11-turnaround-crop-utility.md，更新美术排期、交付规范、pipeline、视觉索引与 Agent handoff。
+- 人工仍须检查四个视角是否同一模型、同一套服装/装备、同一站姿、朝向正确；自动裁切不能替代美术验收。工具只产出运行时尺寸/透明度候选，不代表画质验收通过。
+- PASS：工具/文档 head 69fc03a38b02221e57b66003c1dbb1440c51a307 的 Art Tooling [42947150489](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42947150489) 通过全部 10 项单元测试；同一 head 的 Godot Runtime [42947150307](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42947150307) 通过 visual-asset contract 与 Runtime suite 52/52。
+- 本地可复现命令：python -m unittest discover -s tools/art -p 'test_*.py' -v。若之后还有文档提交移动 branch HEAD，必须检查最新 HEAD 的 Art Tooling / Godot Runtime Actions，不能沿用旧 SHA 的结果声称最新提交已通过。
+- 本轮没有调用图像生成；2026-11-11 的额度仍已消耗。下一代 Agent 于 2026-11-12 生成悟空四视图后再运行裁切工具。
+
+
+### Round 80 — 2026-11-11: Validate Every Turnaround Quadrant
+- 再审查 prepare_character_turnaround.py，发现旧实现虽然只裁切左上主视角，却只对左上象限做空白/透明边距/边缘裁切检查；其余三个方向若缺失或贴边仍可能通过。
+- 将输入验收升级为四象限全部检查：front_3q / right_profile / rear_3q / left_profile 每格必须有可见内容、至少 5% 完全透明像素、可见边界不触碰各自象限边界。裁切行为仍仅提取左上主视角。
+- PreparationResult JSON 元数据增加所有象限的可见边界与透明像素比，便于每张图事后审计。
+- 新增 2 项回归：非主视角缺失拒绝、非主视角触边拒绝；测试数从 10 增加到 12。同步更新 README、排期、交付规范、开发日志和 Agent handoff；并消除排期清单中重复编号及重复手动归档的冲突。
+- 精确当前 branch HEAD 的 Art Tooling 与 Godot Runtime 尚待 Actions 结果；不要把上一版 10 项测试的成功结果误记为当前 12 项测试版本的通过。
+- 本轮未调用图像生成。2026-11-11 额度保持已用；明日第一个角色任务仍为 Wukong 四视图。
+
+
+### Round 81 — 2026-11-11: Four-Quadrant Validation CI
+- 扩展后的 12 项工具回归在代码/测试 head 2bf702052e0827c06464cb60d8906c21f5d9430f 通过 Art Tooling [42948677672](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42948677672)，日志确认 Ran 12 tests / OK；同一 head 的 Godot Runtime [42948677560](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42948677560) 通过 visual_asset_contract 和 tests=52。
+- 后续 README 文档 head 981282eaf9692aebfdb1ccb52c7b4d193becf37e 的 Art Tooling [42948839342](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42948839342) 再次通过全部 12 项。
+- 新增验证确保非主视角方向也不能是空象限或贴边裁切；左上主视图仍是唯一 runtime crop，其他三个方向保存为 reference。
+- Runtime 文档提交若仍在运行，必须继续检查最终 branch HEAD 的 Actions；不因代码 head 通过就把尚未完成的后续 head 标记为绿。
+
+
+### Round 82 — 2026-11-11: Wukong Copy-Ready Generation Prompt
+- 新增 docs/visual_reference/prompts/2026-11-12-wukong-turnaround.md，作为 2026-11-12 唯一一次悟空四视图生成调用的详细提示文件。
+- 提示固定 2×2 象限顺序、同一站姿/武器握法、悟空猴面/金箍/红赭战衣/如意金箍棒/尾巴识别点、统一像素密度、真实透明背景、四格留白与无文字/无 UI/无场景要求。
+- AI_HANDOFF 和每日排期已链接该提示；执行 Agent 仍须先检查当地日期和今日生成状态，一天只生成一次。今日额度已消耗，本轮没有调用图像生成。
+
+
+### Round 83 — 2026-11-11: Final Wukong Prompt/Handoff Validation
+- 包含悟空专用提示与交接链接的 prompt/memory head a1f7c762d50e38e3f713c25858efab1d0e291297 已通过 Art Tooling [42949285871](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42949285871)：12 tests / OK。
+- 同一 head 的 Godot Runtime [42949285936](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42949285936) 通过，日志确认 PASS res://combat/test_visual_asset_contract.gd 和 RUNTIME_SUITE_PASS tests=52。
+- 2026-11-12 Wukong prompt 文件 docs/visual_reference/prompts/2026-11-12-wukong-turnaround.md 已保存，并从排期与 AI_HANDOFF 链接。今日图像生成额度仍已用，本轮只完成提示准备和代码/文档工作。
+
+### Round 84 — 2026-11-11: Wukong Turnaround Pose Brief Alignment
+- 交叉审查 2026-11-12 悟空专用提示词、每日排期、交付规范和视觉 pipeline，发现“直立中性战斗准备站姿”“略微前倾动作姿态”“偏进攻”三种描述不完全一致。
+- 统一以 `docs/visual_reference/prompts/2026-11-12-wukong-turnaround.md` 为详细动作权威：双脚约肩宽、膝部微松、躯干直立；金箍棒由角色解剖学右手握持，直立置于身体旁；四格保持同一动作与握法，只旋转观察方向，不挥击、不突刺。
+- 同步更新 AI_ART_PRODUCTION_SCHEDULE、AI_ASSET_PIPELINE、AI_ASSET_DELIVERY_SPEC，并新增开发日志 `docs/development_log/2026-11-11-wukong-pose-brief-alignment.md`。
+- 本轮仅修改文档，未调用图像生成，未变更游戏代码、资源目录或 runtime contract。2026-11-11 图像生成额度仍已消耗；下一次正式生成仍为 2026-11-12 的 Wukong 四视图。
+
+### Round 85 — 2026-11-11: Scene Asset Filename Contract
+- 对照生产排期、`ArtAssetCatalog` 和场景运行时加载链，发现排期中的 `journey_scenery.png` / `yellow_wind_battle.png` 与原 catalog 根据场景 ID 自动生成的 `journey.png` / `battle_yellow_wind.png` 不一致；生成后会继续使用 SVG fallback。
+- 新增 `SCENE_FINAL_STEMS` 显式映射：JOURNEY → journey_scenery、BATTLE_YELLOW_WIND → yellow_wind_battle、WORLD_MAP → world_map；保留 PNG → WebP → SVG 加载顺序及原 SVG 文件不变。
+- 扩展 `combat/test_art_asset_catalog.gd`，验证场景最终文件名映射、解析优先级、资源可加载和 16:9 画布比例；Runtime suite 已登记该测试。
+- 更新 `docs/visual_reference/AI_ASSET_DELIVERY_SPEC.md`，增加 Scene ID / PNG-WebP stem / fallback 表；新增 `docs/development_log/2026-11-11-scene-asset-filename-contract.md`。
+- 本轮未调用图像生成，未改动 SVG 或最终图像素材；2026-11-11 额度仍已消耗。新代码必须在当前精确 branch HEAD 的 Godot Runtime 与 Art Tooling 中验证。
+
+### Round 86 — 2026-11-11: Visual Overlay Sprite Bounds and Ground Anchors
+- 对照项目 1280×720 viewport、角色最终画布尺寸和 `ui/visual_overlay.gd` 绘制坐标，发现个人序章角色按 3.45 倍缩放并锚定在屏幕 66% 处，128×192 角色纹理上沿约 -187px，且阴影/地面线比角色画布底部低约 120px。
+- 同时发现 Yellow Wind battle UI 的妖王 144×192 画布按 2.65 倍缩放、底部锚点 68% 时上沿约 -19px；ridge/cave 的 boss baseline 也明显高于队伍站位。
+- 为 VisualOverlay 增加命名布局常量：序章角色缩放 2.80、底部锚点 82%、阴影中心 83%；battle UI boss baseline 73%；ridge/cave boss baseline 77%。
+- 新增 `combat/test_visual_overlay_layout_contract.gd`，验证 Wukong/Tang/Bajie/Wujing/Longma 序章画布完全位于 1280×720 内、阴影和地面锚点接近，以及两种 boss 站位不裁顶/底；登记进 `tests/runtime_suite.gd`，Runtime 测试预期从 52 项增加到 53 项。
+- 新增开发日志 `docs/development_log/2026-11-11-visual-overlay-layout-contract.md`，并更新索引和 handoff。本轮未调用图像生成，未改动任何 PNG/SVG，美术截图验收仍须等正式素材接入。
+
+### Round 87 — 2026-11-11: Journey Overlay Refresh on Origin Completion
+- 复核 OriginRoute 结束流程发现：序章完成时 `NarrativeManager.state.route_progress[starting_character]` 会在同一个 `journey.tscn` 内变为 `COMPLETE`，`JourneyScreen._refresh()` 不会切换场景；此前 VisualOverlay 仅在 scene_file_path 变化时 queue_redraw，可能继续显示单人序章立绘而不切换到五人队伍展示。
+- VisualOverlay 新增 presentation signature：Journey 场景包含 scene path、starting character 和其 route status；其他场景仍只依赖 scene path。signature 改变时，只有场景路径变化才重载场景背景，但始终触发 queue_redraw。
+- 扩展 `combat/test_visual_overlay_layout_contract.gd`，验证 Origin route completion 会改变 Journey signature、不同 starting hero 也会改变 signature，且主菜单不受 Journey route 状态影响。
+- 新增开发日志 `docs/development_log/2026-11-11-journey-overlay-origin-refresh.md`，更新索引和 AI_HANDOFF。本轮没有改变剧情/存档状态逻辑、没有修改美术文件、没有调用图像生成。
+
+
+### Round 88 — 2026-11-11: VisualOverlay Unsupported Scene Routing
+- 审查常驻 VisualBackdrop 时发现 VisualOverlay._draw() 将 Journey 舞台作为无条件 fallback；悬赏准备、营地、队伍、准备、区域探索和商店等非舞台场景也会被叠加取经队伍立绘。
+- 新增 stage_kind_for_scene(scene_path) 显式解析主菜单、Journey、战斗、世界地图、黄风岭/洞舞台；背景图选择和前景舞台绘制共用该解析结果。未知/非舞台场景不再绘制 Journey 队伍。
+- 扩展 combat/test_visual_overlay_layout_contract.gd，对仓库现有 12 个 UI 场景建立映射契约：6 个预期舞台场景必须映射正确，6 个非舞台场景必须返回空舞台。
+- 新增开发日志 docs/development_log/2026-11-11-visual-overlay-unsupported-scene-fallback.md，更新开发日志索引与 AI_HANDOFF。
+- 本轮只调整 Presentation 路由与回归，不修改战斗、剧情、存档、角色素材或图像生成。实现/回归 head `8866bcf06ad5933296759e6cb7fff6b717bb2530` 的 Art Tooling [42966697704](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42966697704) 通过 12 tests / OK；同一 head 的 Godot Runtime [42966697762](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42966697762) 通过 `test_visual_overlay_layout_contract.gd` 与 `RUNTIME_SUITE_PASS tests=53`。没有完成玩家可见截图验收；后续文档同步 head 仍必须重新核对 CI。
+
+### Round 89 — 2026-11-11: VisualOverlay Backdrop Opacity Guard
+- 审查 VisualOverlay 与真实场景根节点的背景构建流程，发现 _apply_scene_visuals() 对所有场景的全屏 ColorRect 无条件执行 alpha ≤ 0.30；Camp、Shop、Party、Preparation 等没有舞台背景纹理的页面也会被改为半透明。
+- 新增 background_color_for_backdrop(color, backdrop_available)，仅当实际加载到舞台背景纹理时才将底层 ColorRect alpha 限制为 0.30；没有纹理（包括资源缺失 fallback）时完整保留原始颜色和透明度。
+- 新增三项 Runtime 回归：无背景纹理保持不透明、存在背景纹理才将 alpha 限制到 0.30、原本 alpha=0.12 的遮罩不进一步变淡。
+- 新增开发日志 docs/development_log/2026-11-11-visual-overlay-backdrop-opacity-guard.md 并更新索引与 Agent handoff。
+- 未修改场景/战斗/剧情/存档逻辑、未改动任何 PNG/SVG 资源、未调用图像生成。最终精确 HEAD 的 Godot Runtime 与 Art Tooling 结果以 PR #30 的最新 Actions 记录为准。
+
+### Round 90 — 2026-11-11: VisualOverlay Scene Instance Refresh
+- 继续审查 autoload VisualOverlay 的场景切换生命周期，发现旧逻辑只比较 scene_file_path；若同一个 .tscn 被重新实例化，路径相同但新 root 未经过背景透明度处理和舞台资源重载。
+- VisualOverlay 新增 scene_instance_id，并以路径 + instance ID 判断是否需要重新应用场景视觉；场景切换期间 current_scene 暂时为空时，清空旧实例 ID、场景名、舞台纹理和 signature。
+- 增加 should_reapply_scene_visuals() 纯策略函数与三项回归：同路径不同实例必须刷新、相同实例不刷新、不同路径必须刷新。
+- 新增开发日志 docs/development_log/2026-11-11-visual-overlay-scene-instance-refresh.md；同步索引和 AI_HANDOFF。仍须以最终精确 HEAD 的 Runtime Actions 验收。
+- 未修改剧情、战斗、存档、资源或 UI 输入规则；未调用图像生成。
+
+### Round 91 — 2026-11-11: PixelHUD Theme Refresh on Scene Re-instancing
+- 同步审查常驻 PixelHUD 发现它也只比较 scene_file_path；同一路径新实例化的 Camp / Shop / WorldMap 等页面可能不会重新应用 PixelUI theme。
+- PixelHUD 新增 scene_instance_id，使用 should_refresh_scene_theme(path + instance ID) 决定是否给新 root Control 应用主题；current_scene 暂时为 null 时会记录空路径和 instance ID=0，避免漏掉同路径重新进入。
+- 将四项 PixelHUD 生命周期断言并入 test_visual_overlay_layout_contract.gd：同路径新实例刷新、相同实例不刷新、scene null 清理、null 后重新进入刷新。
+- 本轮不改变控件输入行为、业务流程或存档。新增开发日志并同步 handoff；以最终精确 HEAD Godot Runtime / Art Tooling 为准。
+- 未修改美术素材，未调用图像生成。
+- PASS：精确 HEAD `03db87b6c5dc6208cf820e1b0677165455fa978b` 的 Godot Runtime [42981863213](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42981863213) 通过 `PASS res://combat/test_visual_overlay_layout_contract.gd` 与 `RUNTIME_SUITE_PASS tests=53`；Art Tooling [42981863335](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42981863335) 通过全部 12 tests / OK。该 head 同时包含 Round 90 / Round 91 的实现、回归与交接文档。
+
+
+### Round 92 — 2026-11-12: Wukong Art Slot Audit
+- Audited the active art branch and schedule. PR #30 remains open/Draft on `art/production-roadmap-2026-11-11`; PR #29 also remains open/unmerged. Neither was merged.
+- Confirmed that 2026-11-12 is the scheduled Wukong four-view turnaround date and that its prompt exists, but the source sheet and final runtime crop are absent from the reviewed tree.
+- Clarified the dated quota history: the rejected planning-poster call consumed the 2026-11-11 slot only. Today's Wukong slot remained Pending.
+- The current agent execution exposed no image-generation action, so no generation call was made and no image was fabricated. Keep today's asset Pending; do not mark it Rejected, do not claim quota consumption, and do not advance to Tang until Wukong is actually produced or the owner replans the queue.
+- Added `docs/development_log/2026-11-12-wukong-art-slot-audit.md` and synchronized the schedule, log index, and handoff. No gameplay/art files changed. Existing exact parent head `b792e9d5f03a4eef7b6b1b8d1d00b799c25c5d00` had passing Art Tooling [42982224263](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42982224263) and Godot Runtime [42982224329](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42982224329); these do not validate the new docs commit.
+- This was a documentation-only audit. No local tests, production image, crop, web build, deploy, or screenshot acceptance was performed. Check Actions on the new exact head before calling it validated.
+- Next: when the image-generation action is available, use the existing Wukong prompt once for the current local date, inspect the four-view sheet, run the established crop utility, then record actual asset hashes/dimensions and verify exact-head Runtime + Art Tooling.
+
+
+### Round 93 — 2026-11-12: Wukong Turnaround Generation Rejected
+- Used exactly one image-generation call for the scheduled Wukong four-view sheet. The output was 1536×1024 RGBA with a real transparent alpha channel; transparency passed.
+- Rejected the output for production: soft/painterly anti-aliased rendering instead of crisp pixel-art clusters, no clearly visible monkey tail, and the staff carried diagonally across/behind the shoulders rather than upright beside the body in a consistent neutral stance/grip.
+- Did not commit the rejected image, archive it as a source sheet, or create a runtime crop. No production art or screenshot acceptance is claimed. Daily image-generation budget is consumed; no retry on 2026-11-12.
+- Rescheduled Wukong to 2026-11-13 and shifted the remaining art queue by one day. Added `docs/development_log/2026-11-12-wukong-generation-rejected.md` and synchronized the schedule/index/handoff.
+- Documentation-only commit; no local tests, Godot Runtime, Art Tooling, Web Demo, or in-game screenshot was run. Parent exact-head CI on `afbef36b6e7454b037b26455dfa0da0742515b11` passed Runtime [43165673955](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/43165673955) and Art Tooling [43165674060](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/43165674060); verify the new commit's own CI before calling it validated.
+- Next: one fresh Wukong call on 2026-11-13 only; focus on visible monkey tail, upright beside-body staff, identical pose/grip in all four views, and crisp pixel-art edges. Continue non-generation work until then.
+
+
+### Round 94 — 2026-11-12: Mandatory Visual Art Review Standard
+- Added `docs/visual_reference/ART_REVIEW_STANDARD.md` as a mandatory gate for every AI/external art asset: critical rejection gates, 100-point rubric with ≥90 pass threshold, separate prompt/native/gameplay/integration/screenshot stages, character and environment checklists, and explicit acceptance states.
+- Linked the standard from the daily schedule and Wukong prompt. Clarified that technical validity and CI do not prove aesthetic quality or player-facing acceptance.
+- Corrected the schedule's stale closing statement: the 2026-11-12 Wukong image is rejected; the next Wukong slot is 2026-11-13.
+- Documentation only; no art files, gameplay code, catalog, runtime assets, local tests, or screenshots changed. Exact prior SHA `a4f9694312fa3296aa8fdb7635c4da4abe27aee9` passed Art Tooling [43167077069](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/43167077069) and Godot Runtime [43167077118](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/43167077118); these do not validate the new documentation commit.
+- Next: verify exact-head CI; on 2026-11-13 use one Wukong call only and enforce every critical gate plus the 90/100 threshold. Reject without retry if any critical failure remains.
+
+
+### Round 95 — 2026-11-12: Wukong Prompt Preflight Hardened
+- Expanded the 2026-11-13 Wukong prompt with a mandatory preflight, priority order, explicit staff/tail spatial constraints, pixel-art lock, and negative prompt/reject list.
+- Staff sits vertically beside the character on image-right in the canonical view, held in the anatomical right hand at waist/lower-chest height with visible separation; tail curves into open negative space and remains separated from legs, clothing, and staff in all four views.
+- Added anti-detail rule: simplify ornaments before sacrificing pixel clarity, tail visibility, staff placement, or full-body framing.
+- No image was generated in this preparation step; the 2026-11-12 daily quota remains consumed. The one Wukong call is reserved for 2026-11-13 America/Los_Angeles local date, only after checking no call has occurred that day.
+- Documentation-only update; no asset files, game code, catalog, or production directories changed. Verify exact-head Art Tooling and Godot Runtime after this commit.

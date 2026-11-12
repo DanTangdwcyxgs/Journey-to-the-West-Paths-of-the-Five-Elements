@@ -5,6 +5,16 @@ extends RefCounted
 ## requires manual screenshot review and is not inferred from texture loadability.
 
 const CHARACTER_IDS := ["WUKONG", "TANG", "BAJIE", "WUJING", "LONGMA", "YELLOW_WIND"]
+## VisualOverlay multiplies the source texture dimensions by its presentation scale.
+## Final PNG/WebP files must therefore retain the exact canvas dimensions of the SVG fallback.
+const EXPECTED_CHARACTER_SIZES: Dictionary = {
+	"WUKONG": Vector2i(128, 192),
+	"TANG": Vector2i(128, 192),
+	"BAJIE": Vector2i(128, 192),
+	"WUJING": Vector2i(128, 192),
+	"LONGMA": Vector2i(160, 128),
+	"YELLOW_WIND": Vector2i(144, 192),
+}
 const SCENES := [
 	"res://assets/art/scenes/journey_scenery.svg",
 	"res://assets/art/scenes/journey_map.svg",
@@ -21,8 +31,11 @@ static func run_all() -> Dictionary:
 		var texture := ArtAssetCatalog.character_texture(id)
 		if texture == null:
 			failures.append("catalog texture failed to load: %s -> %s" % [id, path])
-		elif texture.get_width() <= 0 or texture.get_height() <= 0:
-			failures.append("invalid character texture: %s -> %dx%d" % [id, texture.get_width(), texture.get_height()])
+		else:
+			var expected_size: Vector2i = EXPECTED_CHARACTER_SIZES[id]
+			var actual_size := Vector2i(texture.get_width(), texture.get_height())
+			if actual_size != expected_size:
+				failures.append("character canvas size mismatch: %s expected=%s actual=%s path=%s" % [id, str(expected_size), str(actual_size), path])
 		var stem: String = id.to_lower()
 		var final_png := "res://assets/art/characters/final/%s.png" % stem
 		var final_webp := "res://assets/art/characters/final/%s.webp" % stem

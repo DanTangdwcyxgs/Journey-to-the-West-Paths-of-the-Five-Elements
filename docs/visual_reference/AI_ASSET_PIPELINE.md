@@ -40,11 +40,13 @@ SVG 当前继续作为占位/可运行资源，不是最终美术标准。
 
 目标不是“卡通人物”，而是可以直接放进 JRPG 战斗画面的完整像素角色。
 
+每个角色日期的唯一生成调用应输出一张完整的 2×2 四视图设定图，而不是只画单一方向，也不是多角色联系表。四个象限顺时针排列：左上主要正面 3/4 战斗展示角度（用于当前游戏贴图），右上右侧面，右下背面 3/4，左下左侧面。四个视角必须是同一角色、同一服装/装备、完整全身且互不重叠；保持同一个站姿、肢体位置与武器握法，只旋转角色朝向，不把四格画成四种不同动作。
+
 建议输出：
 
 - 透明背景。
-- 单角色全身。
-- 正侧约 3/4 战斗姿态。
+- 单角色四视图完整全身；四个方向都不能裁切。
+- 左上角主视图为正面 3/4 战斗姿态。
 - 清晰轮廓。
 - 可辨认脸部、发型/头饰、服装、鞋、武器、饰物。
 - 明确的明暗分层。
@@ -53,11 +55,13 @@ SVG 当前继续作为占位/可运行资源，不是最终美术标准。
 - 不要 UI、文字、边框、水印。
 - 不要把角色画成圆头+方身体的简化几何体。
 
+原始四视图设定图存档到 assets/art/source_sheets/characters/<id>_turnaround.png。只把左上角主视图裁切到 assets/art/characters/final/<id>.png，遵守现有精确画布尺寸合同；其余三个方向作为后续动画、方向素材及角色设计一致性参考，不直接加载进当前运行时。使用 tools/art/prepare_character_turnaround.py 完成原图归档与主视角裁切，先人工检查所有视角，再运行工具；工具拒绝非透明背景、空视角、贴边疑似裁切画面和未经授权的覆盖。
+
 ## 4. 五人必须保持的视觉识别点
 
 ### WUKONG
 
-猴脸、金箍、红色/深暖色战甲、金箍棒、尾巴，姿态偏进攻。
+猴脸、金箍、红色/深暖色战甲、金箍棒、尾巴。四视图统一采用专用提示词规定的中性战斗准备站姿：双脚约肩宽、膝部微松、躯干直立并带轻微敏捷感；金箍棒由角色解剖学右手握持，直立置于身体旁，只旋转观察角度，不挥击、不突刺、不画成四种不同动作。
 
 ### TANG
 
@@ -136,3 +140,11 @@ SVG 当前继续作为占位/可运行资源，不是最终美术标准。
 - Vertical Slice
 
 图片不足不会阻塞这些工作。最终美术资源可以后置替换。
+
+## 10. Daily image-generation budget
+
+The project owner has one image-generation call per local calendar day. Read `AI_ART_PRODUCTION_SCHEDULE.md` before each call and never make a second call on the same date. For a character day, the one call must create a single-character 2×2 four-view turnaround sheet (front 3/4, right profile, rear 3/4, left profile); archive the source sheet and crop the top-left view for the current game. A scene day creates one full scene background. A rejected output must be recorded and moved to the next available date; continue non-generation engineering work for the rest of the day.
+
+The canonical schedule is the single source of truth for daily asset order and prompts. Today’s generated planning poster was not accepted as game art; the first production asset is Wukong on 2026-11-12.
+
+Only the extracted top-left gameplay crop must be reduced proportionally to the exact current SVG canvas sizes in `AI_ASSET_DELIVERY_SPEC.md`. Archive the original four-view reference sheet separately; it is not runtime-loaded. This matters because `VisualOverlay` uses the final texture width/height for screen sizing. The Runtime visual-contract test enforces the crop dimensions.

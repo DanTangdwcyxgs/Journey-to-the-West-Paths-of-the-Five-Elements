@@ -10,6 +10,28 @@
 
 ## 最新记录
 
+- [2026-11-12 — Wukong Prompt Preflight and Error-Proofing](2026-11-12-wukong-prompt-preflight.md)
+
+- [2026-11-12 — Mandatory Visual Art Review Standard](2026-11-12-visual-art-review-standard.md)
+
+- [2026-11-12 — Wukong Turnaround Generation Rejected](2026-11-12-wukong-generation-rejected.md)
+- [2026-11-12 — Wukong Art Slot Audit and Agent Handoff](2026-11-12-wukong-art-slot-audit.md)
+
+- [2026-11-11 — PixelHUD Theme Refresh on Scene Re-instancing](2026-11-11-pixel-hud-scene-instance-refresh.md)
+
+- [2026-11-11 — VisualOverlay Scene Instance Refresh](2026-11-11-visual-overlay-scene-instance-refresh.md)
+
+- [2026-11-11 — VisualOverlay Backdrop Opacity Guard](2026-11-11-visual-overlay-backdrop-opacity-guard.md)
+
+- [2026-11-11 — Four-View Turnaround Crop Utility](2026-11-11-turnaround-crop-utility.md)
+- [2026-11-11 — Wukong Turnaround Pose Brief Alignment](2026-11-11-wukong-pose-brief-alignment.md)
+- [2026-11-11 — Scene Asset Filename Contract](2026-11-11-scene-asset-filename-contract.md)
+- [2026-11-11 — Visual Overlay Sprite Bounds and Ground Anchors](2026-11-11-visual-overlay-layout-contract.md)
+- [2026-11-11 — Journey Overlay Refresh on Origin Completion](2026-11-11-journey-overlay-origin-refresh.md)
+- [2026-11-11 — VisualOverlay Unsupported Scene Fallback](2026-11-11-visual-overlay-unsupported-scene-fallback.md)
+- [2026-11-11 — Four-View Character Turnaround Strategy](2026-11-11-four-view-character-turnaround-strategy.md)
+- [2026-11-11 — Daily AI Art Production Plan and Canvas Contract](2026-11-11-ai-art-production-plan.md)
+
 - [2026-10-14 — Five Elements Mountain Region Exploration](2026-10-14-five-elements-mountain-region.md)
 
 - [2026-10-14 — Eagle Sorrow Region Exploration Vertical Slice](2026-10-14-eagle-sorrow-region-exploration.md)

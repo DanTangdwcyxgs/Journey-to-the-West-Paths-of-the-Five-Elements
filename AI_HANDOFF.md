@@ -569,3 +569,113 @@ Runtime has now verified the post-Shared-02 detour and that Journey resumes at S
 - Optional exploration must not advance the fixed Shared chronology, mutate recruitment, or add completed chapters.
 - Treat stale/in-progress historical runs as neither green nor current validation. Only the exact tested SHA and completed run count.
 - Save failure must restore the full NarrativeState snapshot and leave the clue retryable.
+
+
+## Current Handoff — 2026-11-11: Daily AI Art Production
+
+### Canonical plan
+- Read `docs/visual_reference/AI_ART_PRODUCTION_SCHEDULE.md` before any image generation. It is the single source of truth for date, asset order, output path, prompt brief, and status.
+- Daily limit: one image-generation call per local calendar day (`America/Los_Angeles`). Never retry on the same day. After the daily image task, continue with non-generation engineering work.
+- Today (2026-11-11) the single generation call produced a planning poster whose generated asset labels were inaccurate. It is rejected as production art, was not committed to game folders, and today's image quota is consumed. Do not generate again today.
+- First production image: **2026-11-12 — Wukong four-view turnaround sheet**. Use `docs/visual_reference/prompts/2026-11-12-wukong-turnaround.md` as the copy-ready prompt. Crop its top-left three-quarter view into the runtime sprite; archive the untouched sheet. Continue with Tang, Bajie, Wujing, Longma, Yellow Wind King, Journey scenery, Yellow Wind battle background, and WorldMap according to the schedule.
+- The Wukong pose brief is synchronized across the schedule, delivery spec, and visual pipeline. The dedicated prompt is authoritative: upright neutral battle-ready stance; staff held beside the body in the anatomical right hand; same pose and grip in every quadrant. See `docs/development_log/2026-11-11-wukong-pose-brief-alignment.md`.
+- Scene output filenames must follow `ArtAssetCatalog.SCENE_FINAL_STEMS`: `JOURNEY` → `journey_scenery`, `BATTLE_YELLOW_WIND` → `yellow_wind_battle`, `WORLD_MAP` → `world_map`. The catalog and runtime test now enforce these names and 16:9 scene canvases; see `docs/development_log/2026-11-11-scene-asset-filename-contract.md`.
+- VisualOverlay now uses tested sprite bounds/ground anchors: origin hero 2.80× at 82% baseline with an 83% shadow; Yellow Wind boss baseline 73% in battle UI and 77% in Ridge/Cave. `combat/test_visual_overlay_layout_contract.gd` guards the 1280×720 layout. Review actual screenshots once final art is integrated; see `docs/development_log/2026-11-11-visual-overlay-layout-contract.md`.
+- VisualOverlay's Journey redraw signature now includes the starting character's route status, so the single-origin stage redraws into the full-party presentation after origin completion without requiring a scene transition. The regression lives in `combat/test_visual_overlay_layout_contract.gd`; see `docs/development_log/2026-11-11-journey-overlay-origin-refresh.md`.
+- VisualOverlay now resolves stage drawing through `stage_kind_for_scene` and has no Journey fallback for unsupported UI scenes. Bounty preparation, camp, party, preparation, region exploration, and shop must remain free of an unintended Journey party overlay; see `docs/development_log/2026-11-11-visual-overlay-unsupported-scene-fallback.md`.
+- PASS: explicit VisualOverlay stage-routing code/test head `8866bcf06ad5933296759e6cb7fff6b717bb2530`, Art Tooling [42966697704](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42966697704) (12 tests), and Godot Runtime [42966697762](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42966697762) (`RUNTIME_SUITE_PASS tests=53`). Recheck the latest SHA after any later change.
+
+### Critical implementation detail
+- `ui/visual_overlay.gd` multiplies the source texture's raw width and height by the presentation scale. Final character textures must match the current SVG dimensions exactly: Wukong/Tang/Bajie/Wujing 128×192; Longma 160×128; Yellow Wind King 144×192.
+- `combat/test_visual_asset_contract.gd` now enforces these dimensions. The exact-size rule applies to the extracted top-left gameplay crop, not the raw turnaround sheet. Archive the source sheet separately, preserve character proportions, and use nearest-neighbor processing. Do not change final crop dimensions without updating VisualOverlay and layout regressions deliberately.
+
+### Required workflow per image
+1. Check today's local date and this schedule; verify no generation call has already been made today.
+2. On a character date, generate one single-character 2×2 four-view turnaround sheet: top-left primary front 3/4, top-right right profile, bottom-right rear 3/4, bottom-left left profile. All four views must be full-body and consistent, preserving the same pose and weapon grip while rotating only the viewing angle; this is not a multi-character contact sheet. No UI, labels, panel borders, watermark, or scenery.
+3. Inspect all four views for full-body completeness, consistent character design, transparency, silhouette, clean pixel edges, identity props, and crop safety.
+4. Manually review all four views first. From the repository root, run `python tools/art/prepare_character_turnaround.py --input /absolute/path/<id>_turnaround.png --character <id>`. It byte-for-byte archives the original sheet and extracts the top-left view into the exact final canvas. Do not pass `--overwrite` unless replacement has been reviewed and approved.
+5. Inspect both archived source and runtime crop; confirm exact dimensions, transparency, complete silhouette, proportion, same model/pose across all views, and correct quadrant order. The tool rejects any empty or edge-cropped quadrant. It does not validate artistic consistency.
+6. Update the schedule status, a dated development log, AI_MEMORY and handoff.
+7. Verify the exact newest Godot Runtime head; after the initial batch also run Web Demo and review actual in-game screenshots.
+
+### Turnaround crop utility
+- Install its dependency with `python -m pip install -r tools/art/requirements.txt`.
+- Run tests with `python -m unittest discover -s tools/art -p 'test_*.py' -v`.
+- The dedicated Art Tooling workflow tests the helper independently from Godot Runtime. Current helper suite has 12 tests, including missing/cropped secondary-view rejection; check the exact latest branch SHA before reporting CI green.
+
+### Crop-tool validation
+- Historical initial helper PASS on SHA `69fc03a38b02221e57b66003c1dbb1440c51a307`: [42947150489](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42947150489), original 10 tests.
+- PASS: expanded 12-test helper code/test SHA `2bf702052e0827c06464cb60d8906c21f5d9430f`, Art Tooling [42948677672](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42948677672), `Ran 12 tests` / `OK`.
+- PASS: same code/test SHA, Godot Runtime [42948677560](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42948677560), visual asset contract and `RUNTIME_SUITE_PASS tests=52`.
+- PASS: later docs SHA `981282eaf9692aebfdb1ccb52c7b4d193becf37e`, Art Tooling [42948839342](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42948839342), all 12 tests.
+- PASS: Wukong prompt/memory head `a1f7c762d50e38e3f713c25858efab1d0e291297`, Art Tooling [42949285871](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42949285871), all 12 tests; Godot Runtime [42949285936](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42949285936), visual-asset contract and `RUNTIME_SUITE_PASS tests=52`. Check any newer branch head's workflows before calling it green.
+- If later doc-only commits move the art branch, verify the newest Runtime SHA before calling the branch current/green.
+- If any later doc-only commit moves the art branch, verify that newest SHA's workflows before calling the branch current/green.
+
+### Branch / validation
+- Art branch: `art/production-roadmap-2026-11-11`, created from main `395233d8bcaf13aa9022c33903ab03a75c5a83ae`.
+- PASS: code + docs head `5132ca55735cecf3f32b3c6ef2f402a954dd67c6`, Godot Runtime [42944345417](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42944345417); log confirms `PASS res://combat/test_visual_asset_contract.gd` and `RUNTIME_SUITE_PASS tests=52`.
+- PASS: initial four-view strategy docs head `e9cfdba08c18b50dedecc3886a5589195a01deee`, Godot Runtime [42945517918](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42945517918); log confirms visual-asset contract and `RUNTIME_SUITE_PASS tests=52`.
+- PASS: pose-refined strategy docs head `c0b3ec73246ce647eb04e6376ea25c538eec5083`, Godot Runtime [42945721522](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42945721522); log confirms `PASS res://combat/test_visual_asset_contract.gd` and `RUNTIME_SUITE_PASS tests=52`.
+- Do not merge PR #29 as part of this art task. Keep the art plan in its own branch/PR.
+
+## 16. 2026-11-11 VisualOverlay Backdrop Opacity Guard
+
+- VisualOverlay._apply_scene_visuals() may lower a scene-root ColorRect alpha only when background_texture != null.
+- Unsupported scenes (Camp / Shop / Party / Preparation / Region Exploration / Bounty Prep) and mapped scenes whose art texture failed to load must preserve their authored background opacity. Never make these screens translucent over an empty underlay.
+- VisualOverlay.background_color_for_backdrop(color, backdrop_available) is the shared policy function; the Runtime layout contract covers opaque fallback, stage-backed alpha cap, and pre-existing translucent shades.
+- Latest implementation work belongs to PR #30 branch art/production-roadmap-2026-11-11; keep it Draft/unmerged unless explicitly instructed otherwise.
+- No player-facing screenshot acceptance or final-art acceptance is claimed. Continue with scene layering/input audits, then verify actual screenshots once production art is integrated.
+
+## 17. 2026-11-11 VisualOverlay Scene Instance Refresh
+
+- VisualOverlay refresh identity is `(scene_file_path, current_scene.get_instance_id())`, not path alone. A newly instantiated scene using the same `.tscn` path must reapply its backdrop and root ColorRect opacity policy.
+- When `SceneTree.current_scene` is temporarily null during scene changes, clear `scene_instance_id`, `scene_name`, `background_texture`, and `presentation_signature`; this prevents a same-path re-entry from being mistaken for the previous scene instance.
+- `should_reapply_scene_visuals()` is covered by the Runtime layout contract for same-path recreation, same-instance stability, and path changes.
+- PR #30 remains Draft/unmerged. Do not claim screenshot acceptance; verify the exact branch HEAD Actions before considering this batch complete.
+
+## 18. 2026-11-11 PixelHUD Theme Refresh on Scene Re-instancing
+
+- PixelHUD must refresh the root Control theme when either scene_file_path or current_scene instance ID changes. A new instance reusing the same .tscn path still needs PixelUI.build_theme() applied.
+- During a null current_scene transition, PixelHUD records empty path + instance ID 0; entering/re-entering a scene applies the theme again.
+- The PixelHUD policy function `should_refresh_scene_theme()` is covered in `combat/test_visual_overlay_layout_contract.gd` for same-path re-instancing, stable same instance, null clearing, and null-to-scene entry.
+- Verify exact HEAD CI before treating this change as validated; PR #30 remains Draft and unmerged.
+
+## 19. 2026-11-11 Exact-head validation — persistent UI lifecycle
+
+- Exact tested HEAD: `03db87b6c5dc6208cf820e1b0677165455fa978b`.
+- Godot Runtime [42981863213](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42981863213): success; log confirms `PASS res://combat/test_visual_overlay_layout_contract.gd` and `RUNTIME_SUITE_PASS tests=53`.
+- Art Tooling [42981863335](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42981863335): success; log confirms `Ran 12 tests` / `OK`.
+- PR #30 remains open, Draft, and unmerged. Main remains at `395233d8bcaf13aa9022c33903ab03a75c5a83ae`.
+- No player-facing screenshot acceptance or final-art acceptance is claimed.
+
+
+## Current Handoff — 2026-11-12: Wukong Generation Rejected; Queue Rescheduled
+
+- One Wukong four-view generation call was made on 2026-11-12. It produced a 1536×1024 RGBA sheet with real transparency, but was rejected for production because the rendering is soft/painterly rather than crisp pixel art, the required monkey tail is not clearly visible, and the staff is diagonal across/behind the shoulders instead of upright beside the body in a consistent neutral pose/grip.
+- The rejected image was not committed, archived, or cropped. No production sprite, catalog update, or visual acceptance is claimed. Today's generation budget is consumed; never retry on 2026-11-12.
+- Wukong is rescheduled for 2026-11-13. The rest of the daily art queue shifts one day to preserve order. Use the existing Wukong prompt and make only one call on the new date. Emphasize crisp pixel clusters, a clearly visible monkey tail in every view, and the same upright beside-body staff grip across all orientations.
+- The crop utility and 12-test Art Tooling workflow already exist. After a future accepted sheet, archive the untouched source, crop the top-left view to 128×192, inspect both, and verify exact-head Godot Runtime + Art Tooling.
+- PR #30 (`art/production-roadmap-2026-11-11`) remains open and Draft. PR #29 remains open and unmerged. Do not merge either without explicit owner approval.
+- Audit record: `docs/development_log/2026-11-12-wukong-generation-rejected.md`. This commit changes documentation only; no local tests, production build, deployment, or screenshot acceptance is claimed. Verify the new exact head's Actions before calling it green.
+
+
+## Current Handoff — 2026-11-12: Mandatory Visual Art Review Standard
+
+- Mandatory acceptance contract: `docs/visual_reference/ART_REVIEW_STANDARD.md`. It applies to every AI-generated or externally supplied character, creature, prop, VFX, UI illustration, and environment asset.
+- No asset passes on prompt compliance or technical validity alone. All critical gates must pass and the score must be at least 90/100. Review prompt compliance, native-resolution quality, gameplay-scale readability, integration, and actual player-facing screenshots separately.
+- Wukong non-negotiables: clearly simian face, visible monkey tail, upright beside-body Ruyi Jingu Bang held in the same anatomical right hand/grip, consistent neutral stance across all four views, and crisp deliberate pixel clusters.
+- Rejected images must not be archived as approved source sheets, cropped, cataloged, or placed in production folders. Keep SVG fallbacks unchanged until a candidate reaches the required acceptance state.
+- The 2026-11-12 Wukong image remains rejected; one generation call was used that day. Next Wukong slot is 2026-11-13, one call only. No same-day retry.
+- PR #30 stays Draft/open and PR #29 stays open/unmerged. Do not merge either.
+- Documentation-only update; verify Art Tooling and Godot Runtime on the new exact HEAD. Prior SHA results do not transfer.
+
+
+## Current Handoff — 2026-11-12: Wukong Prompt Preflight Hardened
+
+- The 2026-11-13 Wukong brief now has a mandatory generation preflight, priority order, exact staff/tail spatial locks, pixel-art lock, and negative prompt/reject list.
+- Staff placement: vertical beside image-right of the body in canonical view, parallel to torso, separated by transparent space, held in anatomical right hand at waist/lower-chest height; never across/behind shoulders or diagonally slung.
+- Tail: long and unmistakable, grows from lower back, curves into open negative space, and remains visibly separate from legs/clothing/staff in all four views. Reduce armor ornament instead of compromising it.
+- Pixel-art: discrete clusters, consistent stepped contours, limited palette; no soft painterly or airbrush look. Prioritize clear face, tail, staff, hands, and full-body silhouette.
+- Prompt preparation only; no image-generation call was made on 2026-11-12 and today's quota remains consumed. Reserve exactly one call for 2026-11-13 America/Los_Angeles local date after verifying no earlier call that day.
+- PR #30 remains Draft/open; PR #29 remains open/unmerged. Verify exact-head CI for this docs-only commit.
