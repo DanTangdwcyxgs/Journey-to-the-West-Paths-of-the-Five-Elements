@@ -30,7 +30,7 @@ static func run_all() -> Dictionary:
 		var chapter_id := str(chapter.get("id", ""))
 		var title := str(chapter.get("title", ""))
 		var timeline := int(chapter.get("timeline", -1))
-		var next_id := str(chapter.get("next", "")) if not str(chapter.get("next", "")).is_empty() else "无"
+		var next_id := str(chapter.get("next", "")) if not str(chapter.get("next", "")).is_empty() else "无（后续主线尚待注册）"
 		assert(not chapter_id.is_empty(), "Shared chapter should have a stable ID")
 		assert(not visited_ids.has(chapter_id), "Shared chapter IDs must remain unique")
 		visited_ids[chapter_id] = true
