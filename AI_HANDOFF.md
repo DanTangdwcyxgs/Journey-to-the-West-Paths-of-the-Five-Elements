@@ -658,3 +658,14 @@ Runtime has now verified the post-Shared-02 detour and that Journey resumes at S
 - The crop utility and 12-test Art Tooling workflow already exist. After a future accepted sheet, archive the untouched source, crop the top-left view to 128×192, inspect both, and verify exact-head Godot Runtime + Art Tooling.
 - PR #30 (`art/production-roadmap-2026-11-11`) remains open and Draft. PR #29 remains open and unmerged. Do not merge either without explicit owner approval.
 - Audit record: `docs/development_log/2026-11-12-wukong-generation-rejected.md`. This commit changes documentation only; no local tests, production build, deployment, or screenshot acceptance is claimed. Verify the new exact head's Actions before calling it green.
+
+
+## Current Handoff — 2026-11-12: Mandatory Visual Art Review Standard
+
+- Mandatory acceptance contract: `docs/visual_reference/ART_REVIEW_STANDARD.md`. It applies to every AI-generated or externally supplied character, creature, prop, VFX, UI illustration, and environment asset.
+- No asset passes on prompt compliance or technical validity alone. All critical gates must pass and the score must be at least 90/100. Review prompt compliance, native-resolution quality, gameplay-scale readability, integration, and actual player-facing screenshots separately.
+- Wukong non-negotiables: clearly simian face, visible monkey tail, upright beside-body Ruyi Jingu Bang held in the same anatomical right hand/grip, consistent neutral stance across all four views, and crisp deliberate pixel clusters.
+- Rejected images must not be archived as approved source sheets, cropped, cataloged, or placed in production folders. Keep SVG fallbacks unchanged until a candidate reaches the required acceptance state.
+- The 2026-11-12 Wukong image remains rejected; one generation call was used that day. Next Wukong slot is 2026-11-13, one call only. No same-day retry.
+- PR #30 stays Draft/open and PR #29 stays open/unmerged. Do not merge either.
+- Documentation-only update; verify Art Tooling and Godot Runtime on the new exact HEAD. Prior SHA results do not transfer.

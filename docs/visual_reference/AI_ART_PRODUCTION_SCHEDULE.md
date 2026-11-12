@@ -1,8 +1,11 @@
 # Daily AI Art Production Schedule
 
-> Canonical source of truth for the daily image-generation queue. This file takes precedence over any generated planning poster, chat image, or informal message.
+> Canonical source of truth for the daily image-generation queue. This file takes precedence over any generated planning poster, chat image, or informal message. Mandatory visual acceptance rules: [ART_REVIEW_STANDARD.md](ART_REVIEW_STANDARD.md).
 
 ## 1. Operating rules
+
+- Every asset must pass [ART_REVIEW_STANDARD.md](ART_REVIEW_STANDARD.md): all critical gates plus a score of at least 90/100. Prompt similarity, technical validity, or passing CI alone never constitutes aesthetic acceptance.
+- Record prompt compliance, native-resolution inspection, gameplay-scale inspection, integration verification, and player-facing screenshot review separately. Any critical failure means `REJECTED`; do not archive/crop/catalog it.
 
 - The project owner has a limit of **one image-generation call per local calendar day**. Use the owner's local date in `America/Los_Angeles`.
 - Before generating, read this schedule and the current visual contract. Check today's status first. **Never make a second image-generation call on the same date**, even to fix a weak or incorrect result.
@@ -162,4 +165,4 @@ Until the next calendar day, continue useful work without another image-generati
 
 - This schedule is the canonical daily queue. Generated schedule graphics are inspiration only and never override this Markdown.
 - A planned asset is not complete until the file exists at the specified path and passes the required review/CI gates.
-- The 2026-11-11 planning-poster generation is explicitly not accepted as a production asset. First production asset remains Wukong's four-view turnaround sheet on 2026-11-12; the top-left three-quarter crop becomes the game sprite.
+- The 2026-11-11 planning-poster generation and 2026-11-12 Wukong generation are explicitly rejected as production assets. Wukong's next scheduled attempt is 2026-11-13; a planned slot is not a delivered asset.

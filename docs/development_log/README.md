@@ -10,6 +10,8 @@
 
 ## 最新记录
 
+- [2026-11-12 — Mandatory Visual Art Review Standard](2026-11-12-visual-art-review-standard.md)
+
 - [2026-11-12 — Wukong Turnaround Generation Rejected](2026-11-12-wukong-generation-rejected.md)
 - [2026-11-12 — Wukong Art Slot Audit and Agent Handoff](2026-11-12-wukong-art-slot-audit.md)
 

@@ -1,6 +1,6 @@
-# 2026-11-12 — Sun Wukong Four-View Turnaround Generation
+# 2026-11-13 — Sun Wukong Four-View Turnaround Generation
 
-> This is the copy-ready brief for the Wukong image-generation slot. Check `AI_ART_PRODUCTION_SCHEDULE.md` first. The owner has one image-generation call per local calendar day; use exactly one call for this sheet and do not retry it that day.
+> Mandatory review standard: [ART_REVIEW_STANDARD.md](../ART_REVIEW_STANDARD.md). This is the copy-ready brief for the Wukong image-generation slot. Check `AI_ART_PRODUCTION_SCHEDULE.md` first. The owner has one image-generation call per local calendar day; use exactly one call for this sheet and do not retry it that day.
 
 ## Deliverable
 
@@ -53,6 +53,8 @@ Output exactly one image: the complete four-view turnaround sheet. Prioritize id
 
 ## After generation — do not generate again
 
+Apply the full review standard. Any failure of pixel-art craft, simian identity, visible tail, upright beside-body staff, same pose/grip, complete silhouettes, genuine alpha, or canvas integrity is an automatic rejection regardless of score. A passing crop tool or CI run does not waive human art review.
+
 1. Inspect all four quadrants manually at full resolution. Reject if the face/costume/weapon/tail changes between views, if any view is missing, if a prop crosses a quadrant boundary, or if the image is flattened.
 2. Confirm the exact quadrant order in the prompt. Do not reorder the sheet to make the crop script accept it.
 3. Preserve the original image unchanged and run:
@@ -64,4 +66,4 @@ Output exactly one image: the complete four-view turnaround sheet. Prioritize id
 4. Inspect the archived source and the 128×192 crop. Confirm the complete staff, tail, headband, and both feet remain visible at native and in-game scale.
 5. Do not pass `--overwrite` unless replacement is intentional and the previous files have been reviewed.
 6. Update the production schedule, development log, AI memory, and handoff. Run exact-head Art Tooling and Godot Runtime CI.
-7. Do not make a second image-generation call on 2026-11-12, even if the result is rejected. Replan the missed asset to the next available date and continue with non-generation work.
+7. Do not make a second image-generation call on 2026-11-13, even if the result is rejected. Replan the missed asset to the next available date and continue with non-generation work.

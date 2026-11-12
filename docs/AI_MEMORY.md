@@ -813,3 +813,11 @@ Wukong、Tang、Longma、Bajie、Wujing 五条 Origin Route 均已完成首轮 S
 - Rescheduled Wukong to 2026-11-13 and shifted the remaining art queue by one day. Added `docs/development_log/2026-11-12-wukong-generation-rejected.md` and synchronized the schedule/index/handoff.
 - Documentation-only commit; no local tests, Godot Runtime, Art Tooling, Web Demo, or in-game screenshot was run. Parent exact-head CI on `afbef36b6e7454b037b26455dfa0da0742515b11` passed Runtime [43165673955](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/43165673955) and Art Tooling [43165674060](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/43165674060); verify the new commit's own CI before calling it validated.
 - Next: one fresh Wukong call on 2026-11-13 only; focus on visible monkey tail, upright beside-body staff, identical pose/grip in all four views, and crisp pixel-art edges. Continue non-generation work until then.
+
+
+### Round 94 — 2026-11-12: Mandatory Visual Art Review Standard
+- Added `docs/visual_reference/ART_REVIEW_STANDARD.md` as a mandatory gate for every AI/external art asset: critical rejection gates, 100-point rubric with ≥90 pass threshold, separate prompt/native/gameplay/integration/screenshot stages, character and environment checklists, and explicit acceptance states.
+- Linked the standard from the daily schedule and Wukong prompt. Clarified that technical validity and CI do not prove aesthetic quality or player-facing acceptance.
+- Corrected the schedule's stale closing statement: the 2026-11-12 Wukong image is rejected; the next Wukong slot is 2026-11-13.
+- Documentation only; no art files, gameplay code, catalog, runtime assets, local tests, or screenshots changed. Exact prior SHA `a4f9694312fa3296aa8fdb7635c4da4abe27aee9` passed Art Tooling [43167077069](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/43167077069) and Godot Runtime [43167077118](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/43167077118); these do not validate the new documentation commit.
+- Next: verify exact-head CI; on 2026-11-13 use one Wukong call only and enforce every critical gate plus the 90/100 threshold. Reject without retry if any critical failure remains.
