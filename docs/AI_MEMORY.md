@@ -700,3 +700,14 @@ Wukong、Tang、Longma、Bajie、Wujing 五条 Origin Route 均已完成首轮 S
 - Current mapping: four items with Runtime evidence (#9, #12, #15, #16); three partial mappings (#8, #10, #11); two Yellow Wind vertical slices not yet wired to a Shared chapter (#13, #14); 72 without a direct game chapter mapping. This is mapping evidence, not a completed-trial count.
 - Gameplay/battle/art content was not modified. New exact-head Runtime is pending; do not reuse the predecessor SHA's CI result.
 - Next: validate this commit's Runtime; finish the Shared Bible migration; design a separate post-recruitment Memory catalog for LONGMA-07/08; wire Yellow Wind into the canonical Shared timeline only after content/order review.
+
+
+### Round 79 — 2026-11-12: Shared Pilgrimage Bible Runtime Alignment
+- Rewrote `docs/shared_pilgrimage_chapter_bible.md` against actual `shared_chapters.json` and Shared EventSequence IDs. Canonical Runtime chapters are Shared-01..09 at timelines 100/105/110/120/130/140/150/160/170.
+- Reconfirmed starting route endpoints: Wukong/Tang → Shared-01, Longma → Shared-03, Bajie → Shared-05, Wujing → Shared-07. TANG-09 and LONGMA-07/08 remain Shared/Memory backlog, not missing start-route data.
+- Audited current contents and identified the mainline gap: original chapter order has Gaojiazhuang (18–19), Yellow Wind Ridge (20–21), then Flowing Sands (22); current Runtime chain skips from Shared-06 Four-Person Journey directly to Shared-07 Flowing Sands.
+- Existing Yellow Wind Ridge/Cave/King is a real vertical slice with regression for stages, cave encounter return, boss settlement and save rollback, but it is not a registered Shared chapter and does not advance the Shared pointer/global timeline.
+- Documented a safe insertion proposal `SHARED-06A-YELLOW-WIND` between Shared-06 and Shared-07, to be implemented atomically with the mainline boss commit and save-failure rollback. Keep optional `BOUNTY_YELLOW_FANG` distinct from `YELLOW_WIND_KING`.
+- Added `combat/test_shared_bible_runtime_alignment.gd` to Runtime suite. It checks the Bible's current chapter ID/title/timeline/sequence/next table against runtime JSON and blocks obsolete headings.
+- This batch changes the Bible and validation contract only; no runtime chapter chain or game logic was modified. Exact new-head Runtime remains pending until Actions completes.
+- Next: validate new Runtime test, then implement formal Yellow Wind Shared chapter insertion; separately design post-recruitment Memory catalog for LONGMA-07/08.

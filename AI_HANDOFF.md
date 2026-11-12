@@ -591,3 +591,14 @@ Runtime has now verified the post-Shared-02 detour and that Journey resumes at S
 - Shared chapter IDs in runtime data are SHARED-01 Five Elements, SHARED-02 Early Pilgrimage, SHARED-03 Eagle Sorrow, SHARED-04 Black Wind/Early Demon Tales, SHARED-05 Gaojiazhuang, SHARED-06 Four-Person Journey, SHARED-07 Flowing Sands, SHARED-08 Party Full, SHARED-09 Full Pilgrimage. The Shared Bible now contains an alignment table; its remaining legacy content still needs paragraph-level migration.
 - Mapping snapshot: 4 items with Runtime evidence (#9, #12, #15, #16), 3 partial (#8, #10, #11), 2 Yellow Wind vertical slices awaiting a canonical Shared chapter link (#13, #14), 72 without direct game chapter mapping. No 81-trial completion count is claimed.
 - Next work: exact-SHA Runtime validation; finish Shared Bible migration; build a separate post-recruitment Memory content catalog; connect the Yellow Wind vertical slice to a formally ordered Shared chapter; continue mapping in canonical sequence.
+
+
+## Current Handoff — 2026-11-12: Shared Pilgrimage Bible Runtime Alignment
+- Canonical Shared Runtime catalog is currently nine chapters: Shared-01 Five Elements T100 → Shared-02 Early Pilgrimage T105 → Shared-03 Eagle Sorrow T110 → Shared-04 Black Wind/Early Demon Tales T120 → Shared-05 Gaojiazhuang T130 → Shared-06 Four-Person Journey T140 → Shared-07 Flowing Sands T150 → Shared-08 Party Full T160 → Shared-09 Full Pilgrimage T170.
+- Authoritative chapter/sequence data: `data/narrative/shared_chapters.json`, Shared namespace entries in `data/narrative/event_sequences.json`.
+- Rewritten Bible: `docs/shared_pilgrimage_chapter_bible.md`. Its current runtime table must match the JSON. Test: `combat/test_shared_bible_runtime_alignment.gd`, registered in `tests/runtime_suite.gd`.
+- Critical content gap: canonical novel order puts Yellow Wind Ridge after Gaojiazhuang and before Flowing Sands. The Runtime Shared chain currently skips it. Existing Yellow Wind Ridge/Cave/King content is a tested vertical slice, but is not in Shared chapter data and does not advance Shared progress.
+- Proposed safe insertion: `SHARED-06A-YELLOW-WIND` between Shared-06 and Shared-07, reusing the existing screens. Treat as proposal only until runtime data, event sequence, atomic boss settlement and save-failure rollback are implemented together.
+- Yellow Fang optional bounty (`BOUNTY_YELLOW_FANG`) must remain distinct from mainline Yellow Wind King (`YELLOW_WIND_KING`).
+- Preserve route endpoints and fixed chronology: TANG-08 and LONGMA-06 stay as Origin endpoints; LONGMA-07/08 require a separate post-recruitment Memory catalog.
+- Next: inspect the exact new-head Godot Runtime result for the Bible alignment test; then build the Yellow Wind Shared chapter vertical slice, followed by Memory catalog work.
