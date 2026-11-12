@@ -43,7 +43,8 @@ Remove obsolete Shared chapter numbering and align the narrative Bible with the 
 - `AI_HANDOFF.md`
 
 ## Validation
-- Runtime validation is pending for the new implementation/test SHA. Do not reuse the preceding 53/53 result.
+- First test head `907cce91cfcd0cd70eb5e94b49284d765d05154b` failed only because the test expected the terminal next label to be `无`, while the Bible intentionally says `无（后续主线尚待注册）`. The assertion was aligned to the authored explanation.
+- PASS: corrected exact implementation/test SHA `ab57662f7ac99d40852018998acb218a3cbc8aa4`, Godot Runtime [43177744894](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/43177744894) confirms `PASS res://combat/test_shared_bible_runtime_alignment.gd` and `RUNTIME_SUITE_PASS tests=54`.
 - No gameplay data, battle logic, asset, or shared chronology was changed in this documentation and regression-contract batch.
 - No PR merge or deployment was performed.
 

@@ -709,5 +709,7 @@ Wukong、Tang、Longma、Bajie、Wujing 五条 Origin Route 均已完成首轮 S
 - Existing Yellow Wind Ridge/Cave/King is a real vertical slice with regression for stages, cave encounter return, boss settlement and save rollback, but it is not a registered Shared chapter and does not advance the Shared pointer/global timeline.
 - Documented a safe insertion proposal `SHARED-06A-YELLOW-WIND` between Shared-06 and Shared-07, to be implemented atomically with the mainline boss commit and save-failure rollback. Keep optional `BOUNTY_YELLOW_FANG` distinct from `YELLOW_WIND_KING`.
 - Added `combat/test_shared_bible_runtime_alignment.gd` to Runtime suite. It checks the Bible's current chapter ID/title/timeline/sequence/next table against runtime JSON and blocks obsolete headings.
-- This batch changes the Bible and validation contract only; no runtime chapter chain or game logic was modified. Exact new-head Runtime remains pending until Actions completes.
+- First test head `907cce91cfcd0cd70eb5e94b49284d765d05154b` failed only on the expected terminal next-label text; corrected the assertion to match the documented open-ended explanation.
+- PASS: exact implementation/test SHA `ab57662f7ac99d40852018998acb218a3cbc8aa4`, Godot Runtime [43177744894](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/43177744894) confirms `PASS res://combat/test_shared_bible_runtime_alignment.gd` and `RUNTIME_SUITE_PASS tests=54`.
+- The Shared Bible and validation contract changed; no runtime chapter chain or game logic was modified.
 - Next: validate new Runtime test, then implement formal Yellow Wind Shared chapter insertion; separately design post-recruitment Memory catalog for LONGMA-07/08.
