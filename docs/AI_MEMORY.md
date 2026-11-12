@@ -829,3 +829,11 @@ Wukong、Tang、Longma、Bajie、Wujing 五条 Origin Route 均已完成首轮 S
 - Added anti-detail rule: simplify ornaments before sacrificing pixel clarity, tail visibility, staff placement, or full-body framing.
 - No image was generated in this preparation step; the 2026-11-12 daily quota remains consumed. The one Wukong call is reserved for 2026-11-13 America/Los_Angeles local date, only after checking no call has occurred that day.
 - Documentation-only update; no asset files, game code, catalog, or production directories changed. Verify exact-head Art Tooling and Godot Runtime after this commit.
+
+### Round 96 — 2026-11-12: Full-Project Art Prompt Library Baseline
+- Expanded art preparation from Wukong-only prompt hardening to a project-wide master library at docs/visual_reference/prompts/MASTER_ASSET_PROMPT_LIBRARY.md.
+- Added individual ready briefs for Tang, Bajie, Wujing, Longma and Yellow Wind King; the existing detailed Wukong prompt remains authoritative. Added per-ID visual directions for the currently declared common enemy roster, named world/story locations, current consumables/materials/signature weapons, VFX families and UI families.
+- Added explicit DESIGN INPUT REQUIRED holds where canon/runtime contracts do not define boss anatomy/weapons, UI atlas dimensions, or animation import behavior. Do not guess these values or generate speculative designs.
+- Daily execution remains one image-generation call per America/Los_Angeles date. The daily schedule is the sole cursor. Only PRODUCTION ACCEPTED closes an asset; rejection is recorded, prompt revised, and item rescheduled without same-day retry.
+- This is a baseline inventory, not a claim that future NPCs, events, rewards, runtime resources or UI/VFX slots are exhaustively enumerated. Every new content/runtime ID must receive a prompt before it enters the queue.
+- Documentation-only. No image generation, game code, gameplay data, runtime asset, local test, Runtime CI, Web Demo or screenshot review was performed. Verify exact-head CI after commit.
