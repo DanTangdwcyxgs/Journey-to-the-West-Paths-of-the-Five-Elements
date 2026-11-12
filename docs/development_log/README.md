@@ -10,6 +10,7 @@
 
 ## 最新记录
 
+- [2026-11-12 — Wukong Turnaround Generation Rejected](2026-11-12-wukong-generation-rejected.md)
 - [2026-11-12 — Wukong Art Slot Audit and Agent Handoff](2026-11-12-wukong-art-slot-audit.md)
 
 - [2026-11-11 — PixelHUD Theme Refresh on Scene Re-instancing](2026-11-11-pixel-hud-scene-instance-refresh.md)

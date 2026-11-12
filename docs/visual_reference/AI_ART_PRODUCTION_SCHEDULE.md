@@ -21,24 +21,26 @@ No production character or scene asset was accepted today. Do not call image gen
 
 
 
-### Execution note — 2026-11-12
+### Execution record — 2026-11-12
 
-- Today's Wukong four-view turnaround slot remains **PENDING**. The copy-ready prompt is available at `prompts/2026-11-12-wukong-turnaround.md`, but neither `assets/art/source_sheets/characters/wukong_turnaround.png` nor `assets/art/characters/final/wukong.png` exists in the reviewed branch tree.
-- The current agent execution environment did not expose an image-generation action. No generation call was made in this session; this is **not** a rejected image and must not be recorded as a consumed quota.
-- Keep the 2026-11-12 slot pending until a real generated source sheet is supplied. Do not advance the queue to Tang or claim any production art / visual acceptance. Once a real sheet exists, follow the single-call rule and the full inspection → archive/crop → exact-head CI workflow below.
+**Status: REJECTED / DAILY GENERATION BUDGET CONSUMED — NO PRODUCTION ASSET ACCEPTED**
+
+One image-generation call produced a 1536×1024 RGBA four-view Wukong concept sheet. The file has a real alpha channel and transparent background; transparency itself passed inspection. The image is not accepted because the rendering is soft, painterly/highly anti-aliased rather than the required crisp pixel-art clusters, Wukong's required monkey tail is not visibly represented in the views, and the staff is carried diagonally across/behind the shoulders rather than upright beside the body in the same neutral pose and grip across all views. The design therefore fails core identity/pose requirements despite having four recognizable orientations.
+
+The generated image was inspected in-session and was not added to the repository. No source-sheet archive, runtime crop, catalog change, or player-facing asset was created. Do not retry on 2026-11-12. The Wukong slot is rescheduled to 2026-11-13; shift the remaining queue by one day to preserve order. Continue non-generation work for the rest of 2026-11-12.
 ## 3. Production queue
 
 | Date (local) | One image to generate | Required output / file | Status |
 |---|---|---|---|
-| 2026-11-12 | Sun Wukong four-view turnaround sheet + canonical game crop | `assets/art/source_sheets/characters/wukong_turnaround.png` → `assets/art/characters/final/wukong.png` · 128×192 | Pending |
-| 2026-11-13 | Tang Sanzang four-view turnaround sheet + canonical game crop | `assets/art/source_sheets/characters/tang_turnaround.png` → `assets/art/characters/final/tang.png` · 128×192 | Pending |
-| 2026-11-14 | Zhu Bajie four-view turnaround sheet + canonical game crop | `assets/art/source_sheets/characters/bajie_turnaround.png` → `assets/art/characters/final/bajie.png` · 128×192 | Pending |
-| 2026-11-15 | Sha Wujing four-view turnaround sheet + canonical game crop | `assets/art/source_sheets/characters/wujing_turnaround.png` → `assets/art/characters/final/wujing.png` · 128×192 | Pending |
-| 2026-11-16 | Bai Longma four-view turnaround sheet + canonical game crop | `assets/art/source_sheets/characters/longma_turnaround.png` → `assets/art/characters/final/longma.png` · 160×128 | Pending |
-| 2026-11-17 | Yellow Wind King four-view turnaround sheet + canonical game crop | `assets/art/source_sheets/characters/yellow_wind_turnaround.png` → `assets/art/characters/final/yellow_wind.png` · 144×192 | Pending |
-| 2026-11-18 | Main Journey scenery background | `assets/art/scenes/final/journey_scenery.png` · 16:9 | Pending |
-| 2026-11-19 | Yellow Wind battle background | `assets/art/scenes/final/yellow_wind_battle.png` · 16:9 | Pending |
-| 2026-11-20 | World map background | `assets/art/scenes/final/world_map.png` · 16:9 | Pending |
+| 2026-11-13 | Sun Wukong four-view turnaround sheet + canonical game crop | `assets/art/source_sheets/characters/wukong_turnaround.png` → `assets/art/characters/final/wukong.png` · 128×192 | Pending |
+| 2026-11-14 | Tang Sanzang four-view turnaround sheet + canonical game crop | `assets/art/source_sheets/characters/tang_turnaround.png` → `assets/art/characters/final/tang.png` · 128×192 | Pending |
+| 2026-11-15 | Zhu Bajie four-view turnaround sheet + canonical game crop | `assets/art/source_sheets/characters/bajie_turnaround.png` → `assets/art/characters/final/bajie.png` · 128×192 | Pending |
+| 2026-11-16 | Sha Wujing four-view turnaround sheet + canonical game crop | `assets/art/source_sheets/characters/wujing_turnaround.png` → `assets/art/characters/final/wujing.png` · 128×192 | Pending |
+| 2026-11-17 | Bai Longma four-view turnaround sheet + canonical game crop | `assets/art/source_sheets/characters/longma_turnaround.png` → `assets/art/characters/final/longma.png` · 160×128 | Pending |
+| 2026-11-18 | Yellow Wind King four-view turnaround sheet + canonical game crop | `assets/art/source_sheets/characters/yellow_wind_turnaround.png` → `assets/art/characters/final/yellow_wind.png` · 144×192 | Pending |
+| 2026-11-19 | Main Journey scenery background | `assets/art/scenes/final/journey_scenery.png` · 16:9 | Pending |
+| 2026-11-20 | Yellow Wind battle background | `assets/art/scenes/final/yellow_wind_battle.png` · 16:9 | Pending |
+| 2026-11-21 | World map background | `assets/art/scenes/final/world_map.png` · 16:9 | Pending |
 
 After 2026-11-20, pause new image generation long enough to integrate the first batch, verify the Godot/Web build, and inspect the actual main-menu, Journey, battle, and WorldMap screenshots. Only then schedule NPC, enemy, prop, VFX, and animation assets. Static character and scene assets come first; animation is explicitly later in the delivery spec.
 
@@ -58,7 +60,7 @@ All four views must be large, fully visible from head to foot/hoof/tail/weapon t
 
 Archive the untouched source sheet at assets/art/source_sheets/characters/<id>_turnaround.png. Crop only the top-left three-quarter view into the matching assets/art/characters/final/<id>.png file. The other three views remain as model-reference material for future direction-specific sprites and animation; do not shrink all four views into the single runtime texture.
 
-### 2026-11-12 — Wukong
+### 2026-11-12 / rescheduled 2026-11-13 — Wukong
 - Copy-ready detailed prompt: [2026-11-12 Wukong Four-View Turnaround](prompts/2026-11-12-wukong-turnaround.md). Use this exact brief for the single scheduled generation call.
 - Four-view turnaround of the same agile monkey king. The top-left view uses the neutral, upright battle-ready stance in the dedicated prompt: shoulder-width footing, relaxed knees, and an upright torso with subtle agile readiness. Hold the Ruyi Jingu Bang upright beside the body at a slight natural angle in the same anatomical right hand and grip across all four views; do not swing, thrust, or raise it into a separate action pose.
 - Every view must retain the expressive simian face and muzzle, golden headband, red/ochre armor and cloth, recognizable staff, and visible tail. Rotate the staff and tail naturally with the body; do not hide them behind the silhouette.

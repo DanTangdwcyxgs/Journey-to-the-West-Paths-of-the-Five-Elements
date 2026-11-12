@@ -650,11 +650,11 @@ Runtime has now verified the post-Shared-02 detour and that Journey resumes at S
 - No player-facing screenshot acceptance or final-art acceptance is claimed.
 
 
-## Current Handoff — 2026-11-12: Wukong Art Slot Still Pending
+## Current Handoff — 2026-11-12: Wukong Generation Rejected; Queue Rescheduled
 
-- Today's scheduled production item is Wukong's 2×2 four-view turnaround sheet. Use `docs/visual_reference/prompts/2026-11-12-wukong-turnaround.md`; preserve the same neutral upright stance and anatomical-right-hand staff grip across all four orientations.
-- The 2026-11-11 rejected planning poster belongs to yesterday's dated slot. The 2026-11-12 Wukong slot was Pending at audit time. No Wukong source sheet or final crop exists in the reviewed branch tree.
-- The current execution environment did not expose an image-generation action; no call was made and no image was fabricated. Keep the schedule Pending, do not label it Rejected or quota-consumed, and do not move to Tang until the owner has a real Wukong sheet or explicitly replans the queue.
-- The existing crop utility and its 12-test Art Tooling workflow are already in place. Follow the schedule's inspect → archive original → crop top-left → inspect crop → exact-head CI sequence after a real image is supplied.
+- One Wukong four-view generation call was made on 2026-11-12. It produced a 1536×1024 RGBA sheet with real transparency, but was rejected for production because the rendering is soft/painterly rather than crisp pixel art, the required monkey tail is not clearly visible, and the staff is diagonal across/behind the shoulders instead of upright beside the body in a consistent neutral pose/grip.
+- The rejected image was not committed, archived, or cropped. No production sprite, catalog update, or visual acceptance is claimed. Today's generation budget is consumed; never retry on 2026-11-12.
+- Wukong is rescheduled for 2026-11-13. The rest of the daily art queue shifts one day to preserve order. Use the existing Wukong prompt and make only one call on the new date. Emphasize crisp pixel clusters, a clearly visible monkey tail in every view, and the same upright beside-body staff grip across all orientations.
+- The crop utility and 12-test Art Tooling workflow already exist. After a future accepted sheet, archive the untouched source, crop the top-left view to 128×192, inspect both, and verify exact-head Godot Runtime + Art Tooling.
 - PR #30 (`art/production-roadmap-2026-11-11`) remains open and Draft. PR #29 remains open and unmerged. Do not merge either without explicit owner approval.
-- Audit record: `docs/development_log/2026-11-12-wukong-art-slot-audit.md`. The audit was documentation-only; no gameplay, art asset, local test, production build, deployment, or screenshot acceptance is claimed. Verify the exact new head's Actions before calling it green.
+- Audit record: `docs/development_log/2026-11-12-wukong-generation-rejected.md`. This commit changes documentation only; no local tests, production build, deployment, or screenshot acceptance is claimed. Verify the new exact head's Actions before calling it green.
