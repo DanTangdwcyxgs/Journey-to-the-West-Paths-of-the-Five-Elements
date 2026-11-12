@@ -648,3 +648,13 @@ Runtime has now verified the post-Shared-02 detour and that Journey resumes at S
 - Art Tooling [42981863335](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/42981863335): success; log confirms `Ran 12 tests` / `OK`.
 - PR #30 remains open, Draft, and unmerged. Main remains at `395233d8bcaf13aa9022c33903ab03a75c5a83ae`.
 - No player-facing screenshot acceptance or final-art acceptance is claimed.
+
+
+## Current Handoff — 2026-11-12: Wukong Art Slot Still Pending
+
+- Today's scheduled production item is Wukong's 2×2 four-view turnaround sheet. Use `docs/visual_reference/prompts/2026-11-12-wukong-turnaround.md`; preserve the same neutral upright stance and anatomical-right-hand staff grip across all four orientations.
+- The 2026-11-11 rejected planning poster belongs to yesterday's dated slot. The 2026-11-12 Wukong slot was Pending at audit time. No Wukong source sheet or final crop exists in the reviewed branch tree.
+- The current execution environment did not expose an image-generation action; no call was made and no image was fabricated. Keep the schedule Pending, do not label it Rejected or quota-consumed, and do not move to Tang until the owner has a real Wukong sheet or explicitly replans the queue.
+- The existing crop utility and its 12-test Art Tooling workflow are already in place. Follow the schedule's inspect → archive original → crop top-left → inspect crop → exact-head CI sequence after a real image is supplied.
+- PR #30 (`art/production-roadmap-2026-11-11`) remains open and Draft. PR #29 remains open and unmerged. Do not merge either without explicit owner approval.
+- Audit record: `docs/development_log/2026-11-12-wukong-art-slot-audit.md`. The audit was documentation-only; no gameplay, art asset, local test, production build, deployment, or screenshot acceptance is claimed. Verify the exact new head's Actions before calling it green.

@@ -19,6 +19,13 @@ One 1536×1024 image-generation call produced a visual art-production planning p
 
 No production character or scene asset was accepted today. Do not call image generation again on 2026-11-11. The first production asset is scheduled for 2026-11-12.
 
+
+
+### Execution note — 2026-11-12
+
+- Today's Wukong four-view turnaround slot remains **PENDING**. The copy-ready prompt is available at `prompts/2026-11-12-wukong-turnaround.md`, but neither `assets/art/source_sheets/characters/wukong_turnaround.png` nor `assets/art/characters/final/wukong.png` exists in the reviewed branch tree.
+- The current agent execution environment did not expose an image-generation action. No generation call was made in this session; this is **not** a rejected image and must not be recorded as a consumed quota.
+- Keep the 2026-11-12 slot pending until a real generated source sheet is supplied. Do not advance the queue to Tang or claim any production art / visual acceptance. Once a real sheet exists, follow the single-call rule and the full inspection → archive/crop → exact-head CI workflow below.
 ## 3. Production queue
 
 | Date (local) | One image to generate | Required output / file | Status |
