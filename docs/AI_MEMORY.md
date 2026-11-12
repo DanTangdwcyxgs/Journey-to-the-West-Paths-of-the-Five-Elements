@@ -821,3 +821,11 @@ Wukong、Tang、Longma、Bajie、Wujing 五条 Origin Route 均已完成首轮 S
 - Corrected the schedule's stale closing statement: the 2026-11-12 Wukong image is rejected; the next Wukong slot is 2026-11-13.
 - Documentation only; no art files, gameplay code, catalog, runtime assets, local tests, or screenshots changed. Exact prior SHA `a4f9694312fa3296aa8fdb7635c4da4abe27aee9` passed Art Tooling [43167077069](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/43167077069) and Godot Runtime [43167077118](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/43167077118); these do not validate the new documentation commit.
 - Next: verify exact-head CI; on 2026-11-13 use one Wukong call only and enforce every critical gate plus the 90/100 threshold. Reject without retry if any critical failure remains.
+
+
+### Round 95 — 2026-11-12: Wukong Prompt Preflight Hardened
+- Expanded the 2026-11-13 Wukong prompt with a mandatory preflight, priority order, explicit staff/tail spatial constraints, pixel-art lock, and negative prompt/reject list.
+- Staff sits vertically beside the character on image-right in the canonical view, held in the anatomical right hand at waist/lower-chest height with visible separation; tail curves into open negative space and remains separated from legs, clothing, and staff in all four views.
+- Added anti-detail rule: simplify ornaments before sacrificing pixel clarity, tail visibility, staff placement, or full-body framing.
+- No image was generated in this preparation step; the 2026-11-12 daily quota remains consumed. The one Wukong call is reserved for 2026-11-13 America/Los_Angeles local date, only after checking no call has occurred that day.
+- Documentation-only update; no asset files, game code, catalog, or production directories changed. Verify exact-head Art Tooling and Godot Runtime after this commit.

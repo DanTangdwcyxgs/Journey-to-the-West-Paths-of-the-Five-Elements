@@ -64,7 +64,7 @@ All four views must be large, fully visible from head to foot/hoof/tail/weapon t
 Archive the untouched source sheet at assets/art/source_sheets/characters/<id>_turnaround.png. Crop only the top-left three-quarter view into the matching assets/art/characters/final/<id>.png file. The other three views remain as model-reference material for future direction-specific sprites and animation; do not shrink all four views into the single runtime texture.
 
 ### 2026-11-12 / rescheduled 2026-11-13 — Wukong
-- Copy-ready detailed prompt: [2026-11-12 Wukong Four-View Turnaround](prompts/2026-11-12-wukong-turnaround.md). Use this exact brief for the single scheduled generation call.
+- Copy-ready detailed prompt and mandatory preflight: [2026-11-13 Wukong Four-View Turnaround](prompts/2026-11-12-wukong-turnaround.md). Read the priority order, staff/tail spatial lock, negative prompt, and final preflight before the single scheduled call.
 - Four-view turnaround of the same agile monkey king. The top-left view uses the neutral, upright battle-ready stance in the dedicated prompt: shoulder-width footing, relaxed knees, and an upright torso with subtle agile readiness. Hold the Ruyi Jingu Bang upright beside the body at a slight natural angle in the same anatomical right hand and grip across all four views; do not swing, thrust, or raise it into a separate action pose.
 - Every view must retain the expressive simian face and muzzle, golden headband, red/ochre armor and cloth, recognizable staff, and visible tail. Rotate the staff and tail naturally with the body; do not hide them behind the silhouette.
 - Keep staff, tail, both feet, and headband fully inside every relevant view. He must read immediately as Sun Wukong, not a human general.

@@ -669,3 +669,13 @@ Runtime has now verified the post-Shared-02 detour and that Journey resumes at S
 - The 2026-11-12 Wukong image remains rejected; one generation call was used that day. Next Wukong slot is 2026-11-13, one call only. No same-day retry.
 - PR #30 stays Draft/open and PR #29 stays open/unmerged. Do not merge either.
 - Documentation-only update; verify Art Tooling and Godot Runtime on the new exact HEAD. Prior SHA results do not transfer.
+
+
+## Current Handoff — 2026-11-12: Wukong Prompt Preflight Hardened
+
+- The 2026-11-13 Wukong brief now has a mandatory generation preflight, priority order, exact staff/tail spatial locks, pixel-art lock, and negative prompt/reject list.
+- Staff placement: vertical beside image-right of the body in canonical view, parallel to torso, separated by transparent space, held in anatomical right hand at waist/lower-chest height; never across/behind shoulders or diagonally slung.
+- Tail: long and unmistakable, grows from lower back, curves into open negative space, and remains visibly separate from legs/clothing/staff in all four views. Reduce armor ornament instead of compromising it.
+- Pixel-art: discrete clusters, consistent stepped contours, limited palette; no soft painterly or airbrush look. Prioritize clear face, tail, staff, hands, and full-body silhouette.
+- Prompt preparation only; no image-generation call was made on 2026-11-12 and today's quota remains consumed. Reserve exactly one call for 2026-11-13 America/Los_Angeles local date after verifying no earlier call that day.
+- PR #30 remains Draft/open; PR #29 remains open/unmerged. Verify exact-head CI for this docs-only commit.
