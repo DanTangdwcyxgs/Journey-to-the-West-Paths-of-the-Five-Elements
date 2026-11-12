@@ -679,3 +679,13 @@ Runtime has now verified the post-Shared-02 detour and that Journey resumes at S
 - Pixel-art: discrete clusters, consistent stepped contours, limited palette; no soft painterly or airbrush look. Prioritize clear face, tail, staff, hands, and full-body silhouette.
 - Prompt preparation only; no image-generation call was made on 2026-11-12 and today's quota remains consumed. Reserve exactly one call for 2026-11-13 America/Los_Angeles local date after verifying no earlier call that day.
 - PR #30 remains Draft/open; PR #29 remains open/unmerged. Verify exact-head CI for this docs-only commit.
+
+## Current Handoff — 2026-11-12: Full-Project Art Prompt Library
+
+- Project-wide art prompt baseline: docs/visual_reference/prompts/MASTER_ASSET_PROMPT_LIBRARY.md. Read it together with ART_REVIEW_STANDARD.md and AI_ART_PRODUCTION_SCHEDULE.md before any art generation.
+- Prompt-ready groups include all five playable protagonists, Yellow Wind King, every enemy ID currently found in data/combat/encounters.json and shared_encounters.json, the currently named story/expedition environments, current consumables/materials/signature weapons, VFX families and UI families.
+- The library explicitly blocks speculative design where canon/runtime contracts are missing: Yellow Fang, Iron Horn and Dragon Bone Recluse need approved anatomy/weapon briefs; UI dimensions/atlas and VFX animation importer contracts must be inspected before generation.
+- Inventory completeness is ongoing: audit all narrative/event NPCs, world/dungeon locations, item/reward data, runtime-loaded resources and VFX/UI references. New IDs require an individual prompt before scheduling.
+- Daily generation: one selected asset, one call maximum per America/Los_Angeles local date. After generation, review and record the outcome. Only PRODUCTION ACCEPTED marks the prompt/asset complete; rejected outputs are never archived/cropped/cataloged as approved art and cannot be retried that day.
+- Next slot remains Wukong on 2026-11-13, subject to local-date and quota preflight. This prompt-library preparation did not generate an image.
+- PR #30 remains Draft/open; PR #29 remains open/unmerged. Do not merge either.
