@@ -8,6 +8,7 @@ Turn the project's broad 81 Trials philosophy into a traceable per-trial product
 - Counted the Origin Bible chapter definitions: Wukong 15, Tang 9, Bajie 9, Wujing 8, Longma 8 = 49.
 - Parsed `data/narrative/event_sequences_origin.json`: Tang 8, Bajie 9, Wujing 8, Longma 6 = 31 registered sequences.
 - Identified concrete catalog gaps against the Bible: TANG-09 and LONGMA-07/08 are defined in the Bible but absent from the Origin catalog.
+- Parsed both catalogs together: 31 Origin + 24 Shared = 55 sequences; found zero duplicate sequence IDs and zero duplicate chapter IDs. Prefix counts: WUK 15, TANG 8, BAJIE 9, WUJING 8, LONGMA 6, SHARED 9.
 - Confirmed the design vision describes 81 trials as a mixture of major stories and smaller trials, not 81 large dungeons. No authoritative 81-entry mapping is currently maintained in the repository.
 
 ## Changes
