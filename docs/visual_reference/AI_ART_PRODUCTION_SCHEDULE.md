@@ -166,3 +166,12 @@ Until the next calendar day, continue useful work without another image-generati
 - This schedule is the canonical daily queue. Generated schedule graphics are inspiration only and never override this Markdown.
 - A planned asset is not complete until the file exists at the specified path and passes the required review/CI gates.
 - The 2026-11-11 planning-poster generation and 2026-11-12 Wukong generation are explicitly rejected as production assets. Wukong's next scheduled attempt is 2026-11-13; a planned slot is not a delivered asset.
+
+## 9. Full-project prompt library and daily completion cursor (2026-11-12)
+
+- Full asset prompt source: [MASTER_ASSET_PROMPT_LIBRARY.md](prompts/MASTER_ASSET_PROMPT_LIBRARY.md). It covers the five playable protagonists, Yellow Wind King, the currently declared enemy roster, named story/expedition locations, weapons, consumables, materials, VFX families and UI families.
+- This library is the art-direction source; this schedule remains the only daily execution cursor. Before adding a new asset to the daily queue, audit the relevant data and runtime references and give it a unique asset ID plus a copy-ready individual brief.
+- The inventory is a baseline, not permission to invent missing canon. Yellow Fang / Iron Horn / Dragon Bone Recluse anatomy and weapons remain DESIGN INPUT REQUIRED; UI icon/frame dimensions and VFX animation/import contracts must be confirmed from runtime before generation.
+- Daily loop: select the first due, prompt-ready, not-PRODUCTION-ACCEPTED asset; confirm America/Los_Angeles local date and unused daily quota; make exactly one generation call; review every critical gate; record result and evidence; update schedule, prompt ledger, AI_MEMORY, handoff and development log; advance only after PRODUCTION ACCEPTED.
+- Generated or technically integrated assets are not complete. Only PRODUCTION ACCEPTED closes an asset. Rejected assets remain rejected in history and are revised/rescheduled; never retry on the same local date.
+- After the first named roster, expand the inventory against all NPCs/events, all world/dungeon nodes, all rewards/items, every runtime-loaded resource, and every VFX/UI slot. Newly introduced content must receive a prompt before entering the generation queue.
