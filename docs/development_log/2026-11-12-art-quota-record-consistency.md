@@ -28,6 +28,10 @@ Documentation / art-production handoff only. No game code, narrative data, runti
 - Manual documentation consistency check: compared the schedule's 2026-11-12 execution record with AI_MEMORY Rounds 93–96 and the Wukong prompt-preflight section.
 - No executable test suite was run; this change is documentation-only.
 
+## Commit and CI evidence
+- Documentation correction commit: `b35ffe1ec312e64fab12e7c81d603ac7f1394be7`.
+- Exact-SHA workflow lookup returned no workflow runs and no status checks for this documentation-only commit. CI is therefore **not run / not verified**, not a pass.
+
 ## Godot Runtime / Art Tooling / Web Demo
 Not run. No code or runtime resource changed, and no deployment or screenshot acceptance is claimed.
 
