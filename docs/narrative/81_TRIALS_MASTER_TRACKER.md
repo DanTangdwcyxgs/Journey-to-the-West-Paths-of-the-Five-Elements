@@ -10,7 +10,7 @@
 
 - 五人起始路线 Bible 当前章节定义数：悟空 15、唐僧 9、八戒 9、悟净 8、白龙马 8，合计 **49 个 Origin 章节定义**。
 - 当前 `data/narrative/event_sequences_origin.json` 实际登记：唐僧 8、八戒 9、悟净 8、白龙马 6，合计 **31 条 Origin Sequence**。
-- 悟空路线的 15 条 Sequence 由共享序列目录承载（需要按实际 route catalog/validator 口径继续核对，不把文件位置误认为共享剧情）。
+- 悟空路线的 15 条 Sequence 已在 `data/narrative/event_sequences.json` 登记（WUK-01～WUK-15）；它们仍属于个人 Origin Route，不因存放在共享序列目录而变成 Shared 主线。
 - 因此已能明确指出两处 Bible 与 Origin Sequence 数量差异：`TANG-09` 尚未出现在 Origin catalog；`LONGMA-07`、`LONGMA-08` 尚未出现在 Origin catalog。它们目前只能标记为“设计已定义、数据序列未登记”，不能标记完成。
 - 已存在的共享章节、区域探索和黄风岭纵向切片，只能按各自真实覆盖范围计入，不可直接折算成若干原著劫难。
 - README 的 81 Trials Philosophy 明确允许大小试炼混合，不要求 81 个大型副本；但仍需建立 81 个可追溯的独立记录。
@@ -149,7 +149,7 @@
 
 | 内容组 | 已知范围 | 当前证据级别 | 说明 |
 |---|---|---|---|
-| Wukong Origin | WUK-01～WUK-15 | Sequence/进度回归已建立；需按当前 main 精确 CI 复核 | 人物前史，不直接计入 81 难 |
+| Wukong Origin | WUK-01～WUK-15 | 15 条 Sequence 已登记在 event_sequences.json；进度回归已建立，需按当前 main 精确 CI 复核 | 人物前史，不直接计入 81 难 |
 | Tang Origin | Bible TANG-01～09；Origin catalog TANG-01～08 | DATA_AUTHORED（01～08）；TANG-09 为缺口 | Bible 比数据多 1 章 |
 | Bajie Origin | BAJIE-01～09 | DATA_AUTHORED | 人物前史 |
 | Wujing Origin | WUJING-01～08 | DATA_AUTHORED | 人物前史 |
