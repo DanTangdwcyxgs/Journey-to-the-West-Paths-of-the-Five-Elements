@@ -10,6 +10,9 @@
 
 ## 最新记录
 
+- [2026-11-12 — 81 Trials Tracker and Coverage Audit](2026-11-12-81-trials-tracker-audit.md)
+
+
 - [2026-10-14 — Five Elements Mountain Region Exploration](2026-10-14-five-elements-mountain-region.md)
 
 - [2026-10-14 — Eagle Sorrow Region Exploration Vertical Slice](2026-10-14-eagle-sorrow-region-exploration.md)
