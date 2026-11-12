@@ -1,0 +1,1630 @@
+{
+  "schema_version": 1,
+  "title": "西游记八十一难来源与游戏映射目录",
+  "policy": {
+    "canonical_count": 81,
+    "ledger_listed_count": 80,
+    "closing_episode_derived_count": 1,
+    "primary_rule": "第九十九回难簿原文列出第一难至第八十难；第九十九回明确指出尚缺一难，后续通天河白鼋翻落情节作为补数的第八十一难记录。",
+    "do_not_conflate": [
+      "原著难次编号",
+      "小说回目引用",
+      "游戏章节 ID",
+      "运行时可玩",
+      "内容完成",
+      "Production Accepted"
+    ],
+    "chapter_crosswalk_warning": "小说回目号来自次级 81 难章节对照索引，并与仓库固定版本的 100 回章节目录交叉检查；它不是第九十九回难簿逐条直接标注的回目。第 2–4 难在该对照索引中标作附录，所列第 9 回仅用于正文叙事情境定位，需在剧情生产时再核对附录版本。"
+  },
+  "sources": {
+    "primary_trial_ledger": {
+      "title": "《西游记》第九十九回：九九数完魔刬尽　三三行满道归根",
+      "url": "https://zh.wikisource.org/zh-hans/西遊記/第099回",
+      "evidence": "Lines 117–160: the ledger explicitly enumerates difficulties 1–80 and says one more remains; lines 162–175 narrate the added drop / White Turtle episode."
+    },
+    "secondary_chapter_crosswalk": {
+      "title": "西游记·九九八十一难",
+      "url": "https://yuwenkaodian.com/xiyouji/81risk",
+      "role": "Secondary crosswalk for each difficulty's novel-chapter references and the editorial label for the final 81st difficulty; not treated as primary wording."
+    },
+    "repository_chapter_index": {
+      "path": "data/narrative/reference/xiyouji_chapter_index.json",
+      "upstream_repository": "https://github.com/gazhikaba/xiyouji_txt",
+      "pinned_commit": "419a54fbaf368af463dd863b8271ec7bb176b3b3",
+      "role": "Pinned 100-chapter title index used to verify that the referenced chapter numbers exist."
+    }
+  },
+  "trials": [
+    {
+      "id": "TRIAL-001",
+      "number": 1,
+      "canonical_name": "金蝉遭贬",
+      "aliases": [],
+      "source_status": "LISTED_IN_CHAPTER_99_LEDGER",
+      "chapter_99_line_range": [
+        119,
+        119
+      ],
+      "novel_chapters": [
+        12,
+        100
+      ],
+      "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
+      "chapter_reference_note": "",
+      "game_mapping_status": "UNMAPPED",
+      "game_shared_chapter_ids": [],
+      "game_mapping_note": ""
+    },
+    {
+      "id": "TRIAL-002",
+      "number": 2,
+      "canonical_name": "出胎几杀",
+      "aliases": [],
+      "source_status": "LISTED_IN_CHAPTER_99_LEDGER",
+      "chapter_99_line_range": [
+        119,
+        119
+      ],
+      "novel_chapters": [
+        9
+      ],
+      "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
+      "chapter_reference_note": "次级回目索引将此项归入附录；第九回可用于陈光蕊、江流儿身世叙事定位，不代表难簿原文直接标出第九回。",
+      "game_mapping_status": "UNMAPPED",
+      "game_shared_chapter_ids": [],
+      "game_mapping_note": ""
+    },
+    {
+      "id": "TRIAL-003",
+      "number": 3,
+      "canonical_name": "满月抛江",
+      "aliases": [],
+      "source_status": "LISTED_IN_CHAPTER_99_LEDGER",
+      "chapter_99_line_range": [
+        120,
+        120
+      ],
+      "novel_chapters": [
+        9
+      ],
+      "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
+      "chapter_reference_note": "次级回目索引将此项归入附录；第九回可用于陈光蕊、江流儿身世叙事定位，不代表难簿原文直接标出第九回。",
+      "game_mapping_status": "UNMAPPED",
+      "game_shared_chapter_ids": [],
+      "game_mapping_note": ""
+    },
+    {
+      "id": "TRIAL-004",
+      "number": 4,
+      "canonical_name": "寻亲报冤",
+      "aliases": [],
+      "source_status": "LISTED_IN_CHAPTER_99_LEDGER",
+      "chapter_99_line_range": [
+        120,
+        120
+      ],
+      "novel_chapters": [
+        9
+      ],
+      "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
+      "chapter_reference_note": "次级回目索引将此项归入附录；第九回可用于陈光蕊、江流儿身世叙事定位，不代表难簿原文直接标出第九回。",
+      "game_mapping_status": "UNMAPPED",
+      "game_shared_chapter_ids": [],
+      "game_mapping_note": ""
+    },
+    {
+      "id": "TRIAL-005",
+      "number": 5,
+      "canonical_name": "出城逢虎",
+      "aliases": [],
+      "source_status": "LISTED_IN_CHAPTER_99_LEDGER",
+      "chapter_99_line_range": [
+        121,
+        121
+      ],
+      "novel_chapters": [
+        13
+      ],
+      "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
+      "chapter_reference_note": "",
+      "game_mapping_status": "UNMAPPED",
+      "game_shared_chapter_ids": [],
+      "game_mapping_note": ""
+    },
+    {
+      "id": "TRIAL-006",
+      "number": 6,
+      "canonical_name": "折从落坑",
+      "aliases": [
+        "落坑折从"
+      ],
+      "source_status": "LISTED_IN_CHAPTER_99_LEDGER",
+      "chapter_99_line_range": [
+        121,
+        121
+      ],
+      "novel_chapters": [
+        13
+      ],
+      "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
+      "chapter_reference_note": "第九十九回难簿原文作“折从落坑”；部分现代列表倒序写作“落坑折从”。",
+      "game_mapping_status": "UNMAPPED",
+      "game_shared_chapter_ids": [],
+      "game_mapping_note": ""
+    },
+    {
+      "id": "TRIAL-007",
+      "number": 7,
+      "canonical_name": "双叉岭上",
+      "aliases": [],
+      "source_status": "LISTED_IN_CHAPTER_99_LEDGER",
+      "chapter_99_line_range": [
+        122,
+        122
+      ],
+      "novel_chapters": [
+        13
+      ],
+      "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
+      "chapter_reference_note": "",
+      "game_mapping_status": "UNMAPPED",
+      "game_shared_chapter_ids": [],
+      "game_mapping_note": ""
+    },
+    {
+      "id": "TRIAL-008",
+      "number": 8,
+      "canonical_name": "两界山头",
+      "aliases": [],
+      "source_status": "LISTED_IN_CHAPTER_99_LEDGER",
+      "chapter_99_line_range": [
+        122,
+        122
+      ],
+      "novel_chapters": [
+        14
+      ],
+      "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
+      "chapter_reference_note": "",
+      "game_mapping_status": "PARTIAL_CROSSWALK",
+      "game_shared_chapter_ids": [
+        "SHARED-01-FIVE-ELEMENTS"
+      ],
+      "game_mapping_note": "两界山/五行山会合已有 TANG-08、WUK-15 与 SHARED-01 的路线内容；仍需把老虎、六贼、紧箍等原著要素逐项对齐，暂不算整难完成。"
+    },
+    {
+      "id": "TRIAL-009",
+      "number": 9,
+      "canonical_name": "陡涧换马",
+      "aliases": [],
+      "source_status": "LISTED_IN_CHAPTER_99_LEDGER",
+      "chapter_99_line_range": [
+        123,
+        123
+      ],
+      "novel_chapters": [
+        15
+      ],
+      "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
+      "chapter_reference_note": "",
+      "game_mapping_status": "RUNTIME_EVIDENCE",
+      "game_shared_chapter_ids": [
+        "SHARED-03-EAGLE-SORROW"
+      ],
+      "game_mapping_note": "对应鹰愁涧招募主线；SHARED-03 Sequence、遭遇战与招募进度已有 Runtime 回归。仍需内容完整度与美术验收。"
+    },
+    {
+      "id": "TRIAL-010",
+      "number": 10,
+      "canonical_name": "夜被火烧",
+      "aliases": [],
+      "source_status": "LISTED_IN_CHAPTER_99_LEDGER",
+      "chapter_99_line_range": [
+        123,
+        123
+      ],
+      "novel_chapters": [
+        16
+      ],
+      "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
+      "chapter_reference_note": "",
+      "game_mapping_status": "PARTIAL_CROSSWALK",
+      "game_shared_chapter_ids": [
+        "SHARED-04-EARLY-DEMON-TALES"
+      ],
+      "game_mapping_note": "可归入黑风山/观音禅院叙事段；当前 SHARED-04 已有北道进入与线索探索，但观音禅院火灾情节未形成完整可玩劫难。"
+    },
+    {
+      "id": "TRIAL-011",
+      "number": 11,
+      "canonical_name": "失却袈裟",
+      "aliases": [],
+      "source_status": "LISTED_IN_CHAPTER_99_LEDGER",
+      "chapter_99_line_range": [
+        124,
+        124
+      ],
+      "novel_chapters": [
+        16,
+        17
+      ],
+      "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
+      "chapter_reference_note": "",
+      "game_mapping_status": "PARTIAL_CROSSWALK",
+      "game_shared_chapter_ids": [
+        "SHARED-04-EARLY-DEMON-TALES"
+      ],
+      "game_mapping_note": "黑熊精窃袈裟与收伏仍需与现有黑风山线逐项核对；当前共享节点只覆盖早期妖患探索，不等同完成整难。"
+    },
+    {
+      "id": "TRIAL-012",
+      "number": 12,
+      "canonical_name": "收降八戒",
+      "aliases": [],
+      "source_status": "LISTED_IN_CHAPTER_99_LEDGER",
+      "chapter_99_line_range": [
+        124,
+        124
+      ],
+      "novel_chapters": [
+        18,
+        19
+      ],
+      "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
+      "chapter_reference_note": "",
+      "game_mapping_status": "RUNTIME_EVIDENCE",
+      "game_shared_chapter_ids": [
+        "SHARED-05-GAOJIAZHUANG"
+      ],
+      "game_mapping_note": "高老庄章节、猪八戒遭遇战和入队流程已有 Runtime 回归；乌巢禅师/浮屠山《多心经》仍需核验是否完整覆盖。"
+    },
+    {
+      "id": "TRIAL-013",
+      "number": 13,
+      "canonical_name": "黄风怪阻",
+      "aliases": [],
+      "source_status": "LISTED_IN_CHAPTER_99_LEDGER",
+      "chapter_99_line_range": [
+        125,
+        125
+      ],
+      "novel_chapters": [
+        20
+      ],
+      "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
+      "chapter_reference_note": "",
+      "game_mapping_status": "VERTICAL_SLICE_NOT_MAINLINE_MAPPED",
+      "game_shared_chapter_ids": [],
+      "game_mapping_note": "仓库已有黄风岭—黄风洞—黄风妖王纵向切片和保存/重试测试，但当前 shared_chapters.json 尚未给这项原著劫难分配正式 Shared 主线章节 ID；不能据此标记主线内容完成。"
+    },
+    {
+      "id": "TRIAL-014",
+      "number": 14,
+      "canonical_name": "请求灵吉",
+      "aliases": [],
+      "source_status": "LISTED_IN_CHAPTER_99_LEDGER",
+      "chapter_99_line_range": [
+        125,
+        125
+      ],
+      "novel_chapters": [
+        21
+      ],
+      "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
+      "chapter_reference_note": "",
+      "game_mapping_status": "VERTICAL_SLICE_NOT_MAINLINE_MAPPED",
+      "game_shared_chapter_ids": [],
+      "game_mapping_note": "仓库已有黄风岭—黄风洞—黄风妖王纵向切片和保存/重试测试，但当前 shared_chapters.json 尚未给这项原著劫难分配正式 Shared 主线章节 ID；不能据此标记主线内容完成。"
+    },
+    {
+      "id": "TRIAL-015",
+      "number": 15,
+      "canonical_name": "流沙难渡",
+      "aliases": [],
+      "source_status": "LISTED_IN_CHAPTER_99_LEDGER",
+      "chapter_99_line_range": [
+        126,
+        126
+      ],
+      "novel_chapters": [
+        22
+      ],
+      "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
+      "chapter_reference_note": "",
+      "game_mapping_status": "RUNTIME_EVIDENCE",
+      "game_shared_chapter_ids": [
+        "SHARED-07-FLOWING-SANDS"
+      ],
+      "game_mapping_note": "流沙河共享章节和遭遇战已有 Runtime 回归；仍需确认原著连续遭遇、木叉介入与结局的内容完整度。"
+    },
+    {
+      "id": "TRIAL-016",
+      "number": 16,
+      "canonical_name": "收得沙僧",
+      "aliases": [],
+      "source_status": "LISTED_IN_CHAPTER_99_LEDGER",
+      "chapter_99_line_range": [
+        126,
+        126
+      ],
+      "novel_chapters": [
+        22
+      ],
+      "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
+      "chapter_reference_note": "",
+      "game_mapping_status": "RUNTIME_EVIDENCE",
+      "game_shared_chapter_ids": [
+        "SHARED-07-FLOWING-SANDS"
+      ],
+      "game_mapping_note": "沙悟净招募结果由同一共享章节覆盖并有 Runtime 回归；不将两条难簿记录合并成一个编号。"
+    },
+    {
+      "id": "TRIAL-017",
+      "number": 17,
+      "canonical_name": "四圣显化",
+      "aliases": [],
+      "source_status": "LISTED_IN_CHAPTER_99_LEDGER",
+      "chapter_99_line_range": [
+        127,
+        127
+      ],
+      "novel_chapters": [
+        23
+      ],
+      "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
+      "chapter_reference_note": "",
+      "game_mapping_status": "UNMAPPED",
+      "game_shared_chapter_ids": [],
+      "game_mapping_note": ""
+    },
+    {
+      "id": "TRIAL-018",
+      "number": 18,
+      "canonical_name": "五庄观中",
+      "aliases": [],
+      "source_status": "LISTED_IN_CHAPTER_99_LEDGER",
+      "chapter_99_line_range": [
+        127,
+        127
+      ],
+      "novel_chapters": [
+        24
+      ],
+      "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
+      "chapter_reference_note": "",
+      "game_mapping_status": "UNMAPPED",
+      "game_shared_chapter_ids": [],
+      "game_mapping_note": ""
+    },
+    {
+      "id": "TRIAL-019",
+      "number": 19,
+      "canonical_name": "难活人参",
+      "aliases": [],
+      "source_status": "LISTED_IN_CHAPTER_99_LEDGER",
+      "chapter_99_line_range": [
+        128,
+        128
+      ],
+      "novel_chapters": [
+        25,
+        26
+      ],
+      "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
+      "chapter_reference_note": "",
+      "game_mapping_status": "UNMAPPED",
+      "game_shared_chapter_ids": [],
+      "game_mapping_note": ""
+    },
+    {
+      "id": "TRIAL-020",
+      "number": 20,
+      "canonical_name": "贬退心猿",
+      "aliases": [],
+      "source_status": "LISTED_IN_CHAPTER_99_LEDGER",
+      "chapter_99_line_range": [
+        128,
+        128
+      ],
+      "novel_chapters": [
+        27
+      ],
+      "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
+      "chapter_reference_note": "",
+      "game_mapping_status": "UNMAPPED",
+      "game_shared_chapter_ids": [],
+      "game_mapping_note": ""
+    },
+    {
+      "id": "TRIAL-021",
+      "number": 21,
+      "canonical_name": "黑松林失散",
+      "aliases": [],
+      "source_status": "LISTED_IN_CHAPTER_99_LEDGER",
+      "chapter_99_line_range": [
+        129,
+        129
+      ],
+      "novel_chapters": [
+        28
+      ],
+      "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
+      "chapter_reference_note": "",
+      "game_mapping_status": "UNMAPPED",
+      "game_shared_chapter_ids": [],
+      "game_mapping_note": ""
+    },
+    {
+      "id": "TRIAL-022",
+      "number": 22,
+      "canonical_name": "宝象国捎书",
+      "aliases": [],
+      "source_status": "LISTED_IN_CHAPTER_99_LEDGER",
+      "chapter_99_line_range": [
+        129,
+        129
+      ],
+      "novel_chapters": [
+        29
+      ],
+      "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
+      "chapter_reference_note": "",
+      "game_mapping_status": "UNMAPPED",
+      "game_shared_chapter_ids": [],
+      "game_mapping_note": ""
+    },
+    {
+      "id": "TRIAL-023",
+      "number": 23,
+      "canonical_name": "金銮殿变虎",
+      "aliases": [],
+      "source_status": "LISTED_IN_CHAPTER_99_LEDGER",
+      "chapter_99_line_range": [
+        130,
+        130
+      ],
+      "novel_chapters": [
+        30,
+        31
+      ],
+      "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
+      "chapter_reference_note": "",
+      "game_mapping_status": "UNMAPPED",
+      "game_shared_chapter_ids": [],
+      "game_mapping_note": ""
+    },
+    {
+      "id": "TRIAL-024",
+      "number": 24,
+      "canonical_name": "平顶山逢魔",
+      "aliases": [],
+      "source_status": "LISTED_IN_CHAPTER_99_LEDGER",
+      "chapter_99_line_range": [
+        130,
+        130
+      ],
+      "novel_chapters": [
+        32
+      ],
+      "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
+      "chapter_reference_note": "",
+      "game_mapping_status": "UNMAPPED",
+      "game_shared_chapter_ids": [],
+      "game_mapping_note": ""
+    },
+    {
+      "id": "TRIAL-025",
+      "number": 25,
+      "canonical_name": "莲花洞高悬",
+      "aliases": [],
+      "source_status": "LISTED_IN_CHAPTER_99_LEDGER",
+      "chapter_99_line_range": [
+        131,
+        131
+      ],
+      "novel_chapters": [
+        33,
+        34,
+        35
+      ],
+      "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
+      "chapter_reference_note": "",
+      "game_mapping_status": "UNMAPPED",
+      "game_shared_chapter_ids": [],
+      "game_mapping_note": ""
+    },
+    {
+      "id": "TRIAL-026",
+      "number": 26,
+      "canonical_name": "乌鸡国救主",
+      "aliases": [],
+      "source_status": "LISTED_IN_CHAPTER_99_LEDGER",
+      "chapter_99_line_range": [
+        131,
+        131
+      ],
+      "novel_chapters": [
+        36,
+        37,
+        38
+      ],
+      "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
+      "chapter_reference_note": "",
+      "game_mapping_status": "UNMAPPED",
+      "game_shared_chapter_ids": [],
+      "game_mapping_note": ""
+    },
+    {
+      "id": "TRIAL-027",
+      "number": 27,
+      "canonical_name": "被魔化身",
+      "aliases": [],
+      "source_status": "LISTED_IN_CHAPTER_99_LEDGER",
+      "chapter_99_line_range": [
+        132,
+        132
+      ],
+      "novel_chapters": [
+        39
+      ],
+      "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
+      "chapter_reference_note": "",
+      "game_mapping_status": "UNMAPPED",
+      "game_shared_chapter_ids": [],
+      "game_mapping_note": ""
+    },
+    {
+      "id": "TRIAL-028",
+      "number": 28,
+      "canonical_name": "号山逢怪",
+      "aliases": [],
+      "source_status": "LISTED_IN_CHAPTER_99_LEDGER",
+      "chapter_99_line_range": [
+        132,
+        132
+      ],
+      "novel_chapters": [
+        40
+      ],
+      "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
+      "chapter_reference_note": "",
+      "game_mapping_status": "UNMAPPED",
+      "game_shared_chapter_ids": [],
+      "game_mapping_note": ""
+    },
+    {
+      "id": "TRIAL-029",
+      "number": 29,
+      "canonical_name": "风摄圣僧",
+      "aliases": [],
+      "source_status": "LISTED_IN_CHAPTER_99_LEDGER",
+      "chapter_99_line_range": [
+        133,
+        133
+      ],
+      "novel_chapters": [
+        40
+      ],
+      "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
+      "chapter_reference_note": "",
+      "game_mapping_status": "UNMAPPED",
+      "game_shared_chapter_ids": [],
+      "game_mapping_note": ""
+    },
+    {
+      "id": "TRIAL-030",
+      "number": 30,
+      "canonical_name": "心猿遭害",
+      "aliases": [],
+      "source_status": "LISTED_IN_CHAPTER_99_LEDGER",
+      "chapter_99_line_range": [
+        133,
+        133
+      ],
+      "novel_chapters": [
+        41
+      ],
+      "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
+      "chapter_reference_note": "",
+      "game_mapping_status": "UNMAPPED",
+      "game_shared_chapter_ids": [],
+      "game_mapping_note": ""
+    },
+    {
+      "id": "TRIAL-031",
+      "number": 31,
+      "canonical_name": "请圣降妖",
+      "aliases": [],
+      "source_status": "LISTED_IN_CHAPTER_99_LEDGER",
+      "chapter_99_line_range": [
+        134,
+        134
+      ],
+      "novel_chapters": [
+        42
+      ],
+      "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
+      "chapter_reference_note": "",
+      "game_mapping_status": "UNMAPPED",
+      "game_shared_chapter_ids": [],
+      "game_mapping_note": ""
+    },
+    {
+      "id": "TRIAL-032",
+      "number": 32,
+      "canonical_name": "黑河沉没",
+      "aliases": [],
+      "source_status": "LISTED_IN_CHAPTER_99_LEDGER",
+      "chapter_99_line_range": [
+        134,
+        134
+      ],
+      "novel_chapters": [
+        43
+      ],
+      "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
+      "chapter_reference_note": "",
+      "game_mapping_status": "UNMAPPED",
+      "game_shared_chapter_ids": [],
+      "game_mapping_note": ""
+    },
+    {
+      "id": "TRIAL-033",
+      "number": 33,
+      "canonical_name": "搬运车迟",
+      "aliases": [],
+      "source_status": "LISTED_IN_CHAPTER_99_LEDGER",
+      "chapter_99_line_range": [
+        135,
+        135
+      ],
+      "novel_chapters": [
+        44
+      ],
+      "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
+      "chapter_reference_note": "",
+      "game_mapping_status": "UNMAPPED",
+      "game_shared_chapter_ids": [],
+      "game_mapping_note": ""
+    },
+    {
+      "id": "TRIAL-034",
+      "number": 34,
+      "canonical_name": "大赌输赢",
+      "aliases": [],
+      "source_status": "LISTED_IN_CHAPTER_99_LEDGER",
+      "chapter_99_line_range": [
+        135,
+        135
+      ],
+      "novel_chapters": [
+        45,
+        46
+      ],
+      "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
+      "chapter_reference_note": "",
+      "game_mapping_status": "UNMAPPED",
+      "game_shared_chapter_ids": [],
+      "game_mapping_note": ""
+    },
+    {
+      "id": "TRIAL-035",
+      "number": 35,
+      "canonical_name": "祛道兴僧",
+      "aliases": [],
+      "source_status": "LISTED_IN_CHAPTER_99_LEDGER",
+      "chapter_99_line_range": [
+        136,
+        136
+      ],
+      "novel_chapters": [
+        45,
+        46
+      ],
+      "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
+      "chapter_reference_note": "",
+      "game_mapping_status": "UNMAPPED",
+      "game_shared_chapter_ids": [],
+      "game_mapping_note": ""
+    },
+    {
+      "id": "TRIAL-036",
+      "number": 36,
+      "canonical_name": "路逢大水",
+      "aliases": [],
+      "source_status": "LISTED_IN_CHAPTER_99_LEDGER",
+      "chapter_99_line_range": [
+        136,
+        136
+      ],
+      "novel_chapters": [
+        47
+      ],
+      "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
+      "chapter_reference_note": "",
+      "game_mapping_status": "UNMAPPED",
+      "game_shared_chapter_ids": [],
+      "game_mapping_note": ""
+    },
+    {
+      "id": "TRIAL-037",
+      "number": 37,
+      "canonical_name": "身落天河",
+      "aliases": [],
+      "source_status": "LISTED_IN_CHAPTER_99_LEDGER",
+      "chapter_99_line_range": [
+        137,
+        137
+      ],
+      "novel_chapters": [
+        48
+      ],
+      "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
+      "chapter_reference_note": "",
+      "game_mapping_status": "UNMAPPED",
+      "game_shared_chapter_ids": [],
+      "game_mapping_note": ""
+    },
+    {
+      "id": "TRIAL-038",
+      "number": 38,
+      "canonical_name": "鱼篮现身",
+      "aliases": [],
+      "source_status": "LISTED_IN_CHAPTER_99_LEDGER",
+      "chapter_99_line_range": [
+        137,
+        137
+      ],
+      "novel_chapters": [
+        49
+      ],
+      "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
+      "chapter_reference_note": "",
+      "game_mapping_status": "UNMAPPED",
+      "game_shared_chapter_ids": [],
+      "game_mapping_note": ""
+    },
+    {
+      "id": "TRIAL-039",
+      "number": 39,
+      "canonical_name": "金兜山遇怪",
+      "aliases": [
+        "兜山遇怪（底本文字缺字）"
+      ],
+      "source_status": "LISTED_IN_CHAPTER_99_LEDGER",
+      "chapter_99_line_range": [
+        138,
+        138
+      ],
+      "novel_chapters": [
+        50
+      ],
+      "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
+      "chapter_reference_note": "第九十九回此处地名有 Unicode 缺字；按对应章回与通行回目地名规范化为“金兜山遇怪”，保留原文缺字备注。",
+      "game_mapping_status": "UNMAPPED",
+      "game_shared_chapter_ids": [],
+      "game_mapping_note": ""
+    },
+    {
+      "id": "TRIAL-040",
+      "number": 40,
+      "canonical_name": "普天神难伏",
+      "aliases": [],
+      "source_status": "LISTED_IN_CHAPTER_99_LEDGER",
+      "chapter_99_line_range": [
+        138,
+        138
+      ],
+      "novel_chapters": [
+        51
+      ],
+      "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
+      "chapter_reference_note": "",
+      "game_mapping_status": "UNMAPPED",
+      "game_shared_chapter_ids": [],
+      "game_mapping_note": ""
+    },
+    {
+      "id": "TRIAL-041",
+      "number": 41,
+      "canonical_name": "问佛根源",
+      "aliases": [],
+      "source_status": "LISTED_IN_CHAPTER_99_LEDGER",
+      "chapter_99_line_range": [
+        139,
+        139
+      ],
+      "novel_chapters": [
+        52
+      ],
+      "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
+      "chapter_reference_note": "",
+      "game_mapping_status": "UNMAPPED",
+      "game_shared_chapter_ids": [],
+      "game_mapping_note": ""
+    },
+    {
+      "id": "TRIAL-042",
+      "number": 42,
+      "canonical_name": "吃水遭毒",
+      "aliases": [],
+      "source_status": "LISTED_IN_CHAPTER_99_LEDGER",
+      "chapter_99_line_range": [
+        139,
+        139
+      ],
+      "novel_chapters": [
+        53
+      ],
+      "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
+      "chapter_reference_note": "",
+      "game_mapping_status": "UNMAPPED",
+      "game_shared_chapter_ids": [],
+      "game_mapping_note": ""
+    },
+    {
+      "id": "TRIAL-043",
+      "number": 43,
+      "canonical_name": "西梁国留婚",
+      "aliases": [],
+      "source_status": "LISTED_IN_CHAPTER_99_LEDGER",
+      "chapter_99_line_range": [
+        140,
+        140
+      ],
+      "novel_chapters": [
+        54
+      ],
+      "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
+      "chapter_reference_note": "",
+      "game_mapping_status": "UNMAPPED",
+      "game_shared_chapter_ids": [],
+      "game_mapping_note": ""
+    },
+    {
+      "id": "TRIAL-044",
+      "number": 44,
+      "canonical_name": "琵琶洞受苦",
+      "aliases": [],
+      "source_status": "LISTED_IN_CHAPTER_99_LEDGER",
+      "chapter_99_line_range": [
+        140,
+        140
+      ],
+      "novel_chapters": [
+        55
+      ],
+      "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
+      "chapter_reference_note": "",
+      "game_mapping_status": "UNMAPPED",
+      "game_shared_chapter_ids": [],
+      "game_mapping_note": ""
+    },
+    {
+      "id": "TRIAL-045",
+      "number": 45,
+      "canonical_name": "再贬心猿",
+      "aliases": [],
+      "source_status": "LISTED_IN_CHAPTER_99_LEDGER",
+      "chapter_99_line_range": [
+        141,
+        141
+      ],
+      "novel_chapters": [
+        56
+      ],
+      "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
+      "chapter_reference_note": "",
+      "game_mapping_status": "UNMAPPED",
+      "game_shared_chapter_ids": [],
+      "game_mapping_note": ""
+    },
+    {
+      "id": "TRIAL-046",
+      "number": 46,
+      "canonical_name": "难辨猕猴",
+      "aliases": [],
+      "source_status": "LISTED_IN_CHAPTER_99_LEDGER",
+      "chapter_99_line_range": [
+        141,
+        141
+      ],
+      "novel_chapters": [
+        57,
+        58
+      ],
+      "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
+      "chapter_reference_note": "",
+      "game_mapping_status": "UNMAPPED",
+      "game_shared_chapter_ids": [],
+      "game_mapping_note": ""
+    },
+    {
+      "id": "TRIAL-047",
+      "number": 47,
+      "canonical_name": "路阻火焰山",
+      "aliases": [],
+      "source_status": "LISTED_IN_CHAPTER_99_LEDGER",
+      "chapter_99_line_range": [
+        142,
+        142
+      ],
+      "novel_chapters": [
+        59,
+        60,
+        61
+      ],
+      "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
+      "chapter_reference_note": "",
+      "game_mapping_status": "UNMAPPED",
+      "game_shared_chapter_ids": [],
+      "game_mapping_note": ""
+    },
+    {
+      "id": "TRIAL-048",
+      "number": 48,
+      "canonical_name": "求取芭蕉扇",
+      "aliases": [],
+      "source_status": "LISTED_IN_CHAPTER_99_LEDGER",
+      "chapter_99_line_range": [
+        142,
+        142
+      ],
+      "novel_chapters": [
+        59,
+        60,
+        61
+      ],
+      "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
+      "chapter_reference_note": "",
+      "game_mapping_status": "UNMAPPED",
+      "game_shared_chapter_ids": [],
+      "game_mapping_note": ""
+    },
+    {
+      "id": "TRIAL-049",
+      "number": 49,
+      "canonical_name": "收缚魔王",
+      "aliases": [],
+      "source_status": "LISTED_IN_CHAPTER_99_LEDGER",
+      "chapter_99_line_range": [
+        143,
+        143
+      ],
+      "novel_chapters": [
+        61
+      ],
+      "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
+      "chapter_reference_note": "",
+      "game_mapping_status": "UNMAPPED",
+      "game_shared_chapter_ids": [],
+      "game_mapping_note": ""
+    },
+    {
+      "id": "TRIAL-050",
+      "number": 50,
+      "canonical_name": "赛城扫塔",
+      "aliases": [],
+      "source_status": "LISTED_IN_CHAPTER_99_LEDGER",
+      "chapter_99_line_range": [
+        143,
+        143
+      ],
+      "novel_chapters": [
+        62
+      ],
+      "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
+      "chapter_reference_note": "",
+      "game_mapping_status": "UNMAPPED",
+      "game_shared_chapter_ids": [],
+      "game_mapping_note": ""
+    },
+    {
+      "id": "TRIAL-051",
+      "number": 51,
+      "canonical_name": "取宝救僧",
+      "aliases": [],
+      "source_status": "LISTED_IN_CHAPTER_99_LEDGER",
+      "chapter_99_line_range": [
+        144,
+        144
+      ],
+      "novel_chapters": [
+        63
+      ],
+      "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
+      "chapter_reference_note": "",
+      "game_mapping_status": "UNMAPPED",
+      "game_shared_chapter_ids": [],
+      "game_mapping_note": ""
+    },
+    {
+      "id": "TRIAL-052",
+      "number": 52,
+      "canonical_name": "棘林吟咏",
+      "aliases": [],
+      "source_status": "LISTED_IN_CHAPTER_99_LEDGER",
+      "chapter_99_line_range": [
+        144,
+        144
+      ],
+      "novel_chapters": [
+        64
+      ],
+      "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
+      "chapter_reference_note": "",
+      "game_mapping_status": "UNMAPPED",
+      "game_shared_chapter_ids": [],
+      "game_mapping_note": ""
+    },
+    {
+      "id": "TRIAL-053",
+      "number": 53,
+      "canonical_name": "小雷音遇难",
+      "aliases": [],
+      "source_status": "LISTED_IN_CHAPTER_99_LEDGER",
+      "chapter_99_line_range": [
+        145,
+        145
+      ],
+      "novel_chapters": [
+        65
+      ],
+      "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
+      "chapter_reference_note": "",
+      "game_mapping_status": "UNMAPPED",
+      "game_shared_chapter_ids": [],
+      "game_mapping_note": ""
+    },
+    {
+      "id": "TRIAL-054",
+      "number": 54,
+      "canonical_name": "诸天神遭困",
+      "aliases": [],
+      "source_status": "LISTED_IN_CHAPTER_99_LEDGER",
+      "chapter_99_line_range": [
+        145,
+        145
+      ],
+      "novel_chapters": [
+        66
+      ],
+      "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
+      "chapter_reference_note": "",
+      "game_mapping_status": "UNMAPPED",
+      "game_shared_chapter_ids": [],
+      "game_mapping_note": ""
+    },
+    {
+      "id": "TRIAL-055",
+      "number": 55,
+      "canonical_name": "稀柿同秽阻",
+      "aliases": [
+        "稀柿衕秽阻"
+      ],
+      "source_status": "LISTED_IN_CHAPTER_99_LEDGER",
+      "chapter_99_line_range": [
+        146,
+        146
+      ],
+      "novel_chapters": [
+        67
+      ],
+      "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
+      "chapter_reference_note": "第九十九回难簿用“稀柿同秽阻”；现代地名/索引常写“稀柿衕”，保留字形差异。",
+      "game_mapping_status": "UNMAPPED",
+      "game_shared_chapter_ids": [],
+      "game_mapping_note": ""
+    },
+    {
+      "id": "TRIAL-056",
+      "number": 56,
+      "canonical_name": "朱紫国行医",
+      "aliases": [],
+      "source_status": "LISTED_IN_CHAPTER_99_LEDGER",
+      "chapter_99_line_range": [
+        146,
+        146
+      ],
+      "novel_chapters": [
+        68
+      ],
+      "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
+      "chapter_reference_note": "",
+      "game_mapping_status": "UNMAPPED",
+      "game_shared_chapter_ids": [],
+      "game_mapping_note": ""
+    },
+    {
+      "id": "TRIAL-057",
+      "number": 57,
+      "canonical_name": "拯救疲癃",
+      "aliases": [],
+      "source_status": "LISTED_IN_CHAPTER_99_LEDGER",
+      "chapter_99_line_range": [
+        147,
+        147
+      ],
+      "novel_chapters": [
+        69
+      ],
+      "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
+      "chapter_reference_note": "",
+      "game_mapping_status": "UNMAPPED",
+      "game_shared_chapter_ids": [],
+      "game_mapping_note": ""
+    },
+    {
+      "id": "TRIAL-058",
+      "number": 58,
+      "canonical_name": "降妖取后",
+      "aliases": [],
+      "source_status": "LISTED_IN_CHAPTER_99_LEDGER",
+      "chapter_99_line_range": [
+        147,
+        147
+      ],
+      "novel_chapters": [
+        69,
+        70,
+        71
+      ],
+      "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
+      "chapter_reference_note": "",
+      "game_mapping_status": "UNMAPPED",
+      "game_shared_chapter_ids": [],
+      "game_mapping_note": ""
+    },
+    {
+      "id": "TRIAL-059",
+      "number": 59,
+      "canonical_name": "七情迷没",
+      "aliases": [],
+      "source_status": "LISTED_IN_CHAPTER_99_LEDGER",
+      "chapter_99_line_range": [
+        148,
+        148
+      ],
+      "novel_chapters": [
+        72
+      ],
+      "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
+      "chapter_reference_note": "",
+      "game_mapping_status": "UNMAPPED",
+      "game_shared_chapter_ids": [],
+      "game_mapping_note": ""
+    },
+    {
+      "id": "TRIAL-060",
+      "number": 60,
+      "canonical_name": "多目遭伤",
+      "aliases": [],
+      "source_status": "LISTED_IN_CHAPTER_99_LEDGER",
+      "chapter_99_line_range": [
+        148,
+        148
+      ],
+      "novel_chapters": [
+        73
+      ],
+      "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
+      "chapter_reference_note": "",
+      "game_mapping_status": "UNMAPPED",
+      "game_shared_chapter_ids": [],
+      "game_mapping_note": ""
+    },
+    {
+      "id": "TRIAL-061",
+      "number": 61,
+      "canonical_name": "路阻狮驼",
+      "aliases": [],
+      "source_status": "LISTED_IN_CHAPTER_99_LEDGER",
+      "chapter_99_line_range": [
+        149,
+        149
+      ],
+      "novel_chapters": [
+        74
+      ],
+      "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
+      "chapter_reference_note": "",
+      "game_mapping_status": "UNMAPPED",
+      "game_shared_chapter_ids": [],
+      "game_mapping_note": ""
+    },
+    {
+      "id": "TRIAL-062",
+      "number": 62,
+      "canonical_name": "怪分三色",
+      "aliases": [],
+      "source_status": "LISTED_IN_CHAPTER_99_LEDGER",
+      "chapter_99_line_range": [
+        149,
+        149
+      ],
+      "novel_chapters": [
+        74,
+        75,
+        76
+      ],
+      "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
+      "chapter_reference_note": "",
+      "game_mapping_status": "UNMAPPED",
+      "game_shared_chapter_ids": [],
+      "game_mapping_note": ""
+    },
+    {
+      "id": "TRIAL-063",
+      "number": 63,
+      "canonical_name": "城里遇灾",
+      "aliases": [],
+      "source_status": "LISTED_IN_CHAPTER_99_LEDGER",
+      "chapter_99_line_range": [
+        150,
+        150
+      ],
+      "novel_chapters": [
+        77
+      ],
+      "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
+      "chapter_reference_note": "",
+      "game_mapping_status": "UNMAPPED",
+      "game_shared_chapter_ids": [],
+      "game_mapping_note": ""
+    },
+    {
+      "id": "TRIAL-064",
+      "number": 64,
+      "canonical_name": "请佛收魔",
+      "aliases": [],
+      "source_status": "LISTED_IN_CHAPTER_99_LEDGER",
+      "chapter_99_line_range": [
+        150,
+        150
+      ],
+      "novel_chapters": [
+        77
+      ],
+      "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
+      "chapter_reference_note": "",
+      "game_mapping_status": "UNMAPPED",
+      "game_shared_chapter_ids": [],
+      "game_mapping_note": ""
+    },
+    {
+      "id": "TRIAL-065",
+      "number": 65,
+      "canonical_name": "比丘救子",
+      "aliases": [],
+      "source_status": "LISTED_IN_CHAPTER_99_LEDGER",
+      "chapter_99_line_range": [
+        151,
+        151
+      ],
+      "novel_chapters": [
+        78
+      ],
+      "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
+      "chapter_reference_note": "",
+      "game_mapping_status": "UNMAPPED",
+      "game_shared_chapter_ids": [],
+      "game_mapping_note": ""
+    },
+    {
+      "id": "TRIAL-066",
+      "number": 66,
+      "canonical_name": "辨认真邪",
+      "aliases": [],
+      "source_status": "LISTED_IN_CHAPTER_99_LEDGER",
+      "chapter_99_line_range": [
+        151,
+        151
+      ],
+      "novel_chapters": [
+        78,
+        79
+      ],
+      "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
+      "chapter_reference_note": "",
+      "game_mapping_status": "UNMAPPED",
+      "game_shared_chapter_ids": [],
+      "game_mapping_note": ""
+    },
+    {
+      "id": "TRIAL-067",
+      "number": 67,
+      "canonical_name": "松林救怪",
+      "aliases": [],
+      "source_status": "LISTED_IN_CHAPTER_99_LEDGER",
+      "chapter_99_line_range": [
+        152,
+        152
+      ],
+      "novel_chapters": [
+        80
+      ],
+      "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
+      "chapter_reference_note": "",
+      "game_mapping_status": "UNMAPPED",
+      "game_shared_chapter_ids": [],
+      "game_mapping_note": ""
+    },
+    {
+      "id": "TRIAL-068",
+      "number": 68,
+      "canonical_name": "僧房卧病",
+      "aliases": [],
+      "source_status": "LISTED_IN_CHAPTER_99_LEDGER",
+      "chapter_99_line_range": [
+        152,
+        152
+      ],
+      "novel_chapters": [
+        81
+      ],
+      "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
+      "chapter_reference_note": "",
+      "game_mapping_status": "UNMAPPED",
+      "game_shared_chapter_ids": [],
+      "game_mapping_note": ""
+    },
+    {
+      "id": "TRIAL-069",
+      "number": 69,
+      "canonical_name": "无底洞遭困",
+      "aliases": [],
+      "source_status": "LISTED_IN_CHAPTER_99_LEDGER",
+      "chapter_99_line_range": [
+        153,
+        153
+      ],
+      "novel_chapters": [
+        82,
+        83
+      ],
+      "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
+      "chapter_reference_note": "",
+      "game_mapping_status": "UNMAPPED",
+      "game_shared_chapter_ids": [],
+      "game_mapping_note": ""
+    },
+    {
+      "id": "TRIAL-070",
+      "number": 70,
+      "canonical_name": "灭法国难行",
+      "aliases": [
+        "钦法国难行"
+      ],
+      "source_status": "LISTED_IN_CHAPTER_99_LEDGER",
+      "chapter_99_line_range": [
+        153,
+        153
+      ],
+      "novel_chapters": [
+        84,
+        85
+      ],
+      "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
+      "chapter_reference_note": "难簿称“灭法国”；第八十四至八十五回叙事结局改称“钦法国”，两种名称均保留。",
+      "game_mapping_status": "UNMAPPED",
+      "game_shared_chapter_ids": [],
+      "game_mapping_note": ""
+    },
+    {
+      "id": "TRIAL-071",
+      "number": 71,
+      "canonical_name": "隐雾山遇魔",
+      "aliases": [],
+      "source_status": "LISTED_IN_CHAPTER_99_LEDGER",
+      "chapter_99_line_range": [
+        154,
+        154
+      ],
+      "novel_chapters": [
+        85,
+        86
+      ],
+      "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
+      "chapter_reference_note": "",
+      "game_mapping_status": "UNMAPPED",
+      "game_shared_chapter_ids": [],
+      "game_mapping_note": ""
+    },
+    {
+      "id": "TRIAL-072",
+      "number": 72,
+      "canonical_name": "凤仙郡求雨",
+      "aliases": [],
+      "source_status": "LISTED_IN_CHAPTER_99_LEDGER",
+      "chapter_99_line_range": [
+        154,
+        154
+      ],
+      "novel_chapters": [
+        87
+      ],
+      "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
+      "chapter_reference_note": "",
+      "game_mapping_status": "UNMAPPED",
+      "game_shared_chapter_ids": [],
+      "game_mapping_note": ""
+    },
+    {
+      "id": "TRIAL-073",
+      "number": 73,
+      "canonical_name": "失落兵器",
+      "aliases": [],
+      "source_status": "LISTED_IN_CHAPTER_99_LEDGER",
+      "chapter_99_line_range": [
+        155,
+        155
+      ],
+      "novel_chapters": [
+        88
+      ],
+      "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
+      "chapter_reference_note": "",
+      "game_mapping_status": "UNMAPPED",
+      "game_shared_chapter_ids": [],
+      "game_mapping_note": ""
+    },
+    {
+      "id": "TRIAL-074",
+      "number": 74,
+      "canonical_name": "会庆钉钯",
+      "aliases": [],
+      "source_status": "LISTED_IN_CHAPTER_99_LEDGER",
+      "chapter_99_line_range": [
+        155,
+        155
+      ],
+      "novel_chapters": [
+        88,
+        89
+      ],
+      "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
+      "chapter_reference_note": "",
+      "game_mapping_status": "UNMAPPED",
+      "game_shared_chapter_ids": [],
+      "game_mapping_note": ""
+    },
+    {
+      "id": "TRIAL-075",
+      "number": 75,
+      "canonical_name": "竹节山遭难",
+      "aliases": [],
+      "source_status": "LISTED_IN_CHAPTER_99_LEDGER",
+      "chapter_99_line_range": [
+        156,
+        156
+      ],
+      "novel_chapters": [
+        88,
+        89,
+        90
+      ],
+      "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
+      "chapter_reference_note": "",
+      "game_mapping_status": "UNMAPPED",
+      "game_shared_chapter_ids": [],
+      "game_mapping_note": ""
+    },
+    {
+      "id": "TRIAL-076",
+      "number": 76,
+      "canonical_name": "玄英洞受苦",
+      "aliases": [],
+      "source_status": "LISTED_IN_CHAPTER_99_LEDGER",
+      "chapter_99_line_range": [
+        156,
+        156
+      ],
+      "novel_chapters": [
+        91
+      ],
+      "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
+      "chapter_reference_note": "",
+      "game_mapping_status": "UNMAPPED",
+      "game_shared_chapter_ids": [],
+      "game_mapping_note": ""
+    },
+    {
+      "id": "TRIAL-077",
+      "number": 77,
+      "canonical_name": "赶捉犀牛",
+      "aliases": [],
+      "source_status": "LISTED_IN_CHAPTER_99_LEDGER",
+      "chapter_99_line_range": [
+        157,
+        157
+      ],
+      "novel_chapters": [
+        92
+      ],
+      "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
+      "chapter_reference_note": "",
+      "game_mapping_status": "UNMAPPED",
+      "game_shared_chapter_ids": [],
+      "game_mapping_note": ""
+    },
+    {
+      "id": "TRIAL-078",
+      "number": 78,
+      "canonical_name": "天竺招婚",
+      "aliases": [],
+      "source_status": "LISTED_IN_CHAPTER_99_LEDGER",
+      "chapter_99_line_range": [
+        157,
+        157
+      ],
+      "novel_chapters": [
+        93,
+        94,
+        95
+      ],
+      "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
+      "chapter_reference_note": "",
+      "game_mapping_status": "UNMAPPED",
+      "game_shared_chapter_ids": [],
+      "game_mapping_note": ""
+    },
+    {
+      "id": "TRIAL-079",
+      "number": 79,
+      "canonical_name": "铜台府监禁",
+      "aliases": [],
+      "source_status": "LISTED_IN_CHAPTER_99_LEDGER",
+      "chapter_99_line_range": [
+        158,
+        158
+      ],
+      "novel_chapters": [
+        96,
+        97
+      ],
+      "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
+      "chapter_reference_note": "",
+      "game_mapping_status": "UNMAPPED",
+      "game_shared_chapter_ids": [],
+      "game_mapping_note": ""
+    },
+    {
+      "id": "TRIAL-080",
+      "number": 80,
+      "canonical_name": "凌云渡脱胎",
+      "aliases": [],
+      "source_status": "LISTED_IN_CHAPTER_99_LEDGER",
+      "chapter_99_line_range": [
+        158,
+        158
+      ],
+      "novel_chapters": [
+        98
+      ],
+      "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
+      "chapter_reference_note": "",
+      "game_mapping_status": "UNMAPPED",
+      "game_shared_chapter_ids": [],
+      "game_mapping_note": ""
+    },
+    {
+      "id": "TRIAL-081",
+      "number": 81,
+      "canonical_name": "通天河补一难",
+      "aliases": [],
+      "source_status": "DERIVED_FROM_CHAPTER_99_CLOSING_EPISODE",
+      "chapter_99_line_range": [
+        162,
+        175
+      ],
+      "novel_chapters": [
+        99
+      ],
+      "chapter_reference_basis": "SECONDARY_CROSSWALK_TO_NOVEL_CHAPTER_INDEX",
+      "chapter_reference_note": "此项不是第九十九回前段难簿中的第八十一条；第九十九回明确说尚差一难，随后八大金刚使师徒坠地、白鼋翻落通天河，现代索引以此作为补足之第八十一难。",
+      "game_mapping_status": "UNMAPPED",
+      "game_shared_chapter_ids": [],
+      "game_mapping_note": ""
+    }
+  ]
+}

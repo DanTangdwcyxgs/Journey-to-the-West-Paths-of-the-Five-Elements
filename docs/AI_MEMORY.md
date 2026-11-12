@@ -677,3 +677,39 @@ Wukong、Tang、Longma、Bajie、Wujing 五条 Origin Route 均已完成首轮 S
 - PR #28 merged to main as `ec6ef177b6a2a604c1f86b7e447f2212af82f069`. Exact docs-sync head `384771aadca78ffb5324d47721af511c6e671223` passed Runtime [38497759935](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38497759935), including `PASS res://combat/test_region_exploration.gd` and `RUNTIME_SUITE_PASS tests=52`. Merged main Runtime [38497860810](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38497860810) passed 52/52; Web Demo [38497860796](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/38497860796) passed build/export/Pages deployment. Live demo: https://dantangdwcyxgs.github.io/Journey-to-the-West-Paths-of-the-Five-Elements/.
 - Five Elements Mountain is now the second generic region definition (three clue-only POIs, timeline 100 and Wukong milestone). Tests cover map traversal into and out of the region, gates, save/reload, and unchanged Shared chapter/timeline/completed history/roster.
 - Next: evaluate whether a third mapped location has enough narrative value for exploration; otherwise move to the outstanding visual screenshot review and six final transparent character PNG/WebP assets.
+
+
+### Round 77 — 2026-11-12: 81 Trials Tracker and Coverage Audit
+- Audited the current README, game vision, five-start route Bible, Origin sequence catalog, handoff and recent exploration logs.
+- Counted 49 Origin chapter definitions in the Bible: Wukong 15, Tang 9, Bajie 9, Wujing 8, Longma 8.
+- Parsed `data/narrative/event_sequences_origin.json`: 31 registered Origin sequences (Tang 8, Bajie 9, Wujing 8, Longma 6). The Bible-to-catalog gaps are TANG-09 and LONGMA-07/08.
+- Added `docs/narrative/81_TRIALS_MASTER_TRACKER.md` with 81 stable IDs, status/evidence gates, known crosswalk and audit findings. All canonical trial names remain UNMAPPED until the source edition and chapter references are verified; no invented 81/81 completion figure.
+- Explicitly separated Origin chapter definitions, authored sequence data, runtime readiness, content completion and production acceptance. The current counts are not a count of completed pilgrimage trials.
+- Documentation-only. JSON parsing/counting succeeded; no Godot Runtime or Web Demo result is claimed for this head.
+- Cross-audited both catalogs: 31 Origin + 24 Shared = 55 sequences; zero duplicate sequence IDs and zero duplicate chapter IDs. Prefix counts: WUK 15, TANG 8, BAJIE 9, WUJING 8, LONGMA 6, SHARED 9.
+- Next: verify a canonical 81-trial source list and inspect catalog namespace/orphan references; then close TANG-09 and LONGMA-07/08 only after checking alternate catalogs for duplicates.
+
+
+### Round 78 — 2026-11-12: Source-backed 81 Trials Catalog and Mapping Correction
+- Established Chapter 99 as the primary source for the first 80 numbered difficulties. Chapter 99 says one additional ordeal remains; the subsequent Tongtian River / White Turtle incident is separately recorded as the derived 81st entry, not misquoted as part of the printed 80-item list.
+- Added `data/narrative/reference/canonical_81_trials.json`: 81 stable records, Chapter 99 line evidence, aliases / Unicode notes, novel chapter locators, pinned source provenance and current game crosswalk status.
+- Cross-referenced novel chapter numbers against `data/narrative/reference/xiyouji_chapter_index.json`, pinned to upstream commit `419a54fbaf368af463dd863b8271ec7bb176b3b3`. The 81-trial chapter mapping is explicitly marked as a secondary crosswalk; it is not attributed to the Chapter 99 ledger.
+- Added `combat/test_canonical_81_trials.gd` and registered it in `tests/runtime_suite.gd`. It asserts 81 contiguous/unique IDs, 80 ledger-listed entries + 1 closing episode, chapter references in the pinned 100-chapter index, and valid Shared chapter crosswalk targets.
+- Corrected the prior audit classification: TANG-09 is a Shared early-journey design concept, not a missing Origin-route step; LONGMA-07/08 are post-recruitment memory / awakening concepts, not Longma Origin route steps. Keep canonical route endpoints TANG-08 and LONGMA-06.
+- Found stale Shared Bible numbering. Added a runtime ID alignment table and corrected the Longma/Bajie/Wujing convergence rows. Remaining prose under older section headings is explicitly marked as legacy draft requiring migration.
+- Current mapping: four items with Runtime evidence (#9, #12, #15, #16); three partial mappings (#8, #10, #11); two Yellow Wind vertical slices not yet wired to a Shared chapter (#13, #14); 72 without a direct game chapter mapping. This is mapping evidence, not a completed-trial count.
+- Gameplay/battle/art content was not modified. New exact-head Runtime is pending; do not reuse the predecessor SHA's CI result.
+- Next: validate this commit's Runtime; finish the Shared Bible migration; design a separate post-recruitment Memory catalog for LONGMA-07/08; wire Yellow Wind into the canonical Shared timeline only after content/order review.
+
+
+### Round 79 — 2026-11-12: Shared Pilgrimage Bible Runtime Alignment
+- Rewrote `docs/shared_pilgrimage_chapter_bible.md` against actual `shared_chapters.json` and Shared EventSequence IDs. Canonical Runtime chapters are Shared-01..09 at timelines 100/105/110/120/130/140/150/160/170.
+- Reconfirmed starting route endpoints: Wukong/Tang → Shared-01, Longma → Shared-03, Bajie → Shared-05, Wujing → Shared-07. TANG-09 and LONGMA-07/08 remain Shared/Memory backlog, not missing start-route data.
+- Audited current contents and identified the mainline gap: original chapter order has Gaojiazhuang (18–19), Yellow Wind Ridge (20–21), then Flowing Sands (22); current Runtime chain skips from Shared-06 Four-Person Journey directly to Shared-07 Flowing Sands.
+- Existing Yellow Wind Ridge/Cave/King is a real vertical slice with regression for stages, cave encounter return, boss settlement and save rollback, but it is not a registered Shared chapter and does not advance the Shared pointer/global timeline.
+- Documented a safe insertion proposal `SHARED-06A-YELLOW-WIND` between Shared-06 and Shared-07, to be implemented atomically with the mainline boss commit and save-failure rollback. Keep optional `BOUNTY_YELLOW_FANG` distinct from `YELLOW_WIND_KING`.
+- Added `combat/test_shared_bible_runtime_alignment.gd` to Runtime suite. It checks the Bible's current chapter ID/title/timeline/sequence/next table against runtime JSON and blocks obsolete headings.
+- First test head `907cce91cfcd0cd70eb5e94b49284d765d05154b` failed only on the expected terminal next-label text; corrected the assertion to match the documented open-ended explanation.
+- PASS: exact implementation/test SHA `ab57662f7ac99d40852018998acb218a3cbc8aa4`, Godot Runtime [43177744894](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/43177744894) confirms `PASS res://combat/test_shared_bible_runtime_alignment.gd` and `RUNTIME_SUITE_PASS tests=54`.
+- The Shared Bible and validation contract changed; no runtime chapter chain or game logic was modified.
+- Next: validate new Runtime test, then implement formal Yellow Wind Shared chapter insertion; separately design post-recruitment Memory catalog for LONGMA-07/08.

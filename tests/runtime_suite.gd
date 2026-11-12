@@ -9,6 +9,8 @@ const TEST_SCRIPTS := [
 	"res://combat/test_event_runner.gd",
 	"res://combat/test_narrative_event_session.gd",
 	"res://combat/test_event_sequence_validator.gd",
+	"res://combat/test_canonical_81_trials.gd",
+	"res://combat/test_shared_bible_runtime_alignment.gd",
 	"res://combat/test_shared_event_sequences.gd",
 	"res://combat/test_origin_event_sequences.gd",
 	"res://combat/test_wukong_origin_progression.gd",

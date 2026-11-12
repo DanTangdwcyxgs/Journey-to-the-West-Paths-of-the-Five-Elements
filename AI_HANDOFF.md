@@ -569,3 +569,37 @@ Runtime has now verified the post-Shared-02 detour and that Journey resumes at S
 - Optional exploration must not advance the fixed Shared chronology, mutate recruitment, or add completed chapters.
 - Treat stale/in-progress historical runs as neither green nor current validation. Only the exact tested SHA and completed run count.
 - Save failure must restore the full NarrativeState snapshot and leave the clue retryable.
+
+
+## 2026-11-12 Handoff — 81 Trials Tracker Audit
+- New tracker: `docs/narrative/81_TRIALS_MASTER_TRACKER.md`.
+- New audit log: `docs/development_log/2026-11-12-81-trials-tracker-audit.md`.
+- The five-start route Bible contains 49 Origin chapter definitions (15/9/9/8/8); `event_sequences_origin.json` contains 31 entries (Tang 8, Bajie 9, Wujing 8, Longma 6). Identified gaps: TANG-09 and LONGMA-07/08.
+- Do not report these as 81-trial completion. Origin is personal backstory, not automatically a pilgrimage trial.
+- Cross-audit: Origin catalog 31 + Shared catalog 24 = 55; zero duplicate sequence IDs and zero duplicate chapter IDs. Prefixes: WUK 15, TANG 8, BAJIE 9, WUJING 8, LONGMA 6, SHARED 9.
+- All 81 canonical slots remain UNMAPPED pending a verified source edition and chapter citations. Do not fill names from memory. No duplicate IDs were found, but Bible-to-data gaps remain.
+- This batch is docs-only; no Runtime/Web CI pass is claimed.
+- Next: source-backed 81-trial mapping; cross-check shared catalog, validator and route sequence manager; then repair the three catalog gaps with regression coverage.
+
+
+## Current Handoff — 2026-11-12: 81 Trials Source Ledger and Mapping Correction
+- Canonical source data: `data/narrative/reference/canonical_81_trials.json`; full production tracker: `docs/narrative/81_TRIALS_MASTER_TRACKER.md`; latest log: `docs/development_log/2026-11-12-81-trials-source-crosswalk.md`.
+- Primary basis is the Chapter 99 ledger (80 numbered entries) plus the subsequent Tongtian River / White Turtle ordeal that the text uses to complete the count. Trial 81 is marked as derived from the closing episode, not as a literal numbered line in the initial ledger.
+- The novel chapter locators are a secondary crosswalk, checked against the repository's pinned 100-chapter title index (upstream commit `419a54fbaf368af463dd863b8271ec7bb176b3b3`).
+- Regression: `combat/test_canonical_81_trials.gd` is registered in `tests/runtime_suite.gd`. Exact implementation/test SHA `7b56408a9abf6b99e6373993343412c689287b6b` passed Godot Runtime [43175664230](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/43175664230) with `PASS res://combat/test_canonical_81_trials.gd` and `RUNTIME_SUITE_PASS tests=53`. Re-run validation after future code/test changes.
+- Important route correction: Tang start-route endpoint remains `TANG-08`; Longma start-route endpoint remains `LONGMA-06`. TANG-09 is shared-journey design; LONGMA-07/08 are post-recruitment memory/awakening concepts. Do not append them to Origin start routes or the handoff will move.
+- Shared chapter IDs in runtime data are SHARED-01 Five Elements, SHARED-02 Early Pilgrimage, SHARED-03 Eagle Sorrow, SHARED-04 Black Wind/Early Demon Tales, SHARED-05 Gaojiazhuang, SHARED-06 Four-Person Journey, SHARED-07 Flowing Sands, SHARED-08 Party Full, SHARED-09 Full Pilgrimage. The Shared Bible now contains an alignment table; its remaining legacy content still needs paragraph-level migration.
+- Mapping snapshot: 4 items with Runtime evidence (#9, #12, #15, #16), 3 partial (#8, #10, #11), 2 Yellow Wind vertical slices awaiting a canonical Shared chapter link (#13, #14), 72 without direct game chapter mapping. No 81-trial completion count is claimed.
+- Next work: exact-SHA Runtime validation; finish Shared Bible migration; build a separate post-recruitment Memory content catalog; connect the Yellow Wind vertical slice to a formally ordered Shared chapter; continue mapping in canonical sequence.
+
+
+## Current Handoff — 2026-11-12: Shared Pilgrimage Bible Runtime Alignment
+- Canonical Shared Runtime catalog is currently nine chapters: Shared-01 Five Elements T100 → Shared-02 Early Pilgrimage T105 → Shared-03 Eagle Sorrow T110 → Shared-04 Black Wind/Early Demon Tales T120 → Shared-05 Gaojiazhuang T130 → Shared-06 Four-Person Journey T140 → Shared-07 Flowing Sands T150 → Shared-08 Party Full T160 → Shared-09 Full Pilgrimage T170.
+- Authoritative chapter/sequence data: `data/narrative/shared_chapters.json`, Shared namespace entries in `data/narrative/event_sequences.json`.
+- Rewritten Bible: `docs/shared_pilgrimage_chapter_bible.md`. Its current runtime table must match the JSON. Test: `combat/test_shared_bible_runtime_alignment.gd`, registered in `tests/runtime_suite.gd`.
+- Critical content gap: canonical novel order puts Yellow Wind Ridge after Gaojiazhuang and before Flowing Sands. The Runtime Shared chain currently skips it. Existing Yellow Wind Ridge/Cave/King content is a tested vertical slice, but is not in Shared chapter data and does not advance Shared progress.
+- Proposed safe insertion: `SHARED-06A-YELLOW-WIND` between Shared-06 and Shared-07, reusing the existing screens. Treat as proposal only until runtime data, event sequence, atomic boss settlement and save-failure rollback are implemented together.
+- Yellow Fang optional bounty (`BOUNTY_YELLOW_FANG`) must remain distinct from mainline Yellow Wind King (`YELLOW_WIND_KING`).
+- Preserve route endpoints and fixed chronology: TANG-08 and LONGMA-06 stay as Origin endpoints; LONGMA-07/08 require a separate post-recruitment Memory catalog.
+- Exact implementation/test SHA `ab57662f7ac99d40852018998acb218a3cbc8aa4` passed Godot Runtime [43177744894](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/43177744894) with `PASS res://combat/test_shared_bible_runtime_alignment.gd` and `RUNTIME_SUITE_PASS tests=54`. The prior head failed only on the terminal next-label assertion; corrected on this head.
+- Next: implement the Yellow Wind Shared chapter insertion and save-atomic progression, followed by the post-recruitment Memory catalog.
