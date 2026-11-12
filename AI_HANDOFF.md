@@ -677,7 +677,7 @@ Runtime has now verified the post-Shared-02 detour and that Journey resumes at S
 - Staff placement: vertical beside image-right of the body in canonical view, parallel to torso, separated by transparent space, held in anatomical right hand at waist/lower-chest height; never across/behind shoulders or diagonally slung.
 - Tail: long and unmistakable, grows from lower back, curves into open negative space, and remains visibly separate from legs/clothing/staff in all four views. Reduce armor ornament instead of compromising it.
 - Pixel-art: discrete clusters, consistent stepped contours, limited palette; no soft painterly or airbrush look. Prioritize clear face, tail, staff, hands, and full-body silhouette.
-- Prompt preparation only; no image-generation call was made on 2026-11-12 and today's quota remains consumed. Reserve exactly one call for 2026-11-13 America/Los_Angeles local date after verifying no earlier call that day.
+- This prompt-preflight step made no additional image-generation call. The Wukong generation already recorded above used the 2026-11-12 America/Los_Angeles daily budget and was rejected; do not retry on that date. The next scheduled Wukong attempt is 2026-11-13, subject to a fresh quota preflight.
 - PR #30 remains Draft/open; PR #29 remains open/unmerged. Verify exact-head CI for this docs-only commit.
 
 ## Current Handoff — 2026-11-12: Full-Project Art Prompt Library
@@ -689,3 +689,11 @@ Runtime has now verified the post-Shared-02 detour and that Journey resumes at S
 - Daily generation: one selected asset, one call maximum per America/Los_Angeles local date. After generation, review and record the outcome. Only PRODUCTION ACCEPTED marks the prompt/asset complete; rejected outputs are never archived/cropped/cataloged as approved art and cannot be retried that day.
 - Next slot remains Wukong on 2026-11-13, subject to local-date and quota preflight. This prompt-library preparation did not generate an image.
 - PR #30 remains Draft/open; PR #29 remains open/unmerged. Do not merge either.
+
+
+## Current Handoff — 2026-11-12: Art Generation Quota Record Clarification
+
+- The canonical schedule and AI memory agree: one Wukong four-view generation call was made on 2026-11-12 (America/Los_Angeles), rejected for painterly rendering, missing visible tail, and incorrect diagonal staff placement; that date's quota is consumed.
+- The later prompt-preflight and prompt-library documentation commits made no additional image-generation call. They must not be read as evidence that no earlier call occurred.
+- Wukong's next scheduled attempt remains 2026-11-13 America/Los_Angeles. Re-check the local date and quota before making at most one call; do not retry the rejected 2026-11-12 output.
+- No production image, archive sheet, runtime crop, or visual acceptance resulted from the rejected call.

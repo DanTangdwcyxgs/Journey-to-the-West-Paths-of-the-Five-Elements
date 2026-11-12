@@ -837,3 +837,10 @@ Wukong、Tang、Longma、Bajie、Wujing 五条 Origin Route 均已完成首轮 S
 - Daily execution remains one image-generation call per America/Los_Angeles date. The daily schedule is the sole cursor. Only PRODUCTION ACCEPTED closes an asset; rejection is recorded, prompt revised, and item rescheduled without same-day retry.
 - This is a baseline inventory, not a claim that future NPCs, events, rewards, runtime resources or UI/VFX slots are exhaustively enumerated. Every new content/runtime ID must receive a prompt before it enters the queue.
 - Documentation-only. No image generation, game code, gameplay data, runtime asset, local test, Runtime CI, Web Demo or screenshot review was performed. Verify exact-head CI after commit.
+
+
+### Round 97 — 2026-11-12: Art Generation Quota Record Consistency
+- Cross-checked the daily schedule, Wukong rejection record (Round 93), prompt-preflight record (Round 95), and current handoff. Found one ambiguous sentence in AI_HANDOFF that said no generation call was made on 2026-11-12, despite the recorded rejected Wukong call on that date.
+- Clarified that the prompt-preflight step made no *additional* call; the earlier Wukong call had already consumed the 2026-11-12 America/Los_Angeles quota and was rejected. The next scheduled Wukong attempt remains 2026-11-13.
+- Documentation-only consistency correction. No image generation, source-sheet archive, runtime crop, code/data/resource change, local test, Godot Runtime, Art Tooling, Web Demo, or screenshot review was performed.
+- Next: on 2026-11-13 America/Los_Angeles, verify the date and unused quota before at most one Wukong generation call; apply every critical visual-review gate and do not retry that date.
