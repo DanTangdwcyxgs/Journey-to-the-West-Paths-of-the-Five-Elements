@@ -10,6 +10,8 @@
 
 ## 最新记录
 
+- [2026-11-12 — Full-Project Art Prompt Library Baseline](2026-11-12-full-project-art-prompt-library.md)
+
 - [2026-11-12 — Wukong Prompt Preflight and Error-Proofing](2026-11-12-wukong-prompt-preflight.md)
 
 - [2026-11-12 — Mandatory Visual Art Review Standard](2026-11-12-visual-art-review-standard.md)
