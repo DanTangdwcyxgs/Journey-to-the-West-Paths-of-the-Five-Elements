@@ -454,7 +454,7 @@ func _open_shared_expedition(destination: Dictionary) -> void:
 	phase_label.text = "主线试炼已开放 · 请在世界地图前往黑风山北道，再进入黄风岭。"
 	get_tree().change_scene_to_file("res://ui/world_map.tscn")
 
-func _apply_shared_choice(choice_id: String) -> void
+func _apply_shared_choice(choice_id: String) -> void:
 	var chapter_id := narrative.state.current_shared_chapter
 	var chapter := SharedJourneyManager.get_chapter(chapter_id)
 	if chapter.is_empty():
