@@ -366,7 +366,7 @@ func _return_from_battle() -> void:
 		return
 	if not encounter_resolved: BountyEncounterState.clear()
 	if encounter_type == "origin" or (encounter_type == "shared" and source_stage_id.is_empty()): get_tree().change_scene_to_file("res://ui/journey.tscn")
-	elif encounter_type == "shared" and source_stage_id == "YELLOW_WIND_THRONE": get_tree().change_scene_to_file("res://ui/yellow_wind_cave.tscn")
+	elif encounter_type == "shared" and (source_stage_id == "YELLOW_WIND_THRONE" or encounter_id == "YELLOW_WIND_KING"): get_tree().change_scene_to_file("res://ui/yellow_wind_cave.tscn")
 	elif encounter_type == "normal" and not source_stage_id.is_empty(): get_tree().change_scene_to_file("res://ui/yellow_wind_cave.tscn")
 	elif encounter_type == "bounty" and not source_stage_id.is_empty() and encounter_resolved: get_tree().change_scene_to_file("res://ui/yellow_wind_cave.tscn")
 	else: get_tree().change_scene_to_file("res://ui/world_map.tscn")
