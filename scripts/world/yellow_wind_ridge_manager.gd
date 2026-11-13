@@ -28,7 +28,11 @@ func is_available(manager: NarrativeManager) -> bool:
 		return false
 	if manager.state.current_global_timeline < int(definition.get("timeline", 0)):
 		return false
-	if "BAI_LONGMA_RECRUITED" not in manager.state.completed_milestones or "ZHU_BAJIE_RECRUITED" not in manager.state.completed_milestones:
+	# Recruitment is authoritative in NarrativeState.recruited_characters.
+	# The Longma/Bajie world-effect labels are not guaranteed to be copied into
+	# completed_milestones for every starting-character route.
+	var recruited: Array[String] = manager.state.recruited_characters
+	if "LONGMA" not in recruited or "BAJIE" not in recruited:
 		return false
 	if _is_boss_defeated(manager):
 		return true

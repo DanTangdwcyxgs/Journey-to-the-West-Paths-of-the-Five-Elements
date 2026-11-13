@@ -64,7 +64,8 @@ func _run_smoke() -> void:
 		"SHARED-04-EARLY-DEMON-TALES", "SHARED-05-GAOJIAZHUANG", "SHARED-06-FOUR-PERSON-JOURNEY",
 	]
 	narrative.state.record_milestone("WUKONG_RECRUITED", 100)
-	narrative.state.record_milestone("BAI_LONGMA_RECRUITED", 110)
+	_record("LONGMA" in narrative.state.recruited_characters and "BAJIE" in narrative.state.recruited_characters, "fixture roster should contain both recruits")
+	_record("BAI_LONGMA_RECRUITED" not in narrative.state.completed_milestones and "ZHU_BAJIE_RECRUITED" not in narrative.state.completed_milestones, "fixture must not depend on optional recruitment labels")
 	narrative.state.record_milestone("YELLOW_RIDGE_ENTRY", 140)
 	narrative.state.record_milestone("YELLOW_RIDGE_INTEL", 140)
 	narrative.state.record_milestone("YELLOW_RIDGE_STORM", 140)
@@ -173,10 +174,22 @@ func _run_smoke() -> void:
 		_record(reloaded.state.current_global_timeline == 145, "reload should preserve the committed T145 timeline")
 
 	print("YELLOW_WIND_RETRY_STAGE settlement_committed")
+	var return_context := {
+		"encounter_type": battle.encounter_type,
+		"encounter_id": battle.encounter_id,
+		"source_stage_id": battle.source_stage_id,
+		"resolved": battle.encounter_resolved,
+		"button": battle.return_button.text if battle.return_button != null else "<missing>",
+	}
 	battle.return_button.pressed.emit()
 	var cave := await _wait_for_cave()
 	if cave == null:
-		print("YELLOW_WIND_RETURN_DEBUG current_scene=%s encounter_type=%s encounter_id=%s source_stage_id=%s result=%s button=%s" % [str(current_scene), battle.encounter_type, battle.encounter_id, battle.source_stage_id, str(battle.encounter_resolved), battle.return_button.text if battle.return_button != null else "<missing>"])
+		var active_scene_debug := "<null>"
+		if is_instance_valid(current_scene):
+			active_scene_debug = "%s:%s" % [current_scene.get_class(), current_scene.name]
+		elif current_scene != null:
+			active_scene_debug = "<freed-reference>"
+		print("YELLOW_WIND_RETURN_DEBUG context=%s current_scene=%s" % [str(return_context), active_scene_debug])
 	_record(cave != null, "continue after boss victory should reload the production cave scene")
 	if cave != null:
 		print("YELLOW_WIND_RETRY_STAGE cave_reloaded")

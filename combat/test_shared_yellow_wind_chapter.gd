@@ -25,8 +25,9 @@ static func run_all() -> Dictionary:
 	assert(manager.encounter_character("LONGMA", []))
 	assert(manager.encounter_character("BAJIE", []))
 	manager.state.record_milestone("WUKONG_RECRUITED", 100)
-	manager.state.record_milestone("BAI_LONGMA_RECRUITED", 110)
-	manager.state.record_milestone("ZHU_BAJIE_RECRUITED", 130)
+	assert("LONGMA" in manager.state.recruited_characters and "BAJIE" in manager.state.recruited_characters)
+	assert("BAI_LONGMA_RECRUITED" not in manager.state.completed_milestones, "Ridge must not depend on a Longma world-effect label")
+	assert("ZHU_BAJIE_RECRUITED" not in manager.state.completed_milestones, "Ridge must not depend on a Bajie world-effect label")
 	manager.state.current_global_timeline = 130
 	manager.state.completed_shared_chapters = ["SHARED-01-FIVE-ELEMENTS","SHARED-02-EARLY-PILGRIMAGE","SHARED-03-EAGLE-SORROW","SHARED-04-EARLY-DEMON-TALES","SHARED-05-GAOJIAZHUANG"]
 	manager.state.set_current_shared_chapter("SHARED-06-FOUR-PERSON-JOURNEY")
@@ -34,6 +35,7 @@ static func run_all() -> Dictionary:
 	assert(manager.state.current_shared_chapter == "SHARED-06A-YELLOW-WIND")
 	assert(manager.state.current_global_timeline == 140)
 	assert(SharedJourneyManager.can_enter("SHARED-06A-YELLOW-WIND", manager.state))
+	assert(not SharedJourneyManager.can_enter("SHARED-07-FLOWING-SANDS", manager.state), "Flowing Sands must remain locked until Yellow Wind is completed")
 	var ridge := YellowWindRidgeManager.new()
 	manager.state.add_world_node_visit("GAOJIAZHUANG")
 	assert(not ridge.is_available(manager))
@@ -51,8 +53,7 @@ static func run_all() -> Dictionary:
 	legacy.encounter_character("LONGMA", [])
 	legacy.encounter_character("BAJIE", [])
 	legacy.state.record_milestone("WUKONG_RECRUITED", 100)
-	legacy.state.record_milestone("BAI_LONGMA_RECRUITED", 110)
-	legacy.state.record_milestone("ZHU_BAJIE_RECRUITED", 130)
+	assert("LONGMA" in legacy.state.recruited_characters and "BAJIE" in legacy.state.recruited_characters)
 	legacy.state.current_global_timeline = 140
 	legacy.state.completed_shared_chapters = ["SHARED-01-FIVE-ELEMENTS","SHARED-02-EARLY-PILGRIMAGE","SHARED-03-EAGLE-SORROW","SHARED-04-EARLY-DEMON-TALES","SHARED-05-GAOJIAZHUANG","SHARED-06-FOUR-PERSON-JOURNEY"]
 	legacy.state.set_current_shared_chapter("SHARED-06A-YELLOW-WIND")

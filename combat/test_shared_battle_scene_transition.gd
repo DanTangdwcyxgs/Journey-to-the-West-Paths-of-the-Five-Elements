@@ -223,12 +223,27 @@ func _prepare_narrative(target_chapter: String) -> NarrativeManager:
 			_record(false, "Shared-05 preparation battle should resolve for Flowing Sands")
 			return null
 		if not SharedJourneyManager.complete("SHARED-06-FOUR-PERSON-JOURNEY", narrative):
-			_record(false, "Shared-06 fixture should complete before Flowing Sands")
+			_record(false, "Shared-06 fixture should complete before Yellow Wind")
+			return null
+		if not _complete_yellow_wind_fixture(narrative):
+			_record(false, "Yellow Wind mainline fixture should complete before Flowing Sands")
 			return null
 
 	narrative.state.mark_route_complete("WUKONG")
 	narrative.state.set_current_shared_chapter(target_chapter)
 	return narrative
+
+func _complete_yellow_wind_fixture(narrative: NarrativeManager) -> bool:
+	if narrative == null or narrative.state.current_shared_chapter != "SHARED-06A-YELLOW-WIND":
+		return false
+	narrative.state.record_milestone("YELLOW_RIDGE_ENTRY", 140)
+	narrative.state.record_milestone("YELLOW_RIDGE_INTEL", 140)
+	narrative.state.record_milestone("YELLOW_RIDGE_STORM", 140)
+	narrative.state.record_milestone("YELLOW_WIND_GATE_OPEN", 140)
+	narrative.state.add_world_node_visit("BLACK_WIND_NORTH_PATH")
+	narrative.state.journey_log["defeated_targets"].append("YELLOW_WIND_KING")
+	narrative.state.record_milestone("SHARED_BATTLE_YELLOW_WIND_KING", 140)
+	return SharedJourneyManager.complete("SHARED-06A-YELLOW-WIND", narrative, false)
 
 func _resolve_setup_battle(narrative: NarrativeManager, chapter_id: String, encounter_id: String, event_id: String, choice_id: String) -> bool:
 	var events := SharedEventManager.new()
