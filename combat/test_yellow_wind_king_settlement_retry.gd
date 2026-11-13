@@ -18,9 +18,24 @@ class ToggleSaveNarrativeManager:
 		return super.save(path)
 
 var failures: Array[String] = []
+var _watchdog_save_path := NarrativeSave.SAVE_PATH
+var _watchdog_encounter_path := BountyEncounterState.PATH
+var _watchdog_resume_path := BountyEncounterState.RESUME_PATH
+var _watchdog_save_backup: Dictionary = {}
+var _watchdog_encounter_backup: Dictionary = {}
+var _watchdog_resume_backup: Dictionary = {}
 
 func _initialize() -> void:
+	var watchdog := create_timer(45.0)
+	watchdog.timeout.connect(_on_watchdog_timeout)
 	await _run_smoke()
+
+func _on_watchdog_timeout() -> void:
+	push_error("YELLOW_WIND_KING_SETTLEMENT_RETRY watchdog timeout")
+	_restore_file(_watchdog_save_path, _watchdog_save_backup)
+	_restore_file(_watchdog_encounter_path, _watchdog_encounter_backup)
+	_restore_file(_watchdog_resume_path, _watchdog_resume_backup)
+	quit(2)
 
 func _run_smoke() -> void:
 	var save_path: String = NarrativeSave.SAVE_PATH
@@ -29,6 +44,9 @@ func _run_smoke() -> void:
 	var save_backup := _capture_file(save_path)
 	var encounter_backup := _capture_file(encounter_path)
 	var resume_backup := _capture_file(resume_path)
+	_watchdog_save_backup = save_backup
+	_watchdog_encounter_backup = encounter_backup
+	_watchdog_resume_backup = resume_backup
 	_remove_file(save_path)
 	_remove_file(encounter_path)
 	_remove_file(resume_path)
@@ -61,6 +79,7 @@ func _run_smoke() -> void:
 		"items": {"POTION": 3},
 	})
 
+	print("YELLOW_WIND_RETRY_STAGE fixture_ready")
 	_record(BountyEncounterState.start_encounter("shared", "YELLOW_WIND_KING", "YELLOW_WIND_THRONE", "SHARED-06A-YELLOW-WIND", "SHARED_JOURNEY"), "production mainline boss handoff should be written")
 	var packed := load("res://ui/battle_ui.tscn") as PackedScene
 	_record(packed != null, "production BattleUI scene should load")
@@ -99,6 +118,7 @@ func _run_smoke() -> void:
 	var shared_history_before: Array[String] = narrative.state.completed_shared_chapters.duplicate()
 	var roster_before: Array[String] = narrative.state.recruited_characters.duplicate()
 
+	print("YELLOW_WIND_RETRY_STAGE battle_ready")
 	# Exercise the actual production victory signal and force its first persistence boundary to fail.
 	battle.engine.combat_finished.emit("allies")
 	_record(narrative.save_attempts == 1, "mainline victory should attempt exactly one atomic save")
@@ -118,6 +138,7 @@ func _run_smoke() -> void:
 	_record(battle.engine.turn_number == turn_before, "retry must not replay or advance the completed battle")
 	_record(battle.enemies[0].hp == enemy_hp_before, "retry must not alter the completed battle state")
 
+	print("YELLOW_WIND_RETRY_STAGE rollback_verified")
 	# Press the real retry button; settlement commits once, then the save can be loaded by a fresh manager.
 	narrative.save_succeeds = true
 	battle.return_button.pressed.emit()
@@ -151,12 +172,14 @@ func _run_smoke() -> void:
 		_record(reloaded.state.current_shared_chapter == "SHARED-07-FLOWING-SANDS", "reload should preserve the next Shared chapter after Yellow Wind")
 		_record(reloaded.state.current_global_timeline == 145, "reload should preserve the committed T145 timeline")
 
+	print("YELLOW_WIND_RETRY_STAGE settlement_committed")
 	battle.return_button.pressed.emit()
 	var cave := await _wait_for_cave()
 	if cave == null:
 		print("YELLOW_WIND_RETURN_DEBUG current_scene=%s encounter_type=%s encounter_id=%s source_stage_id=%s result=%s button=%s" % [str(current_scene), battle.encounter_type, battle.encounter_id, battle.source_stage_id, str(battle.encounter_resolved), battle.return_button.text if battle.return_button != null else "<missing>"])
 	_record(cave != null, "continue after boss victory should reload the production cave scene")
 	if cave != null:
+		print("YELLOW_WIND_RETRY_STAGE cave_reloaded")
 		_record(cave.current_room_index == 3, "reloaded cave cursor should return to the completed Yellow Wind throne")
 		_record(cave._is_boss_defeated(), "reloaded cave should recognize the persisted mainline boss defeat")
 		_record(cave._has_gate_access(), "reloaded cave should retain valid gate access after the boss fight")
@@ -167,6 +190,7 @@ func _run_smoke() -> void:
 			var ridge_screen := await _wait_for_ridge()
 			_record(ridge_screen != null, "the production exit should reload Yellow Wind Ridge")
 			if ridge_screen != null:
+				print("YELLOW_WIND_RETRY_STAGE ridge_reloaded")
 				_record(ridge_screen.ridge.is_available(ridge_screen.narrative), "reloaded Ridge should remain accessible at Black Wind North Path")
 				_record(str(ridge_screen.ridge.get_current_stage(ridge_screen.narrative).get("id", "")) == "", "reloaded Ridge should consider all four stages complete")
 				_record(ridge_screen.status_label.text.contains("4/4"), "reloaded Ridge UI should show all stages complete")
