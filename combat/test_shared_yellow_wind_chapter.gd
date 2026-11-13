@@ -10,6 +10,7 @@ static func run_all() -> Dictionary:
 	var sands_index := ids.find("SHARED-07-FLOWING-SANDS")
 	assert(four_person_index >= 0 and yellow_index == four_person_index + 1, "Yellow Wind must immediately follow the four-person road")
 	assert(sands_index == yellow_index + 1, "Flowing Sands must immediately follow the Yellow Wind trial")
+	assert(SharedJourneyManager.get_definition("SHARED-07-FLOWING-SANDS").get_prerequisites() == ["SHARED-06A-YELLOW-WIND"], "Flowing Sands must not be enterable before Yellow Wind is complete")
 	var definition := SharedJourneyManager.get_definition("SHARED-06A-YELLOW-WIND")
 	assert(definition.get_timeline() == 145, "Yellow Wind completion must land at T145")
 	assert(definition.get_encounter_id() == "YELLOW_WIND_KING", "the chapter must use the mainline King encounter")
