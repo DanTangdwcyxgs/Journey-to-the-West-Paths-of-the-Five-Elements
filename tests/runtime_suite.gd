@@ -48,6 +48,7 @@ const TEST_SCRIPTS := [
 	"res://combat/test_shared02_optional_rumor_access.gd",
 	"res://combat/test_yellow_wind_ridge_cave_progression.gd",
 	"res://combat/test_yellow_wind_cave_battle_roundtrip.gd",
+	"res://combat/test_shared_yellow_wind_chapter.gd",
 	"res://combat/test_yellow_wind_king_settlement_retry.gd",
 	"res://combat/test_bounty_reward_service_atomicity.gd",
 	"res://combat/test_battle_ui_bounty_settlement_retry.gd",

@@ -394,3 +394,31 @@ WUKONG_MEMORY_XX 解锁
 6. **共享主线不因起始角色不同而重排。**
 7. **回忆不改变当前世界时间。**
 8. **从 PARTY_FULL 开始，游戏的主要叙事重心正式转向完整西游旅程。**
+
+## Runtime Alignment — 2026-11-13
+
+本表对应当前 Godot Runtime 的 `data/narrative/shared_chapters.json`。早期章节草案保留为设计背景；旧草案与本表冲突时，以运行时数据和本表为准。
+
+| Runtime ID | 时间线 | 章节 | 关键节点 |
+|---|---:|---|---|
+| SHARED-01-FIVE-ELEMENTS | T100 | 五行山 | 悟空加入后的师徒起点 |
+| SHARED-02-EARLY-PILGRIMAGE | T105 | 师徒初行 | 共享开场与可选探索提示 |
+| SHARED-03-EAGLE-SORROW | T110 | 鹰愁涧 | 白龙马加入 |
+| SHARED-04-EARLY-DEMON-TALES | T120 | 黑风山与早期妖患 | 白龙加入后的早期旅程 |
+| SHARED-05-GAOJIAZHUANG | T130 | 高老庄 | 猪八戒加入 |
+| SHARED-06-FOUR-PERSON-JOURNEY | T140 | 四人西行 | 四人队伍协作过渡 |
+| SHARED-06A-YELLOW-WIND | T145 | 黄风岭 | 黄风岭 → 黄风洞 → 黄风妖王 |
+| SHARED-07-FLOWING-SANDS | T150 | 流沙河 | 黄风岭完成后才允许进入；沙悟净加入 |
+| SHARED-08-PARTY-FULL | T160 | 五人归队 | 五人完整队伍 interlude |
+| SHARED-09-FULL-PILGRIMAGE | T170 | 完整西行 | 进入完整取经旅程 |
+
+### 黄风岭主线接入约定
+
+- 黄风岭位于高老庄之后、流沙河之前，不属于 PARTY_FULL 之后的晚期内容。
+- `SHARED-06A-YELLOW-WIND` 以 `YELLOW_WIND_KING` 为共享主线遭遇，入口是 `BLACK_WIND_NORTH_PATH`。
+- 玩家从 Journey 进入本章后，复用现有 WorldMap、Yellow Wind Ridge、Yellow Wind Cave 和 BattleUI，不新造一套区域界面。
+- 黄风妖王战斗通过共享战斗结算事务，一次性提交奖励、战斗记录、章节完成、T145 时间线和下一章指针；保存失败必须完整回滚并允许重试。
+- `BOUNTY_YELLOW_FANG` 是独立可选悬赏，不能代替或完成主线 `YELLOW_WIND_KING`。
+- `SHARED-07-FLOWING-SANDS` 必须依赖 `SHARED-06A-YELLOW-WIND`，不能绕过黄风岭。
+- 黄风岭开放条件使用真实招募名单 `recruited_characters`（LONGMA + BAJIE），不依赖可选 world-effect 文本是否写入 `completed_milestones`。
+- 旧存档若已有 `YELLOW_WIND_KING` 胜利记录但没有新 Shared battle milestone，可以补记章节进度；不得重复发放战斗奖励。

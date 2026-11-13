@@ -403,6 +403,22 @@ func _advance_shared() -> void:
 		phase_label.text = "共享旅程已完成。"
 		_refresh()
 		return
+	var chapter_definition := SharedJourneyManager.get_definition(chapter_id)
+	var legacy_target_id := chapter_definition.get_legacy_boss_target_id()
+	var battle_milestone := "%s%s" % [SharedJourneyManager.SHARED_BATTLE_MILESTONE_PREFIX, chapter_definition.get_encounter_id()]
+	var defeated_targets: Array = narrative.state.get_journey_log().get("defeated_targets", [])
+	if not legacy_target_id.is_empty() and legacy_target_id in defeated_targets and battle_milestone not in narrative.state.completed_milestones:
+		if SharedJourneyManager.complete(chapter_id, narrative):
+			party.initialize_from_saved_state(narrative.state.recruited_characters, narrative.state.get_party_formation())
+			_refresh()
+			phase_label.text = "已识别旧存档中的黄风妖王胜利，已补记主线章节；未重复发放奖励。"
+		else:
+			phase_label.text = "旧存档中的黄风妖王记录无法安全迁移，请保留存档并检查日志。"
+		return
+	var destination := ChapterRuntime.destination(chapter_definition)
+	if str(destination.get("kind", "")).to_lower() == "expedition":
+		_open_shared_expedition(destination)
+		return
 	var event_id := str(chapter.get("event", ""))
 	var event := shared_events.get_event(event_id if event_id != "" else chapter_id)
 	var selected := shared_events.get_choice(narrative, event_id if event_id != "" else chapter_id)
@@ -428,6 +444,15 @@ func _advance_shared() -> void:
 	_refresh()
 	if not recruited_names.is_empty():
 		phase_label.text = "完成 %s · 新加入：%s" % [str(chapter.get("title", chapter_id)), "、".join(recruited_names)]
+
+func _open_shared_expedition(destination: Dictionary) -> void:
+	var expedition_id := str(destination.get("expedition_id", ""))
+	var location_id := str(destination.get("location_id", ""))
+	if expedition_id != "YELLOW_WIND_RIDGE" or location_id != "BLACK_WIND_NORTH_PATH" or WorldMapManager.new().get_node(location_id).is_empty():
+		phase_label.text = "主线试炼入口无效，未修改旅途状态。"
+		return
+	phase_label.text = "主线试炼已开放 · 请在世界地图前往黑风山北道，再进入黄风岭。"
+	get_tree().change_scene_to_file("res://ui/world_map.tscn")
 
 func _apply_shared_choice(choice_id: String) -> void:
 	var chapter_id := narrative.state.current_shared_chapter
@@ -782,7 +807,11 @@ func _render_route_or_shared() -> void:
 				_render_shared_choices(event)
 			else:
 				_set_dialogue("旁白", str(chapter.get("summary", "")), false)
-				primary_button.text = "进入共享战斗" if not str(chapter.get("encounter_id", "")).is_empty() else "继续"
+				var destination := ChapterRuntime.destination(SharedJourneyManager.get_definition(str(chapter.get("id", ""))))
+				if str(destination.get("kind", "")).to_lower() == "expedition":
+					primary_button.text = "前往主线试炼"
+				else:
+					primary_button.text = "进入共享战斗" if not str(chapter.get("encounter_id", "")).is_empty() else "继续"
 				primary_button.disabled = false
 	else:
 		var chapters := _current_route()

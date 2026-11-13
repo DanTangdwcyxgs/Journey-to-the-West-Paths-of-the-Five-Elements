@@ -148,7 +148,9 @@ func _refresh() -> void:
 	if not selected_node_id.is_empty(): _render_node(world.get_node(selected_node_id))
 	_refresh_rumors()
 	travel_button.disabled = selected_node_id.is_empty() or selected_node_id == current
-	ridge_button.disabled = current != "BLACK_WIND_NORTH_PATH" or not YellowWindRidgeManager.new().is_available(narrative)
+	var ridge_manager := YellowWindRidgeManager.new()
+	ridge_button.disabled = current != "BLACK_WIND_NORTH_PATH" or not ridge_manager.is_available(narrative)
+	ridge_button.text = "进入主线试炼：黄风岭" if narrative.state.current_shared_chapter == YellowWindRidgeManager.MAINLINE_CHAPTER_ID else "查看黄风岭进度"
 	var region: Dictionary = region_exploration.get_region_for_location(current)
 	region_button.visible = not region.is_empty()
 	region_button.text = "进入区域：%s" % str(region.get("name", ""))

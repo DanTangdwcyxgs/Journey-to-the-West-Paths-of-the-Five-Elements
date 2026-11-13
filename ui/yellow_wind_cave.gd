@@ -233,7 +233,10 @@ func _enter_boss() -> void:
 		return
 	if _is_boss_defeated():
 		return
-	if BountyEncounterState.start("YELLOW_WIND_KING", "YELLOW_WIND_THRONE"):
+	if narrative.state.current_shared_chapter != YellowWindRidgeManager.MAINLINE_CHAPTER_ID:
+		status_label.text += " · 黄风妖王主线章节已不在当前进度中。"
+		return
+	if BountyEncounterState.start_encounter("shared", "YELLOW_WIND_KING", "YELLOW_WIND_THRONE", YellowWindRidgeManager.MAINLINE_CHAPTER_ID, "SHARED_JOURNEY"):
 		get_tree().change_scene_to_file("res://ui/battle_ui.tscn")
 
 func _on_room_selected(index: int) -> void:

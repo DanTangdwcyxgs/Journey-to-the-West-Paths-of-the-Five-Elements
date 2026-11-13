@@ -16,7 +16,7 @@ func _on_combat_finished(winner: String) -> void:
 		status_label.text = "战斗失败。可以返回重新准备。"
 		return
 
-	var narrative := NarrativeManager.new()
+	var narrative := _create_narrative_manager()
 	if not narrative.load():
 		status_label.text = "战斗胜利，但存档读取失败。"
 		return
@@ -41,7 +41,12 @@ func _on_combat_finished(winner: String) -> void:
 		encounter_manager
 	)
 	if resolved.is_empty():
-		status_label.text = "战斗胜利，但主线提交失败；未发放奖励。"
+		bounty_settlement_pending = true
+		battle_result_locked = false
+		status_label.text = "战斗胜利，但主线结算保存失败或状态已变化；奖励与章节进度已回滚。点击“重试结算”。"
+		if return_button != null:
+			return_button.text = "重试结算"
+			return_button.disabled = false
 		return
 
 	battle_inventory.restore(resolved.get("inventory", {}))
@@ -70,10 +75,14 @@ func _on_combat_finished(winner: String) -> void:
 			BountyEncounterState.clear()
 	else:
 		BountyEncounterState.clear()
+	bounty_settlement_pending = false
 	encounter_resolved = true
-	var next_step := "返回旅途，继续个人路线。" if encounter_type == "origin" else "返回旅途，继续共享主线。"
+	var next_step := _get_victory_next_step()
 	if event_resumed:
 		next_step = "返回旅途，继续战后剧情。"
 	var result_title := "个人章节完成" if encounter_type == "origin" else "共享章节完成"
 	var granted: Array = resolved.get("granted", [])
-	_show_victory_summary(result_title, str(definition.get("name", encounter_id)), granted, next_step, "继续旅途")
+	var continue_text := _get_victory_button_text()
+	if event_resumed:
+		continue_text = "继续旅途"
+	_show_victory_summary(result_title, str(definition.get("name", encounter_id)), granted, next_step, continue_text)

@@ -63,6 +63,8 @@ func _ready() -> void:
 	_apply_loadout_modifiers()
 	if encounter_type == "normal" or encounter_type == "origin" or encounter_type == "shared":
 		enemies = encounter_manager.build_enemies(encounter_id)
+		if encounter_id == "YELLOW_WIND_KING" and not enemies.is_empty():
+			boss_runtime.begin_encounter(enemies[0])
 	else:
 		var boss := boss_runtime.create_boss()
 		boss_runtime.begin_encounter(boss)
@@ -175,7 +177,7 @@ func _use_skill(skill: Dictionary, boosted: bool) -> void:
 	if not result.get("ok",false): status_label.text = "技能失败：%s" % result.get("reason","unknown"); return
 	if result.has("form_name"): _on_combat_log("白龙马变身：%s · 持续 %d 回合" % [str(result.get("form_name","")),int(result.get("form_duration",0))])
 	if result.get("mechanic_spent_extra",0) > 0: _on_combat_log("%s 消耗 %d 点%s强化效果。" % [_name(current_actor),int(result.get("mechanic_spent_extra",0)),MECHANIC_NAMES.get(current_actor.id,"专属资源")])
-	if encounter_type == "bounty": boss_runtime.after_action(_boss())
+	if encounter_type == "bounty" or encounter_id == "YELLOW_WIND_KING": boss_runtime.after_action(_boss())
 	_end_turn()
 
 func _use_item(item_id: String) -> void:
@@ -223,20 +225,20 @@ func _enemy_turn(enemy: Combatant) -> void:
 	var living := allies.filter(func(unit): return unit.is_alive())
 	if living.is_empty(): return
 	var attack: CombatAction
-	if encounter_type == "bounty":
+	if encounter_type == "bounty" or encounter_id == "YELLOW_WIND_KING":
 		boss_runtime.on_turn_start(enemy)
 		attack = boss_runtime.choose_action(enemy,allies)
 	else:
 		attack = encounter_manager.choose_ai_action(enemy,allies,engine.turn_number)
 	var target: Combatant
-	if encounter_type == "bounty":
+	if encounter_type == "bounty" or encounter_id == "YELLOW_WIND_KING":
 		var taunted := living.filter(func(unit): return unit.aggro_turns > 0)
 		target = taunted[0] if not taunted.is_empty() else living[0]
 	else:
 		target = encounter_manager.choose_ai_target(enemy,allies,attack)
 	if target == null: return
 	var result := engine.perform_action(enemy,target,attack)
-	if encounter_type == "bounty": boss_runtime.apply_action_effects(attack.id,enemy)
+	if encounter_type == "bounty" or encounter_id == "YELLOW_WIND_KING": boss_runtime.apply_action_effects(attack.id,enemy)
 	if result.get("ok",false): _on_combat_log("%s：%s → %s" % [_name(enemy),attack.display_name,_name(target)])
 
 func _on_combat_log(message:String) -> void:
@@ -333,6 +335,8 @@ func _show_victory_summary(result_title: String, target_name: String, rewards: A
 func _get_victory_next_step() -> String:
 	if encounter_type == "origin":
 		return "返回旅途，继续个人路线。"
+	if encounter_type == "shared" and source_stage_id == "YELLOW_WIND_THRONE":
+		return "返回黄风洞，查看妖王败退后的道路。"
 	if encounter_type == "shared":
 		return "返回旅途，继续共享主线。"
 	if encounter_type == "normal" and not source_stage_id.is_empty():
@@ -343,6 +347,8 @@ func _get_victory_next_step() -> String:
 
 func _get_victory_button_text() -> String:
 	if (encounter_type == "normal" or encounter_type == "bounty") and not source_stage_id.is_empty():
+		return "继续探索"
+	if encounter_type == "shared" and source_stage_id == "YELLOW_WIND_THRONE":
 		return "继续探索"
 	if encounter_type == "origin" or encounter_type == "shared":
 		return "继续旅途"
@@ -359,7 +365,8 @@ func _return_from_battle() -> void:
 		_on_combat_finished("allies")
 		return
 	if not encounter_resolved: BountyEncounterState.clear()
-	if encounter_type == "origin" or encounter_type == "shared": get_tree().change_scene_to_file("res://ui/journey.tscn")
+	if encounter_type == "origin" or (encounter_type == "shared" and source_stage_id.is_empty()): get_tree().change_scene_to_file("res://ui/journey.tscn")
+	elif encounter_type == "shared" and (source_stage_id == "YELLOW_WIND_THRONE" or encounter_id == "YELLOW_WIND_KING"): get_tree().change_scene_to_file("res://ui/yellow_wind_cave.tscn")
 	elif encounter_type == "normal" and not source_stage_id.is_empty(): get_tree().change_scene_to_file("res://ui/yellow_wind_cave.tscn")
 	elif encounter_type == "bounty" and not source_stage_id.is_empty() and encounter_resolved: get_tree().change_scene_to_file("res://ui/yellow_wind_cave.tscn")
 	else: get_tree().change_scene_to_file("res://ui/world_map.tscn")

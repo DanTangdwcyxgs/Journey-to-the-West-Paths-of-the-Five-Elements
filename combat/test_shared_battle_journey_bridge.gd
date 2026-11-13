@@ -38,7 +38,9 @@ func _initialize() -> void:
 
 	_assert(await _run_bridge(first, CASES[1]), "Gaojiazhuang bridge should complete")
 	_assert(first.state.current_shared_chapter == "SHARED-06-FOUR-PERSON-JOURNEY", "Gaojiazhuang bridge should advance shared chapter")
-	_assert(SharedJourneyManager.complete("SHARED-06-FOUR-PERSON-JOURNEY", first), "Four-person chapter should advance before Flowing Sands")
+	_assert(SharedJourneyManager.complete("SHARED-06-FOUR-PERSON-JOURNEY", first), "Four-person chapter should advance before Yellow Wind")
+	_assert(_complete_yellow_wind_fixture(first), "Yellow Wind mainline chapter should complete before Flowing Sands")
+	_assert(first.state.current_shared_chapter == "SHARED-07-FLOWING-SANDS", "Yellow Wind should hand off to Flowing Sands")
 	_assert(first.save(), "progress before Flowing Sands should be persisted")
 
 	_assert(await _run_bridge(first, CASES[2]), "Flowing Sands bridge should complete")
@@ -58,6 +60,13 @@ func _new_base_narrative() -> NarrativeManager:
 	_assert(SharedJourneyManager.complete("SHARED-02-EARLY-PILGRIMAGE", narrative), "Shared 02 should be completed for bridge setup")
 	_assert(narrative.state.current_shared_chapter == "SHARED-03-EAGLE-SORROW", "bridge setup should land at Shared 03")
 	return narrative
+
+func _complete_yellow_wind_fixture(narrative: NarrativeManager) -> bool:
+	if narrative == null or narrative.state.current_shared_chapter != "SHARED-06A-YELLOW-WIND":
+		return false
+	narrative.state.record_milestone("SHARED_BATTLE_YELLOW_WIND_KING", 140)
+	narrative.state.journey_log["defeated_targets"].append("YELLOW_WIND_KING")
+	return SharedJourneyManager.complete("SHARED-06A-YELLOW-WIND", narrative, false)
 
 func _run_bridge(narrative: NarrativeManager, spec: Dictionary) -> bool:
 	var chapter_id := str(spec["chapter_id"])

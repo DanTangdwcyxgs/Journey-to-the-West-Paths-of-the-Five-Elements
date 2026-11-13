@@ -569,3 +569,39 @@ Runtime has now verified the post-Shared-02 detour and that Journey resumes at S
 - Optional exploration must not advance the fixed Shared chronology, mutate recruitment, or add completed chapters.
 - Treat stale/in-progress historical runs as neither green nor current validation. Only the exact tested SHA and completed run count.
 - Save failure must restore the full NarrativeState snapshot and leave the clue retryable.
+
+## Current Handoff — 2026-11-13: Yellow Wind Mainline and Flowing Sands Gate
+
+### Feature branch
+- PR #34: [feat: integrate Yellow Wind Ridge into Shared Journey](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/pull/34)
+- Branch: `feature/shared-yellow-wind-mainline-2026-11-13`
+- Base main: `395233d8bcaf13aa9022c33903ab03a75c5a83ae`
+- The PR remains Draft/open and unmerged. Main was not modified.
+
+### Implemented
+- Added `SHARED-06A-YELLOW-WIND` at T145 between Shared-06 and Shared-07.
+- Journey routes the chapter through existing WorldMap / Black Wind North Path / Yellow Wind Ridge / Yellow Wind Cave screens.
+- Yellow Wind King is a Shared encounter and resolves under the atomic `BattleResolutionService` transaction.
+- `BOUNTY_YELLOW_FANG` remains independent; old `YELLOW_WIND_KING` journal entries can be reconciled without duplicate rewards.
+- Flowing Sands now has an explicit prerequisite on `SHARED-06A-YELLOW-WIND`.
+
+### Runtime failures and corrections
+- Run [43358438779](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/43358438779) failed on an omitted colon in the Journey expedition handler; fixed in commit `f1500072`.
+- Run [43358645955](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/43358645955) failed the Yellow Wind boss return-to-Cave assertion; later commits made the cave return recognize the Yellow Wind mainline encounter ID.
+- Run [43360259927](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/43360259927) on `27d32d17e3458bb035b79a0bdaf2551b5a960a0d` failed:
+  1. The Shared-07 scene-transition fixture skipped the new Yellow Wind chapter.
+  2. The retry test dereferenced its freed BattleUI after scene transition.
+- The correction uses roster truth for Ridge availability, completes Yellow Wind in both Shared-07 fixtures, and captures retry context before changing scenes. PASS: implementation/test SHA `c2772d71fa5acd7538f22e293461e1b506cbded9` on Runtime run [43362065374](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/43362065374), `RUNTIME_SUITE_PASS tests=53`. The docs-sync SHA `2416e61c22cba30262da0d63f3e31fc3b74ef3ce` also passed Runtime run [43362215034](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/43362215034), `RUNTIME_SUITE_PASS tests=53`.
+
+### Required next actions
+1. Run Godot Runtime on the latest exact branch SHA; do not reuse any historical result above.
+2. If the Cave retry test still cannot find the Cave scene, inspect its new safe diagnostic of the active scene; do not touch the freed BattleUI reference.
+3. Check other start routes after this gate correction, especially Longma/Bajie-origin starts, and preserve the canonical five-person roster.
+4. Update this handoff, `docs/AI_MEMORY.md`, and the development log with the exact tested SHA/run only after Runtime turns green.
+5. Keep PR #34 Draft/open. Do not merge or deploy without explicit owner approval.
+
+### Non-negotiable constraints
+- Yellow Wind stays between Gaojiazhuang/four-person journey and Flowing Sands.
+- Flowing Sands must not be enterable before Yellow Wind is complete.
+- Ridge recruitment gate checks the actual `recruited_characters` array, not optional milestone labels.
+- Save failures must restore the full narrative snapshot and preserve the retryable encounter.

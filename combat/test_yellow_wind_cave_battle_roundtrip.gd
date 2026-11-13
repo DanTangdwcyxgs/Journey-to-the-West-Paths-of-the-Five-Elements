@@ -24,16 +24,18 @@ func _run_smoke() -> void:
 	_record(fixture.encounter_character("WUKONG", []), "Wukong should be present in the fixture party")
 	var memories: Array[String] = ["LONGMA-01", "LONGMA-02"]
 	_record(fixture.encounter_character("LONGMA", memories), "Longma should be recruited before Yellow Wind exploration")
+	_record(fixture.encounter_character("BAJIE", ["BAJIE-01", "BAJIE-02"]), "Bajie should be recruited before the mainline Yellow Wind trial")
 	fixture.state.mark_route_complete("WUKONG")
 	fixture.state.record_milestone("WUKONG_RECRUITED", 100)
 	fixture.state.record_milestone("BAI_LONGMA_RECRUITED", 110)
-	fixture.state.record_milestone("YELLOW_RIDGE_ENTRY", 120)
-	fixture.state.record_milestone("YELLOW_RIDGE_INTEL", 120)
-	fixture.state.record_milestone("YELLOW_RIDGE_STORM", 120)
-	fixture.state.record_milestone("YELLOW_WIND_GATE_OPEN", 120)
-	fixture.state.current_global_timeline = 120
-	fixture.state.set_current_shared_chapter("SHARED-05-GAOJIAZHUANG")
-	for chapter_id in ["SHARED-01-FIVE-ELEMENTS", "SHARED-02-EARLY-PILGRIMAGE", "SHARED-03-EAGLE-SORROW", "SHARED-04-EARLY-DEMON-TALES"]:
+	fixture.state.record_milestone("ZHU_BAJIE_RECRUITED", 130)
+	fixture.state.record_milestone("YELLOW_RIDGE_ENTRY", 140)
+	fixture.state.record_milestone("YELLOW_RIDGE_INTEL", 140)
+	fixture.state.record_milestone("YELLOW_RIDGE_STORM", 140)
+	fixture.state.record_milestone("YELLOW_WIND_GATE_OPEN", 140)
+	fixture.state.current_global_timeline = 140
+	fixture.state.set_current_shared_chapter("SHARED-06A-YELLOW-WIND")
+	for chapter_id in ["SHARED-01-FIVE-ELEMENTS", "SHARED-02-EARLY-PILGRIMAGE", "SHARED-03-EAGLE-SORROW", "SHARED-04-EARLY-DEMON-TALES", "SHARED-05-GAOJIAZHUANG", "SHARED-06-FOUR-PERSON-JOURNEY"]:
 		if chapter_id not in fixture.state.completed_shared_chapters:
 			fixture.state.completed_shared_chapters.append(chapter_id)
 	fixture.state.set_inventory({"currencies": {"COIN": 0}, "items": {}})
@@ -103,14 +105,14 @@ func _run_smoke() -> void:
 						var boss_battle := await _wait_for_battle()
 						_record(boss_battle != null, "boss gate should transition into production BattleUI")
 						if boss_battle != null:
-							_record(boss_battle.encounter_type == "bounty", "Yellow Wind King should use the bounty resolution path")
+							_record(boss_battle.encounter_type == "shared", "Yellow Wind King should use the bounty resolution path")
 							_record(boss_battle.encounter_id == "YELLOW_WIND_KING", "boss handoff should keep the canonical bounty ID")
 							_record(boss_battle.source_stage_id == "YELLOW_WIND_THRONE", "boss handoff should retain the cave room return target")
 							boss_battle.call_deferred("_on_combat_finished", "allies")
 							await process_frame
 							await process_frame
 							_record(boss_battle.encounter_resolved, "production bounty victory callback should resolve Yellow Wind King")
-							_record(boss_battle.status_label != null and boss_battle.status_label.text.find("悬赏完成") >= 0, "boss victory should present bounty completion feedback")
+							_record(boss_battle.status_label != null and boss_battle.status_label.text.find("共享章节完成") >= 0, "boss victory should present bounty completion feedback")
 							_record(boss_battle.return_button != null and boss_battle.return_button.text == "继续探索", "boss victory should return to the cave exit rather than the WorldMap")
 
 							var after_boss := NarrativeManager.new()
@@ -121,9 +123,9 @@ func _run_smoke() -> void:
 								var ridge_after_boss := YellowWindRidgeManager.new()
 								_record(bool(ridge_after_boss.get_stage("YELLOW_WIND_GATE", after_boss).get("completed", false)), "mainline boss victory should complete the Yellow Wind Ridge gate under its own ID")
 								_record("BOUNTY_YELLOW_FANG" in after_boss.state.get_journey_log().get("defeated_targets", []), "the prior optional bounty journal entry should remain separate and intact")
-								_record(after_boss.state.current_shared_chapter == shared_chapter_before, "boss victory must not advance the Shared chapter")
-								_record(after_boss.state.current_global_timeline == timeline_before, "boss victory must not advance global chronology")
-								_record(after_boss.state.completed_shared_chapters == completed_shared_before, "boss victory must not alter the completed Shared chapter history")
+								_record(after_boss.state.current_shared_chapter == "SHARED-07-FLOWING-SANDS", "mainline Yellow Wind victory should advance the Shared chapter to Flowing Sands")
+								_record(after_boss.state.current_global_timeline == 145, "mainline Yellow Wind victory should advance the global timeline to T145")
+								_record("SHARED-06A-YELLOW-WIND" in after_boss.state.completed_shared_chapters, "mainline Yellow Wind victory should complete the Shared chapter")
 								_record(after_boss.state.recruited_characters == roster_before, "boss victory must not alter the canonical roster")
 
 							boss_battle.return_button.emit_signal("pressed")
