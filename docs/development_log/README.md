@@ -10,6 +10,8 @@
 
 ## 最新记录
 
+- [2026-11-13 — Shared Yellow Wind Mainline Integration](2026-11-13-shared-yellow-wind-mainline-integration.md)
+
 - [2026-10-14 — Five Elements Mountain Region Exploration](2026-10-14-five-elements-mountain-region.md)
 
 - [2026-10-14 — Eagle Sorrow Region Exploration Vertical Slice](2026-10-14-eagle-sorrow-region-exploration.md)
