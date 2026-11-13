@@ -27,7 +27,7 @@ Integrate the existing Yellow Wind Ridge / Yellow Wind Cave / Yellow Wind King v
 - [43358438779](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/43358438779): failed on an omitted Journey handler colon; corrected.
 - [43358645955](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/43358645955): most new Yellow Wind tests passed, but the settlement retry did not return to the Cave.
 - [43360259927](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/43360259927): failed the Shared-07 scene-transition fixture because it skipped the newly inserted trial, and the retry test's debug statement accessed a freed BattleUI.
-- **Godot Runtime for the current follow-up commit is pending.** No Runtime pass or Web Demo/deployment is claimed.
+- PASS: implementation/test SHA `c2772d71fa5acd7538f22e293461e1b506cbded9`, [Godot Runtime run 43362065374](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/43362065374), `RUNTIME_SUITE_PASS tests=53`. The subsequent docs-sync SHA `2416e61c22cba30262da0d63f3e31fc3b74ef3ce` also passed [run 43362215034](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/43362215034), `RUNTIME_SUITE_PASS tests=53`. No Web Demo or deployment is claimed.
 - PR #34 remains Draft/open and unmerged.
 
 ## Next step

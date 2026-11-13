@@ -591,7 +591,7 @@ Runtime has now verified the post-Shared-02 detour and that Journey resumes at S
 - Run [43360259927](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/43360259927) on `27d32d17e3458bb035b79a0bdaf2551b5a960a0d` failed:
   1. The Shared-07 scene-transition fixture skipped the new Yellow Wind chapter.
   2. The retry test dereferenced its freed BattleUI after scene transition.
-- The current correction uses roster truth for Ridge availability, completes Yellow Wind in both Shared-07 fixtures, and captures the retry context before changing scenes. New exact-head Runtime is pending.
+- The correction uses roster truth for Ridge availability, completes Yellow Wind in both Shared-07 fixtures, and captures retry context before changing scenes. PASS: implementation/test SHA `c2772d71fa5acd7538f22e293461e1b506cbded9` on Runtime run [43362065374](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/43362065374), `RUNTIME_SUITE_PASS tests=53`. The docs-sync SHA `2416e61c22cba30262da0d63f3e31fc3b74ef3ce` also passed Runtime run [43362215034](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/43362215034), `RUNTIME_SUITE_PASS tests=53`.
 
 ### Required next actions
 1. Run Godot Runtime on the latest exact branch SHA; do not reuse any historical result above.
