@@ -153,6 +153,8 @@ func _run_smoke() -> void:
 
 	battle.return_button.pressed.emit()
 	var cave := await _wait_for_cave()
+	if cave == null:
+		print("YELLOW_WIND_RETURN_DEBUG current_scene=%s encounter_type=%s encounter_id=%s source_stage_id=%s result=%s button=%s" % [str(current_scene), battle.encounter_type, battle.encounter_id, battle.source_stage_id, str(battle.encounter_resolved), battle.return_button.text if battle.return_button != null else "<missing>"])
 	_record(cave != null, "continue after boss victory should reload the production cave scene")
 	if cave != null:
 		_record(cave.current_room_index == 3, "reloaded cave cursor should return to the completed Yellow Wind throne")
