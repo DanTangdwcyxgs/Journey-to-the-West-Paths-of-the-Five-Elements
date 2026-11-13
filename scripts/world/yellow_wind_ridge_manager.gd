@@ -6,6 +6,8 @@ const BLACK_WIND_LOCATION := "BLACK_WIND_NORTH_PATH"
 const GATE_STAGE_ID := "YELLOW_WIND_GATE"
 const GATE_MILESTONE := "YELLOW_WIND_GATE_OPEN"
 const BOSS_TARGET_ID := "YELLOW_WIND_KING"
+const MAINLINE_CHAPTER_ID := "SHARED-06A-YELLOW-WIND"
+const PREVIOUS_SHARED_CHAPTER_ID := "SHARED-06-FOUR-PERSON-JOURNEY"
 
 var definition: Dictionary = {}
 
@@ -26,7 +28,13 @@ func is_available(manager: NarrativeManager) -> bool:
 		return false
 	if manager.state.current_global_timeline < int(definition.get("timeline", 0)):
 		return false
-	return "BAI_LONGMA_RECRUITED" in manager.state.completed_milestones
+	if "BAI_LONGMA_RECRUITED" not in manager.state.completed_milestones or "ZHU_BAJIE_RECRUITED" not in manager.state.completed_milestones:
+		return false
+	if _is_boss_defeated(manager):
+		return true
+	return manager.state.current_shared_chapter == MAINLINE_CHAPTER_ID \
+		and PREVIOUS_SHARED_CHAPTER_ID in manager.state.completed_shared_chapters \
+		and SharedJourneyManager.can_enter(MAINLINE_CHAPTER_ID, manager.state)
 
 func get_stages(manager: NarrativeManager) -> Array:
 	var stages: Array = []

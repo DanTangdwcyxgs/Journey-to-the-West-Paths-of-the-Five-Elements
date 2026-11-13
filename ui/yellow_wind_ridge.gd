@@ -33,7 +33,7 @@ func _build_ui() -> void:
 	root.add_theme_constant_override("separation", 12)
 	margin.add_child(root)
 	var title := Label.new()
-	title.text = "黄风岭 · 风沙险路"
+	title.text = "黄风岭 · 西游主线试炼"
 	title.add_theme_font_size_override("font_size", 30)
 	root.add_child(title)
 	status_label = Label.new()
@@ -90,7 +90,7 @@ func _refresh() -> void:
 			completed += 1
 	if selected_stage_id.is_empty():
 		selected_stage_id = str(current_stage.get("id", ""))
-	status_label.text = "T%04d · 黄风岭进度 %d/4 · 已招募 %d/5" % [narrative.state.current_global_timeline, completed, narrative.state.recruited_characters.size()]
+	status_label.text = "T%04d · 主线试炼 · 黄风岭进度 %d/4 · 已招募 %d/5" % [narrative.state.current_global_timeline, completed, narrative.state.recruited_characters.size()]
 	stage_list.clear()
 	for stage in stages:
 		var id := str(stage.get("id", ""))

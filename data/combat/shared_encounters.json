@@ -28,6 +28,18 @@
       "world_effects": []
     },
     {
+      "id": "YELLOW_WIND_KING",
+      "name": "黄风妖王",
+      "description": "黄风洞深处，妖王借沙暴遮蔽战场。火与风的弱点，以及阶段变化后的反击窗口，是这场主线试炼的关键。",
+      "source": "SHARED_JOURNEY",
+      "recommended_level": 12,
+      "enemies": [
+        {"id":"yellow_wind","display_name":"黄风妖王","max_hp":720,"attack":34,"defense":22,"speed":24,"shield":6,"weaknesses":{"FIRE":true,"WIND":true},"combat_modifiers":{}}
+      ],
+      "rewards": ["COIN_MEDIUM","DEMON_FANG","FANG_TALISMAN"],
+      "world_effects": ["LOCAL_VILLAGE_SAFE_ROUTE"]
+    },
+    {
       "id": "SHARED_FLOWING_SANDS",
       "name": "流沙河·悟净现身",
       "description": "流沙翻涌，悟净从河底现身。水势与罪责一起逼近取经队伍。",

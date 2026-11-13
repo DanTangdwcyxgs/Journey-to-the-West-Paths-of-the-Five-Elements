@@ -48,10 +48,15 @@ func _run_smoke() -> void:
 	manager.encounter_character("TANG", [])
 	manager.encounter_character("WUKONG", [])
 	var memories: Array[String] = ["LONGMA-01", "LONGMA-02"]
-	_record(manager.encounter_character("LONGMA", memories), "Longma should be recruited for the post-Shared-04 exploration fixture")
+	_record(manager.encounter_character("LONGMA", memories), "Longma should be recruited before the Yellow Wind mainline trial")
+	_record(manager.encounter_character("BAJIE", ["BAJIE-01", "BAJIE-02"]), "Bajie should be recruited before the mainline Yellow Wind trial")
 	manager.state.record_milestone("WUKONG_RECRUITED", 100)
 	manager.state.record_milestone("BAI_LONGMA_RECRUITED", 110)
-	manager.state.current_global_timeline = 120
+	manager.state.record_milestone("ZHU_BAJIE_RECRUITED", 130)
+	manager.state.completed_shared_chapters = ["SHARED-01-FIVE-ELEMENTS", "SHARED-02-EARLY-PILGRIMAGE", "SHARED-03-EAGLE-SORROW", "SHARED-04-EARLY-DEMON-TALES", "SHARED-05-GAOJIAZHUANG", "SHARED-06-FOUR-PERSON-JOURNEY"]
+	manager.state.set_current_shared_chapter("SHARED-06A-YELLOW-WIND")
+	manager.state.current_global_timeline = 140
+	manager.state.add_world_node_visit("GAOJIAZHUANG")
 	manager.state.add_world_node_visit("BLACK_WIND_NORTH_PATH")
 	var ridge_manager := YellowWindRidgeManager.new()
 
@@ -139,7 +144,7 @@ func _run_smoke() -> void:
 	var denied_manager := NarrativeManager.new()
 	_record(denied_manager.start_new_game("WUKONG"), "unauthorized cave test should initialize")
 	denied_manager.state.add_world_node_visit("BLACK_WIND_NORTH_PATH")
-	denied_manager.state.current_global_timeline = 120
+	denied_manager.state.current_global_timeline = 140
 	denied_manager.state.record_milestone("BAI_LONGMA_RECRUITED", 110)
 	var denied_cave := YellowWindCaveScreen.new()
 	denied_cave.narrative = denied_manager

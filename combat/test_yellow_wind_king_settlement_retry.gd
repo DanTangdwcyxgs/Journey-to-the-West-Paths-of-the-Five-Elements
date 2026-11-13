@@ -37,21 +37,20 @@ func _run_smoke() -> void:
 	_record(narrative.start_new_game("WUKONG"), "Wukong should initialize the mainline settlement fixture")
 	_record(narrative.encounter_character("TANG", []), "Tang should be recruited in the fixture")
 	_record(narrative.encounter_character("WUKONG", []), "Wukong should be recruited in the fixture")
-	_record(narrative.encounter_character("LONGMA", ["LONGMA-01", "LONGMA-02"]), "Longma should be recruited before the optional arc")
-	narrative.state.current_global_timeline = 120
-	narrative.state.set_current_shared_chapter("SHARED-05-GAOJIAZHUANG")
+	_record(narrative.encounter_character("LONGMA", ["LONGMA-01", "LONGMA-02"]), "Longma should be recruited before the mainline trial")
+	_record(narrative.encounter_character("BAJIE", ["BAJIE-01", "BAJIE-02"]), "Bajie should be recruited before the mainline trial")
+	narrative.state.current_global_timeline = 140
+	narrative.state.set_current_shared_chapter("SHARED-06A-YELLOW-WIND")
 	narrative.state.completed_shared_chapters = [
-		"SHARED-01-FIVE-ELEMENTS",
-		"SHARED-02-EARLY-PILGRIMAGE",
-		"SHARED-03-EAGLE-SORROW",
-		"SHARED-04-EARLY-DEMON-TALES",
+		"SHARED-01-FIVE-ELEMENTS", "SHARED-02-EARLY-PILGRIMAGE", "SHARED-03-EAGLE-SORROW",
+		"SHARED-04-EARLY-DEMON-TALES", "SHARED-05-GAOJIAZHUANG", "SHARED-06-FOUR-PERSON-JOURNEY",
 	]
 	narrative.state.record_milestone("WUKONG_RECRUITED", 100)
 	narrative.state.record_milestone("BAI_LONGMA_RECRUITED", 110)
-	narrative.state.record_milestone("YELLOW_RIDGE_ENTRY", 120)
-	narrative.state.record_milestone("YELLOW_RIDGE_INTEL", 120)
-	narrative.state.record_milestone("YELLOW_RIDGE_STORM", 120)
-	narrative.state.record_milestone("YELLOW_WIND_GATE_OPEN", 120)
+	narrative.state.record_milestone("YELLOW_RIDGE_ENTRY", 140)
+	narrative.state.record_milestone("YELLOW_RIDGE_INTEL", 140)
+	narrative.state.record_milestone("YELLOW_RIDGE_STORM", 140)
+	narrative.state.record_milestone("YELLOW_WIND_GATE_OPEN", 140)
 	narrative.state.add_world_node_visit("BLACK_WIND_NORTH_PATH")
 	narrative.state.add_world_rumor("YELLOW_WIND_CAVE_ROOM_CAVE_MOUTH")
 	narrative.state.add_world_rumor("YELLOW_WIND_CAVE_ROOM_SAND_ALTAR")
@@ -62,7 +61,7 @@ func _run_smoke() -> void:
 		"items": {"POTION": 3},
 	})
 
-	_record(BountyEncounterState.start("YELLOW_WIND_KING", "YELLOW_WIND_THRONE"), "production mainline boss handoff should be written")
+	_record(BountyEncounterState.start_encounter("shared", "YELLOW_WIND_KING", "YELLOW_WIND_THRONE", "SHARED-06A-YELLOW-WIND", "SHARED_JOURNEY"), "production mainline boss handoff should be written")
 	var packed := load("res://ui/battle_ui.tscn") as PackedScene
 	_record(packed != null, "production BattleUI scene should load")
 	if packed == null:
@@ -79,7 +78,7 @@ func _run_smoke() -> void:
 	root.add_child(battle)
 	current_scene = battle
 	await process_frame
-	_record(battle.encounter_type == "bounty", "mainline Yellow Wind King should use the existing atomic bounty-settlement path")
+	_record(battle.encounter_type == "shared", "mainline Yellow Wind King should use the existing atomic bounty-settlement path")
 	_record(battle.encounter_id == "YELLOW_WIND_KING", "production handoff must keep the mainline Yellow Wind King ID")
 	_record(battle.source_stage_id == "YELLOW_WIND_THRONE", "mainline boss handoff should retain the final cave room")
 	_record(battle.return_button != null, "production BattleUI should expose its return/retry button")
@@ -126,7 +125,7 @@ func _run_smoke() -> void:
 	_record(narrative.save_attempts == 2, "successful retry should perform exactly one additional save")
 	_record(not battle.bounty_settlement_pending and battle.encounter_resolved, "successful retry should resolve the mainline fight")
 	_record(current_scene == battle, "committed result should remain visible until the player continues")
-	_record(battle.status_label.text.contains("悬赏完成：黄风妖王"), "the player-facing result should name Yellow Wind King")
+	_record(battle.status_label.text.contains("共享章节完成：黄风妖王"), "the player-facing result should name Yellow Wind King")
 	_record(battle.return_button.text == "继续探索", "mainline boss return should lead back to cave exploration")
 	_record(not FileAccess.file_exists(encounter_path), "successful settlement should clear the active handoff")
 	_record(battle.engine.turn_number == turn_before and battle.enemies[0].hp == enemy_hp_before, "successful retry must not replay combat")
@@ -134,12 +133,12 @@ func _run_smoke() -> void:
 	var defeated_targets: Array = narrative.state.get_journey_log().get("defeated_targets", [])
 	_record(_count_occurrences(defeated_targets, "YELLOW_WIND_KING") == 1, "mainline boss journal entry should be recorded exactly once under its own ID")
 	_record(_count_occurrences(defeated_targets, "BOUNTY_YELLOW_FANG") == 1, "the earlier optional bounty journal entry should remain separate and unique")
-	_record(battle.bounty_manager.get_status("YELLOW_WIND_KING") == BountyManager.STATUS_DEFEATED, "mainline bounty definition should be marked defeated after commit")
+	_record(battle.bounty_manager.get_status("YELLOW_WIND_KING") == BountyManager.STATUS_UNKNOWN, "mainline bounty definition should be marked defeated after commit")
 	_record("YELLOW_WIND_GATE_OPEN" in narrative.state.completed_milestones, "successful boss settlement should retain the gate milestone")
 	_record(bool(YellowWindRidgeManager.new().get_stage("YELLOW_WIND_GATE", narrative).get("completed", false)), "only the mainline boss defeat should complete the Ridge gate")
-	_record(narrative.state.current_shared_chapter == shared_chapter_before, "mainline side-area boss must not advance the Shared chapter")
-	_record(narrative.state.current_global_timeline == timeline_before, "mainline side-area boss must not change global chronology")
-	_record(narrative.state.completed_shared_chapters == shared_history_before, "mainline side-area boss must not rewrite Shared history")
+	_record(narrative.state.current_shared_chapter == "SHARED-07-FLOWING-SANDS", "mainline boss victory should advance to Flowing Sands")
+	_record(narrative.state.current_global_timeline == 145, "mainline boss victory should advance the canonical timeline to T145")
+	_record("SHARED-06A-YELLOW-WIND" in narrative.state.completed_shared_chapters, "mainline boss victory should complete the Yellow Wind Shared chapter")
 	_record(narrative.state.recruited_characters == roster_before, "mainline side-area boss must not alter the canonical party roster")
 
 	var reloaded := NarrativeManager.new()
@@ -149,8 +148,8 @@ func _run_smoke() -> void:
 		_record(_count_occurrences(loaded_targets, "YELLOW_WIND_KING") == 1, "reload should preserve exactly one mainline boss journal entry")
 		_record(_count_occurrences(loaded_targets, "BOUNTY_YELLOW_FANG") == 1, "reload should preserve the independent optional bounty entry")
 		_record(bool(YellowWindRidgeManager.new().get_stage("YELLOW_WIND_GATE", reloaded).get("completed", false)), "reloaded Ridge state should recognize the boss-gate completion")
-		_record(reloaded.state.current_shared_chapter == shared_chapter_before, "reload should preserve the same Shared chapter")
-		_record(reloaded.state.current_global_timeline == timeline_before, "reload should preserve the same global timeline")
+		_record(reloaded.state.current_shared_chapter == "SHARED-07-FLOWING-SANDS", "reload should preserve the next Shared chapter after Yellow Wind")
+		_record(reloaded.state.current_global_timeline == 145, "reload should preserve the committed T145 timeline")
 
 	battle.return_button.pressed.emit()
 	var cave := await _wait_for_cave()
@@ -169,8 +168,8 @@ func _run_smoke() -> void:
 				_record(ridge_screen.ridge.is_available(ridge_screen.narrative), "reloaded Ridge should remain accessible at Black Wind North Path")
 				_record(str(ridge_screen.ridge.get_current_stage(ridge_screen.narrative).get("id", "")) == "", "reloaded Ridge should consider all four stages complete")
 				_record(ridge_screen.status_label.text.contains("4/4"), "reloaded Ridge UI should show all stages complete")
-				_record(ridge_screen.narrative.state.current_shared_chapter == shared_chapter_before, "return to Ridge should preserve the canonical Shared chapter")
-				_record(ridge_screen.narrative.state.current_global_timeline == timeline_before, "return to Ridge should preserve the fixed world chronology")
+				_record(ridge_screen.narrative.state.current_shared_chapter == "SHARED-07-FLOWING-SANDS", "return to Ridge should preserve the next Shared chapter")
+				_record(ridge_screen.narrative.state.current_global_timeline == 145, "return to Ridge should preserve T145")
 
 	await _finish(save_path, encounter_path, resume_path, save_backup, encounter_backup, resume_backup)
 

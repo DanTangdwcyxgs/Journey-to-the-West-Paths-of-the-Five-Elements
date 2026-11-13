@@ -62,7 +62,12 @@ static func complete(chapter_id: String, manager: NarrativeManager, persist: boo
 	if chapter.is_combat():
 		var battle_milestone := "%s%s" % [SHARED_BATTLE_MILESTONE_PREFIX, chapter.get_encounter_id()]
 		if battle_milestone not in manager.state.completed_milestones:
-			return false
+			var legacy_target_id := chapter.get_legacy_boss_target_id()
+			var defeated_targets: Array = manager.state.get_journey_log().get("defeated_targets", [])
+			if legacy_target_id.is_empty() or legacy_target_id not in defeated_targets:
+				return false
+			# Backfill a prior mainline boss victory without granting its rewards again.
+			manager.state.record_milestone(battle_milestone, chapter.get_timeline())
 	else:
 		_apply_chapter_rewards(chapter, manager)
 	if not manager.complete_chapter(chapter_id, true):
