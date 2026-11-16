@@ -125,6 +125,12 @@ static func _apply_recruitment_events(chapter: ChapterDefinition, manager: Narra
 		var memories: Array[String] = []
 		for memory_id in event.get("memories", []):
 			memories.append(str(memory_id))
+		if character_id in manager.state.recruited_characters:
+			# Starting-character routes may already contain this companion. The
+			# Shared chapter still unlocks its chapter memories, but must not try
+			# to recruit the same character twice or abort the chapter commit.
+			manager.state.add_memory_chapters(memories)
+			continue
 		if not manager.encounter_character(character_id, memories):
 			return false
 	return true
