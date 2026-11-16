@@ -22,6 +22,7 @@ const TEST_SCRIPTS := [
 	"res://combat/test_wujing_origin_progression.gd",
 	"res://combat/test_origin_routes_unified.gd",
 	"res://combat/test_origin_shared_handoff.gd",
+	"res://combat/test_origin_shared_handoff_scene_smoke.gd",
 	"res://combat/test_shared_opening_journey_bridge.gd",
 	"res://combat/test_shared_battle_journey_bridge.gd",
 	"res://combat/test_shared_battle_scene_transition.gd",
