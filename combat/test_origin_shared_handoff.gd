@@ -34,7 +34,27 @@ static func run_all() -> Dictionary:
 		var expected_roster: Array = case_data["roster"]
 		assert(manager.state.recruited_characters.size() == expected_roster.size(), "%s roster size mismatch" % character)
 		for recruited_id in expected_roster:
-			assert(str(recruited_id) in manager.state.recruited_characters, "%s missing recruited %s" % [character, str(recruited_id)])
+			var recruited_id_string := str(recruited_id)
+			assert(recruited_id_string in manager.state.recruited_characters, "%s missing recruited %s" % [character, recruited_id_string])
+			var recruitment_milestone := ""
+			match recruited_id_string:
+				"WUKONG": recruitment_milestone = "WUKONG_RECRUITED"
+				"LONGMA": recruitment_milestone = "BAI_LONGMA_RECRUITED"
+				"BAJIE": recruitment_milestone = "ZHU_BAJIE_RECRUITED"
+				"WUJING": recruitment_milestone = "SHA_WUJING_RECRUITED"
+			if not recruitment_milestone.is_empty():
+				assert(recruitment_milestone in manager.state.completed_milestones, "%s should restore roster milestone %s" % [character, recruitment_milestone])
+
+		var world_map := WorldMapManager.new()
+		match character:
+			"LONGMA":
+				assert(world_map.can_visit(manager, "EAGLE_SORROW"), "Longma start should satisfy the Wukong milestone needed at Eagle Sorrow")
+			"BAJIE":
+				manager.state.add_world_node_visit("GAOJIAZHUANG")
+				assert(world_map.can_visit(manager, "BLACK_WIND_NORTH_PATH"), "Bajie start should satisfy the prior Wukong gate and reach the Yellow Wind path")
+			"WUJING":
+				manager.state.add_world_node_visit("FLOWING_SANDS")
+				assert(world_map.can_visit(manager, "GAOJIAZHUANG"), "Wujing start should retain the Longma milestone required to revisit Gaojiazhuang")
 
 		var route := StartRouteCatalog.get_route(character)
 		assert(str(route.get("handoff_shared_chapter")) == manager.state.current_shared_chapter, "%s catalog handoff should match runtime" % character)
