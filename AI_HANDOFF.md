@@ -605,3 +605,20 @@ Runtime has now verified the post-Shared-02 detour and that Journey resumes at S
 - Flowing Sands must not be enterable before Yellow Wind is complete.
 - Ridge recruitment gate checks the actual `recruited_characters` array, not optional milestone labels.
 - Save failures must restore the full narrative snapshot and preserve the retryable encounter.
+
+
+## Follow-up Handoff — 2026-11-16: Later-Origin Shared Progression
+
+- Current branch: feature/shared-yellow-wind-mainline-2026-11-13; PR #34 remains Draft/open and unmerged.
+- Current exact head: 5ed4fac2a1fe2aaf736a52dd6227f1aab2110229.
+- Fix: Origin handoff now reconciles all Shared chapters before the route's target as historical completion/battle/world-effect facts. It deliberately does not grant historical rewards or mark the target chapter complete.
+- Fix: already-recruited companions no longer make Shared recruitment settlement fail; chapter Memory unlocks still occur.
+- Regression: combat/test_origin_shared_handoff.gd checks all five routes, the prerequisite gate at each target, and actual current-chapter completion for Longma/Bajie/Wujing starts without roster duplication.
+- Exact SHA Runtime: [43796084337](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/43796084337) PASS; log contains PASS res://combat/test_origin_shared_handoff.gd and RUNTIME_SUITE_PASS tests=53.
+- No Web Demo/deployment or merge. Keep PR #34 Draft/open pending owner review.
+
+### Next work
+1. Add production SceneTree smoke for Longma-, Bajie-, and Wujing-origin handoffs through MainMenu → Journey → current Shared sequence. Verify the first player action and route-appropriate map landing, not only static manager state.
+2. Check whether any prior route-specific location discovery should be seeded; do not invent travel or location facts.
+3. The 2026-11-16 art queue points to Sha Wujing: transparent 2×2 turnaround, same model/pose/weapon grip, 128×192 runtime crop. No image call was made because no image-generation tool was available in this session; keep its status Pending and do not claim today's quota was consumed.
+4. After owner-approved merge, run Godot Runtime and Web Demo build/export/Pages deployment on the exact merged main SHA.
