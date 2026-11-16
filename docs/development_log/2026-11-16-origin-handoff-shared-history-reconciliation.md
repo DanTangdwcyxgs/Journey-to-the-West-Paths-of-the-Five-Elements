@@ -49,4 +49,32 @@ Two related progression defects affected later-start campaigns:
 
 ## Handoff
 
-Start with this log, then read the latest AI_HANDOFF.md section and docs/AI_MEMORY.md Round 78. Current code head is 5ed4fac2a1fe2aaf736a52dd6227f1aab2110229 on feature/shared-yellow-wind-mainline-2026-11-13.
+Start with this log, then read the latest AI_HANDOFF.md section and docs/AI_MEMORY.md Round 78. The initial fix/test head was 5ed4fac2a1fe2aaf736a52dd6227f1aab2110229; the latest expanded production-scene test head is 13649fc3c1224892bfc3858839ca66467bbad645 on feature/shared-yellow-wind-mainline-2026-11-13.
+
+## Follow-up — Roster Milestones and Production SceneTree Validation
+
+Static route checks exposed one more convergence requirement: the handoff milestone for the starting character was not enough to describe all previously recruited companions. Map nodes use the canonical recruitment milestones as gates, so later-start campaigns also need the milestone facts for earlier members of their reconciled roster.
+
+- Origin handoff now records the canonical recruitment milestone for every reconciled roster member: Wukong, Longma, Bajie, and Wujing. The milestone timeline uses that character's canonical handoff point and remains monotonic.
+- Added combat/test_origin_shared_handoff_scene_smoke.gd and registered it in tests/runtime_suite.gd.
+- The production SceneTree test runs Longma, Bajie, and Wujing cases through a saved Origin handoff → MainMenu Continue → production Journey → the current Shared EventSequence → its first MOVE. It verifies the correct marker, visited-node record, save/reload, unchanged current Shared chapter, and the route-appropriate next WorldMap gate.
+- The static all-route regression additionally verifies the Wukong/Longma/Bajie/Wujing recruitment milestones and checks map reachability for the corresponding route stage.
+
+### Exact-head validation
+
+- PASS: exact implementation/test head 13649fc3c1224892bfc3858839ca66467bbad645.
+- Godot Runtime run [43797252773](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/43797252773) succeeded.
+- The log explicitly reports PASS res://combat/test_origin_shared_handoff.gd, PASS res://combat/test_origin_shared_handoff_scene_smoke.gd, and RUNTIME_SUITE_PASS tests=54.
+- This validates the first production Shared MOVE and route-appropriate WorldMap gate, not the entire recruitment battle / after-battle dialogue / END / manual WorldMap UI flow. That remains the next test expansion.
+- PR #34 remains Draft/open; main is unchanged. No Web Demo build, Pages deployment, or merge was performed.
+
+### Art status
+
+- The 2026-11-16 Sha Wujing turnaround remains Pending. No image-generation call was made because no image-generation tool was available in this session; the daily generation quota is not marked consumed. No image was added.
+
+### Next
+
+1. Extend the three later-start SceneTree cases through recruitment choice, production BattleUI victory, atomic chapter settlement, resumed after-battle dialogue, and END; then open the real WorldMap UI and inspect the next connected travel node.
+2. Keep prior-history reconciliation limited to explicit canonical chapters, milestones, world effects, and boss facts. Do not invent historic map visits or grant prior chapter rewards.
+3. When the generator is available and the local-day quota is confirmed unused, attempt the scheduled Sha Wujing 2×2 turnaround with the canonical master brief; accept only after the full art review and exact crop contract.
+4. After owner-approved merge, run Godot Runtime and Web Demo export/Pages deployment on the exact merged main SHA.
