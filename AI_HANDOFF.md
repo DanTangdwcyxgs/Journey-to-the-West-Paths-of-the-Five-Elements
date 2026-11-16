@@ -610,7 +610,7 @@ Runtime has now verified the post-Shared-02 detour and that Journey resumes at S
 ## Follow-up Handoff — 2026-11-16: Later-Origin Shared Progression
 
 - Current branch: feature/shared-yellow-wind-mainline-2026-11-13; PR #34 remains Draft/open and unmerged.
-- Current exact head: 5ed4fac2a1fe2aaf736a52dd6227f1aab2110229.
+- Runtime-tested implementation/test SHA: 5ed4fac2a1fe2aaf736a52dd6227f1aab2110229.
 - Fix: Origin handoff now reconciles all Shared chapters before the route's target as historical completion/battle/world-effect facts. It deliberately does not grant historical rewards or mark the target chapter complete.
 - Fix: already-recruited companions no longer make Shared recruitment settlement fail; chapter Memory unlocks still occur.
 - Regression: combat/test_origin_shared_handoff.gd checks all five routes, the prerequisite gate at each target, and actual current-chapter completion for Longma/Bajie/Wujing starts without roster duplication.
