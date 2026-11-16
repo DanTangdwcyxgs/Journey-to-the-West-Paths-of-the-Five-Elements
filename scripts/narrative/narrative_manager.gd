@@ -242,6 +242,17 @@ func _reconcile_recruitment_for_handoff(character_id: String) -> void:
 			for i in range(min(2, chapters.size())):
 				memories.append(str(chapters[i].get("id", "")))
 		encounter_character(cid, memories)
+		var recruitment_milestone := _recruitment_milestone_for_character(cid)
+		if not recruitment_milestone.is_empty():
+			state.record_milestone(recruitment_milestone, _handoff_timeline(cid))
+
+func _recruitment_milestone_for_character(character_id: String) -> String:
+	match character_id:
+		"WUKONG": return "WUKONG_RECRUITED"
+		"LONGMA": return "BAI_LONGMA_RECRUITED"
+		"BAJIE": return "ZHU_BAJIE_RECRUITED"
+		"WUJING": return "SHA_WUJING_RECRUITED"
+	return ""
 
 func _ensure_canonical_full_party_formation() -> void:
 	var formation := state.get_party_formation()
