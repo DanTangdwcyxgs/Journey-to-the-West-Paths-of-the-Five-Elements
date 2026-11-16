@@ -610,7 +610,7 @@ Runtime has now verified the post-Shared-02 detour and that Journey resumes at S
 ## Follow-up Handoff — 2026-11-16: Later-Origin Shared Progression
 
 - Current branch: feature/shared-yellow-wind-mainline-2026-11-13; PR #34 remains Draft/open and unmerged.
-- Runtime-tested implementation/test SHA: 5ed4fac2a1fe2aaf736a52dd6227f1aab2110229.
+- Initial fix/test SHA: 5ed4fac2a1fe2aaf736a52dd6227f1aab2110229.
 - Fix: Origin handoff now reconciles all Shared chapters before the route's target as historical completion/battle/world-effect facts. It deliberately does not grant historical rewards or mark the target chapter complete.
 - Fix: already-recruited companions no longer make Shared recruitment settlement fail; chapter Memory unlocks still occur.
 - Regression: combat/test_origin_shared_handoff.gd checks all five routes, the prerequisite gate at each target, and actual current-chapter completion for Longma/Bajie/Wujing starts without roster duplication.
@@ -622,3 +622,15 @@ Runtime has now verified the post-Shared-02 detour and that Journey resumes at S
 2. Check whether any prior route-specific location discovery should be seeded; do not invent travel or location facts.
 3. The 2026-11-16 art queue points to Sha Wujing: transparent 2×2 turnaround, same model/pose/weapon grip, 128×192 runtime crop. No image call was made because no image-generation tool was available in this session; keep its status Pending and do not claim today's quota was consumed.
 4. After owner-approved merge, run Godot Runtime and Web Demo build/export/Pages deployment on the exact merged main SHA.
+
+### Latest expansion — roster milestones and production SceneTree smoke
+
+- Latest implementation/test head: 13649fc3c1224892bfc3858839ca66467bbad645.
+- Origin handoff now restores recruitment milestone facts for every member of the canonical reconciled roster, not only the selected start character. This is required by later WorldMap gates.
+- New registered regression: combat/test_origin_shared_handoff_scene_smoke.gd. It runs Longma/Bajie/Wujing from a saved Origin handoff through production MainMenu Continue, production Journey, the first Shared EventSequence MOVE, location save/reload, and the next route-appropriate WorldMapManager gate.
+- Exact Runtime run [43797252773](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/43797252773) PASS; the log explicitly reports both handoff regressions and RUNTIME_SUITE_PASS tests=54.
+- Coverage stops after the first Shared MOVE. Continue later by exercising each recruitment choice, production BattleUI victory, atomic Shared settlement, resume dialogue, END, and actual WorldMap UI travel.
+- No Web Demo/deployment or merge. PR #34 remains Draft/open pending owner review.
+
+### Art queue
+- 2026-11-16 schedule slot: Sha Wujing transparent 2×2 turnaround and 128×192 crop. No image call was made because the generator was not available in this session. Keep the asset Pending and do not claim the daily quota was consumed.
