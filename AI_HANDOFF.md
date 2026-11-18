@@ -679,3 +679,13 @@ Runtime has now verified the post-Shared-02 detour and that Journey resumes at S
 - Pixel-art: discrete clusters, consistent stepped contours, limited palette; no soft painterly or airbrush look. Prioritize clear face, tail, staff, hands, and full-body silhouette.
 - Prompt preparation only; no image-generation call was made on 2026-11-12 and today's quota remains consumed. Reserve exactly one call for 2026-11-13 America/Los_Angeles local date after verifying no earlier call that day.
 - PR #30 remains Draft/open; PR #29 remains open/unmerged. Verify exact-head CI for this docs-only commit.
+
+
+## Current Handoff — 2026-11-18: Yellow Wind King Generation Rejected / P0 Queue Reconciled
+
+- One image-generation call was used for the dated 2026-11-18 Yellow Wind King slot. The 1536×1024 PNG is RGB with no alpha; the visible checkerboard is painted into the pixels. Pixel edges/rendering also miss the crisp cluster requirement. Decision: REJECTED.
+- The rejected image was not committed, archived as an approved source sheet, cropped, cataloged, or placed in production folders. No runtime crop or screenshot acceptance exists. Today's quota is consumed; do not generate again on 2026-11-18.
+- Art-branch tree audit found no final character PNG/WebP or turnaround sheets; SVG fallbacks remain the only character assets. The dated queue and master-library P0 cursor were inconsistent. The canonical schedule now requeues the overdue P0 characters in order: Wukong 2026-11-19, Tang 11-20, Bajie 11-21, Wujing 11-22, Longma 11-23, Yellow Wind King retry 11-24; scene assets move to 11-25 through 11-27.
+- The Wukong prompt preflight is updated for 2026-11-19. Start with that prompt only after checking America/Los_Angeles date and unused quota. One call maximum; reject and stop for the day if any critical gate fails.
+- Log: `docs/development_log/2026-11-18-yellow-wind-king-turnaround-rejected.md`. AI memory Round 97 records the same decision. Documentation-only updates; no code, production assets, crop, catalog, Runtime, Art Tooling, Web Demo, or screenshot validation was run.
+- PR #30 remains Draft/open/unmerged. Preserve SVG fallbacks; do not merge without explicit owner approval.
