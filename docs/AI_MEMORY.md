@@ -829,3 +829,11 @@ Wukong、Tang、Longma、Bajie、Wujing 五条 Origin Route 均已完成首轮 S
 - Added anti-detail rule: simplify ornaments before sacrificing pixel clarity, tail visibility, staff placement, or full-body framing.
 - No image was generated in this preparation step; the 2026-11-12 daily quota remains consumed. The one Wukong call is reserved for 2026-11-13 America/Los_Angeles local date, only after checking no call has occurred that day.
 - Documentation-only update; no asset files, game code, catalog, or production directories changed. Verify exact-head Art Tooling and Godot Runtime after this commit.
+
+
+### Round 97 — 2026-11-18: Yellow Wind King Turnaround Rejected / Queue Reconciled
+- Used exactly one image-generation call for the 2026-11-18 Yellow Wind King slot. The inspected 1536×1024 PNG was RGB with no alpha; the checkerboard was baked into the pixels. Rendering also missed the required crisp pixel-cluster finish. Decision: REJECTED.
+- Working-session output SHA-256: `4e9a99d9c2e7640c2d491c298aac24a28a099d4b6c1f5b77b32a4948307e6380`. The rejected image was not committed, archived as an approved source sheet, cropped, cataloged, or put in a production directory. No final art, runtime crop, or screenshot acceptance is claimed. Daily quota consumed; no retry on 2026-11-18.
+- Audited PR #30 art branch: no character final PNG/WebP or turnaround source sheets exist; only SVG fallbacks are present. Reconciled the date-row/P0 cursor conflict by requeuing overdue P0 character assets in order: Wukong 11/19, Tang 11/20, Bajie 11/21, Wujing 11/22, Longma 11/23, Yellow Wind King retry 11/24; scenes move to 11/25–11/27.
+- Updated the canonical schedule, Wukong prompt preflight, dated development log, and handoff. Documentation-only; no game code, catalog, production art, local test, Art Tooling, Godot Runtime, Web Demo, or screenshot review was run. Check exact-head workflows before claiming validation.
+- Next: on 2026-11-19, verify local date/quota and make at most one Wukong call; inspect genuine alpha and crisp pixel craft before processing.
