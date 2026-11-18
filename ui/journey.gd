@@ -800,7 +800,12 @@ func _render_route_or_shared() -> void:
 			var event_id := str(chapter.get("event", ""))
 			var event := shared_events.get_event(event_id if event_id != "" else str(chapter.get("id", "")))
 			var chosen := shared_events.get_choice(narrative, event_id if event_id != "" else str(chapter.get("id", "")))
-			if not event.is_empty() and chosen == "":
+			var sequence_id := "%s-SEQUENCE" % str(chapter.get("id", ""))
+			var has_sequence := EventSequenceManager.has_sequence(sequence_id)
+			# A production EventSequence owns its own CHOICE nodes. Do not ask for
+			# the same legacy SharedEvent choice here first: EventRunner would then
+			# reject the duplicate choice as already resolved.
+			if not has_sequence and not event.is_empty() and chosen == "":
 				_set_dialogue("", "%s\n\n%s" % [str(event.get("title", "选择")), str(event.get("text", ""))], false)
 				primary_button.text = "请选择"
 				primary_button.disabled = true
