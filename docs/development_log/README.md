@@ -1,5 +1,7 @@
 # Development Log Index
 
+- [2026-11-18 — Yellow Wind King Turnaround Rejected; Art Queue Reconciled](2026-11-18-yellow-wind-king-turnaround-rejected.md)
+
 所有重要开发更新都必须在本目录留下单独的 Markdown 记录。
 
 项目长期 AI 记忆见：[`docs/AI_MEMORY.md`](../AI_MEMORY.md)。任何 AI / Agent 接手时，先阅读该文件，再按本索引进入最新 development log。
