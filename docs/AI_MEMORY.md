@@ -837,3 +837,12 @@ Wukong、Tang、Longma、Bajie、Wujing 五条 Origin Route 均已完成首轮 S
 - Audited PR #30 art branch: no character final PNG/WebP or turnaround source sheets exist; only SVG fallbacks are present. Reconciled the date-row/P0 cursor conflict by requeuing overdue P0 character assets in order: Wukong 11/19, Tang 11/20, Bajie 11/21, Wujing 11/22, Longma 11/23, Yellow Wind King retry 11/24; scenes move to 11/25–11/27.
 - Updated the canonical schedule, Wukong prompt preflight, dated development log, and handoff. Documentation-only; no game code, catalog, production art, local test, Art Tooling, Godot Runtime, Web Demo, or screenshot review was run. Check exact-head workflows before claiming validation.
 - Next: on 2026-11-19, verify local date/quota and make at most one Wukong call; inspect genuine alpha and crisp pixel craft before processing.
+
+
+### Round 98 — 2026-11-18: Transparent Asset Generation / Background-Removal SOP
+- Added canonical docs/visual_reference/TRANSPARENCY_WORKFLOW.md. Future image calls requiring transparency must enable the tool-level native transparent-background option (ImageGen: transparent_background=true) and prompt for a genuine RGBA PNG with alpha=0 in empty regions.
+- Agents must inspect actual file mode/bands and alpha histogram; RGB, all-opaque RGBA, and painted checkerboards are not transparency. Converting RGB to RGBA without background removal is forbidden.
+- If native alpha fails, no same-day retry. Preserve raw output; only attempt safe connected-background keying on a perfectly uniform high-contrast color absent from the subject, or reviewed segmentation/manual masking. White is conditional only when the subject has no pale details. Complex backgrounds, checkerboards, halos, holes, or lost anatomy/details are rejected.
+- The existing prepare_character_turnaround.py remains unchanged and mandatory; it is a crop/archive gate, not a background remover. Never bypass or weaken its alpha checks.
+- Updated review standard, daily schedule, Wukong prompt, asset pipeline/delivery spec, crop-tool README, dated development log, index, and handoff. Documentation-only; no image generation, code, tool execution, asset integration, or screenshot review occurred in this round. Exact-head CI must be checked.
+- Next slot: follow the updated Wukong prompt only after checking local date and daily quota; use native alpha option and inspect immediately before any crop.
