@@ -1,6 +1,6 @@
-# 2026-11-13 — Sun Wukong Four-View Turnaround Generation
+# 2026-11-19 — Sun Wukong Four-View Turnaround Generation
 
-> Mandatory review standard: [ART_REVIEW_STANDARD.md](../ART_REVIEW_STANDARD.md). This is the copy-ready brief for the Wukong image-generation slot. Check `AI_ART_PRODUCTION_SCHEDULE.md` first. The owner has one image-generation call per local calendar day; use exactly one call for this sheet and do not retry it that day.
+> Mandatory review standard: [ART_REVIEW_STANDARD.md](../ART_REVIEW_STANDARD.md). This is the copy-ready brief for the requeued Wukong image-generation slot. Check `AI_ART_PRODUCTION_SCHEDULE.md` first. The owner has one image-generation call per local calendar day; use exactly one call for this sheet and do not retry it that day.
 
 ## Deliverable
 
@@ -37,7 +37,7 @@ If crowded, simplify armor ornament and decoration. Never sacrifice tail visibil
 Painterly, concept painting, watercolor, oil paint, airbrush, smooth gradients, soft focus, anti-aliased edges, vector art, 3D render, photorealism, anime shading, blurry pixels, noisy dithering, human face, human general, missing tail, hidden tail, tail fused to legs, staff across shoulders, staff behind back, diagonal back-mounted staff, spear pose, raised weapon, changing grip, mirrored hand, different poses, different costumes, inconsistent proportions, cropped staff, cropped feet, cropped tail, overlapping quadrants, checkerboard background, floor shadow, scenery, frame, panel dividers, labels, lettering, watermark, logo, UI.
 
 ### Final preflight
-- [ ] Confirm the local date in America/Los_Angeles is 2026-11-13.
+- [ ] Confirm the local date in America/Los_Angeles is 2026-11-19.
 - [ ] Confirm no image-generation call has already been made on that date.
 - [ ] Confirm latest handoff and schedule still identify Wukong as the next pending slot.
 - [ ] Confirm the mandatory art review standard is available.
@@ -101,4 +101,4 @@ Apply the full review standard. Any failure of pixel-art craft, simian identity,
 4. Inspect the archived source and the 128×192 crop. Confirm the complete staff, tail, headband, and both feet remain visible at native and in-game scale.
 5. Do not pass `--overwrite` unless replacement is intentional and the previous files have been reviewed.
 6. Update the production schedule, development log, AI memory, and handoff. Run exact-head Art Tooling and Godot Runtime CI.
-7. Do not make a second image-generation call on 2026-11-13, even if the result is rejected. Replan the missed asset to the next available date and continue with non-generation work.
+7. Do not make a second image-generation call on 2026-11-19, even if the result is rejected. Replan the missed asset to the next available date and continue with non-generation work.
