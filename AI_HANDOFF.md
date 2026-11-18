@@ -634,3 +634,15 @@ Runtime has now verified the post-Shared-02 detour and that Journey resumes at S
 
 ### Art queue
 - 2026-11-16 schedule slot: Sha Wujing transparent 2×2 turnaround and 128×192 crop. No image call was made because the generator was not available in this session. Keep the asset Pending and do not claim the daily quota was consumed.
+
+
+## Current Handoff — 2026-11-18: Full Later-Origin Production Flow
+
+- Latest reviewed branch: `feature/shared-yellow-wind-mainline-2026-11-13`; PR #34 remains Draft/open and unmerged.
+- Latest inspected head before this documentation-only update: `c6ff78e6a340760b56fb551ff19a3cde507894ca`; exact-head Godot Runtime run [43797593282](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/43797593282) completed successfully with `RUNTIME_SUITE_PASS tests=54`.
+- Current production SceneTree smoke covers Longma/Bajie/Wujing Origin handoff through MainMenu Continue, Journey, first Shared MOVE, location save/reload, and next WorldMapManager gate.
+- Next implementation batch: extend that same production flow through recruitment choice → real BattleUI victory → atomic BattleResolutionService settlement → resumed post-battle dialogue → END → production WorldMap UI travel. Keep save/reload and no-duplicate reward assertions.
+- Do not seed historic map visits without explicit narrative evidence. Do not grant historical rewards or mutate the canonical timeline during memory/handoff presentation.
+- Art remains separate. The prior handoff's Sha Wujing 2026-11-16 slot is Pending. This review made no image-generation call; no quota consumption or art acceptance is claimed. The art schedule/prompt library was not found on this PR branch, so inspect its owning art branch before any future generation attempt.
+- Session review log: `docs/development_log/2026-11-18-agent-review-and-next-batch.md`.
+- No code, data, test, save schema, Web Demo deployment, or merge was performed in this documentation-only review. Re-run exact-head Runtime after subsequent code changes; keep PR #34 Draft/open pending owner approval.
