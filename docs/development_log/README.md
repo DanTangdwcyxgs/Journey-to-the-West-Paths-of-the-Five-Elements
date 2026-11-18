@@ -1,5 +1,6 @@
 # Development Log Index
 
+- [`2026-11-18 — Later-Origin Full Recruitment, Battle, and WorldMap Flow`](2026-11-18-origin-handoff-full-recruitment-battle-flow.md)
 - [`2026-11-18 — Agent Repository Review and Next Implementation Batch`](2026-11-18-agent-review-and-next-batch.md)
 - [`2026-11-16 — Origin Handoff Shared-History Reconciliation`](2026-11-16-origin-handoff-shared-history-reconciliation.md)
 
@@ -12,6 +13,8 @@
 `YYYY-MM-DD-<topic>.md`
 
 ## 最新记录
+
+- [2026-11-18 — Later-Origin Full Recruitment, Battle, and WorldMap Flow](2026-11-18-origin-handoff-full-recruitment-battle-flow.md)
 
 - [2026-11-13 — Shared Yellow Wind Mainline Integration](2026-11-13-shared-yellow-wind-mainline-integration.md)
 
