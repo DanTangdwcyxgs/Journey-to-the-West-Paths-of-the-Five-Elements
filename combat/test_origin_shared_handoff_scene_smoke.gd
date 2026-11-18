@@ -232,8 +232,10 @@ func _run_smoke() -> void:
 			_record(SharedJourneyManager.can_enter("SHARED-04-EARLY-DEMON-TALES", resumed_journey.narrative.state), "Shared-04 should satisfy its canonical prerequisite/recruitment gates")
 			resumed_journey.primary_button.emit_signal("pressed")
 			await process_frame
-			await process_frame
-			_record(resumed_journey.narrative.state.current_shared_chapter == "SHARED-05-GAOJIAZHUANG", "completing the non-combat Shared-04 step should advance to Gaojiazhuang (phase=%s, button=%s, disabled=%s)" % [resumed_journey.phase_label.text, resumed_journey.primary_button.text, str(resumed_journey.primary_button.disabled)])
+			_record(resumed_journey.event_session != null, "Journey should start the real Shared-04 EventSequence before the North Path map gate")
+			if resumed_journey.event_session != null:
+				_record(await _drive_resumed_session_to_end(resumed_journey, "SHARED-04-EARLY-DEMON-TALES"), "Shared-04 production EventSequence should reach END")
+			_record(resumed_journey.narrative.state.current_shared_chapter == "SHARED-05-GAOJIAZHUANG", "completing the Shared-04 EventSequence should advance to Gaojiazhuang")
 			_record(resumed_journey.narrative.state.current_global_timeline == 120, "Shared-04 should advance the timeline to T120 (current=%d)" % resumed_journey.narrative.state.current_global_timeline)
 		elif character == "WUJING":
 			_record(not WorldMapManager.new().can_visit(resumed_journey.narrative, "DRAGON_BONE_SANCTUM"), "Dragon Bone Sanctum must remain locked before the T170 mainline milestone")
@@ -241,9 +243,13 @@ func _run_smoke() -> void:
 			await process_frame
 			resumed_journey.primary_button.emit_signal("pressed")
 			await process_frame
+			if resumed_journey.event_session != null:
+				_record(await _drive_resumed_session_to_end(resumed_journey, "SHARED-08-PARTY-FULL"), "Shared-08 production EventSequence should reach END")
 			_record(resumed_journey.narrative.state.current_shared_chapter == "SHARED-09-FULL-PILGRIMAGE", "Party Full choice should complete Shared-08 and unlock the final shared pilgrimage chapter")
 			resumed_journey.primary_button.emit_signal("pressed")
 			await process_frame
+			if resumed_journey.event_session != null:
+				_record(await _drive_resumed_session_to_end(resumed_journey, "SHARED-09-FULL-PILGRIMAGE"), "Shared-09 production EventSequence should reach END")
 			_record(resumed_journey.narrative.state.current_global_timeline == 170, "Shared-09 should advance the timeline to T170 without changing the recruited roster")
 
 		# Load the actual production WorldMap UI from the persisted save.
