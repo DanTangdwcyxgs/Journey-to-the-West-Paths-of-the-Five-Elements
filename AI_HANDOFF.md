@@ -646,3 +646,25 @@ Runtime has now verified the post-Shared-02 detour and that Journey resumes at S
 - Art remains separate. The prior handoff's Sha Wujing 2026-11-16 slot is Pending. This review made no image-generation call; no quota consumption or art acceptance is claimed. The art schedule/prompt library was not found on this PR branch, so inspect its owning art branch before any future generation attempt.
 - Session review log: `docs/development_log/2026-11-18-agent-review-and-next-batch.md`.
 - No code, data, test, save schema, Web Demo deployment, or merge was performed in this documentation-only review. Re-run exact-head Runtime after subsequent code changes; keep PR #34 Draft/open pending owner approval.
+
+
+## Current Handoff — 2026-11-18: Later-Origin Full Production Loop Completed
+
+- Branch: `feature/shared-yellow-wind-mainline-2026-11-13`; PR #34 is still Draft/open and unmerged.
+- Latest implementation/test head: `608e8afa81df32adf24cbe61763ae9b4c9ea1d8b`.
+- Exact-head Godot Runtime: [44265989517](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/44265989517) **PASS**; confirmed in the job log: `PASS res://combat/test_origin_shared_handoff_scene_smoke.gd` and `RUNTIME_SUITE_PASS tests=54`.
+- Production SceneTree coverage now runs Longma, Bajie, and Wujing saves from Origin handoff → MainMenu Continue → production Journey EventSequence → first story MOVE → recruitment choice → real BattleUI victory → atomic Shared settlement → resumed post-battle dialogue → END → production WorldMap UI travel → save/reload.
+- The integration regression verifies source chapter/encounter/resume handoff context, exact-one recruitment, chapter/timeline/location facts, idempotent stale battle settlement (no second rewards or state changes), resume-file cleanup, and that optional map travel changes only location/visited-node facts (not roster, current Shared chapter, or global timeline). It backs up/restores user save, encounter, and resume files.
+- Fixed a production UI defect in `ui/journey.gd`: if a chapter has a registered EventSequence, the renderer no longer pre-asks the legacy SharedEvent choice; the sequence itself owns CHOICE presentation. This prevents the same choice being committed before its EventRunner node and then rejected as already resolved.
+- Canonical map/timeline paths remain enforced: Longma reaches Black Wind North Path through Shared-04's own MOVE and END (T120); Bajie travels to the connected North Path at T130; Wujing completes Party Full and Full Pilgrimage sequences before Dragon Bone Sanctum becomes available at T170.
+- Detailed log: `docs/development_log/2026-11-18-origin-handoff-full-recruitment-battle-flow.md`; indexed at the top of `docs/development_log/README.md`. AI memory updated in Round 99.
+- Intermediate red runs were used to diagnose incorrect assumptions in the new integration test; the final implementation/test head above is green. Do not present the intermediate failures as current validation.
+- No merge, Web Demo build/export, Pages deployment, or image generation was performed. Main remains unchanged; PR #34 awaits owner review/approval.
+
+### Next Batch — Player-Facing Vertical Slice Audit (No Image Dependency)
+
+1. Walk the first complete player-facing slice from each of the five starts, focusing on what a player sees and can understand rather than only manager/state assertions.
+2. Review chapter pacing, route convergence messaging, optional exploration discoverability, map navigation/return path, battle preparation/defeat/retry, and save/reload continuity.
+3. Record a prioritized small backlog with concrete acceptance checks before expanding content or spending daily image-generation quota.
+4. Keep all historical facts, map visits, rewards, and chronology canonical. Do not seed future milestones or retroactive rewards to make progression convenient.
+5. Keep PR #34 Draft/open; no merge/deployment without explicit owner approval. When owner approves a merge later, rerun Runtime and Web Demo build/export/deployment against the exact merged-main SHA.
