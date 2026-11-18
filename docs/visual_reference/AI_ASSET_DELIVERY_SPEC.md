@@ -1,6 +1,6 @@
 # AI 美术交付规范（Gemini Banana / 其他图像模型）
 
-> 本文件是《西游：五行之路》的 AI 美术交付契约。程序、美术模型、后续 Agent 都以本文件为接口，不允许临时改变资源目录和命名规则。
+> 本文件是《西游：五行之路》的 AI 美术交付契约。程序、美术模型、后续 Agent 都以本文件为接口，不允许临时改变资源目录和命名规则。透明背景生成和补救必须遵循 [TRANSPARENCY_WORKFLOW.md](TRANSPARENCY_WORKFLOW.md)。
 
 ## 1. 总原则
 
@@ -41,7 +41,7 @@ assets/art/characters/final/yellow_wind.png
 
 ### 推荐交付规格
 
-- 透明背景。
+- 透明背景：生成时显式启用工具的原生透明背景选项；必须验证 PNG 有真实 Alpha 且空白区域 Alpha=0。RGB 转 RGBA 不会自动去背。
 - 主视觉为清晰的 2D 像素角色，不要圆头方身体的几何占位感。
 - 保持固定像素网格，不做软件式模糊边缘。
 - 角色轮廓必须在缩小后仍然可识别。
@@ -237,4 +237,4 @@ Keep the untouched four-view source sheet under assets/art/source_sheets/charact
 
 The one-image-per-day queue and the rules for rejected generations are maintained in [AI_ART_PRODUCTION_SCHEDULE.md](AI_ART_PRODUCTION_SCHEDULE.md). It is the canonical source of dates, asset order, output paths, prompts, and handoff instructions. Do not treat generated schedule posters or chat graphics as production assets.
 
-For character sheets, use `tools/art/prepare_character_turnaround.py` after reviewing all four views. It checks that each quadrant has visible artwork, transparent margin, and no edge-touching crop; it then preserves the source PNG byte-for-byte, extracts the top-left canonical view, and proportionally fits it to the exact runtime canvas. Run its regression tests with `python -m unittest discover -s tools/art -p 'test_*.py' -v`.
+For transparent assets, follow `TRANSPARENCY_WORKFLOW.md` first: native transparent-background mode is preferred; if it fails, only a uniform subject-safe key color or carefully reviewed segmentation may be rescued, and white is conditional rather than default. Never accept a painted checkerboard. For character sheets, use `tools/art/prepare_character_turnaround.py` after reviewing all four views. It checks that each quadrant has visible artwork, transparent margin, and no edge-touching crop; it then preserves the source PNG byte-for-byte, extracts the top-left canonical view, and proportionally fits it to the exact runtime canvas. Run its regression tests with `python -m unittest discover -s tools/art -p 'test_*.py' -v`.
