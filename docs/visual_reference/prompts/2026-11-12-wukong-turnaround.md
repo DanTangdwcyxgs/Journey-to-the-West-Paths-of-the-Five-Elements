@@ -1,6 +1,6 @@
 # 2026-11-19 — Sun Wukong Four-View Turnaround Generation
 
-> Mandatory review standard: [ART_REVIEW_STANDARD.md](../ART_REVIEW_STANDARD.md). This is the copy-ready brief for the requeued Wukong image-generation slot. Check `AI_ART_PRODUCTION_SCHEDULE.md` first. The owner has one image-generation call per local calendar day; use exactly one call for this sheet and do not retry it that day.
+> Mandatory review standard: [ART_REVIEW_STANDARD.md](../ART_REVIEW_STANDARD.md). Mandatory alpha procedure: [TRANSPARENCY_WORKFLOW.md](../TRANSPARENCY_WORKFLOW.md). This is the copy-ready brief for the requeued Wukong image-generation slot. Check `AI_ART_PRODUCTION_SCHEDULE.md` first. The owner has one image-generation call per local calendar day; use exactly one call for this sheet and do not retry it that day.
 
 ## Deliverable
 
@@ -35,6 +35,12 @@ If crowded, simplify armor ornament and decoration. Never sacrifice tail visibil
 
 ### Negative prompt / reject list
 Painterly, concept painting, watercolor, oil paint, airbrush, smooth gradients, soft focus, anti-aliased edges, vector art, 3D render, photorealism, anime shading, blurry pixels, noisy dithering, human face, human general, missing tail, hidden tail, tail fused to legs, staff across shoulders, staff behind back, diagonal back-mounted staff, spear pose, raised weapon, changing grip, mirrored hand, different poses, different costumes, inconsistent proportions, cropped staff, cropped feet, cropped tail, overlapping quadrants, checkerboard background, floor shadow, scenery, frame, panel dividers, labels, lettering, watermark, logo, UI.
+
+### Transparency preflight
+- [ ] Use the image tool's explicit transparent-background option (`transparent_background=true`); do not rely on prompt text alone.
+- [ ] The prompt requires a genuine RGBA PNG with alpha=0 in all empty regions; checkerboard patterns are forbidden.
+- [ ] Read `TRANSPARENCY_WORKFLOW.md` and know the no-retry fallback before using today's only call.
+- [ ] If the output is RGB, do not convert it blindly to RGBA. Preserve the raw output and follow the flat key-color / conditional white / segmentation rescue decision tree. Reject checkerboard or complex backgrounds.
 
 ### Final preflight
 - [ ] Confirm the local date in America/Los_Angeles is 2026-11-19.
@@ -79,7 +85,9 @@ The image must be a clean **2×2 grid of four full-body views of ONE identical c
 - The look should feel at home beside a restrained HD-2D Chinese-fantasy environment: traditional Chinese mythological design language, grounded materials, elegant proportions, and warm red/ochre/gold accents.
 
 **Background and exclusions:**
-- Real transparent alpha background across the entire image, including all empty space between the figures. Do not simulate transparency with a checkerboard.
+- Enable the image tool's native transparent-background option. Deliver a PNG with a genuine RGBA alpha channel; all empty/background pixels and the gutters between figures must have alpha=0.
+- Do not simulate transparency with a checkerboard. No white canvas, colored matte, scenery, floor plane, cast shadow, glow, or backdrop.
+- If native transparency cannot be produced, use only the fallback process in `TRANSPARENCY_WORKFLOW.md`; do not make a second generation call.
 - No scenery, architecture, ground plane, cast shadow, smoke, wind effects, particles, decorative backdrop, or environmental lighting.
 - No UI, HUD, menus, health bars, icons, logos, signatures, watermarks, written Chinese characters, or any text.
 - No extra characters, duplicate heads, extra limbs, alternate costumes, extra weapons, floating props, or decorative silhouettes.
@@ -90,15 +98,16 @@ Output exactly one image: the complete four-view turnaround sheet. Prioritize id
 
 Apply the full review standard. Any failure of pixel-art craft, simian identity, visible tail, upright beside-body staff, same pose/grip, complete silhouettes, genuine alpha, or canvas integrity is an automatic rejection regardless of score. A passing crop tool or CI run does not waive human art review.
 
-1. Inspect all four quadrants manually at full resolution. Reject if the face/costume/weapon/tail changes between views, if any view is missing, if a prop crosses a quadrant boundary, or if the image is flattened.
-2. Confirm the exact quadrant order in the prompt. Do not reorder the sheet to make the crop script accept it.
-3. Preserve the original image unchanged and run:
+1. Inspect the actual PNG file mode and alpha histogram first. Confirm real transparent pixels in all four quadrants and gutters; an RGB file or painted checkerboard is an immediate reject unless a documented safe background-removal rescue succeeds.
+2. Inspect all four quadrants manually at full resolution. Reject if the face/costume/weapon/tail changes between views, if any view is missing, if a prop crosses a quadrant boundary, or if the image is flattened.
+3. Confirm the exact quadrant order in the prompt. Do not reorder the sheet to make the crop script accept it.
+4. Preserve the original image unchanged and run:
 
    ```bash
    python tools/art/prepare_character_turnaround.py --input /absolute/path/wukong_turnaround.png --character wukong
    ```
 
-4. Inspect the archived source and the 128×192 crop. Confirm the complete staff, tail, headband, and both feet remain visible at native and in-game scale.
-5. Do not pass `--overwrite` unless replacement is intentional and the previous files have been reviewed.
-6. Update the production schedule, development log, AI memory, and handoff. Run exact-head Art Tooling and Godot Runtime CI.
-7. Do not make a second image-generation call on 2026-11-19, even if the result is rejected. Replan the missed asset to the next available date and continue with non-generation work.
+5. Inspect the archived source and the 128×192 crop. Confirm the complete staff, tail, headband, and both feet remain visible at native and in-game scale.
+6. Do not pass `--overwrite` unless replacement is intentional and the previous files have been reviewed.
+7. Update the production schedule, development log, AI memory, and handoff. Run exact-head Art Tooling and Godot Runtime CI.
+8. Do not make a second image-generation call on 2026-11-19, even if the result is rejected. Replan the missed asset to the next available date and continue with non-generation work.
