@@ -227,10 +227,14 @@ func _run_smoke() -> void:
 		# Reach the next map destination only after its real timeline/milestone gates are met.
 		if character == "LONGMA":
 			_record(not WorldMapManager.new().can_visit(resumed_journey.narrative, "BLACK_WIND_NORTH_PATH"), "Longma's T110 post-recruitment save must not enter the T120 North Path early")
+			_record(not resumed_journey.primary_button.disabled, "Shared-04 should expose an enabled Journey continue control (phase=%s)" % resumed_journey.phase_label.text)
+			_record(resumed_journey.narrative.state.current_shared_chapter == "SHARED-04-EARLY-DEMON-TALES", "Longma battle should hand off to Shared-04 before the next map gate")
+			_record(SharedJourneyManager.can_enter("SHARED-04-EARLY-DEMON-TALES", resumed_journey.narrative.state), "Shared-04 should satisfy its canonical prerequisite/recruitment gates")
 			resumed_journey.primary_button.emit_signal("pressed")
 			await process_frame
-			_record(resumed_journey.narrative.state.current_shared_chapter == "SHARED-05-GAOJIAZHUANG", "completing the non-combat Shared-04 step should advance to Gaojiazhuang")
-			_record(resumed_journey.narrative.state.current_global_timeline == 120, "Shared-04 should advance the timeline to T120")
+			await process_frame
+			_record(resumed_journey.narrative.state.current_shared_chapter == "SHARED-05-GAOJIAZHUANG", "completing the non-combat Shared-04 step should advance to Gaojiazhuang (phase=%s, button=%s, disabled=%s)" % [resumed_journey.phase_label.text, resumed_journey.primary_button.text, str(resumed_journey.primary_button.disabled)])
+			_record(resumed_journey.narrative.state.current_global_timeline == 120, "Shared-04 should advance the timeline to T120 (current=%d)" % resumed_journey.narrative.state.current_global_timeline)
 		elif character == "WUJING":
 			_record(not WorldMapManager.new().can_visit(resumed_journey.narrative, "DRAGON_BONE_SANCTUM"), "Dragon Bone Sanctum must remain locked before the T170 mainline milestone")
 			_record(_press_shared_choice(resumed_journey, "PARTY_FULL", "SWEAR_TOGETHER"), "Wujing's next production Journey step should expose the canonical Party Full choice")
