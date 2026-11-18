@@ -10,7 +10,7 @@ Any single failure means **REJECTED**, regardless of score:
 3. **Recognizable silhouette:** The subject reads immediately at actual game scale. Required anatomy, costume landmarks, signature props, and distinguishing traits must be visible and unobscured.
 4. **Anatomy / spatial integrity:** No missing or extra limbs, malformed joints, duplicated features, broken perspective, clipped extremities, intersecting props, or impossible equipment placement.
 5. **Consistency:** Multi-view sheets depict the same model, proportions, costume, palette, equipment, pose, and grip. Only viewing direction changes unless the brief explicitly says otherwise.
-6. **Canvas / transparency:** Exact dimensions and aspect ratio follow the schedule/catalog. Character sheets require genuine alpha; a painted checkerboard fails. Scene art follows the specified 16:9 contract.
+6. **Canvas / transparency:** Exact dimensions and aspect ratio follow the schedule/catalog. Character sheets require genuine alpha with actual transparent pixels in every empty region. RGB files, all-opaque RGBA, painted checkerboards, and simulated transparency fail. Follow [TRANSPARENCY_WORKFLOW.md](TRANSPARENCY_WORKFLOW.md) for native alpha and fallback removal. Scene art follows the specified 16:9 contract.
 7. **Clean delivery:** No watermark, signature, captions, labels, text, UI, frame, border, accidental background, compression artifacts, or unrelated elements unless explicitly requested.
 8. **Integration readiness:** Approved crops preserve proportions and complete silhouettes, use nearest-neighbor processing only, and pass catalog/runtime contracts. CI proves loading and dimensions, not art quality.
 
@@ -44,7 +44,7 @@ Record each stage separately; never collapse them into a single “looks good”
 - Same model, face, anatomy, costume, palette, accessories, weapon, pose, grip, scale, camera, and ground baseline.
 - Required identity traits and signature equipment visible in every view where physically possible.
 - Tail, mane, ears, headwear, weapon tips, hooves, feet, robe hems, and extremities not hidden, cropped, or fused into the silhouette.
-- Genuine transparent alpha in empty regions; no checkerboard, shadow plane, scenery, or painted backdrop.
+- Genuine transparent alpha in empty regions; no checkerboard, shadow plane, scenery, or painted backdrop. Verify the file's alpha values, not just its filename or preview.
 - No extra character, alternate costume, extra weapon, text, watermark, panel frame, or UI.
 - Inspect source and top-left canonical crop separately; do not squeeze all four views into one runtime sprite.
 
@@ -67,4 +67,4 @@ Use only:
 - **INTEGRATED — AWAITING SCREENSHOT REVIEW** — integration and exact-head CI pass, but player-facing review remains.
 - **PRODUCTION ACCEPTED** — all gates, exact-head CI, gameplay-scale review, and relevant screenshots pass.
 
-Each record includes asset/date, source dimensions/format, alpha/ratio checks, category scores, critical failures, decision, file hashes/paths if accepted, exact tested commit SHA, CI run IDs, and screenshot evidence or explicit no-screenshot statement. Never call an asset final/production-ready/complete unless its state is **PRODUCTION ACCEPTED**. Rejected outputs never enter production directories.
+Each record includes asset/date, source dimensions/format, alpha/ratio checks, whether transparency was native or recovered by keying/segmentation, key color/tolerance or mask method when used, category scores, critical failures, decision, file hashes/paths if accepted, exact tested commit SHA, CI run IDs, and screenshot evidence or explicit no-screenshot statement. Never call an asset final/production-ready/complete unless its state is **PRODUCTION ACCEPTED**. Rejected outputs never enter production directories.
