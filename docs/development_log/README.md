@@ -1,5 +1,7 @@
 # Development Log Index
 
+- [2026-11-18 — Transparent Asset Generation and Background-Removal SOP](2026-11-18-transparent-asset-generation-sop.md)
+
 - [2026-11-18 — Yellow Wind King Turnaround Rejected; Art Queue Reconciled](2026-11-18-yellow-wind-king-turnaround-rejected.md)
 
 所有重要开发更新都必须在本目录留下单独的 Markdown 记录。
