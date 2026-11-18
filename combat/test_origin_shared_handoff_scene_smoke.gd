@@ -16,7 +16,7 @@ const CASES := [
 		"encounter_id": "SHARED_EAGLE_SORROW",
 		"expected_recruit": "LONGMA",
 		"next_chapter": "SHARED-04-EARLY-DEMON-TALES",
-		"map_destination": "BLACK_WIND_NORTH_PATH",
+		"map_destination": "EAGLE_SORROW",
 		"advance_shared_before_map": true
 	},
 	{
@@ -97,7 +97,9 @@ func _run_smoke() -> void:
 		_record(journey.narrative.state.starting_character == character, "%s Journey should preserve its starting-character identity" % character)
 		_record(journey.narrative.state.current_shared_chapter == chapter_id, "%s Journey should resume at %s" % [character, chapter_id])
 
-		journey.call("_advance_primary")
+		_record(not journey.primary_button.disabled, "%s Journey should expose the first Shared EventSequence through its production Continue control" % character)
+		journey.primary_button.emit_signal("pressed")
+		await process_frame
 		_record(journey.event_session != null, "%s Journey should start its first Shared EventSequence" % character)
 		if journey.event_session == null:
 			break
@@ -237,17 +239,19 @@ func _run_smoke() -> void:
 				_record(await _drive_resumed_session_to_end(resumed_journey, "SHARED-04-EARLY-DEMON-TALES"), "Shared-04 production EventSequence should reach END")
 			_record(resumed_journey.narrative.state.current_shared_chapter == "SHARED-05-GAOJIAZHUANG", "completing the Shared-04 EventSequence should advance to Gaojiazhuang")
 			_record(resumed_journey.narrative.state.current_global_timeline == 120, "Shared-04 should advance the timeline to T120 (current=%d)" % resumed_journey.narrative.state.current_global_timeline)
+			_record(str(resumed_journey.narrative.state.get_world_state().get("current_location", "")) == "BLACK_WIND_NORTH_PATH", "Shared-04's canonical MOVE should establish the North Path as the current location")
 		elif character == "WUJING":
 			_record(not WorldMapManager.new().can_visit(resumed_journey.narrative, "DRAGON_BONE_SANCTUM"), "Dragon Bone Sanctum must remain locked before the T170 mainline milestone")
-			_record(_press_shared_choice(resumed_journey, "PARTY_FULL", "SWEAR_TOGETHER"), "Wujing's next production Journey step should expose the canonical Party Full choice")
-			await process_frame
+			_record(not resumed_journey.primary_button.disabled, "Shared-08 EventSequence should own and expose the Party Full choice")
 			resumed_journey.primary_button.emit_signal("pressed")
 			await process_frame
+			_record(resumed_journey.event_session != null, "Journey should start the production Shared-08 EventSequence")
 			if resumed_journey.event_session != null:
-				_record(await _drive_resumed_session_to_end(resumed_journey, "SHARED-08-PARTY-FULL"), "Shared-08 production EventSequence should reach END")
-			_record(resumed_journey.narrative.state.current_shared_chapter == "SHARED-09-FULL-PILGRIMAGE", "Party Full choice should complete Shared-08 and unlock the final shared pilgrimage chapter")
+				_record(await _drive_resumed_session_to_end(resumed_journey, "SHARED-08-PARTY-FULL", "SWEAR_TOGETHER"), "Shared-08 dialogue and Party Full choice should reach END")
+			_record(resumed_journey.narrative.state.current_shared_chapter == "SHARED-09-FULL-PILGRIMAGE", "Party Full sequence should complete Shared-08 and unlock the final shared pilgrimage chapter")
 			resumed_journey.primary_button.emit_signal("pressed")
 			await process_frame
+			_record(resumed_journey.event_session != null, "Journey should start the production Shared-09 EventSequence")
 			if resumed_journey.event_session != null:
 				_record(await _drive_resumed_session_to_end(resumed_journey, "SHARED-09-FULL-PILGRIMAGE"), "Shared-09 production EventSequence should reach END")
 			_record(resumed_journey.narrative.state.current_global_timeline == 170, "Shared-09 should advance the timeline to T170 without changing the recruited roster")
@@ -379,24 +383,8 @@ func _press_event_choice(journey: JourneyScreen, action: Dictionary, choice_id: 
 			return true
 	return false
 
-func _press_shared_choice(journey: JourneyScreen, event_id: String, choice_id: String) -> bool:
-	var event := SharedEventManager.new().get_event(event_id)
-	var selected_label := ""
-	for choice in event.get("choices", []):
-		if str(choice.get("id", "")) == choice_id:
-			selected_label = str(choice.get("label", choice_id))
-			break
-	if selected_label.is_empty():
-		return false
-	for child in journey.choice_box.get_children():
-		var button := child as Button
-		if button != null and button.text == selected_label:
-			button.emit_signal("pressed")
-			return true
-	return false
-
-func _drive_resumed_session_to_end(journey: JourneyScreen, chapter_id: String) -> bool:
-	for _step in range(32):
+func _drive_resumed_session_to_end(journey: JourneyScreen, chapter_id: String, preferred_choice_id: String = "") -> bool:
+	for _step in range(40):
 		await process_frame
 		if journey.event_session == null:
 			return true
@@ -404,6 +392,15 @@ func _drive_resumed_session_to_end(journey: JourneyScreen, chapter_id: String) -
 		match str(action.get("kind", "")):
 			EventRunner.DIALOGUE:
 				journey.primary_button.emit_signal("pressed")
+			EventRunner.CHOICE:
+				var choice_id := preferred_choice_id
+				if choice_id.is_empty():
+					var choices: Array = action.get("choices", [])
+					if not choices.is_empty():
+						choice_id = str(choices[0].get("id", ""))
+				if choice_id.is_empty() or not _press_event_choice(journey, action, choice_id):
+					_record(false, "%s EventSequence choice should be actionable through Journey UI" % chapter_id)
+					return false
 			EventRunner.END:
 				journey.primary_button.emit_signal("pressed")
 			EventRunner.WAIT, EventRunner.MOVE:
@@ -411,7 +408,7 @@ func _drive_resumed_session_to_end(journey: JourneyScreen, chapter_id: String) -
 				journey.primary_button.emit_signal("pressed")
 				await create_timer(seconds).timeout
 			_:
-				_record(false, "%s resumed session reached unexpected action before END: %s" % [chapter_id, str(action.get("kind", ""))])
+				_record(false, "%s resumed session reached unexpected action before END: %s (runner=%s)" % [chapter_id, str(action.get("kind", "")), journey.event_session.runner.get_error()])
 				return false
 	return journey.event_session == null
 
