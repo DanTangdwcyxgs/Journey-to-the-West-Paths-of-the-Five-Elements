@@ -689,3 +689,14 @@ Runtime has now verified the post-Shared-02 detour and that Journey resumes at S
 - The Wukong prompt preflight is updated for 2026-11-19. Start with that prompt only after checking America/Los_Angeles date and unused quota. One call maximum; reject and stop for the day if any critical gate fails.
 - Log: `docs/development_log/2026-11-18-yellow-wind-king-turnaround-rejected.md`. AI memory Round 97 records the same decision. Documentation-only updates; no code, production assets, crop, catalog, Runtime, Art Tooling, Web Demo, or screenshot validation was run.
 - PR #30 remains Draft/open/unmerged. Preserve SVG fallbacks; do not merge without explicit owner approval.
+
+
+## Current Handoff — 2026-11-18: Transparent Asset Generation / Recovery SOP
+
+- Before any image-generation call, read docs/visual_reference/TRANSPARENCY_WORKFLOW.md, ART_REVIEW_STANDARD.md, the canonical daily schedule, and the asset-specific prompt.
+- For assets requiring transparency, explicitly enable the image tool's native transparent-background option (ImageGen: transparent_background=true) and prompt for a genuine RGBA PNG with alpha=0 in empty pixels. Do not rely on prompt wording alone.
+- Immediately inspect actual PNG format/mode/bands and alpha histogram. RGB is opaque. RGBA with all alpha=255 is also opaque. A checkerboard painted into the pixels is not transparency. Merely converting RGB to RGBA is forbidden.
+- If native alpha fails, preserve raw output and do not make a second same-day call. Only rescue a perfectly uniform high-contrast key-color background absent from the subject using connected-background removal, or use carefully reviewed segmentation/manual masking. White is conditional and not the default because pale subject details may be lost. Reject checkerboards, complex backgrounds, unsafe key colors, holes, halos, lost details, and blurred pixel edges.
+- Processed RGBA must be saved separately from raw output, inspected at 100%, then pass all art gates. Only then use the unchanged tools/art/prepare_character_turnaround.py; it is not a background remover and its alpha checks must not be bypassed.
+- Canonical procedure: docs/visual_reference/TRANSPARENCY_WORKFLOW.md. Log: docs/development_log/2026-11-18-transparent-asset-generation-sop.md. AI memory: Round 98.
+- Documentation-only changes. No new generation call was made (today's quota was already consumed); no code, crop tool, asset, catalog, runtime, or screenshot changed. Check exact-head Art Tooling and Godot Runtime workflows before claiming CI green.
