@@ -1,6 +1,6 @@
 # Daily AI Art Production Schedule
 
-> Canonical source of truth for the daily image-generation queue. This file takes precedence over any generated planning poster, chat image, or informal message. Mandatory visual acceptance rules: [ART_REVIEW_STANDARD.md](ART_REVIEW_STANDARD.md).
+> Canonical source of truth for the daily image-generation queue. This file takes precedence over any generated planning poster, chat image, or informal message. Mandatory visual acceptance rules: [ART_REVIEW_STANDARD.md](ART_REVIEW_STANDARD.md). Mandatory alpha/background procedure: [TRANSPARENCY_WORKFLOW.md](TRANSPARENCY_WORKFLOW.md).
 
 ## 1. Operating rules
 
@@ -10,7 +10,9 @@
 - The project owner has a limit of **one image-generation call per local calendar day**. Use the owner's local date in `America/Los_Angeles`.
 - Before generating, read this schedule and the current visual contract. Check today's status first. **Never make a second image-generation call on the same date**, even to fix a weak or incorrect result.
 - Each character slot uses its one daily generation call to produce one coherent four-view turnaround sheet for that character. This is not a multi-character contact sheet: it contains the same character in four complete orientations. Each scene slot still produces one full scene background.
-- If the output misses the brief, lacks real transparency, contains text/UI/watermarks, or cannot meet the required canvas ratio, mark it `REJECTED`; do not retry that day. Use the rest of the day for cropping/inspection, code, tests, documentation, or other non-generation work. Replan the missed asset to the next available generation date.
+- Before every generation call, enable the image tool's explicit transparent-background option (`transparent_background=true`) whenever the asset contract requires transparency; prompt wording alone is insufficient. Inspect the saved file's actual alpha channel before any processing.
+- If native alpha fails, do not regenerate that day. Follow `TRANSPARENCY_WORKFLOW.md`: only a uniform, high-contrast, subject-safe flat key-color background or a carefully reviewed segmentation mask may be rescued. White is conditional, not the default; painted checkerboards and complex backgrounds are immediate rejects. Never convert RGB to RGBA without actually removing the background.
+- If the output misses the brief, cannot be safely background-removed, contains text/UI/watermarks, or cannot meet the required canvas ratio, mark it `REJECTED`; do not retry that day. Use the rest of the day for inspection, non-destructive background processing, code, tests, documentation, or other non-generation work. Replan the missed asset to the next available generation date.
 - Do not assume background work will occur automatically. The next Agent should execute only the task for the current date, then update this schedule and the development log before moving on.
 - A generated image is not accepted merely because it exists. It must pass the visual checklist, canvas-size contract, catalog lookup, exact-head Godot Runtime, and actual in-game screenshot review before being called production-ready.
 
@@ -66,6 +68,8 @@ After 2026-11-20, pause new image generation long enough to integrate the first 
 ## 4. Per-asset art briefs
 
 ### Shared four-view layout for every character slot
+
+Before generating, read [TRANSPARENCY_WORKFLOW.md](TRANSPARENCY_WORKFLOW.md). Use the image tool's native transparent-background setting and require a real RGBA alpha channel. If the tool returns RGB, use only the documented safe rescue path; never accept a checkerboard or assume RGBA conversion creates transparency.
 
 Generate one transparent-background 2×2 turnaround sheet, containing the same single character in four complete full-body orientations. Keep anatomy, costume, colors, face, markings, accessories, weapon design, and proportions consistent across all four views. Use the exact same standing, battle-ready pose and weapon grip in every quadrant; rotate the model around its vertical axis instead of inventing four different action poses. No view may be cropped or overlap another. Each figure should occupy most of its quadrant height while leaving safe transparent margins around every extremity and prop.
 
