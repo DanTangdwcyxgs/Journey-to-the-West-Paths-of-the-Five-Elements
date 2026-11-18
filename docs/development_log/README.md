@@ -1,5 +1,6 @@
 # Development Log Index
 
+- [`2026-11-18 — Agent Repository Review and Next Implementation Batch`](2026-11-18-agent-review-and-next-batch.md)
 - [`2026-11-16 — Origin Handoff Shared-History Reconciliation`](2026-11-16-origin-handoff-shared-history-reconciliation.md)
 
 所有重要开发更新都必须在本目录留下单独的 Markdown 记录。
