@@ -57,6 +57,7 @@ const TEST_SCRIPTS := [
 	"res://combat/test_battle_ui_bounty_settlement_retry.gd",
 	"res://combat/test_main_menu_battle_resume_smoke.gd",
 	"res://combat/test_origin_battle_defeat_retry_roundtrip.gd",
+	"res://combat/test_bounty_encounter_state_resume_migration_failure.gd",
 	"res://combat/test_sound_manager_lifecycle.gd",
 	"res://combat/test_main_menu_contact.gd",
 	"res://combat/test_visual_asset_contract.gd",
