@@ -10,6 +10,9 @@ var resume_path: String = BountyEncounterState.RESUME_PATH
 var save_backup: Dictionary
 var encounter_backup: Dictionary
 var resume_backup: Dictionary
+var current_stage := "setup"
+var cleanup_done := false
+var watchdog: Timer
 
 func _initialize() -> void:
 	save_backup = _capture_file(save_path)
@@ -18,15 +21,17 @@ func _initialize() -> void:
 	_remove_file(save_path)
 	_remove_file(encounter_path)
 	_remove_file(resume_path)
+	watchdog = Timer.new()
+	watchdog.one_shot = true
+	watchdog.wait_time = 45.0
+	watchdog.timeout.connect(_on_watchdog_timeout)
+	root.add_child(watchdog)
+	watchdog.start()
 	await _run_smoke()
-	var active_scene: Node = current_scene
-	current_scene = null
-	if is_instance_valid(active_scene):
-		active_scene.free()
-	await process_frame
-	_restore_file(save_path, save_backup)
-	_restore_file(encounter_path, encounter_backup)
-	_restore_file(resume_path, resume_backup)
+	if cleanup_done:
+		return
+	await _cleanup()
+	watchdog.stop()
 	if failures.is_empty():
 		print("ORIGIN_BATTLE_DEFEAT_RETRY_ROUNDTRIP_PASS")
 		quit(0)
@@ -36,7 +41,31 @@ func _initialize() -> void:
 		print("ORIGIN_BATTLE_DEFEAT_RETRY_ROUNDTRIP_FAIL failures=%d" % failures.size())
 		quit(1)
 
+func _on_watchdog_timeout() -> void:
+	if cleanup_done:
+		return
+	failures.append("battle defeat/retry smoke timed out at stage: %s" % current_stage)
+	await _cleanup()
+	for failure in failures:
+		push_error(failure)
+	print("ORIGIN_BATTLE_DEFEAT_RETRY_ROUNDTRIP_TIMEOUT stage=%s" % current_stage)
+	quit(1)
+
+func _cleanup() -> void:
+	if cleanup_done:
+		return
+	cleanup_done = true
+	var active_scene: Node = current_scene
+	current_scene = null
+	if is_instance_valid(active_scene):
+		active_scene.free()
+	await process_frame
+	_restore_file(save_path, save_backup)
+	_restore_file(encounter_path, encounter_backup)
+	_restore_file(resume_path, resume_backup)
+
 func _run_smoke() -> void:
+	current_stage = "load fixture and MainMenu"
 
 	var fixture := NarrativeManager.new()
 	_record(fixture.start_new_game("LONGMA"), "Longma route should initialize")
@@ -54,12 +83,14 @@ func _run_smoke() -> void:
 	current_scene = menu
 	await process_frame
 	_record(not menu.continue_button.disabled, "MainMenu should offer Continue for the Longma fixture")
+	current_stage = "MainMenu Continue -> Journey"
 	menu.continue_button.emit_signal("pressed")
 	var journey := await _wait_for_journey()
 	_record(journey != null, "MainMenu Continue should enter the production Journey")
 	if journey == null:
 		return
 
+	current_stage = "start Longma EventSequence"
 	journey.primary_button.emit_signal("pressed")
 	await process_frame
 	_record(journey.event_session != null, "Journey Continue should start LONGMA-02-SEQUENCE")
@@ -78,6 +109,7 @@ func _run_smoke() -> void:
 	_record(journey.narrative.state.get_origin_choice("LONGMA-02") == choice_id, "the chosen stance should persist before battle")
 	_record(str(journey.event_session.get_action().get("kind", "")) == EventRunner.BATTLE, "the selected stance should advance directly to the encounter handoff")
 
+	current_stage = "enter first BattleUI"
 	var first_battle := await _wait_for_battle()
 	_record(first_battle != null, "Longma EventSequence should enter the production BattleUI")
 	if first_battle == null:
@@ -86,6 +118,7 @@ func _run_smoke() -> void:
 	_record(first_battle.encounter_id == "LONGMA_ORIGIN_SEA_CLIFF", "Longma trial should launch the canonical Sea Cliff encounter")
 	var handoff_before_defeat := BountyEncounterState.get_active_record()
 	_record(not handoff_before_defeat.get("event_resume", {}).is_empty(), "battle handoff should keep the EventSession snapshot")
+	current_stage = "persist battle defeat and return"
 	first_battle.call("_on_combat_finished", "enemies")
 	await process_frame
 	_record(first_battle.status_label.text.find("战斗失败") >= 0, "defeat should show player-facing failure feedback")
@@ -100,6 +133,7 @@ func _run_smoke() -> void:
 		_record("LONGMA-02" not in failed_save.state.completed_chapters, "defeat must not mark the recruitment chapter complete")
 
 	first_battle.return_button.emit_signal("pressed")
+	current_stage = "restore failed EventSession in Journey"
 	var retry_journey := await _wait_for_journey()
 	_record(retry_journey != null, "returning after defeat should restore the production Journey")
 	if retry_journey == null:
@@ -114,7 +148,9 @@ func _run_smoke() -> void:
 	_record(bool(retry_record.get("battle_failed", false)), "the retry point should remain persisted if the player quits before retrying")
 	_record(retry_journey.primary_button.text == "进入战斗", "Journey should expose a direct retry action at the pending BATTLE node")
 
+	current_stage = "launch retry BattleUI"
 	retry_journey.primary_button.emit_signal("pressed")
+	current_stage = "wait for retry BattleUI"
 	var second_battle := await _wait_for_battle()
 	_record(second_battle != null, "pressing the pending BATTLE action should relaunch the same production encounter")
 	if second_battle == null:
@@ -125,6 +161,7 @@ func _run_smoke() -> void:
 	_record(not bool(retry_handoff.get("battle_failed", false)), "a fresh retry handoff should clear the previous failure marker")
 	_record(not retry_handoff.get("event_resume", {}).is_empty(), "retry should preserve the EventSession snapshot at its BATTLE node")
 
+	current_stage = "resolve retry victory atomically"
 	second_battle.call("_on_combat_finished", "allies")
 	await process_frame
 	await process_frame
@@ -138,6 +175,7 @@ func _run_smoke() -> void:
 		_record(victory_save.state.get_origin_choice("LONGMA-02") == choice_id, "successful retry should preserve the original player choice")
 
 	second_battle.return_button.emit_signal("pressed")
+	current_stage = "restore post-victory Journey"
 	var post_battle_journey := await _wait_for_journey()
 	_record(post_battle_journey != null, "victory continuation should restore Journey after the retry")
 	if post_battle_journey != null:
