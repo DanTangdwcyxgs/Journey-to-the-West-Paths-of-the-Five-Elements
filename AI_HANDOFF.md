@@ -668,3 +668,32 @@ Runtime has now verified the post-Shared-02 detour and that Journey resumes at S
 3. Record a prioritized small backlog with concrete acceptance checks before expanding content or spending daily image-generation quota.
 4. Keep all historical facts, map visits, rewards, and chronology canonical. Do not seed future milestones or retroactive rewards to make progression convenient.
 5. Keep PR #34 Draft/open; no merge/deployment without explicit owner approval. When owner approves a merge later, rerun Runtime and Web Demo build/export/deployment against the exact merged-main SHA.
+
+
+## Current Handoff — 2026-11-19: Player-Facing Vertical Slice Audit / Narrative Battle Retry
+
+- Branch: `feature/shared-yellow-wind-mainline-2026-11-13`; PR #34 remains Draft/open/unmerged. Main unchanged.
+- Latest implementation head before audit documentation sync: `db57f9c49d31ef513f952439caf794e448fdc099`. Further docs commits are now being added; verify the exact final branch head and its exact Runtime job before claiming green.
+- Completed and independently validated:
+  - MainMenu now loads its single save slot before showing the preview, identifies the actual protagonist / global timeline / Shared chapter / roster, enables Continue only if load succeeds, and confirms New Game overwrite. Cancel preserves the existing save. Test `combat/test_main_menu_save_safety.gd`: PASS on SHA `df8119cf5c74d2bafda95089cc4e88e6208a48a9`, run [44438467442](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/44438467442), suite 55/55.
+  - Registered EventSequences now own their CHOICE nodes in both Shared and Origin Journey UI; legacy choice UI no longer pre-commits a choice that EventRunner will encounter again. Tang TANG-04 production UI smoke: PASS on SHA `601036cda520680fa0e5f2256090c3408d486af4`, run [44438943432](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/44438943432), suite 56/56.
+  - Audited the route catalogs: all 46 Origin chapters across Wukong/Tang/Longma/Bajie/Wujing have registered EventSequences in the combined shared and Origin sequence files.
+- Implemented narrative battle defeat retry:
+  - Defeat persists `battle_failed=true` with the current EventSession.
+  - Journey restores the session at its still-pending BATTLE node without invoking victory resolution and preserves the selected pre-battle CHOICE.
+  - Re-entering BATTLE launches the same encounter and replaces the failed marker with a fresh handoff.
+  - Victory still uses BattleResolutionService and only then advances to after-battle dialogue / END.
+  - Generic handoff clear now migrates an EventSession to RESUME_PATH before removing the active record. If the read/write/migration fails, the active handoff is retained as the only safe copy.
+- New registered end-to-end test: `combat/test_origin_battle_defeat_retry_roundtrip.gd`, covering Longma LONGMA-02 choice → production battle defeat → Journey return → pending BATTLE restore → same encounter retry → victory commit → post-battle dialogue → END, with user-file backup and restoration.
+- Validation caveat: Runs [44439943252](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/44439943252) (test registered; before handoff migration hardening) and [44440581290](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/44440581290) (handoff-migration hardening) were both still reported as `in_progress` at the time of the audit log. The test script itself required a follow-up harness fix at SHA `5464ed4347f62ee78000a5dd538dc4c391e85f78`; do not claim the full defeat/retry flow passed until a completed exact-head run includes `PASS res://combat/test_origin_battle_defeat_retry_roundtrip.gd` and the full suite summary.
+- Detailed audit and prioritized backlog: `docs/development_log/2026-11-19-player-facing-vertical-slice-audit.md`; AI memory Round 100; development-log index updated.
+- No image-generation call or art status change. No merge, Web Demo build/export, Pages deployment, or release.
+
+### Next actions (in order)
+
+1. Poll the exact latest Godot Runtime run for the branch head after the handoff/log/memory/index docs have synchronized. Read the full job log, not only the status badge.
+2. If `test_origin_battle_defeat_retry_roundtrip.gd` fails or the workflow hangs, use the precise assertion/SceneTree backtrace to fix the production transition or test driver. Never weaken the invariant that defeat restores the pending BATTLE node, preserves the committed choice, and does not grant rewards or advance the chapter.
+3. Add a deterministic failure-injection seam/test for RESUME_PATH migration failure proving the active EventSession record is retained.
+4. Continue the P1 player-facing backlog: decide whether “测试战斗” is developer-only in public/demo builds; add a first-battle tutorial; run the five-origin first-session acceptance matrix; consider a backup/export flow for the single save slot.
+5. Then review WorldMap visual navigation and responsive UI through actual screenshots/window sizes. Do not mark visual acceptance from source inspection alone.
+6. Keep PR #34 Draft/open. No merge or deployment without explicit owner approval.
