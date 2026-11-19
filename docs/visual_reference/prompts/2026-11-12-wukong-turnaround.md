@@ -22,7 +22,7 @@ All four quadrants must depict the exact same Sun Wukong design at the same scal
 If crowded, simplify armor ornament and decoration. Never sacrifice tail visibility, staff placement, full-body framing, or pixel clarity to add detail.
 
 ### Spatial lock — staff and tail
-- In the canonical front three-quarter view, place the staff on the image-right side of Wukong's body, parallel to his torso, with visible transparent separation. Both staff ends must fit inside that view.
+- Place the staff in Wukong's anatomical right hand and keep it close beside his anatomical right side, parallel to his torso, with visible transparent separation. In a front-facing view this hand/staff may appear on the viewer-left; do not mirror the character merely to force a viewer-right placement. Both staff ends must fit inside that view.
 - Anatomical right hand grips the staff around waist-to-lower-chest height. The arm hangs naturally. No shouldering, crossing behind the neck, diagonal sling, overhead raise, spear thrust, or action pose.
 - Keep the staff in the same anatomical right hand in every rotated view. Rotate the same model; do not mirror the character or swap hands.
 - Tail emerges from the lower back, curves outward into open negative space, and remains visibly separate from legs, clothing, and staff. Rear view must show the root and full curve.
@@ -73,7 +73,7 @@ The image must be a clean **2×2 grid of four full-body views of ONE identical c
 **Pose and composition:**
 - Neutral battle-ready standing pose: feet planted about shoulder-width apart, knees slightly relaxed, torso upright with a subtle agile readiness, head level.
 - Keep the anatomical left hand relaxed but ready; do not change its position between views.
-- The staff is held nearly vertical beside the body's image-right side in the canonical front three-quarter view, parallel to the torso with clear transparent separation. The anatomical right hand grips it around waist-to-lower-chest height. Its full length and both ends remain inside the quadrant. Never carry it across/behind the shoulders, sling it diagonally, or raise it overhead.
+- The staff is held nearly vertical beside Wukong's anatomical right side in the canonical front three-quarter view, parallel to the torso with clear transparent separation. Depending on the exact front three-quarter rotation, the anatomical right hand may appear on the viewer-left of the image; preserve anatomy rather than mirroring the model. The anatomical right hand grips it around waist-to-lower-chest height. Its full length and both ends remain inside the quadrant. Never carry it across/behind the shoulders, sling it diagonally, or raise it overhead.
 - Each figure fills most of its own quadrant height while leaving clear transparent safety margins around the headband, ears, staff tips, tail, hands, and feet.
 - Keep all four figures completely inside their own quadrants. No overlap, no crossing into neighboring quadrants, and no cropped extremities or props.
 - Use a consistent orthographic/model-turnaround camera with minimal perspective distortion. Do not change scale, zoom, lens, or floor baseline across views.
