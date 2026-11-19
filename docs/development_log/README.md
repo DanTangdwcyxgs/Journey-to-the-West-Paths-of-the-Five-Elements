@@ -1,5 +1,6 @@
 # Development Log Index
 
+- [2026-11-19 — Active Handoff Preserved When Resume Migration Fails](2026-11-19-resume-migration-failure-regression.md)
 - [`2026-11-19 — Player-Facing Vertical Slice Audit`](2026-11-19-player-facing-vertical-slice-audit.md)
 - [`2026-11-18 — Later-Origin Full Recruitment, Battle, and WorldMap Flow`](2026-11-18-origin-handoff-full-recruitment-battle-flow.md)
 - [`2026-11-18 — Agent Repository Review and Next Implementation Batch`](2026-11-18-agent-review-and-next-batch.md)
@@ -14,6 +15,8 @@
 `YYYY-MM-DD-<topic>.md`
 
 ## 最新记录
+
+- [2026-11-19 — Active Handoff Preserved When Resume Migration Fails](2026-11-19-resume-migration-failure-regression.md)
 
 - [2026-11-19 — Player-Facing Vertical Slice Audit](2026-11-19-player-facing-vertical-slice-audit.md)
 
