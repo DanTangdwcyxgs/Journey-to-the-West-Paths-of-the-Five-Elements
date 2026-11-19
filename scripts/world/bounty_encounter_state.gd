@@ -26,6 +26,29 @@ static func start_encounter(encounter_type: String, encounter_id: String, source
 	if file == null:
 		return false
 	file.store_string(JSON.stringify(payload))
+	file.close()
+	return true
+
+static func mark_battle_failed() -> bool:
+	if not FileAccess.file_exists(PATH):
+		return false
+	var read_file := FileAccess.open(PATH, FileAccess.READ)
+	if read_file == null:
+		return false
+	var parsed = JSON.parse_string(read_file.get_as_text())
+	read_file.close()
+	if not parsed is Dictionary:
+		return false
+	var record: Dictionary = parsed
+	var resume: Dictionary = record.get("event_resume", {})
+	if resume.is_empty():
+		return true
+	record["battle_failed"] = true
+	var write_file := FileAccess.open(PATH, FileAccess.WRITE)
+	if write_file == null:
+		return false
+	write_file.store_string(JSON.stringify(record))
+	write_file.close()
 	return true
 
 static func start_narrative_encounter(encounter_id: String, chapter_id: String, route_id: String, extra: Dictionary = {}) -> bool:
