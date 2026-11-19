@@ -13,7 +13,13 @@ func _on_combat_finished(winner: String) -> void:
 		return
 	battle_result_locked = true
 	if winner != "allies":
-		status_label.text = "战斗失败。可以返回重新准备。"
+		var active_record := BountyEncounterState.get_active_record()
+		if not active_record.get("event_resume", {}).is_empty() and not BountyEncounterState.mark_battle_failed():
+			status_label.text = "战斗失败，但重试位置保存失败。请留在此界面，不要退出战斗。"
+			if return_button != null:
+				return_button.disabled = true
+			return
+		status_label.text = "战斗失败。返回旅途后，可以从当前战斗节点重新挑战。"
 		return
 
 	var narrative := _create_narrative_manager()
