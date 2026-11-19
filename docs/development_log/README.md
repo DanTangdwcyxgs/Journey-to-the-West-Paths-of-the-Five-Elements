@@ -1,5 +1,6 @@
 # Development Log Index
 
+- [2026-11-19 — Wukong Turnaround Generated and Accepted for Integration](2026-11-19-wukong-turnaround-generation-accepted.md)
 - [2026-11-18 — Transparent Asset Generation and Background-Removal SOP](2026-11-18-transparent-asset-generation-sop.md)
 
 - [2026-11-18 — Yellow Wind King Turnaround Rejected; Art Queue Reconciled](2026-11-18-yellow-wind-king-turnaround-rejected.md)
@@ -13,6 +14,8 @@
 `YYYY-MM-DD-<topic>.md`
 
 ## 最新记录
+
+- [2026-11-19 — Wukong Turnaround Generated and Accepted for Integration](2026-11-19-wukong-turnaround-generation-accepted.md)
 
 - [2026-11-12 — Wukong Prompt Preflight and Error-Proofing](2026-11-12-wukong-prompt-preflight.md)
 
