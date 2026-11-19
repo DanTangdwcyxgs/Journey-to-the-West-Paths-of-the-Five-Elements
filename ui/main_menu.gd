@@ -210,7 +210,7 @@ func _refresh_ui() -> void:
 	elif not save_loadable:
 		current_label.text = "发现已有存档，但读取失败。\n\n继续已禁用，当前文件不会被自动删除。若要重新开始，需要明确确认覆盖。"
 	else:
-		var character_name := CHARACTER_NAMES.get(narrative.state.starting_character, narrative.state.starting_character)
+		var character_name: String = str(CHARACTER_NAMES.get(narrative.state.starting_character, narrative.state.starting_character))
 		current_label.text = "当前存档\n起始主角：%s\n世界时间：T%04d\n共享章节：%s\n已招募：%s" % [character_name, narrative.state.current_global_timeline, narrative.state.current_shared_chapter if narrative.state.current_shared_chapter != "" else "尚未汇合", _join_character_names(narrative.state.recruited_characters)]
 		continue_button.text = "继续 · %s" % character_name
 
