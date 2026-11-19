@@ -29,7 +29,7 @@ func _run_smoke() -> void:
 	var menu: MainMenu = menu_scene.instantiate() as MainMenu if menu_scene != null else null
 	_record(menu != null, "production MainMenu should instantiate")
 	if menu == null:
-		_finish(save_path, save_backup, encounter_path, encounter_backup, resume_path, resume_backup)
+		await _finish(save_path, save_backup, encounter_path, encounter_backup, resume_path, resume_backup)
 		return
 	root.add_child(menu)
 	current_scene = menu
@@ -39,14 +39,14 @@ func _run_smoke() -> void:
 	var journey := await _wait_for_journey()
 	_record(journey != null, "MainMenu Continue should enter the production Journey")
 	if journey == null:
-		_finish(save_path, save_backup, encounter_path, encounter_backup, resume_path, resume_backup)
+		await _finish(save_path, save_backup, encounter_path, encounter_backup, resume_path, resume_backup)
 		return
 
 	journey.primary_button.emit_signal("pressed")
 	await process_frame
 	_record(journey.event_session != null, "Journey Continue should start LONGMA-02-SEQUENCE")
 	if journey.event_session == null:
-		_finish(save_path, save_backup, encounter_path, encounter_backup, resume_path, resume_backup)
+		await _finish(save_path, save_backup, encounter_path, encounter_backup, resume_path, resume_backup)
 		return
 	_record(journey.event_session.sequence.get_id() == "LONGMA-02-SEQUENCE", "Journey should load the canonical Longma origin sequence")
 	_record(str(journey.event_session.get_action().get("kind", "")) == EventRunner.DIALOGUE, "Longma sequence should begin with its trial dialogue")
@@ -64,7 +64,7 @@ func _run_smoke() -> void:
 	var first_battle := await _wait_for_battle()
 	_record(first_battle != null, "Longma EventSequence should enter the production BattleUI")
 	if first_battle == null:
-		_finish(save_path, save_backup, encounter_path, encounter_backup, resume_path, resume_backup)
+		await _finish(save_path, save_backup, encounter_path, encounter_backup, resume_path, resume_backup)
 		return
 	_record(first_battle.encounter_type == "origin", "Longma trial should use the Origin battle path")
 	_record(first_battle.encounter_id == "LONGMA_ORIGIN_SEA_CLIFF", "Longma trial should launch the canonical Sea Cliff encounter")
@@ -87,11 +87,11 @@ func _run_smoke() -> void:
 	var retry_journey := await _wait_for_journey()
 	_record(retry_journey != null, "returning after defeat should restore the production Journey")
 	if retry_journey == null:
-		_finish(save_path, save_backup, encounter_path, encounter_backup, resume_path, resume_backup)
+		await _finish(save_path, save_backup, encounter_path, encounter_backup, resume_path, resume_backup)
 		return
 	_record(retry_journey.event_session != null, "Journey should restore the failed EventSession")
 	if retry_journey.event_session == null:
-		_finish(save_path, save_backup, encounter_path, encounter_backup, resume_path, resume_backup)
+		await _finish(save_path, save_backup, encounter_path, encounter_backup, resume_path, resume_backup)
 		return
 	var retry_action: Dictionary = retry_journey.event_session.get_action()
 	_record(str(retry_action.get("kind", "")) == EventRunner.BATTLE, "defeat should restore the exact pending BATTLE node, not post-battle dialogue")
@@ -104,7 +104,7 @@ func _run_smoke() -> void:
 	var second_battle := await _wait_for_battle()
 	_record(second_battle != null, "pressing the pending BATTLE action should relaunch the same production encounter")
 	if second_battle == null:
-		_finish(save_path, save_backup, encounter_path, encounter_backup, resume_path, resume_backup)
+		await _finish(save_path, save_backup, encounter_path, encounter_backup, resume_path, resume_backup)
 		return
 	_record(second_battle.encounter_id == "LONGMA_ORIGIN_SEA_CLIFF", "retry should retain the original encounter ID")
 	_record(second_battle.encounter_type == "origin", "retry should retain the Origin battle resolution path")
@@ -142,7 +142,7 @@ func _run_smoke() -> void:
 		_record(not FileAccess.file_exists(encounter_path), "terminal END should clear the active encounter handoff")
 		_record(not FileAccess.file_exists(resume_path), "terminal END should clear the pending resume file")
 
-	_finish(save_path, save_backup, encounter_path, encounter_backup, resume_path, resume_backup)
+	await _finish(save_path, save_backup, encounter_path, encounter_backup, resume_path, resume_backup)
 
 func _press_choice(journey: OriginSequenceJourneyScreen, action: Dictionary, choice_id: String) -> bool:
 	var selected_label := ""
@@ -212,3 +212,7 @@ func _finish(save_path: String, save_backup: Dictionary, encounter_path: String,
 			push_error(failure)
 		print("ORIGIN_BATTLE_DEFEAT_RETRY_ROUNDTRIP_FAIL failures=%d" % failures.size())
 		quit(1)
+
+func _record(condition: bool, message: String) -> void:
+	if not condition:
+		failures.append(message)
