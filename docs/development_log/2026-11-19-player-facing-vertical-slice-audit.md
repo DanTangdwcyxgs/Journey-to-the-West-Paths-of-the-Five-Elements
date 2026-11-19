@@ -61,8 +61,8 @@ Review the first playable slice from a player's perspective without consuming im
 - [x] Load and preview the real single-slot save before enabling Continue.
 - [x] Confirm destructive New Game overwrite and preserve the old save on cancel.
 - [x] Ensure EventSequence-owned CHOICE nodes are not pre-committed by legacy UI.
-- [ ] Finish exact-head validation for narrative defeat → retry at the same BATTLE node → victory settlement → post-battle END. Latest CI pending at log time.
-- [ ] Add an explicit failure-injection regression proving that a failed migration from active handoff to RESUME_PATH keeps the active retry record intact. The current code preserves it; the test still needs a deterministic failure seam.
+- [x] Finish exact-head validation for narrative defeat → retry at the same BATTLE node → victory settlement → post-battle END. PASS: battle retry smoke at SHA `63a65218dc9e5e4d268acc42ba505cc17ff48cb7`, Runtime run [44441787645](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/44441787645), suite 57/57.
+- [x] Add an explicit failure-injection regression proving that a failed migration from active handoff to RESUME_PATH keeps the active retry record intact. A directory at `RESUME_PATH` deterministically forces `FileAccess.open(..., WRITE)` to fail; the regression verifies the active handoff remains byte-for-byte unchanged and restores prior user files. PASS: SHA `f3dca5a98ee72e15b2ca67cfb9a1157b272282c9`, Runtime run [44446160315](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/44446160315), suite 58/58.
 
 ### P1 — demo readiness / onboarding
 
@@ -82,7 +82,7 @@ Review the first playable slice from a player's perspective without consuming im
 
 - PR #34 remains Draft/open/unmerged; main is unchanged.
 - No Web Demo build, export, deployment, or merge was performed.
-- No image-generation call was made; no daily quota or asset state changed.
+- This gameplay branch contains no image binary or art-catalog change. The one 2026-11-19 Wukong generation was handled separately on the art branch; see its handoff and log.
 - No historical map visit, reward, or global timeline fact was invented to simplify testing.
 - All new SceneTree fixtures preserve and restore user save / encounter / resume files.
 
