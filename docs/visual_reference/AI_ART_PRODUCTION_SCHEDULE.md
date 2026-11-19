@@ -43,17 +43,34 @@ One Yellow Wind King four-view generation call produced a 1536×1024 RGB PNG. Th
 
 The art-branch audit found that all six character final PNG/WebP assets are still absent. To resolve the stale date-row versus P0 backlog conflict, overdue P0 characters are requeued in canonical order from 2026-11-19; Yellow Wind King is requeued for 2026-11-24 after Wukong, Tang, Bajie, Wujing, and Longma. See `docs/development_log/2026-11-18-yellow-wind-king-turnaround-rejected.md`.
 
+### Execution record — 2026-11-19
+
+**Status: ACCEPTED FOR INTEGRATION / DAILY GENERATION BUDGET CONSUMED — BINARY HANDOFF PENDING**
+
+One ImageGen call generated the scheduled Sun Wukong 2×2 turnaround. No second call was made.
+
+- Raw output: `wukong_turnaround_raw.png` — 1536×1024 PNG, RGBA, SHA-256 `047c381b7b4e690c6180252ab764a5c4f73d1ca249b5915bae2ba7aac79ce3b5`.
+- Native transparency: real alpha channel; extrema (0, 254); fully transparent pixels 1,110,183 (70.6%); partially transparent pixels 462,681; fully opaque pixels 0. Sampled empty gutters/corners have alpha=0. No checkerboard or painted backdrop is present in the source pixels.
+- Layout check: top-left canonical front 3/4, top-right right profile, bottom-right rear 3/4, bottom-left left profile. All four views are the same monkey-king model at consistent scale and ground baseline. The tail, feet, and full upright staff are visible in each view. The staff follows the same anatomical right hand as the character rotates.
+- Visual gates: simian muzzle/ears and golden brow fillet read clearly; red/vermilion/ochre costume and Ruyi Jingu Bang are recognizable; tail is distinct from legs and staff; there are no labels, frames, UI, watermarks, or scenery.
+- Alpha cleanup: the untouched raw file was preserved. A separate processing copy clears only one-level alpha noise (`A=1`) to zero (46,166 pixels); all higher-alpha pixels are preserved. Processed copy SHA-256: `086e37efa11f2aee0bece45f21c5b9ad9a1e83ff2b7dc9ed662d823d7f3b37cb`.
+- Processed quadrant fully-transparent ratios: front 72.94%, right 74.91%, rear 72.12%, left 74.10%. All four alpha bounds are safely inset from each quadrant edge. The crop-contract preview places the top-left view proportionally into a transparent 128×192 canvas at 120×160 pixels; crop alpha bounds are (4, 29, 124, 188). Preview SHA-256: `e437b3f01387a029b7967273b2bca234f304a7adbd9c2926dc8a3c7bad2411de`.
+- Art-review score: **90/100** — pixel craft 21/25, identity/silhouette 20/20, anatomy/pose 14/15, multi-view consistency 14/15, palette 9/10, canvas/transparency 8/10, gameplay-scale readability 4/5. Decision: `ACCEPTED FOR INTEGRATION`, not `PRODUCTION ACCEPTED`.
+- The output and processed/crop previews are available as conversation artifacts, but no PNG binary has been committed to this branch. The repository checkout was unavailable in the execution environment, so the exact `prepare_character_turnaround.py` command, Art Tooling, Godot Runtime, ArtAssetCatalog integration, and player-facing screenshot review have **not** been run. Do not claim these stages passed.
+- No runtime crop was committed. Keep the raw file unchanged; preserve the processed copy separately. Once the binary handoff reaches the repository, run the canonical preparation tool without `--overwrite`, inspect its source archive and crop, then run exact-head Art Tooling and Godot Runtime.
+- Daily image-generation quota is consumed for 2026-11-19. Do not retry or regenerate today, even if downstream tooling identifies a problem. The next scheduled slot is Tang Sanzang on 2026-11-20.
+
 ## 3. Production queue
 
 | Date (local) | One image to generate | Required output / file | Status |
 |---|---|---|---|
-| 2026-11-13 (overdue) | Sun Wukong four-view turnaround sheet + canonical game crop | `assets/art/source_sheets/characters/wukong_turnaround.png` → `assets/art/characters/final/wukong.png` · 128×192 | Pending — first P0 item; requeued 2026-11-19 |
+| 2026-11-13 (overdue) | Sun Wukong four-view turnaround sheet + canonical game crop | `assets/art/source_sheets/characters/wukong_turnaround.png` → `assets/art/characters/final/wukong.png` · 128×192 | Superseded by the 2026-11-19 requeue; see execution record |
 | 2026-11-14 (overdue) | Tang Sanzang four-view turnaround sheet + canonical game crop | `assets/art/source_sheets/characters/tang_turnaround.png` → `assets/art/characters/final/tang.png` · 128×192 | Pending — requeued 2026-11-20 |
 | 2026-11-15 (overdue) | Zhu Bajie four-view turnaround sheet + canonical game crop | `assets/art/source_sheets/characters/bajie_turnaround.png` → `assets/art/characters/final/bajie.png` · 128×192 | Pending — requeued 2026-11-21 |
 | 2026-11-16 (overdue) | Sha Wujing four-view turnaround sheet + canonical game crop | `assets/art/source_sheets/characters/wujing_turnaround.png` → `assets/art/characters/final/wujing.png` · 128×192 | Pending — requeued 2026-11-22 |
 | 2026-11-17 (overdue) | Bai Longma four-view turnaround sheet + canonical game crop | `assets/art/source_sheets/characters/longma_turnaround.png` → `assets/art/characters/final/longma.png` · 160×128 | Pending — requeued 2026-11-23 |
 | 2026-11-18 | Yellow Wind King four-view turnaround sheet + canonical game crop | `assets/art/source_sheets/characters/yellow_wind_turnaround.png` → `assets/art/characters/final/yellow_wind.png` · 144×192 | REJECTED — RGB checkerboard; no alpha; requeued 2026-11-24 |
-| 2026-11-19 | Sun Wukong four-view turnaround sheet + canonical game crop | `assets/art/source_sheets/characters/wukong_turnaround.png` → `assets/art/characters/final/wukong.png` · 128×192 | Next due — one call only |
+| 2026-11-19 | Sun Wukong four-view turnaround sheet + canonical game crop | `assets/art/source_sheets/characters/wukong_turnaround.png` → `assets/art/characters/final/wukong.png` · 128×192 | ACCEPTED FOR INTEGRATION — one call consumed; binary handoff pending |
 | 2026-11-20 | Tang Sanzang four-view turnaround sheet + canonical game crop | `assets/art/source_sheets/characters/tang_turnaround.png` → `assets/art/characters/final/tang.png` · 128×192 | Pending |
 | 2026-11-21 | Zhu Bajie four-view turnaround sheet + canonical game crop | `assets/art/source_sheets/characters/bajie_turnaround.png` → `assets/art/characters/final/bajie.png` · 128×192 | Pending |
 | 2026-11-22 | Sha Wujing four-view turnaround sheet + canonical game crop | `assets/art/source_sheets/characters/wujing_turnaround.png` → `assets/art/characters/final/wujing.png` · 128×192 | Pending |
