@@ -229,7 +229,22 @@ func _restore_event_session() -> void:
 	var record := BountyEncounterState.get_active_record()
 	if not record.has("event_resume"):
 		return
-	event_session = NarrativeEventSession.resume_from_battle_record(record, narrative)
+	var battle_failed := bool(record.get("battle_failed", false))
+	event_session = NarrativeEventSession.resume_from_battle_record(record, narrative, not battle_failed)
+	if battle_failed and event_session != null and event_session.is_waiting_for_battle():
+		# get_active_record() consumes a pending resume file. Re-persist the
+		# failed BATTLE node so quitting before retry does not lose the choice
+		# or restart the sequence at an already-committed CHOICE.
+		var restored := BountyEncounterState.start_encounter(
+			str(record.get("encounter_type", "shared")),
+			str(record.get("encounter_id", "")),
+			str(record.get("source_stage_id", "")),
+			str(record.get("source_chapter_id", "")),
+			str(record.get("source_route_id", "SHARED_JOURNEY")),
+			{"event_resume": event_session.to_dict(), "battle_failed": true}
+		)
+		if not restored:
+			event_session = null
 
 func _current_route() -> Array:
 	return origin.get_chapters(narrative.state.starting_character)
