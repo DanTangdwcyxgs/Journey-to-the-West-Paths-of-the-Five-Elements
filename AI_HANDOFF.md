@@ -695,7 +695,9 @@ Runtime has now verified the post-Shared-02 detour and that Journey resumes at S
 
 1. Poll the exact latest Godot Runtime run for the branch head after the handoff/log/memory/index docs have synchronized. Read the full job log, not only the status badge.
 2. If `test_origin_battle_defeat_retry_roundtrip.gd` fails or the workflow hangs, use the precise assertion/SceneTree backtrace to fix the production transition or test driver. Never weaken the invariant that defeat restores the pending BATTLE node, preserves the committed choice, and does not grant rewards or advance the chapter.
-3. Add a deterministic failure-injection seam/test for RESUME_PATH migration failure proving the active EventSession record is retained.
+3. [x] Add deterministic failure injection for RESUME_PATH migration failure. Test `combat/test_bounty_encounter_state_resume_migration_failure.gd` blocks the resume write with a directory at the target path and proves the active handoff bytes remain unchanged.
+- Latest exact gameplay code/test SHA: `f3dca5a98ee72e15b2ca67cfb9a1157b272282c9`. Godot Runtime [44446160315](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/44446160315) **PASS**, log contains `PASS res://combat/test_bounty_encounter_state_resume_migration_failure.gd` and `RUNTIME_SUITE_PASS tests=58`.
+- P0 items in the 2026-11-19 player-facing audit are now all complete. Detailed regression log: `docs/development_log/2026-11-19-resume-migration-failure-regression.md`; index updated; AI memory Round 101.
 4. Continue the P1 player-facing backlog: decide whether “测试战斗” is developer-only in public/demo builds; add a first-battle tutorial; run the five-origin first-session acceptance matrix; consider a backup/export flow for the single save slot.
 5. Then review WorldMap visual navigation and responsive UI through actual screenshots/window sizes. Do not mark visual acceptance from source inspection alone.
 6. Keep PR #34 Draft/open. No merge or deployment without explicit owner approval.
