@@ -69,6 +69,7 @@ static func get_active_record() -> Dictionary:
 		var file := FileAccess.open(PATH, FileAccess.READ)
 		if file != null:
 			var data = JSON.parse_string(file.get_as_text())
+			file.close()
 			if data is Dictionary:
 				return data
 	if not FileAccess.file_exists(RESUME_PATH):
@@ -78,8 +79,12 @@ static func get_active_record() -> Dictionary:
 		return {}
 	var resume_data = JSON.parse_string(resume_file.get_as_text())
 	resume_file.close()
-	DirAccess.remove_absolute(ProjectSettings.globalize_path(RESUME_PATH))
-	return resume_data if resume_data is Dictionary else {}
+	if resume_data is Dictionary:
+		# A pending resume is consumed only after it has been read as a valid record.
+		if DirAccess.remove_absolute(ProjectSettings.globalize_path(RESUME_PATH)) != OK:
+			push_warning("BountyEncounterState could not consume pending resume; leaving it on disk")
+		return resume_data
+	return {}
 
 ## Terminal END cleanup: remove active and pending EventSession state without migrating either file.
 ## The generic clear() below preserves resume data when a scene handoff is still in progress.
@@ -96,15 +101,27 @@ static func _remove_handoff_file(path: String) -> bool:
 static func clear() -> void:
 	# Narrative event battles need their serialized continuation to survive the
 	# battle scene's normal cleanup. Ordinary encounters still clear normally.
-	if FileAccess.file_exists(PATH):
-		var file := FileAccess.open(PATH, FileAccess.READ)
-		if file != null:
-			var data = JSON.parse_string(file.get_as_text())
-			if data is Dictionary and data.has("event_resume"):
-				var resume_file := FileAccess.open(RESUME_PATH, FileAccess.WRITE)
-				if resume_file != null:
-					resume_file.store_string(JSON.stringify(data))
-					resume_file.close()
-		DirAccess.remove_absolute(ProjectSettings.globalize_path(PATH))
-	if FileAccess.file_exists(PATH):
-		DirAccess.remove_absolute(ProjectSettings.globalize_path(PATH))
+	if not FileAccess.file_exists(PATH):
+		return
+	var file := FileAccess.open(PATH, FileAccess.READ)
+	if file == null:
+		# Keep the original handoff if it cannot be inspected safely.
+		push_warning("BountyEncounterState could not read active handoff; preserving it")
+		return
+	var data = JSON.parse_string(file.get_as_text())
+	file.close()
+	if data is Dictionary and data.has("event_resume"):
+		var resume_file := FileAccess.open(RESUME_PATH, FileAccess.WRITE)
+		if resume_file == null:
+			# Never delete the only copy of a pending EventSession.
+			push_warning("BountyEncounterState could not create pending resume; preserving active handoff")
+			return
+		resume_file.store_string(JSON.stringify(data))
+		var write_error: Error = resume_file.get_error()
+		resume_file.close()
+		if write_error != OK:
+			push_warning("BountyEncounterState could not persist pending resume; preserving active handoff")
+			return
+	var remove_error: Error = DirAccess.remove_absolute(ProjectSettings.globalize_path(PATH))
+	if remove_error != OK:
+		push_warning("BountyEncounterState could not clear active handoff: %s" % str(remove_error))
