@@ -89,7 +89,7 @@ func start_battle_handoff() -> Dictionary:
 	}
 	return record
 
-static func resume_from_battle_record(record: Dictionary, manager) -> NarrativeEventSession:
+static func resume_from_battle_record(record: Dictionary, manager, resolve_pending_battle: bool = true) -> NarrativeEventSession:
 	var resume: Dictionary = record.get("event_resume", {})
 	if resume.is_empty():
 		return null
@@ -100,7 +100,7 @@ static func resume_from_battle_record(record: Dictionary, manager) -> NarrativeE
 	# node. Once combat has already reported victory, restore the runner past
 	# that node so the next presentation action is deterministic and cannot
 	# re-enter the completed battle.
-	if session.is_waiting_for_battle():
+	if session.is_waiting_for_battle() and resolve_pending_battle:
 		if session.resolve_battle(true).is_empty():
 			return null
 	return session
