@@ -37,6 +37,7 @@ const TEST_SCRIPTS := [
 	"res://combat/test_memory_playback.gd",
 	"res://combat/test_pixel_ui_font_contract.gd",
 	"res://combat/test_main_menu_journey_entry.gd",
+	"res://combat/test_main_menu_save_safety.gd",
 	"res://combat/test_origin_final_shared_handoff.gd",
 	"res://combat/test_shared_opening_to_black_wind_smoke.gd",
 	"res://combat/test_origin_final_shared_handoff_rollback.gd",
