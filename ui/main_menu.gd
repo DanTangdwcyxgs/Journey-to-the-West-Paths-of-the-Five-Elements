@@ -25,6 +25,9 @@ const CHARACTER_ORDER := ["WUKONG", "TANG", "BAJIE", "WUJING", "LONGMA"]
 
 var narrative := NarrativeManager.new()
 var selected_character := "WUKONG"
+var save_present := false
+var save_loadable := false
+var overwrite_dialog: ConfirmationDialog
 var selected_label: Label
 var story_label: Label
 var current_label: Label
@@ -34,6 +37,8 @@ var character_buttons: Dictionary = {}
 
 func _ready() -> void:
 	PixelUI.apply(self)
+	save_present = NarrativeSave.has_save()
+	save_loadable = save_present and narrative.load()
 	_build_ui()
 	_refresh_ui()
 
@@ -195,20 +200,50 @@ func _refresh_ui() -> void:
 		return
 	selected_label.text = "%s · %s\n%s" % [CHARACTER_NAMES[selected_character], ROUTE_LENGTHS[selected_character], CHARACTER_DESCRIPTIONS[selected_character]]
 	story_label.text = CHARACTER_STORIES[selected_character]
-	continue_button.disabled = not NarrativeSave.has_save()
+	continue_button.disabled = not save_loadable
+	continue_button.text = "继续"
 	for id in character_buttons:
 		var button: Button = character_buttons[id]
 		button.modulate = Color("f1d27d") if id == selected_character else Color("c5b99e")
-	if narrative.state.starting_character == "":
+	if not save_present:
 		current_label.text = "尚未开始旅程。\n\n选择一位主角，他的个人序章将成为你第一次踏上西游的视角。"
+	elif not save_loadable:
+		current_label.text = "发现已有存档，但读取失败。\n\n继续已禁用，当前文件不会被自动删除。若要重新开始，需要明确确认覆盖。"
 	else:
-		current_label.text = "当前存档\n起始主角：%s\n世界时间：T%04d\n共享章节：%s\n已招募：%s" % [CHARACTER_NAMES.get(narrative.state.starting_character, narrative.state.starting_character), narrative.state.current_global_timeline, narrative.state.current_shared_chapter if narrative.state.current_shared_chapter != "" else "尚未汇合", _join_character_names(narrative.state.recruited_characters)]
+		var character_name := CHARACTER_NAMES.get(narrative.state.starting_character, narrative.state.starting_character)
+		current_label.text = "当前存档\n起始主角：%s\n世界时间：T%04d\n共享章节：%s\n已招募：%s" % [character_name, narrative.state.current_global_timeline, narrative.state.current_shared_chapter if narrative.state.current_shared_chapter != "" else "尚未汇合", _join_character_names(narrative.state.recruited_characters)]
+		continue_button.text = "继续 · %s" % character_name
 
 func _start_new_game() -> void:
+	save_present = NarrativeSave.has_save()
+	if save_present:
+		if not is_instance_valid(overwrite_dialog):
+			overwrite_dialog = _create_overwrite_dialog()
+			add_child(overwrite_dialog)
+		overwrite_dialog.popup_centered()
+		return
+	_begin_new_game()
+
+func _create_overwrite_dialog() -> ConfirmationDialog:
+	var dialog := ConfirmationDialog.new()
+	dialog.title = "覆盖现有存档？"
+	dialog.dialog_text = "当前只有一个存档位置。开始新的序章会覆盖现有进度，且无法在游戏内撤销。\n\n选择“保留当前存档”可以返回继续旅程。"
+	dialog.get_ok_button().text = "覆盖并开始"
+	dialog.get_cancel_button().text = "保留当前存档"
+	dialog.confirmed.connect(_begin_new_game)
+	return dialog
+
+func _begin_new_game() -> void:
 	if not narrative.start_new_game(selected_character):
 		return
 	if narrative.save():
+		save_present = true
+		save_loadable = true
 		get_tree().change_scene_to_file("res://ui/journey.tscn")
+	else:
+		save_present = NarrativeSave.has_save()
+		save_loadable = false
+		current_label.text = "新旅程保存失败。\n\n现有存档文件未被主动删除，请重试或退出。"
 
 func _load_game() -> void:
 	if narrative.load():
