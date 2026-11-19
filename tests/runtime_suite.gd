@@ -11,6 +11,7 @@ const TEST_SCRIPTS := [
 	"res://combat/test_event_sequence_validator.gd",
 	"res://combat/test_shared_event_sequences.gd",
 	"res://combat/test_origin_event_sequences.gd",
+	"res://combat/test_origin_sequence_choice_ui_smoke.gd",
 	"res://combat/test_wukong_origin_progression.gd",
 	"res://combat/test_tang_origin_event_sequences.gd",
 	"res://combat/test_tang_origin_progression.gd",
