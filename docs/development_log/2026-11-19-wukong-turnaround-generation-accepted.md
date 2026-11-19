@@ -40,6 +40,8 @@ The untouched raw PNG was retained separately. A processed duplicate, `wukong_tu
 
 The exact repository `prepare_character_turnaround.py` script was inspected to confirm its alpha, quadrant, inset, and crop contracts. The repository checkout was not available in the execution container, so the canonical script itself was **not executed**. The alpha/bounds validation and crop calculation were independently replicated for inspection only. Do not claim canonical tool execution.
 
+The documentation-only art branch head `c5def6b6552d12133e532260b91713c879b5f793` was then validated by CI: Art Tooling run [44445511554](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/44445511554) passed all 12 existing preparation-tool unit tests; Godot Runtime run [44445511824](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/44445511824) passed with `RUNTIME_SUITE_PASS tests=53`. These workflows validate the repository tools/runtime at that commit, not the generated image, because the new PNG binary is not present in the repository.
+
 ## Art-review score
 
 - Pixel craft / art direction: 21/25
