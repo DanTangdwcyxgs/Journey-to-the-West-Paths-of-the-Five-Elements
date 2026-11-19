@@ -831,8 +831,12 @@ func _render_route_or_shared() -> void:
 			var chapter_id := str(chapter.get("id", ""))
 			var event := origin_events.get_event(chapter_id)
 			var chosen := narrative.state.get_origin_choice(chapter_id)
+			var sequence_id := "%s-SEQUENCE" % chapter_id
+			var has_sequence := EventSequenceManager.has_sequence(sequence_id)
 			chapter_label.text = "%s · %s" % [chapter.get("id", ""), chapter.get("title", "")]
-			if not event.is_empty() and chosen == "":
+			# Migrated Origin EventSequences own their CHOICE nodes. Avoid asking
+			# for the legacy route choice before EventRunner reaches that node.
+			if not has_sequence and not event.is_empty() and chosen == "":
 				_set_dialogue("旁白", "%s\n\n%s" % [str(chapter.get("summary", "")), str(event.get("text", ""))], false)
 				primary_button.text = "请选择立场"
 				primary_button.disabled = true
