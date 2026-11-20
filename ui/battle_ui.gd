@@ -36,6 +36,9 @@ var bounty_settlement_pending := false
 var item_catalog: Dictionary = {}
 var battle_inventory := InventoryManager.new()
 var loadout := LoadoutManager.new()
+var starting_character_id: String = ""
+var tutorial_dialog: AcceptDialog
+var tutorial_button: Button
 
 ## Optional persistence dependency for deterministic SceneTree regression; normal play uses a fresh manager.
 var narrative_manager_override: NarrativeManager
@@ -56,6 +59,7 @@ func _ready() -> void:
 	_load_item_catalog()
 	var narrative := _create_narrative_manager()
 	if narrative.load():
+		starting_character_id = BattleTutorial.normalize_character_id(narrative.state.starting_character)
 		battle_inventory.restore(narrative.state.get_inventory())
 		loadout.restore_from_narrative(narrative)
 	party.initialize_from_recruited(narrative.state.recruited_characters)
@@ -77,6 +81,8 @@ func _ready() -> void:
 	if not enemies.is_empty(): selected_target = enemies[0]
 	_build_ui()
 	_refresh()
+	if BattleTutorial.should_show_for(encounter_type, source_route_id, source_chapter_id) and not bool(handoff.get("battle_failed", false)):
+		call_deferred("_show_battle_tutorial")
 
 func _load_bounty_definitions() -> void:
 	var file := FileAccess.open("res://data/world/bounties.json", FileAccess.READ)
@@ -129,6 +135,14 @@ func _build_ui() -> void:
 	var boost := Button.new(); boost.text = "Boost ×"; boost.pressed.connect(_boost_selected); bottom.add_child(boost)
 	var end := Button.new(); end.text = "结束回合"; end.pressed.connect(_end_turn); bottom.add_child(end)
 	return_button = Button.new(); return_button.text = "返回"; return_button.pressed.connect(_return_from_battle); bottom.add_child(return_button)
+	tutorial_button = Button.new(); tutorial_button.text = "战斗教学"; tutorial_button.pressed.connect(_show_battle_tutorial); bottom.add_child(tutorial_button)
+	tutorial_dialog = AcceptDialog.new(); tutorial_dialog.title = "首战教学"; tutorial_dialog.dialog_text = BattleTutorial.guide_text_for_character(starting_character_id); tutorial_dialog.ok_button_text = "开始战斗"; add_child(tutorial_dialog)
+
+func _show_battle_tutorial() -> void:
+	if tutorial_dialog == null:
+		return
+	tutorial_dialog.dialog_text = BattleTutorial.guide_text_for_character(starting_character_id)
+	tutorial_dialog.popup_centered(Vector2i(760, 520))
 
 func _refresh() -> void:
 	if current_actor == null or battle_result_locked: return
