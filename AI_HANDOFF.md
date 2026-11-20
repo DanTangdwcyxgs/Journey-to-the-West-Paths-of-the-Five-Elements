@@ -569,3 +569,149 @@ Runtime has now verified the post-Shared-02 detour and that Journey resumes at S
 - Optional exploration must not advance the fixed Shared chronology, mutate recruitment, or add completed chapters.
 - Treat stale/in-progress historical runs as neither green nor current validation. Only the exact tested SHA and completed run count.
 - Save failure must restore the full NarrativeState snapshot and leave the clue retryable.
+
+## Current Handoff — 2026-11-13: Yellow Wind Mainline and Flowing Sands Gate
+
+### Feature branch
+- PR #34: [feat: integrate Yellow Wind Ridge into Shared Journey](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/pull/34)
+- Branch: `feature/shared-yellow-wind-mainline-2026-11-13`
+- Base main: `395233d8bcaf13aa9022c33903ab03a75c5a83ae`
+- The PR remains Draft/open and unmerged. Main was not modified.
+
+### Implemented
+- Added `SHARED-06A-YELLOW-WIND` at T145 between Shared-06 and Shared-07.
+- Journey routes the chapter through existing WorldMap / Black Wind North Path / Yellow Wind Ridge / Yellow Wind Cave screens.
+- Yellow Wind King is a Shared encounter and resolves under the atomic `BattleResolutionService` transaction.
+- `BOUNTY_YELLOW_FANG` remains independent; old `YELLOW_WIND_KING` journal entries can be reconciled without duplicate rewards.
+- Flowing Sands now has an explicit prerequisite on `SHARED-06A-YELLOW-WIND`.
+
+### Runtime failures and corrections
+- Run [43358438779](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/43358438779) failed on an omitted colon in the Journey expedition handler; fixed in commit `f1500072`.
+- Run [43358645955](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/43358645955) failed the Yellow Wind boss return-to-Cave assertion; later commits made the cave return recognize the Yellow Wind mainline encounter ID.
+- Run [43360259927](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/43360259927) on `27d32d17e3458bb035b79a0bdaf2551b5a960a0d` failed:
+  1. The Shared-07 scene-transition fixture skipped the new Yellow Wind chapter.
+  2. The retry test dereferenced its freed BattleUI after scene transition.
+- The correction uses roster truth for Ridge availability, completes Yellow Wind in both Shared-07 fixtures, and captures retry context before changing scenes. PASS: implementation/test SHA `c2772d71fa5acd7538f22e293461e1b506cbded9` on Runtime run [43362065374](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/43362065374), `RUNTIME_SUITE_PASS tests=53`. The docs-sync SHA `2416e61c22cba30262da0d63f3e31fc3b74ef3ce` also passed Runtime run [43362215034](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/43362215034), `RUNTIME_SUITE_PASS tests=53`.
+
+### Required next actions
+1. Run Godot Runtime on the latest exact branch SHA; do not reuse any historical result above.
+2. If the Cave retry test still cannot find the Cave scene, inspect its new safe diagnostic of the active scene; do not touch the freed BattleUI reference.
+3. Check other start routes after this gate correction, especially Longma/Bajie-origin starts, and preserve the canonical five-person roster.
+4. Update this handoff, `docs/AI_MEMORY.md`, and the development log with the exact tested SHA/run only after Runtime turns green.
+5. Keep PR #34 Draft/open. Do not merge or deploy without explicit owner approval.
+
+### Non-negotiable constraints
+- Yellow Wind stays between Gaojiazhuang/four-person journey and Flowing Sands.
+- Flowing Sands must not be enterable before Yellow Wind is complete.
+- Ridge recruitment gate checks the actual `recruited_characters` array, not optional milestone labels.
+- Save failures must restore the full narrative snapshot and preserve the retryable encounter.
+
+
+## Follow-up Handoff — 2026-11-16: Later-Origin Shared Progression
+
+- Current branch: feature/shared-yellow-wind-mainline-2026-11-13; PR #34 remains Draft/open and unmerged.
+- Initial fix/test SHA: 5ed4fac2a1fe2aaf736a52dd6227f1aab2110229.
+- Fix: Origin handoff now reconciles all Shared chapters before the route's target as historical completion/battle/world-effect facts. It deliberately does not grant historical rewards or mark the target chapter complete.
+- Fix: already-recruited companions no longer make Shared recruitment settlement fail; chapter Memory unlocks still occur.
+- Regression: combat/test_origin_shared_handoff.gd checks all five routes, the prerequisite gate at each target, and actual current-chapter completion for Longma/Bajie/Wujing starts without roster duplication.
+- Exact SHA Runtime: [43796084337](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/43796084337) PASS; log contains PASS res://combat/test_origin_shared_handoff.gd and RUNTIME_SUITE_PASS tests=53.
+- No Web Demo/deployment or merge. Keep PR #34 Draft/open pending owner review.
+
+### Next work
+1. Add production SceneTree smoke for Longma-, Bajie-, and Wujing-origin handoffs through MainMenu → Journey → current Shared sequence. Verify the first player action and route-appropriate map landing, not only static manager state.
+2. Check whether any prior route-specific location discovery should be seeded; do not invent travel or location facts.
+3. The 2026-11-16 art queue points to Sha Wujing: transparent 2×2 turnaround, same model/pose/weapon grip, 128×192 runtime crop. No image call was made because no image-generation tool was available in this session; keep its status Pending and do not claim today's quota was consumed.
+4. After owner-approved merge, run Godot Runtime and Web Demo build/export/Pages deployment on the exact merged main SHA.
+
+### Latest expansion — roster milestones and production SceneTree smoke
+
+- Latest implementation/test head: 13649fc3c1224892bfc3858839ca66467bbad645.
+- Origin handoff now restores recruitment milestone facts for every member of the canonical reconciled roster, not only the selected start character. This is required by later WorldMap gates.
+- New registered regression: combat/test_origin_shared_handoff_scene_smoke.gd. It runs Longma/Bajie/Wujing from a saved Origin handoff through production MainMenu Continue, production Journey, the first Shared EventSequence MOVE, location save/reload, and the next route-appropriate WorldMapManager gate.
+- Exact Runtime run [43797252773](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/43797252773) PASS; the log explicitly reports both handoff regressions and RUNTIME_SUITE_PASS tests=54.
+- Coverage stops after the first Shared MOVE. Continue later by exercising each recruitment choice, production BattleUI victory, atomic Shared settlement, resume dialogue, END, and actual WorldMap UI travel.
+- No Web Demo/deployment or merge. PR #34 remains Draft/open pending owner review.
+
+### Art queue
+- 2026-11-16 schedule slot: Sha Wujing transparent 2×2 turnaround and 128×192 crop. No image call was made because the generator was not available in this session. Keep the asset Pending and do not claim the daily quota was consumed.
+
+
+## Current Handoff — 2026-11-18: Full Later-Origin Production Flow
+
+- Latest reviewed branch: `feature/shared-yellow-wind-mainline-2026-11-13`; PR #34 remains Draft/open and unmerged.
+- Latest inspected head before this documentation-only update: `c6ff78e6a340760b56fb551ff19a3cde507894ca`; exact-head Godot Runtime run [43797593282](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/43797593282) completed successfully with `RUNTIME_SUITE_PASS tests=54`.
+- Current production SceneTree smoke covers Longma/Bajie/Wujing Origin handoff through MainMenu Continue, Journey, first Shared MOVE, location save/reload, and next WorldMapManager gate.
+- Next implementation batch: extend that same production flow through recruitment choice → real BattleUI victory → atomic BattleResolutionService settlement → resumed post-battle dialogue → END → production WorldMap UI travel. Keep save/reload and no-duplicate reward assertions.
+- Do not seed historic map visits without explicit narrative evidence. Do not grant historical rewards or mutate the canonical timeline during memory/handoff presentation.
+- Art remains separate. The prior handoff's Sha Wujing 2026-11-16 slot is Pending. This review made no image-generation call; no quota consumption or art acceptance is claimed. The art schedule/prompt library was not found on this PR branch, so inspect its owning art branch before any future generation attempt.
+- Session review log: `docs/development_log/2026-11-18-agent-review-and-next-batch.md`.
+- No code, data, test, save schema, Web Demo deployment, or merge was performed in this documentation-only review. Re-run exact-head Runtime after subsequent code changes; keep PR #34 Draft/open pending owner approval.
+
+
+## Current Handoff — 2026-11-18: Later-Origin Full Production Loop Completed
+
+- Branch: `feature/shared-yellow-wind-mainline-2026-11-13`; PR #34 is still Draft/open and unmerged.
+- Latest implementation/test head: `608e8afa81df32adf24cbe61763ae9b4c9ea1d8b`.
+- Exact-head Godot Runtime: [44265989517](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/44265989517) **PASS**; confirmed in the job log: `PASS res://combat/test_origin_shared_handoff_scene_smoke.gd` and `RUNTIME_SUITE_PASS tests=54`.
+- Production SceneTree coverage now runs Longma, Bajie, and Wujing saves from Origin handoff → MainMenu Continue → production Journey EventSequence → first story MOVE → recruitment choice → real BattleUI victory → atomic Shared settlement → resumed post-battle dialogue → END → production WorldMap UI travel → save/reload.
+- The integration regression verifies source chapter/encounter/resume handoff context, exact-one recruitment, chapter/timeline/location facts, idempotent stale battle settlement (no second rewards or state changes), resume-file cleanup, and that optional map travel changes only location/visited-node facts (not roster, current Shared chapter, or global timeline). It backs up/restores user save, encounter, and resume files.
+- Fixed a production UI defect in `ui/journey.gd`: if a chapter has a registered EventSequence, the renderer no longer pre-asks the legacy SharedEvent choice; the sequence itself owns CHOICE presentation. This prevents the same choice being committed before its EventRunner node and then rejected as already resolved.
+- Canonical map/timeline paths remain enforced: Longma reaches Black Wind North Path through Shared-04's own MOVE and END (T120); Bajie travels to the connected North Path at T130; Wujing completes Party Full and Full Pilgrimage sequences before Dragon Bone Sanctum becomes available at T170.
+- Detailed log: `docs/development_log/2026-11-18-origin-handoff-full-recruitment-battle-flow.md`; indexed at the top of `docs/development_log/README.md`. AI memory updated in Round 99.
+- Intermediate red runs were used to diagnose incorrect assumptions in the new integration test; the final implementation/test head above is green. Do not present the intermediate failures as current validation.
+- No merge, Web Demo build/export, Pages deployment, or image generation was performed. Main remains unchanged; PR #34 awaits owner review/approval.
+
+### Next Batch — Player-Facing Vertical Slice Audit (No Image Dependency)
+
+1. Walk the first complete player-facing slice from each of the five starts, focusing on what a player sees and can understand rather than only manager/state assertions.
+2. Review chapter pacing, route convergence messaging, optional exploration discoverability, map navigation/return path, battle preparation/defeat/retry, and save/reload continuity.
+3. Record a prioritized small backlog with concrete acceptance checks before expanding content or spending daily image-generation quota.
+4. Keep all historical facts, map visits, rewards, and chronology canonical. Do not seed future milestones or retroactive rewards to make progression convenient.
+5. Keep PR #34 Draft/open; no merge/deployment without explicit owner approval. When owner approves a merge later, rerun Runtime and Web Demo build/export/deployment against the exact merged-main SHA.
+
+
+## Current Handoff — 2026-11-19: Player-Facing Vertical Slice Audit / Narrative Battle Retry
+
+- Branch: `feature/shared-yellow-wind-mainline-2026-11-13`; PR #34 remains Draft/open/unmerged. Main unchanged.
+- Latest implementation/test head before audit documentation sync: `63a65218dc9e5e4d268acc42ba505cc17ff48cb7`. Exact-head Godot Runtime [44441787645](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/44441787645) **PASS**; log contains `PASS res://combat/test_origin_battle_defeat_retry_roundtrip.gd` and `RUNTIME_SUITE_PASS tests=57`. Further documentation commits move the branch head; verify the post-sync exact SHA and its Runtime result before claiming the entire current branch is green.
+- Completed and independently validated:
+  - MainMenu now loads its single save slot before showing the preview, identifies the actual protagonist / global timeline / Shared chapter / roster, enables Continue only if load succeeds, and confirms New Game overwrite. Cancel preserves the existing save. Test `combat/test_main_menu_save_safety.gd`: PASS on SHA `df8119cf5c74d2bafda95089cc4e88e6208a48a9`, run [44438467442](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/44438467442), suite 55/55.
+  - Registered EventSequences now own their CHOICE nodes in both Shared and Origin Journey UI; legacy choice UI no longer pre-commits a choice that EventRunner will encounter again. Tang TANG-04 production UI smoke: PASS on SHA `601036cda520680fa0e5f2256090c3408d486af4`, run [44438943432](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/44438943432), suite 56/56.
+  - Audited the route catalogs: all 46 Origin chapters across Wukong/Tang/Longma/Bajie/Wujing have registered EventSequences in the combined shared and Origin sequence files.
+- Implemented narrative battle defeat retry:
+  - Defeat persists `battle_failed=true` with the current EventSession.
+  - Journey restores the session at its still-pending BATTLE node without invoking victory resolution and preserves the selected pre-battle CHOICE.
+  - Re-entering BATTLE launches the same encounter and replaces the failed marker with a fresh handoff.
+  - Victory still uses BattleResolutionService and only then advances to after-battle dialogue / END.
+  - Generic handoff clear now migrates an EventSession to RESUME_PATH before removing the active record. If the read/write/migration fails, the active handoff is retained as the only safe copy.
+- New registered end-to-end test: `combat/test_origin_battle_defeat_retry_roundtrip.gd`, covering Longma LONGMA-02 choice → production battle defeat → Journey return → pending BATTLE restore → same encounter retry → victory commit → post-battle dialogue → END, with user-file backup and restoration. The smoke centralizes cleanup for every early-return path and has a 45-second watchdog that reports the last stage if it stops making progress.
+- Validation:
+  - PASS: full defeat/retry implementation/test SHA `dccd461c9cb429335918a9ff9a6cac5cfca3c7ac`, run [44441574795](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/44441574795); log contains the new test PASS and Runtime 57/57.
+  - PASS: watchdog-enabled exact implementation/test SHA `63a65218dc9e5e4d268acc42ba505cc17ff48cb7`, run [44441787645](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/44441787645); log again contains `PASS res://combat/test_origin_battle_defeat_retry_roundtrip.gd` and `RUNTIME_SUITE_PASS tests=57`.
+- Detailed audit and prioritized backlog: `docs/development_log/2026-11-19-player-facing-vertical-slice-audit.md`; AI memory Round 100; development-log index updated. After the validation update, verify the exact docs-synced branch SHA and its Runtime job.
+- No image-generation call or art status change. No merge, Web Demo build/export, Pages deployment, or release.
+
+### Next actions (in order)
+
+1. Poll the exact latest Godot Runtime run for the branch head after the handoff/log/memory/index docs have synchronized. Read the full job log, not only the status badge.
+2. If `test_origin_battle_defeat_retry_roundtrip.gd` fails or the workflow hangs, use the precise assertion/SceneTree backtrace to fix the production transition or test driver. Never weaken the invariant that defeat restores the pending BATTLE node, preserves the committed choice, and does not grant rewards or advance the chapter.
+3. [x] Add deterministic failure injection for RESUME_PATH migration failure. Test `combat/test_bounty_encounter_state_resume_migration_failure.gd` blocks the resume write with a directory at the target path and proves the active handoff bytes remain unchanged.
+- Latest exact gameplay code/test SHA: `f3dca5a98ee72e15b2ca67cfb9a1157b272282c9`. Godot Runtime [44446160315](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/44446160315) **PASS**, log contains `PASS res://combat/test_bounty_encounter_state_resume_migration_failure.gd` and `RUNTIME_SUITE_PASS tests=58`.
+- P0 items in the 2026-11-19 player-facing audit are now all complete. Detailed regression log: `docs/development_log/2026-11-19-resume-migration-failure-regression.md`; index updated; AI memory Round 101.
+4. Continue the P1 player-facing backlog: decide whether “测试战斗” is developer-only in public/demo builds; add a first-battle tutorial; run the five-origin first-session acceptance matrix; consider a backup/export flow for the single save slot.
+5. Then review WorldMap visual navigation and responsive UI through actual screenshots/window sizes. Do not mark visual acceptance from source inspection alone.
+6. Keep PR #34 Draft/open. No merge or deployment without explicit owner approval.
+
+
+## Current Handoff — 2026-11-20: First-Battle Tutorial / Art-Generation Availability
+
+- Gameplay branch: `feature/shared-yellow-wind-mainline-2026-11-13`; PR #34 remains Draft/open/unmerged.
+- Implementation/test head: `105e20cf4b4c3452673ef5025e1ec90d53adf8b2`.
+- Godot Runtime [44710429753](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/44710429753) completed successfully; the job log reports the new `combat/test_battle_tutorial.gd` PASS and `RUNTIME_SUITE_PASS tests=59`.
+- Added `BattleTutorial` as a data-driven helper. It finds the first encounter chapter in each route from `data/narrative/origin_chapters.json), auto-opens a localized guide for Wukong/Tang/Longma/Bajie/Wujing on that first Origin battle, skips the automatic popup on a recorded defeat retry, and adds a manual “战斗教学” button. Shared and bounty battles do not auto-trigger it.
+- Regression checks the first encounter mapping and trigger policy for all five Origin routes, shared/bounty exclusion, the common tutorial topics, character resource notes, and the BattleUI dialog/button.
+- Detailed log: `docs/development_log/2026-11-20-first-battle-tutorial.md`. AI memory Round 102 and the development-log index are synchronized.
+- No combat formula, skill balance, NarrativeState schema, reward, roster, save, or Journey chronology was changed.
+- Art remains separate on PR #30. Its 2026-11-20 queue slot is Tang Sanzang four-view turnaround (transparent 2×2 source, 128×192 runtime crop). No executable image-generation tool was available in this session, so no generation call was made, no credit was consumed here, and no art file/catalog/fallback was modified. Do not mark Tang art complete.
+- Known tutorial limitation: dismissed state is not persistent; relaunching the same unfinished first encounter without a defeat marker may show it again. The manual entry remains available.
+- Next: complete the five-origin first-session acceptance matrix; decide whether the MainMenu test-battle entry is developer-only; consider single-slot export/backup; perform player-resolution screenshot review. Do not merge PR #34 or deploy without owner approval.

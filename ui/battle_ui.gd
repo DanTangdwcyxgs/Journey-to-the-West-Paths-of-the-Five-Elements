@@ -36,6 +36,9 @@ var bounty_settlement_pending := false
 var item_catalog: Dictionary = {}
 var battle_inventory := InventoryManager.new()
 var loadout := LoadoutManager.new()
+var starting_character_id: String = ""
+var tutorial_dialog: AcceptDialog
+var tutorial_button: Button
 
 ## Optional persistence dependency for deterministic SceneTree regression; normal play uses a fresh manager.
 var narrative_manager_override: NarrativeManager
@@ -56,6 +59,7 @@ func _ready() -> void:
 	_load_item_catalog()
 	var narrative := _create_narrative_manager()
 	if narrative.load():
+		starting_character_id = BattleTutorial.normalize_character_id(narrative.state.starting_character)
 		battle_inventory.restore(narrative.state.get_inventory())
 		loadout.restore_from_narrative(narrative)
 	party.initialize_from_recruited(narrative.state.recruited_characters)
@@ -63,6 +67,8 @@ func _ready() -> void:
 	_apply_loadout_modifiers()
 	if encounter_type == "normal" or encounter_type == "origin" or encounter_type == "shared":
 		enemies = encounter_manager.build_enemies(encounter_id)
+		if encounter_id == "YELLOW_WIND_KING" and not enemies.is_empty():
+			boss_runtime.begin_encounter(enemies[0])
 	else:
 		var boss := boss_runtime.create_boss()
 		boss_runtime.begin_encounter(boss)
@@ -75,6 +81,8 @@ func _ready() -> void:
 	if not enemies.is_empty(): selected_target = enemies[0]
 	_build_ui()
 	_refresh()
+	if BattleTutorial.should_show_for(encounter_type, source_route_id, source_chapter_id) and not bool(handoff.get("battle_failed", false)):
+		call_deferred("_show_battle_tutorial")
 
 func _load_bounty_definitions() -> void:
 	var file := FileAccess.open("res://data/world/bounties.json", FileAccess.READ)
@@ -127,6 +135,14 @@ func _build_ui() -> void:
 	var boost := Button.new(); boost.text = "Boost ×"; boost.pressed.connect(_boost_selected); bottom.add_child(boost)
 	var end := Button.new(); end.text = "结束回合"; end.pressed.connect(_end_turn); bottom.add_child(end)
 	return_button = Button.new(); return_button.text = "返回"; return_button.pressed.connect(_return_from_battle); bottom.add_child(return_button)
+	tutorial_button = Button.new(); tutorial_button.text = "战斗教学"; tutorial_button.pressed.connect(_show_battle_tutorial); bottom.add_child(tutorial_button)
+	tutorial_dialog = AcceptDialog.new(); tutorial_dialog.title = "首战教学"; tutorial_dialog.dialog_text = BattleTutorial.guide_text_for_character(starting_character_id); tutorial_dialog.ok_button_text = "开始战斗"; add_child(tutorial_dialog)
+
+func _show_battle_tutorial() -> void:
+	if tutorial_dialog == null:
+		return
+	tutorial_dialog.dialog_text = BattleTutorial.guide_text_for_character(starting_character_id)
+	tutorial_dialog.popup_centered(Vector2i(760, 520))
 
 func _refresh() -> void:
 	if current_actor == null or battle_result_locked: return
@@ -175,7 +191,7 @@ func _use_skill(skill: Dictionary, boosted: bool) -> void:
 	if not result.get("ok",false): status_label.text = "技能失败：%s" % result.get("reason","unknown"); return
 	if result.has("form_name"): _on_combat_log("白龙马变身：%s · 持续 %d 回合" % [str(result.get("form_name","")),int(result.get("form_duration",0))])
 	if result.get("mechanic_spent_extra",0) > 0: _on_combat_log("%s 消耗 %d 点%s强化效果。" % [_name(current_actor),int(result.get("mechanic_spent_extra",0)),MECHANIC_NAMES.get(current_actor.id,"专属资源")])
-	if encounter_type == "bounty": boss_runtime.after_action(_boss())
+	if encounter_type == "bounty" or encounter_id == "YELLOW_WIND_KING": boss_runtime.after_action(_boss())
 	_end_turn()
 
 func _use_item(item_id: String) -> void:
@@ -223,20 +239,20 @@ func _enemy_turn(enemy: Combatant) -> void:
 	var living := allies.filter(func(unit): return unit.is_alive())
 	if living.is_empty(): return
 	var attack: CombatAction
-	if encounter_type == "bounty":
+	if encounter_type == "bounty" or encounter_id == "YELLOW_WIND_KING":
 		boss_runtime.on_turn_start(enemy)
 		attack = boss_runtime.choose_action(enemy,allies)
 	else:
 		attack = encounter_manager.choose_ai_action(enemy,allies,engine.turn_number)
 	var target: Combatant
-	if encounter_type == "bounty":
+	if encounter_type == "bounty" or encounter_id == "YELLOW_WIND_KING":
 		var taunted := living.filter(func(unit): return unit.aggro_turns > 0)
 		target = taunted[0] if not taunted.is_empty() else living[0]
 	else:
 		target = encounter_manager.choose_ai_target(enemy,allies,attack)
 	if target == null: return
 	var result := engine.perform_action(enemy,target,attack)
-	if encounter_type == "bounty": boss_runtime.apply_action_effects(attack.id,enemy)
+	if encounter_type == "bounty" or encounter_id == "YELLOW_WIND_KING": boss_runtime.apply_action_effects(attack.id,enemy)
 	if result.get("ok",false): _on_combat_log("%s：%s → %s" % [_name(enemy),attack.display_name,_name(target)])
 
 func _on_combat_log(message:String) -> void:
@@ -333,6 +349,8 @@ func _show_victory_summary(result_title: String, target_name: String, rewards: A
 func _get_victory_next_step() -> String:
 	if encounter_type == "origin":
 		return "返回旅途，继续个人路线。"
+	if encounter_type == "shared" and source_stage_id == "YELLOW_WIND_THRONE":
+		return "返回黄风洞，查看妖王败退后的道路。"
 	if encounter_type == "shared":
 		return "返回旅途，继续共享主线。"
 	if encounter_type == "normal" and not source_stage_id.is_empty():
@@ -343,6 +361,8 @@ func _get_victory_next_step() -> String:
 
 func _get_victory_button_text() -> String:
 	if (encounter_type == "normal" or encounter_type == "bounty") and not source_stage_id.is_empty():
+		return "继续探索"
+	if encounter_type == "shared" and source_stage_id == "YELLOW_WIND_THRONE":
 		return "继续探索"
 	if encounter_type == "origin" or encounter_type == "shared":
 		return "继续旅途"
@@ -359,7 +379,8 @@ func _return_from_battle() -> void:
 		_on_combat_finished("allies")
 		return
 	if not encounter_resolved: BountyEncounterState.clear()
-	if encounter_type == "origin" or encounter_type == "shared": get_tree().change_scene_to_file("res://ui/journey.tscn")
+	if encounter_type == "origin" or (encounter_type == "shared" and source_stage_id.is_empty()): get_tree().change_scene_to_file("res://ui/journey.tscn")
+	elif encounter_type == "shared" and (source_stage_id == "YELLOW_WIND_THRONE" or encounter_id == "YELLOW_WIND_KING"): get_tree().change_scene_to_file("res://ui/yellow_wind_cave.tscn")
 	elif encounter_type == "normal" and not source_stage_id.is_empty(): get_tree().change_scene_to_file("res://ui/yellow_wind_cave.tscn")
 	elif encounter_type == "bounty" and not source_stage_id.is_empty() and encounter_resolved: get_tree().change_scene_to_file("res://ui/yellow_wind_cave.tscn")
 	else: get_tree().change_scene_to_file("res://ui/world_map.tscn")

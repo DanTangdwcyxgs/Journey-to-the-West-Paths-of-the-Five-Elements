@@ -25,7 +25,7 @@
       "name": "黑风山北道",
       "timeline": 120,
       "type": "EXPEDITION",
-      "description": "主线附近的可选讨伐路线。传闻会把玩家引向妖怪踪迹，而不是强制改变西游主线。",
+      "description": "黑风山北道通往黄风岭的主线入口。高老庄之后，取经队伍将在此调查沙暴、进入黄风洞，并迎战黄风妖王。",
       "connections": ["FIVE_ELEMENTS_MOUNTAIN", "EAGLE_SORROW", "GAOJIAZHUANG"],
       "required_milestones": ["WUKONG_RECRUITED"],
       "bounties": ["BOUNTY_YELLOW_FANG"]

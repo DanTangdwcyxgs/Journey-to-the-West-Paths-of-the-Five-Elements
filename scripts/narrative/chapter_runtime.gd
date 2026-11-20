@@ -27,6 +27,9 @@ static func next_id(chapter: ChapterDefinition) -> String:
 static func destination(chapter: ChapterDefinition) -> Dictionary:
 	if chapter == null or chapter.is_empty():
 		return {}
+	var declared_destination := chapter.get_destination()
+	if str(declared_destination.get("kind", "")).to_lower() == "expedition":
+		return declared_destination
 	if chapter.is_combat():
 		return {
 			"kind": "battle",

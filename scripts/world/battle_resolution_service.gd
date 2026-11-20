@@ -48,6 +48,8 @@ static func _validate_source(manager: NarrativeManager, encounter_type: String, 
 	if encounter_type == "shared":
 		if source_chapter_id.is_empty() or source_route_id != "SHARED_JOURNEY":
 			return false
+		if manager.state.current_shared_chapter != source_chapter_id:
+			return false
 		var chapter := SharedJourneyManager.get_chapter(source_chapter_id)
 		return not chapter.is_empty() and SharedJourneyManager.can_enter(source_chapter_id, manager.state)
 	return true

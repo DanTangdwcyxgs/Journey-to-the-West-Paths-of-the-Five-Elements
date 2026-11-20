@@ -91,7 +91,7 @@ func handoff_origin_to_shared(character_id: String) -> bool:
 		return false
 	var route := StartRouteCatalog.get_route(character_id)
 	var handoff_chapter := str(route.get("handoff_shared_chapter", ""))
-	if handoff_chapter == "":
+	if handoff_chapter == "" or not _shared_chapter_exists(handoff_chapter):
 		return false
 	state.mark_route_complete(character_id)
 	var milestone := str(route.get("handoff_milestone", ""))
@@ -99,7 +99,48 @@ func handoff_origin_to_shared(character_id: String) -> bool:
 		advance_world_milestone(milestone, _handoff_timeline(character_id))
 	set_shared_chapter(handoff_chapter)
 	_reconcile_recruitment_for_handoff(character_id)
+	_reconcile_shared_history_for_handoff(handoff_chapter)
 	return true
+
+func _shared_chapter_exists(chapter_id: String) -> bool:
+	for chapter_variant in SharedJourneyManager.get_all_chapters():
+		if str(chapter_variant.get("id", "")) == chapter_id:
+			return true
+	return false
+
+func _reconcile_shared_history_for_handoff(target_chapter_id: String) -> void:
+	var journal := state.get_journey_log()
+	var defeated_targets: Array = journal.get("defeated_targets", []).duplicate()
+	var active_effects: Array = journal.get("active_world_effects", []).duplicate()
+	for chapter_variant in SharedJourneyManager.get_all_chapters():
+		var chapter := ChapterDefinition.new(chapter_variant)
+		if chapter.get_id() == target_chapter_id:
+			break
+		if chapter.is_empty():
+			continue
+		var chapter_id := chapter.get_id()
+		var timeline := chapter.get_timeline()
+		# These chapters are already in the world's past at this Origin handoff.
+		# Record the facts needed by normal Shared prerequisites without replaying
+		# their rewards, battles, or presentation.
+		state.record_chapter_complete(chapter_id, true)
+		state.record_milestone(chapter_id, timeline)
+		var encounter_id := chapter.get_encounter_id()
+		if not encounter_id.is_empty():
+			state.record_milestone("SHARED_BATTLE_%s" % encounter_id, timeline)
+			var legacy_target_id := chapter.get_legacy_boss_target_id()
+			if not legacy_target_id.is_empty() and legacy_target_id not in defeated_targets:
+				defeated_targets.append(legacy_target_id)
+		for effect_variant in chapter.get_world_effects():
+			var effect_id := str(effect_variant)
+			if effect_id.is_empty():
+				continue
+			state.record_milestone(effect_id, timeline)
+			if effect_id not in active_effects:
+				active_effects.append(effect_id)
+	journal["defeated_targets"] = defeated_targets
+	journal["active_world_effects"] = active_effects
+	state.set_journey_log(journal)
 
 func get_origin_status(character_id: String) -> Dictionary:
 	var route := origin_routes.get_route(character_id)
@@ -201,6 +242,17 @@ func _reconcile_recruitment_for_handoff(character_id: String) -> void:
 			for i in range(min(2, chapters.size())):
 				memories.append(str(chapters[i].get("id", "")))
 		encounter_character(cid, memories)
+		var recruitment_milestone := _recruitment_milestone_for_character(cid)
+		if not recruitment_milestone.is_empty():
+			state.record_milestone(recruitment_milestone, _handoff_timeline(cid))
+
+func _recruitment_milestone_for_character(character_id: String) -> String:
+	match character_id:
+		"WUKONG": return "WUKONG_RECRUITED"
+		"LONGMA": return "BAI_LONGMA_RECRUITED"
+		"BAJIE": return "ZHU_BAJIE_RECRUITED"
+		"WUJING": return "SHA_WUJING_RECRUITED"
+	return ""
 
 func _ensure_canonical_full_party_formation() -> void:
 	var formation := state.get_party_formation()

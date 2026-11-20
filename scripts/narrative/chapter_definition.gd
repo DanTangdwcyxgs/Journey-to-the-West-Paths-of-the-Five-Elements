@@ -36,6 +36,13 @@ func get_encounter_id() -> String:
 func get_next_id() -> String:
 	return str(raw.get("next", ""))
 
+func get_destination() -> Dictionary:
+	var value: Variant = raw.get("destination", {})
+	return value.duplicate(true) if value is Dictionary else {}
+
+func get_legacy_boss_target_id() -> String:
+	return str(raw.get("legacy_boss_target_id", ""))
+
 func get_rewards() -> Array:
 	return raw.get("rewards", []).duplicate(true)
 

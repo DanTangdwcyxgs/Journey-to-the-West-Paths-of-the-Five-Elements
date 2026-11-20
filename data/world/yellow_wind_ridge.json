@@ -1,8 +1,8 @@
 {
   "id": "YELLOW_WIND_RIDGE",
   "name": "黄风岭",
-  "timeline": 120,
-  "description": "黑风山北道之外的风沙险地。玩家通过探索、村路情报与风沙事件逐步逼近黄风妖王，不强制覆盖西游主线。",
+  "timeline": 140,
+  "description": "高老庄之后、流沙河之前的西游主线试炼。沿商旅旧路、废弃驿站与沙暴关逐步查明黄风洞入口，击败黄风妖王后方可继续西行。",
   "stages": [
     {
       "id": "RIDGE_ENTRY",

@@ -1,5 +1,12 @@
 # Development Log Index
 
+- [2026-11-20 — First-Battle Tutorial Across the Five Origin Routes](2026-11-20-first-battle-tutorial.md)
+- [2026-11-19 — Active Handoff Preserved When Resume Migration Fails](2026-11-19-resume-migration-failure-regression.md)
+- [`2026-11-19 — Player-Facing Vertical Slice Audit`](2026-11-19-player-facing-vertical-slice-audit.md)
+- [`2026-11-18 — Later-Origin Full Recruitment, Battle, and WorldMap Flow`](2026-11-18-origin-handoff-full-recruitment-battle-flow.md)
+- [`2026-11-18 — Agent Repository Review and Next Implementation Batch`](2026-11-18-agent-review-and-next-batch.md)
+- [`2026-11-16 — Origin Handoff Shared-History Reconciliation`](2026-11-16-origin-handoff-shared-history-reconciliation.md)
+
 所有重要开发更新都必须在本目录留下单独的 Markdown 记录。
 
 项目长期 AI 记忆见：[`docs/AI_MEMORY.md`](../AI_MEMORY.md)。任何 AI / Agent 接手时，先阅读该文件，再按本索引进入最新 development log。
@@ -9,6 +16,16 @@
 `YYYY-MM-DD-<topic>.md`
 
 ## 最新记录
+
+- [2026-11-20 — First-Battle Tutorial Across the Five Origin Routes](2026-11-20-first-battle-tutorial.md)
+
+- [2026-11-19 — Active Handoff Preserved When Resume Migration Fails](2026-11-19-resume-migration-failure-regression.md)
+
+- [2026-11-19 — Player-Facing Vertical Slice Audit](2026-11-19-player-facing-vertical-slice-audit.md)
+
+- [2026-11-18 — Later-Origin Full Recruitment, Battle, and WorldMap Flow](2026-11-18-origin-handoff-full-recruitment-battle-flow.md)
+
+- [2026-11-13 — Shared Yellow Wind Mainline Integration](2026-11-13-shared-yellow-wind-mainline-integration.md)
 
 - [2026-10-14 — Five Elements Mountain Region Exploration](2026-10-14-five-elements-mountain-region.md)
 
