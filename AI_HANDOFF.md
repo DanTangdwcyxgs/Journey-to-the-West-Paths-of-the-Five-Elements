@@ -701,3 +701,17 @@ Runtime has now verified the post-Shared-02 detour and that Journey resumes at S
 4. Continue the P1 player-facing backlog: decide whether “测试战斗” is developer-only in public/demo builds; add a first-battle tutorial; run the five-origin first-session acceptance matrix; consider a backup/export flow for the single save slot.
 5. Then review WorldMap visual navigation and responsive UI through actual screenshots/window sizes. Do not mark visual acceptance from source inspection alone.
 6. Keep PR #34 Draft/open. No merge or deployment without explicit owner approval.
+
+
+## Current Handoff — 2026-11-20: First-Battle Tutorial / Art-Generation Availability
+
+- Gameplay branch: `feature/shared-yellow-wind-mainline-2026-11-13`; PR #34 remains Draft/open/unmerged.
+- Implementation/test head: `105e20cf4b4c3452673ef5025e1ec90d53adf8b2`.
+- Godot Runtime [44710429753](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/44710429753) completed successfully; the job log reports the new `combat/test_battle_tutorial.gd` PASS and `RUNTIME_SUITE_PASS tests=59`.
+- Added `BattleTutorial` as a data-driven helper. It finds the first encounter chapter in each route from `data/narrative/origin_chapters.json), auto-opens a localized guide for Wukong/Tang/Longma/Bajie/Wujing on that first Origin battle, skips the automatic popup on a recorded defeat retry, and adds a manual “战斗教学” button. Shared and bounty battles do not auto-trigger it.
+- Regression checks the first encounter mapping and trigger policy for all five Origin routes, shared/bounty exclusion, the common tutorial topics, character resource notes, and the BattleUI dialog/button.
+- Detailed log: `docs/development_log/2026-11-20-first-battle-tutorial.md`. AI memory Round 102 and the development-log index are synchronized.
+- No combat formula, skill balance, NarrativeState schema, reward, roster, save, or Journey chronology was changed.
+- Art remains separate on PR #30. Its 2026-11-20 queue slot is Tang Sanzang four-view turnaround (transparent 2×2 source, 128×192 runtime crop). No executable image-generation tool was available in this session, so no generation call was made, no credit was consumed here, and no art file/catalog/fallback was modified. Do not mark Tang art complete.
+- Known tutorial limitation: dismissed state is not persistent; relaunching the same unfinished first encounter without a defeat marker may show it again. The manual entry remains available.
+- Next: complete the five-origin first-session acceptance matrix; decide whether the MainMenu test-battle entry is developer-only; consider single-slot export/backup; perform player-resolution screenshot review. Do not merge PR #34 or deploy without owner approval.
