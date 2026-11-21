@@ -715,3 +715,15 @@ Runtime has now verified the post-Shared-02 detour and that Journey resumes at S
 - Today's image quota is consumed. No second call or regeneration on 2026-11-19. Next scheduled slot is Tang Sanzang on 2026-11-20.
 - Schedule/log/memory/index updated: `AI_ART_PRODUCTION_SCHEDULE.md`, `docs/development_log/2026-11-19-wukong-turnaround-generation-accepted.md`, development-log index, and AI memory Round 101. No game code/catalog/runtime asset was changed.
 - Art branch CI at docs-only head `c5def6b6552d12133e532260b91713c879b5f793`: Art Tooling [44445511554](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/44445511554) passed all 12 existing turnaround-preparation unit tests; Godot Runtime [44445511824](https://github.com/DanTangdwcyxgs/Journey-to-the-West-Paths-of-the-Five-Elements/actions/runs/44445511824) passed with `RUNTIME_SUITE_PASS tests=53`. These validate existing repo tooling/runtime only; the new image binary was not present in that commit.
+
+## Current Handoff — 2026-11-20: Tang Sanzang Turnaround Rejected
+
+- Art branch: art/production-roadmap-2026-11-11; PR #30 remains Draft/open/unmerged. Gameplay PR #34 is separate and untouched.
+- One image-generation call was made for the scheduled Tang Sanzang turnaround on 2026-11-20 America/Los_Angeles. Daily quota consumed; do not retry today.
+- Generated source artifact: 1254×1254 PNG RGBA, 1,044,985 bytes, SHA-256 a294a1cb4efefc8d40193d11d1c7ca541efd97212cf62256291ba29fcdf02d0b. It remains a conversation artifact only.
+- Real native alpha is verified: extrema 0–255, 1,109,590 fully transparent pixels, 462,212 partially transparent pixels, all four corners alpha=0; no painted checkerboard.
+- Decision: REJECTED, score 50/100. Critical failures: smooth cel-shaded/anime illustration instead of crisp pixel art; lower quadrants reversed (rear is BL, left profile is BR, opposite the required order); visible pixels touch all quadrant borders so safe margins are absent. Tall ornate crown-like headwear is also not yet approved as Tang's canonical monk headwear.
+- No repository binary, source archive, crop, AssetCatalog entry, runtime asset, game code, or SVG fallback was changed. No crop helper, Art Tooling, Godot Runtime, Web Demo, or screenshot review was run.
+- Detailed record: docs/development_log/2026-11-20-tang-sanzang-turnaround-rejected.md; daily schedule updated to REJECTED; AI memory Round 102 and development-log index synchronized.
+- Keep the 2026-11-21 Bajie slot and remaining queue unchanged. Requeue Tang only after first-batch integration/screenshot-review checkpoint.
+- Next: complete Wukong's pending binary integration using the canonical preparation script and verify exact-head Art Tooling / Godot Runtime before in-game screenshot review. Do not mark it Production Accepted prematurely.

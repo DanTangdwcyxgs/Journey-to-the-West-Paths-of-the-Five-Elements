@@ -858,3 +858,14 @@ Wukong、Tang、Longma、Bajie、Wujing 五条 Origin Route 均已完成首轮 S
 - Binary handoff is pending: the raw/processed/crop artifacts are conversation files, but no PNG binary is committed to the art branch. The execution container could not connect to GitHub, so `prepare_character_turnaround.py`, Art Tooling, Godot Runtime, ArtAssetCatalog integration, and in-game screenshot review have not been run. Do not claim those passed or mark the asset production accepted.
 - Updated `docs/visual_reference/AI_ART_PRODUCTION_SCHEDULE.md`, clarified the Wukong prompt, added/indexed `docs/development_log/2026-11-19-wukong-turnaround-generation-accepted.md`, and updated handoff. No code, catalog, runtime asset, or scene was changed.
 - Daily image-generation quota is consumed for 2026-11-19. Do not retry. Next slot: Tang Sanzang on 2026-11-20.
+
+### Round 102 — 2026-11-20: Tang Sanzang Turnaround Generated / Rejected
+
+- Made exactly one image-generation call for the scheduled Tang Sanzang 2×2 turnaround on 2026-11-20 America/Los_Angeles.
+- Raw conversation artifact: 1254×1254 PNG RGBA, 1,044,985 bytes, SHA-256 a294a1cb4efefc8d40193d11d1c7ca541efd97212cf62256291ba29fcdf02d0b.
+- Genuine native alpha confirmed: extrema 0–255; 1,109,590 fully transparent pixels; 462,212 partial-alpha pixels; all four corners alpha=0. No painted checkerboard.
+- Rejected at visual review: smooth cel-shaded/anime rendering fails the pixel-art medium gate; bottom-left and bottom-right views are reversed relative to the canonical quadrant order; non-transparent pixels touch the outer borders of every quadrant, leaving no safe crop margin. The ornate crown-like headwear is not yet approved as Tang's canonical monk headwear.
+- Review score 50/100; decision REJECTED. No crop, archive, catalog entry, repository binary, or production sprite was created. Existing SVG fallback and game code remain unchanged.
+- One daily generation call is consumed for 2026-11-20. No retry today. Keep 2026-11-21 Bajie and subsequent queue entries unchanged; requeue Tang after the first-batch integration / screenshot-review checkpoint.
+- Detailed log: docs/development_log/2026-11-20-tang-sanzang-turnaround-rejected.md; updated AI_ART_PRODUCTION_SCHEDULE.md, AI_HANDOFF.md, and log index. No Art Tooling, Godot Runtime, Web Demo, or screenshot test was run for this rejected output.
+- Next: binary handoff and canonical preparation of the Wukong source already marked Accepted for Integration, then exact-head CI and in-game screenshot review.
