@@ -6,7 +6,16 @@ const PAPER := Color("d2bd89")
 const GOLD := Color("d5ad57")
 const RED := Color("8f3f39")
 
+## Presentation anchors are expressed as viewport ratios and tested at the canonical 1280×720 canvas.
+const ORIGIN_HERO_SCALE: float = 2.80
+const ORIGIN_HERO_BASELINE_RATIO: float = 0.82
+const ORIGIN_HERO_SHADOW_RATIO: float = 0.83
+const BATTLE_BOSS_BASELINE_RATIO: float = 0.73
+const YELLOW_WIND_BOSS_BASELINE_RATIO: float = 0.77
+
 var scene_name := ""
+var scene_instance_id: int = 0
+var presentation_signature := ""
 var background_texture: Texture2D
 var sprite_textures: Dictionary = {}
 var pixel_hud: PixelHUD
@@ -24,14 +33,52 @@ func _ready() -> void:
 	pixel_hud.z_index = 200
 	add_child(pixel_hud)
 	_apply_scene_visuals()
+	presentation_signature = _get_presentation_signature()
 	queue_redraw()
 
 func _process(_delta: float) -> void:
 	var root := get_tree().current_scene
-	var next_scene: String = root.scene_file_path if root != null else ""
-	if next_scene != scene_name:
+	if root == null:
+		if scene_instance_id != 0 or scene_name != "" or background_texture != null:
+			scene_instance_id = 0
+			scene_name = ""
+			background_texture = null
+			presentation_signature = ""
+			queue_redraw()
+		return
+	var next_scene: String = root.scene_file_path
+	var next_instance_id: int = root.get_instance_id()
+	if should_reapply_scene_visuals(scene_name, scene_instance_id, next_scene, next_instance_id):
 		_apply_scene_visuals()
+		scene_instance_id = next_instance_id
+		presentation_signature = _get_presentation_signature()
 		queue_redraw()
+		return
+	var next_signature := _get_presentation_signature()
+	if next_signature == presentation_signature:
+		return
+	presentation_signature = next_signature
+	queue_redraw()
+
+static func should_reapply_scene_visuals(previous_path: String, previous_instance_id: int, next_path: String, next_instance_id: int) -> bool:
+	return previous_path != next_path or previous_instance_id != next_instance_id
+
+static func build_presentation_signature(scene_path: String, starting_character: String = "", route_status: String = "") -> String:
+	if scene_path.ends_with("journey.tscn"):
+		return "%s|origin:%s|route:%s" % [scene_path, starting_character, route_status]
+	return scene_path
+
+func _get_presentation_signature() -> String:
+	var root := get_tree().current_scene
+	if root == null:
+		return ""
+	var scene_path: String = root.scene_file_path
+	var journey := root as JourneyScreen
+	if journey != null and journey.narrative != null and journey.narrative.state != null:
+		var hero: String = journey.narrative.state.starting_character
+		var route_status: String = str(journey.narrative.state.route_progress.get(hero, NarrativeState.ROUTE_LOCKED))
+		return build_presentation_signature(scene_path, hero, route_status)
+	return build_presentation_signature(scene_path)
 
 func _apply_scene_visuals() -> void:
 	var root := get_tree().current_scene
@@ -39,35 +86,55 @@ func _apply_scene_visuals() -> void:
 		return
 	scene_name = root.scene_file_path
 	background_texture = null
-	if scene_name.ends_with("main_menu.tscn") or scene_name.ends_with("journey.tscn"):
-		background_texture = ArtAssetCatalog.scene_texture("JOURNEY")
-	elif scene_name.ends_with("battle_ui.tscn"):
-		background_texture = ArtAssetCatalog.scene_texture("BATTLE_YELLOW_WIND")
-	elif scene_name.ends_with("world_map.tscn"):
-		background_texture = ArtAssetCatalog.scene_texture("WORLD_MAP")
-	elif scene_name.ends_with("yellow_wind_ridge.tscn") or scene_name.ends_with("yellow_wind_cave.tscn"):
-		background_texture = ArtAssetCatalog.scene_texture("BATTLE_YELLOW_WIND")
+	match stage_kind_for_scene(scene_name):
+		"main_menu", "journey":
+			background_texture = ArtAssetCatalog.scene_texture("JOURNEY")
+		"battle", "yellow_wind":
+			background_texture = ArtAssetCatalog.scene_texture("BATTLE_YELLOW_WIND")
+		"world_map":
+			background_texture = ArtAssetCatalog.scene_texture("WORLD_MAP")
 	for child in root.get_children():
 		if child is ColorRect:
 			var rect := child as ColorRect
 			if rect.size.x >= 900.0 and rect.size.y >= 500.0:
-				var c: Color = rect.color
-				c.a = min(c.a, 0.30)
-				rect.color = c
+				rect.color = background_color_for_backdrop(rect.color, background_texture != null)
+
+## Only reveal the scene beneath a ColorRect when an actual stage texture is loaded.
+## Unsupported scenes and missing-art fallback retain their original opaque backgrounds.
+static func background_color_for_backdrop(color: Color, backdrop_available: bool) -> Color:
+	if not backdrop_available:
+		return color
+	var adjusted := color
+	adjusted.a = minf(adjusted.a, 0.30)
+	return adjusted
+
+static func stage_kind_for_scene(scene_path: String) -> String:
+	if scene_path.ends_with("main_menu.tscn"):
+		return "main_menu"
+	if scene_path.ends_with("journey.tscn"):
+		return "journey"
+	if scene_path.ends_with("battle_ui.tscn"):
+		return "battle"
+	if scene_path.ends_with("world_map.tscn"):
+		return "world_map"
+	if scene_path.ends_with("yellow_wind_ridge.tscn") or scene_path.ends_with("yellow_wind_cave.tscn"):
+		return "yellow_wind"
+	return ""
 
 func _draw() -> void:
 	if background_texture != null:
 		draw_texture_rect(background_texture, Rect2(Vector2.ZERO, size), false)
-	if scene_name.ends_with("main_menu.tscn"):
-		_draw_main_menu_stage()
-	elif scene_name.ends_with("battle_ui.tscn"):
-		_draw_battle_stage()
-	elif scene_name.ends_with("world_map.tscn"):
-		_draw_map_details()
-	elif scene_name.ends_with("yellow_wind_ridge.tscn") or scene_name.ends_with("yellow_wind_cave.tscn"):
-		_draw_yellow_wind_stage()
-	else:
-		_draw_journey_stage()
+	match stage_kind_for_scene(scene_name):
+		"main_menu":
+			_draw_main_menu_stage()
+		"journey":
+			_draw_journey_stage()
+		"battle":
+			_draw_battle_stage()
+		"world_map":
+			_draw_map_details()
+		"yellow_wind":
+			_draw_yellow_wind_stage()
 
 func _draw_main_menu_stage() -> void:
 	_draw_sprite("WUKONG", Vector2(size.x * 0.18, size.y * 0.70), 2.35)
@@ -82,8 +149,8 @@ func _draw_journey_stage() -> void:
 	var is_origin: bool = journey != null and journey.narrative != null and journey.narrative.state != null and journey.narrative.state.route_progress.get(journey.narrative.state.starting_character, NarrativeState.ROUTE_LOCKED) != NarrativeState.ROUTE_COMPLETE
 	if is_origin:
 		var hero: String = str(journey.narrative.state.starting_character)
-		_draw_sprite(hero, Vector2(size.x * 0.50, size.y * 0.66), 3.45)
-		_draw_sprite_shadow(Vector2(size.x * 0.50, size.y * 0.83), 74.0)
+		_draw_sprite(hero, Vector2(size.x * 0.50, size.y * ORIGIN_HERO_BASELINE_RATIO), ORIGIN_HERO_SCALE)
+		_draw_sprite_shadow(Vector2(size.x * 0.50, size.y * ORIGIN_HERO_SHADOW_RATIO), 74.0)
 		_draw_origin_landmarks(hero)
 	else:
 		_draw_sprite("WUKONG", Vector2(size.x * 0.16, size.y * 0.74), 1.75)
@@ -121,13 +188,13 @@ func _draw_origin_landmarks(hero: String) -> void:
 func _draw_battle_stage() -> void:
 	_draw_sprite("WUKONG", Vector2(size.x * 0.31, size.y * 0.70), 2.40)
 	_draw_sprite("TANG", Vector2(size.x * 0.42, size.y * 0.74), 1.95)
-	_draw_sprite("YELLOW_WIND", Vector2(size.x * 0.76, size.y * 0.68), 2.65)
+	_draw_sprite("YELLOW_WIND", Vector2(size.x * 0.76, size.y * BATTLE_BOSS_BASELINE_RATIO), 2.65)
 	_draw_battle_marks()
 
 func _draw_yellow_wind_stage() -> void:
 	_draw_sprite("WUKONG", Vector2(size.x * 0.18, size.y * 0.77), 1.90)
 	_draw_sprite("TANG", Vector2(size.x * 0.29, size.y * 0.79), 1.70)
-	_draw_sprite("YELLOW_WIND", Vector2(size.x * 0.73, size.y * 0.68), 2.50)
+	_draw_sprite("YELLOW_WIND", Vector2(size.x * 0.73, size.y * YELLOW_WIND_BOSS_BASELINE_RATIO), 2.50)
 	_draw_battle_marks()
 
 func _draw_sprite(kind: String, base: Vector2, scale_factor: float) -> void:

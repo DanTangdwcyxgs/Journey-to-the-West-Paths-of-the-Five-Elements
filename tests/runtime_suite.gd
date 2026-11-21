@@ -55,6 +55,7 @@ const TEST_SCRIPTS := [
 	"res://combat/test_sound_manager_lifecycle.gd",
 	"res://combat/test_main_menu_contact.gd",
 	"res://combat/test_visual_asset_contract.gd",
+	"res://combat/test_visual_overlay_layout_contract.gd",
 	"res://combat/test_art_asset_catalog.gd",
 ]
 

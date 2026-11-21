@@ -11,6 +11,7 @@ const MUTED := Color("81979a")
 const FONT_PATH := "res://fonts/NotoSansSC-Regular.otf"
 
 var scene_name := ""
+var scene_instance_id: int = 0
 var font: Font
 
 func _ready() -> void:
@@ -27,13 +28,18 @@ func _process(_delta: float) -> void:
 func _process_scene() -> void:
 	var root := get_tree().current_scene
 	var next := root.scene_file_path if root != null else ""
-	if next == scene_name:
+	var next_instance_id: int = root.get_instance_id() if root != null else 0
+	if not should_refresh_scene_theme(scene_name, scene_instance_id, next, next_instance_id):
 		return
 	scene_name = next
+	scene_instance_id = next_instance_id
 	var control := root as Control
 	if control != null:
 		control.theme = PixelUI.build_theme()
 	queue_redraw()
+
+static func should_refresh_scene_theme(previous_path: String, previous_instance_id: int, next_path: String, next_instance_id: int) -> bool:
+	return previous_path != next_path or previous_instance_id != next_instance_id
 
 func _cut_rect(rect: Rect2, cut := 12.0) -> PackedVector2Array:
 	var x: float = rect.position.x
